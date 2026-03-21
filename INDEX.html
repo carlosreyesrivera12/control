@@ -223,7 +223,7 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
       <div id="loginErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
       <button class="btn btn-p" style="width:100%;padding:10px;font-size:14px;margin-bottom:8px" onclick="doLogin()" id="loginBtn">Acceder</button>
       <div style="display:flex;gap:6px">
-        <button class="btn btn-gh btn-sm" onclick="usarSinSync()" style="flex:1">Sin sync</button>
+        <button class="btn btn-gh btn-sm" onclick="mostrarSinSyncLogin()" style="flex:1">Sin sync</button>
         <button class="btn btn-gh btn-sm" onclick="cambiarFirebase()" style="flex:1;display:none" id="btnCfgLogin">⚙️ Config</button>
       </div>
       <div style="margin-top:10px"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:6px">🌍 Idioma</div><div class="lang-grid" id="loginLangGrid" style="max-height:none"></div></div>
@@ -257,8 +257,8 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
     <!-- PIN clásico (fallback usuarios sin email) -->
     <div id="pinSection" style="display:none">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><button class="btn btn-gh btn-sm" onclick="backToStep1()">← Volver</button><span id="pinUserName" style="font-weight:700;font-size:14px"></span></div>
-      <div class="pin-dots"><div class="pdot" id="pd0"></div><div class="pdot" id="pd1"></div><div class="pdot" id="pd2"></div><div class="pdot" id="pd3"></div></div>
-      <input id="pinInp" type="password" inputmode="numeric" maxlength="4" style="display:none" oninput="syncPinInp()">
+      <div class="pin-dots"><div class="pdot" id="pd0"></div><div class="pdot" id="pd1"></div><div class="pdot" id="pd2"></div><div class="pdot" id="pd3"></div><div class="pdot" id="pd4"></div><div class="pdot" id="pd5"></div></div>
+      <input id="pinInp" type="password" inputmode="numeric" maxlength="6" style="display:none" oninput="syncPinInp()">
       <div class="numpad">
         <button class="nk" onclick="numPress('1')">1</button><button class="nk" onclick="numPress('2')">2</button><button class="nk" onclick="numPress('3')">3</button>
         <button class="nk" onclick="numPress('4')">4</button><button class="nk" onclick="numPress('5')">5</button><button class="nk" onclick="numPress('6')">6</button>
@@ -565,8 +565,8 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
     <div class="fg"><span class="flbl">Email (para 2FA)</span><input id="fuEmail" type="email" placeholder="usuario@empresa.com"></div>
     <div class="fg"><span class="flbl">Contraseña</span><input id="fuPass" type="password" placeholder="Dejar vacío = no cambia" oninput="checkPassStrength(this.value)"></div>
     <div class="fg"><span class="flbl">Confirmar contraseña</span><input id="fuPass2" type="password" placeholder="Repetir contraseña"></div>
-    <div class="fg"><span class="flbl">PIN (4 dígitos) — acceso rápido</span><input id="fuPin" type="password" maxlength="4" inputmode="numeric" placeholder="----"></div>
-    <div class="fg"><span class="flbl">Confirmar PIN</span><input id="fuPin2" type="password" maxlength="4" inputmode="numeric" placeholder="----"></div>
+    <div class="fg"><span class="flbl">PIN (mín. 6 dígitos) — acceso rápido</span><input id="fuPin" type="password" maxlength="8" inputmode="numeric" placeholder="------"></div>
+    <div class="fg"><span class="flbl">Confirmar PIN</span><input id="fuPin2" type="password" maxlength="8" inputmode="numeric" placeholder="------"></div>
     <div id="passStrengthWrap" style="display:none;grid-column:1/-1">
       <div style="display:flex;align-items:center;gap:8px">
         <div style="flex:1;height:4px;border-radius:2px;background:var(--bg4);overflow:hidden">
@@ -730,12 +730,11 @@ const TRACKING_STEPS=[
 ];
 const PRINT_LABELS={posicion:'🔢 Posición',matricula:'🚛 Matrícula',telefono:'📱 Teléfono',nombre:'👤 Nombre',apellido:'👤 Apellido',empresa:'🏢 Empresa',hall:'🏭 Hall',stand:'📍 Stand',puertaHall:'🚪 Puerta Hall',llamador:'📞 Llamador',ref:'🔖 Ref/Booking',montador:'🔧 Montador',expositor:'🎪 Expositor',remolque:'🚚 Remolque',tipoVehiculo:'🚗 Tipo Vehículo',descargaTipo:'📦 Serv. Descarga/Carga',pasaporte:'🪪 Pasaporte/DNI',fechaNacimiento:'🎂 F. Nacimiento',pais:'🌍 País',email:'✉️ Email',comentario:'📝 Comentario',horario:'🕐 Horario Ingreso'};
 const PAISES=[{code:'+34',flag:'🇪🇸'},{code:'+33',flag:'🇫🇷'},{code:'+49',flag:'🇩🇪'},{code:'+39',flag:'🇮🇹'},{code:'+351',flag:'🇵🇹'},{code:'+44',flag:'🇬🇧'},{code:'+31',flag:'🇳🇱'},{code:'+32',flag:'🇧🇪'},{code:'+41',flag:'🇨🇭'},{code:'+43',flag:'🇦🇹'},{code:'+45',flag:'🇩🇰'},{code:'+46',flag:'🇸🇪'},{code:'+47',flag:'🇳🇴'},{code:'+48',flag:'🇵🇱'},{code:'+40',flag:'🇷🇴'},{code:'+36',flag:'🇭🇺'},{code:'+420',flag:'🇨🇿'},{code:'+421',flag:'🇸🇰'},{code:'+385',flag:'🇭🇷'},{code:'+386',flag:'🇸🇮'},{code:'+359',flag:'🇧🇬'},{code:'+30',flag:'🇬🇷'},{code:'+353',flag:'🇮🇪'},{code:'+358',flag:'🇫🇮'},{code:'+370',flag:'🇱🇹'},{code:'+371',flag:'🇱🇻'},{code:'+372',flag:'🇪🇪'},{code:'+380',flag:'🇺🇦'},{code:'+7',flag:'🇷🇺'},{code:'+90',flag:'🇹🇷'},{code:'+212',flag:'🇲🇦'},{code:'+213',flag:'🇩🇿'},{code:'+216',flag:'🇹🇳'},{code:'+966',flag:'🇸🇦'},{code:'+971',flag:'🇦🇪'},{code:'+86',flag:'🇨🇳'},{code:'+91',flag:'🇮🇳'},{code:'+81',flag:'🇯🇵'},{code:'+82',flag:'🇰🇷'},{code:'+1',flag:'🇺🇸'},{code:'+52',flag:'🇲🇽'},{code:'+55',flag:'🇧🇷'},{code:'+54',flag:'🇦🇷'},{code:'+57',flag:'🇨🇴'},{code:'+56',flag:'🇨🇱'},{code:'+51',flag:'🇵🇪'},{code:'+593',flag:'🇪🇨'},{code:'+598',flag:'🇺🇾'},{code:'+61',flag:'🇦🇺'},{code:'+27',flag:'🇿🇦'},{code:'+355',flag:'🇦🇱'},{code:'+376',flag:'🇦🇩'},{code:'+374',flag:'🇦🇲'},{code:'+994',flag:'🇦🇿'},{code:'+375',flag:'🇧🇾'},{code:'+387',flag:'🇧🇦'},{code:'+357',flag:'🇨🇾'},{code:'+995',flag:'🇬🇪'},{code:'+354',flag:'🇮🇸'},{code:'+383',flag:'🇽🇰'},{code:'+352',flag:'🇱🇺'},{code:'+356',flag:'🇲🇹'},{code:'+373',flag:'🇲🇩'},{code:'+377',flag:'🇲🇨'},{code:'+382',flag:'🇲🇪'},{code:'+389',flag:'🇲🇰'},{code:'+381',flag:'🇷🇸'},{code:'+378',flag:'🇸🇲'},{code:'+20',flag:'🇪🇬'},{code:'+234',flag:'🇳🇬'},{code:'+254',flag:'🇰🇪'},{code:'+233',flag:'🇬🇭'},{code:'+225',flag:'🇨🇮'},{code:'+221',flag:'🇸🇳'},{code:'+237',flag:'🇨🇲'},{code:'+255',flag:'🇹🇿'},{code:'+256',flag:'🇺🇬'},{code:'+251',flag:'🇪🇹'},{code:'+258',flag:'🇲🇿'},{code:'+60',flag:'🇲🇾'},{code:'+62',flag:'🇮🇩'},{code:'+63',flag:'🇵🇭'},{code:'+65',flag:'🇸🇬'},{code:'+66',flag:'🇹🇭'},{code:'+84',flag:'🇻🇳'},{code:'+880',flag:'🇧🇩'},{code:'+92',flag:'🇵🇰'},{code:'+94',flag:'🇱🇰'},{code:'+961',flag:'🇱🇧'},{code:'+962',flag:'🇯🇴'},{code:'+964',flag:'🇮🇶'},{code:'+965',flag:'🇰🇼'},{code:'+968',flag:'🇴🇲'},{code:'+970',flag:'🇵🇸'},{code:'+972',flag:'🇮🇱'},{code:'+973',flag:'🇧🇭'},{code:'+974',flag:'🇶🇦'},{code:'+58',flag:'🇻🇪'},{code:'+53',flag:'🇨🇺'},{code:'+507',flag:'🇵🇦'},{code:'+506',flag:'🇨🇷'},{code:'+502',flag:'🇬🇹'},{code:'+503',flag:'🇸🇻'},{code:'+504',flag:'🇭🇳'},{code:'+505',flag:'🇳🇮'},{code:'+591',flag:'🇧🇴'},{code:'+595',flag:'🇵🇾'},{code:'+592',flag:'🇬🇾'},{code:'+64',flag:'🇳🇿'}];
-const DEF_USERS=[
-  {id:'u_sa',nombre:'SuperAdmin',username:'superadmin',email:'',passwordHash:'',pin:'0000',twoFA:false,rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es'},
-  {id:'u_sup',nombre:'Supervisor',username:'supervisor',email:'',passwordHash:'',pin:'1111',twoFA:false,rol:'supervisor',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es'},
-  {id:'u_ctrl',nombre:'Control Rampa',username:'controlrampa',email:'',passwordHash:'',pin:'2222',twoFA:false,rol:'controlador_rampa',permisos:{canAdd:true,canEdit:false,canDel:false,canStatus:true,canExport:false,canSpecial:false},lang:'es'},
-  {id:'u_ed1',nombre:'Editor 1',username:'editor1',email:'',passwordHash:'',pin:'3333',twoFA:false,rol:'editor',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:false},lang:'es'}
-];
+// ═══ USUARIOS POR DEFECTO ═══
+// SEGURIDAD: No se incluyen usuarios con contraseñas hardcodeadas.
+// El primer SuperAdmin se crea en el proceso de setup inicial.
+// Si la base de datos está vacía, se mostrará un asistente de setup.
+const DEF_USERS=[];
 let DB={movimientos:[],ingresos:[],ingresos2:[],listaNegra:[],enEspera:[],mensajesRampa:[],conductores:[],auditLog:[],eventos:[],agenda:[],recintos:[],usuarios:[...DEF_USERS],activeEventId:null,activeEventIds:[],defaultEventId:null,printFieldOrder:[...PRINT_DEF],hiddenPrintFields:[],editHistory:[],vehiculos:[],papelera:[],exportLog:[],printPhrases:{},printPhrases2:{},tabSorts:{},tabOrder:[],colOrders:{},tabEvents:{},printCfg1:{fieldOrder:[...PRINT_DEF],hiddenFields:[],favEventId:null,qrTracking:true},printTemplates:[],printCfg2:{qrTracking:true,fieldOrder:['empresa','hall','stand','expositor','comentario','llamador','ref','montador','nombre','apellido','pasaporte','remolque','telefono','matricula','posicion','email','fechaNacimiento','pais','horario'],hiddenFields:['llamador','ref','montador','nombre','apellido','pasaporte','email','horario','fechaNacimiento','pais','remolque','matricula','telefono','posicion'],favEventId:null}};
 let fbApp=null,fbDb=null,fbRef=null,fbConnected=false,fbKey='controlunificado',writeDebounce=null,bc=null;
 let CU=null,curTab='dash',pendingDelFn=null,blkOverrideData=null,_lastMsgCount=0;
@@ -794,8 +793,55 @@ function connectFirebase(){const url=(document.getElementById('fbUrlInp').value|
 function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos','ingresos','listaNegra','enEspera','mensajesRampa','conductores','auditLog','eventos','agenda','recintos'];fbRef.on('value',snap=>{const rem=snap.val();if(!rem){setSyncStatus('ok');return;}if(rem._session===SID){setSyncStatus('ok');return;}let changed=false;FK.forEach(k=>{if(rem[k]){const arr=Array.isArray(rem[k])?rem[k]:Object.values(rem[k]);if(JSON.stringify(arr)!==JSON.stringify(DB[k])){DB[k]=arr;changed=true;}}});if(rem.activeEventId!==undefined&&rem.activeEventId!==DB.activeEventId){DB.activeEventId=rem.activeEventId;changed=true;}if(rem.printFieldOrder){DB.printFieldOrder=rem.printFieldOrder;}if(rem.hiddenPrintFields){DB.hiddenPrintFields=rem.hiddenPrintFields;}if(rem.activeEventIds)DB.activeEventIds=rem.activeEventIds;if(rem.defaultEventId!==undefined)DB.defaultEventId=rem.defaultEventId;if(rem.editHistory)DB.editHistory=rem.editHistory;if(rem.ingresos2)DB.ingresos2=rem.ingresos2;if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.papelera)DB.papelera=rem.papelera;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts)DB.tabSorts=rem.tabSorts;if(rem.tabOrder)DB.tabOrder=rem.tabOrder;if(rem.colOrders)DB.colOrders=rem.colOrders;if(rem.tabEvents)DB.tabEvents=rem.tabEvents;if(rem.printCfg1)DB.printCfg1=rem.printCfg1;if(rem.printCfg2)DB.printCfg2=rem.printCfg2;if(rem.printTemplates)DB.printTemplates=rem.printTemplates;if(rem.usuarios){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}fbConnected=true;setSyncStatus('ok');if(changed){saveLocalDB();if(CU){renderTab(curTab);renderHdr();}}},()=>setSyncStatus('error'));fbDb.ref('.info/connected').on('value',snap=>{fbConnected=snap.val();setSyncStatus(fbConnected?'ok':'error');const d=document.getElementById('loginSyncDot'),l=document.getElementById('loginSyncLbl');if(d)d.className='sd '+(fbConnected?'sd-g':'sd-r');if(l)l.textContent=fbConnected?'Firebase OK':'Sin conexión';});}
 function writeToFirebase(){if(!fbRef)return;clearTimeout(writeDebounce);writeDebounce=setTimeout(()=>{fbRef.set({_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},tabEvents:DB.tabEvents||{},printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[]}).catch(()=>setSyncStatus('error'));},350);}
 function initLocalSync(){try{bc=new BroadcastChannel('cu1_sync');bc.onmessage=()=>{loadLocalDB();if(CU){renderTab(curTab);renderHdr();}};}catch(e){window.addEventListener('storage',ev=>{if(ev.key===SK){loadLocalDB();if(CU){renderTab(curTab);renderHdr();}}});}}
-function usarSinSync(){localStorage.setItem('cu1_noSync','1');fbConnected=false;document.getElementById('setupWrap').style.display='none';setSyncStatus('off');loadLocalDB();showLogin();}
+function usarSinSync(){
+  // SEGURIDAD: Solo superadmin puede usar modo sin sync
+  // Verificar si ya hay sesión activa con rol superadmin
+  loadLocalDB();
+  const isSARole=()=>{
+    // En el flujo de setup aún no hay CU; permitir solo si ya hay usuarios SA en DB
+    const hasSA=DB.usuarios.some(u=>u.rol==='superadmin');
+    return !hasSA; // Si no hay usuarios creados (primera vez), permitir
+  };
+  if(CU&&CU.rol!=='superadmin'){
+    toast('🔒 Modo sin sync solo disponible para SuperAdmin','var(--red)',4000);
+    return;
+  }
+  const motivo=prompt('⚠️ MODO SIN SYNC — Solo para emergencias.\n\nEscribe el MOTIVO para activar el modo offline (quedará registrado):');
+  if(!motivo||motivo.trim().length<5){
+    toast('Debes indicar un motivo (mínimo 5 caracteres)','var(--amber)',4000);
+    return;
+  }
+  // Registrar en localStorage con timestamp y motivo
+  const logEntry={ts:new Date().toISOString(),user:CU?.nombre||'(setup)',rol:CU?.rol||'–',motivo:motivo.trim(),ua:navigator.userAgent.slice(0,120)};
+  try{
+    const prevLog=JSON.parse(localStorage.getItem('cu1_noSyncLog')||'[]');
+    prevLog.unshift(logEntry);
+    localStorage.setItem('cu1_noSyncLog',JSON.stringify(prevLog.slice(0,50)));
+  }catch(e){}
+  // También al auditLog si DB disponible
+  if(DB&&CU){logAudit('sin_sync_activado','sesion','Modo offline activado. Motivo: '+motivo.trim());}
+  localStorage.setItem('cu1_noSync','1');
+  fbConnected=false;
+  document.getElementById('setupWrap').style.display='none';
+  setSyncStatus('off');
+  showLogin();
+}
 function cambiarFirebase(){document.getElementById('fbUrlInp').value=localStorage.getItem('cu1_fbUrl')||FB_DEF;document.getElementById('fbKeyInp').value=localStorage.getItem('cu1_fbKey')||'controlunificado';document.getElementById('loginWrap').style.display='none';document.getElementById('setupWrap').style.display='flex';}
+function mostrarSinSyncLogin(){
+  // Pedir credenciales de superadmin antes de activar sin sync desde login
+  const ident=prompt('Modo Sin Sync — Solo SuperAdmin\n\nIntroduce tu usuario SuperAdmin:');
+  if(!ident)return;
+  const pass=prompt('Contraseña o PIN:');
+  if(!pass)return;
+  const u=DB.usuarios.find(x=>(x.username===ident||x.email===ident)&&x.rol==='superadmin');
+  if(!u){toast('🔒 No autorizado — Solo SuperAdmin','var(--red)',4000);return;}
+  verifyPassword(pass,u.passwordHash,u.passwordSalt||null).then(ok=>{
+    if(!ok&&u.pin){ok=(pass===u.pin);}
+    if(!ok){toast('Credenciales incorrectas','var(--red)');return;}
+    CU=u;
+    usarSinSync();
+  });
+}
 function showSyncInfo(){toast(`Firebase ${fbConnected?'✅ conectado':'❌ offline'} · Clave: "${fbKey}"`);}
 function setSyncStatus(s){const dot=document.getElementById('syncDot'),lbl=document.getElementById('syncLbl');if(!dot||!lbl)return;const m={ok:['sd-g','Sync ✓'],error:['sd-r','Sin sync'],connecting:['sd-y','Conectando...'],off:['sd-o','Local']};const[cls,txt]=m[s]||['sd-y',s];dot.className='sd '+cls;lbl.textContent=txt;fbConnected=(s==='ok');}
 
@@ -806,8 +852,10 @@ function loadLocalDB(){try{const s=localStorage.getItem(SK);if(s){const p=JSON.p
     [DB.printCfg1,DB.printCfg2].forEach(cfg=>{if(cfg.fieldOrder&&!cfg.fieldOrder.includes('tipoVehiculo')){const ri=cfg.fieldOrder.indexOf('remolque');cfg.fieldOrder.splice(ri>=0?ri+1:cfg.fieldOrder.length,0,'tipoVehiculo','descargaTipo');}if(cfg.fieldOrder&&!cfg.fieldOrder.includes('puertaHall')){const si=cfg.fieldOrder.indexOf('stand');cfg.fieldOrder.splice(si>=0?si+1:cfg.fieldOrder.length,0,'puertaHall');}});if(!DB.recintos)DB.recintos=[];if(!DB.printTemplates)DB.printTemplates=[];}DEF_USERS.forEach(du=>{if(!DB.usuarios.find(u=>u.id===du.id))DB.usuarios.push(du);});}catch(e){}}
 function saveLocalDB(){try{localStorage.setItem(SK,JSON.stringify(DB));}catch(e){}}
 function saveDB(){saveLocalDB();writeToFirebase();if(bc)try{bc.postMessage(1);}catch(e){}}
-function loadSession(){try{const s=localStorage.getItem(SK+'_sess');if(s){const u=DB.usuarios.find(x=>x.id===s);if(u){CU=u;return true;}}return false;}catch(e){return false;}}
-function saveSession(){try{localStorage.setItem(SK+'_sess',CU?CU.id:'');}catch(e){}}
+const SESSION_TTL=8*60*60*1000; // 8 horas
+function loadSession(){try{const s=sessionStorage.getItem(SK+'_sess');if(s){const d=JSON.parse(s);if(!d.exp||Date.now()>d.exp){sessionStorage.removeItem(SK+'_sess');return false;}// Validar que el usuario sigue existiendo en DB
+const u=DB.usuarios.find(x=>x.id===d.uid&&!x.lockedUntil);if(u){CU=u;return true;}sessionStorage.removeItem(SK+'_sess');return false;}return false;}catch(e){return false;}}
+function saveSession(){try{if(CU){sessionStorage.setItem(SK+'_sess',JSON.stringify({uid:CU.id,exp:Date.now()+SESSION_TTL}));}else{sessionStorage.removeItem(SK+'_sess');}}catch(e){}}
 
 // ═══ UTILS ═══
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -821,6 +869,9 @@ function cBadge(c){const x=CCFG[c];return x?`<span class="cbadge" style="color:$
 function diffMins(p,r){if(!p||!r)return null;try{const tp=new Date('1970-01-01T'+(p.length>5?p.slice(-5):p));const tr2=new Date('1970-01-01T'+(r.length>5?r.slice(-5):r));return Math.round((tr2-tp)/60000);}catch(e){return null;}}
 function diffClass(d){if(d===null)return'';if(Math.abs(d)<=10)return'diff-ok';if(d>10)return'diff-tard';return'diff-ant';}
 function diffLabel(d){if(d===null)return'–';if(Math.abs(d)<=2)return'✓ Puntual';if(d>0)return`+${d}min`;return`${Math.abs(d)}min ant.`;}
+// ═══ XSS PROTECTION ═══
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
 function toast(msg,bg='#1e293b',dur=3000){const w=document.getElementById('toastWrap');if(!w)return;const t=document.createElement('div');t.className='toast';t.textContent=msg;t.style.background=bg;w.appendChild(t);requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},dur);}
 function closeOv(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
 function logAudit(a,e,d){if(!DB.auditLog)DB.auditLog=[];DB.auditLog.unshift({id:uid(),ts:nowL(),user:CU?.nombre||'?',action:a,entity:e,detail:d});if(DB.auditLog.length>300)DB.auditLog=DB.auditLog.slice(0,300);}
@@ -973,10 +1024,13 @@ function toggleCleanPermission(uid){
   toast(u.canClean?'🔓 Permiso limpiar activado':'🔒 Permiso limpiar desactivado',u.canClean?'var(--green)':'var(--amber)');
 }
 function cleanTab(tab){
+  if(!canClean()){toast('Sin permiso','var(--red)');return;}
   const names={ingresos:'Referencia',ingresos2:'Ingresos',agenda:'Agenda',conductores:'Conductores',movimientos:'Embalaje',vehiculos:'Historial'};
   const n=names[tab]||tab;
   if(!confirm('⚠️ ¿Limpiar todos los datos de '+n+'?'))return;
-  if(!confirm('🔴 CONFIRMACIÓN FINAL: Se borrarán TODOS los registros de '+n+'. ¿Continuar?'))return;
+  // Requiere escribir la frase de confirmación exacta
+  const frase=prompt('🔴 CONFIRMACIÓN FINAL\n\nEscribe el nombre exacto de la pestaña para confirmar:\n\n"'+n+'"');
+  if((frase||'').trim()!==n){toast('Frase incorrecta — operación cancelada','var(--amber)',4000);return;}
   if(tab==='ingresos')DB.ingresos=[];
   else if(tab==='ingresos2')DB.ingresos2=[];
   else if(tab==='agenda')DB.agenda=[];
@@ -999,7 +1053,7 @@ function canSpecial(){return hasPerm('canSpecial');}
 
 // ═══ LOGIN ═══
 // ═══ LOGIN — nuevo sistema ═══
-let _loginUser=null,_otpCode='',_otpExpiry=0,_otpAttempts=0,_resendTimer=null;
+let _loginUser=null,_otpCode='',_otpExpiry=0,_otpAttempts=0,_otpResendCount=0,_resendTimer=null;
 
 function showLogin(){
   document.getElementById('loginWrap').style.display='flex';
@@ -1023,7 +1077,7 @@ function loginIdentChange(){
   if(found){
     strip.style.display='flex';
     strip.style.background='var(--gll)';strip.style.color='var(--green)';
-    strip.innerHTML='<div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0"></div> '+found.nombre+' · '+({superadmin:'SuperAdmin',supervisor:'Supervisor',controlador_rampa:'Ctrl Rampa',editor:'Editor',visor:'Visor'}[found.rol]||found.rol);
+    strip.innerHTML='<div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0"></div> '+esc(found.nombre)+' · '+esc({superadmin:'SuperAdmin',supervisor:'Supervisor',controlador_rampa:'Ctrl Rampa',editor:'Editor',visor:'Visor'}[found.rol]||found.rol);
   } else {strip.style.display='none';}
 }
 function togglePassVis(){
@@ -1051,12 +1105,11 @@ async function doLogin(){
   // ── Verificar credencial ──
   let credOK=false;
   if(u.passwordHash){
-    // Tiene contraseña configurada
-    const hashed=await hashPassword(pass);
-    credOK=(hashed===u.passwordHash);
+    // Verificar con PBKDF2 (soporte legado SHA-256 sin salt)
+    credOK=await verifyPassword(pass, u.passwordHash, u.passwordSalt||null);
   }
   if(!credOK&&u.pin){
-    // Fallback PIN (4 dígitos)
+    // Fallback PIN (6 dígitos)
     credOK=(pass===u.pin);
   }
 
@@ -1090,10 +1143,33 @@ async function doLogin(){
   }
 }
 
-async function hashPassword(pass){
-  const enc=new TextEncoder().encode(pass);
-  const buf=await crypto.subtle.digest('SHA-256',enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+// ═══ PBKDF2 — 100k iteraciones, salt aleatorio por usuario ═══
+async function hashPassword(pass, saltHex){
+  const enc=new TextEncoder();
+  const keyMat=await crypto.subtle.importKey('raw',enc.encode(pass),{name:'PBKDF2'},false,['deriveBits']);
+  let saltBuf;
+  if(saltHex){
+    // Usar salt existente (verificación)
+    saltBuf=new Uint8Array(saltHex.match(/.{2}/g).map(b=>parseInt(b,16)));
+  } else {
+    // Generar salt nuevo (registro/cambio)
+    saltBuf=crypto.getRandomValues(new Uint8Array(16));
+  }
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:saltBuf,iterations:100000,hash:'SHA-256'},keyMat,256);
+  const hashHex=Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const saltHexOut=Array.from(saltBuf).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return{hash:hashHex,salt:saltHexOut};
+}
+async function verifyPassword(pass, storedHash, storedSalt){
+  // Soporte legado SHA-256 (sin salt) durante migración
+  if(!storedSalt){
+    const enc=new TextEncoder().encode(pass);
+    const buf=await crypto.subtle.digest('SHA-256',enc);
+    const h=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    return h===storedHash;
+  }
+  const{hash}=await hashPassword(pass,storedSalt);
+  return hash===storedHash;
 }
 
 function checkPassStrength(v){
@@ -1115,6 +1191,7 @@ async function initiateOTP(u){
   _otpCode=String(Math.floor(100000+Math.random()*900000));
   _otpExpiry=Date.now()+10*60*1000; // 10 minutos
   _otpAttempts=0;
+  _otpResendCount=0;
 
   // Capturar sesión para incluir en email
   const session=await captureSession();
@@ -1131,6 +1208,12 @@ async function initiateOTP(u){
 
 async function resendOTP(){
   if(!_loginUser)return;
+  if(_otpResendCount>=3){
+    const errEl=document.getElementById('otpErr');
+    if(errEl){errEl.textContent='Límite de reenvíos alcanzado. Vuelve a iniciar sesión.';errEl.style.display='block';}
+    setTimeout(backToStep1,3000);return;
+  }
+  _otpResendCount++;
   _otpCode=String(Math.floor(100000+Math.random()*900000));
   _otpExpiry=Date.now()+10*60*1000;
   _otpAttempts=0;
@@ -1143,17 +1226,16 @@ async function resendOTP(){
 }
 
 async function sendOTPEmail(u,code,session){
-  const ejsKey='6ZhU_NYFyTPdDk5OB';
-  const ejsSvc='service_44tapzx';
-  const ejsTpl='template_n440nxc';
-  // Mostrar código siempre en pantalla como fallback visual
-  const otpEl=document.getElementById('otpExpiry');
-  if(otpEl)otpEl.innerHTML+=' <span style="font-weight:700;color:var(--amber)">· Código: '+code+'</span>';
+  const ejsKey=localStorage.getItem('cu1_ejsKey')||'';
+  const ejsSvc=localStorage.getItem('cu1_ejsSvc')||'';
+  const ejsTpl=localStorage.getItem('cu1_ejsTpl')||'';
+  // SEGURIDAD: Nunca mostrar el código OTP en pantalla
   if(typeof emailjs==='undefined'){
-    console.log('[2FA OTP - emailjs no cargó]',code);
+    // emailjs no cargó — mostrar solo mensaje de error, NO el código
+    const otpEl=document.getElementById('otpExpiry');
+    if(otpEl)otpEl.innerHTML='<span style="color:var(--red);font-weight:700">⚠ Error al enviar. Solicita un nuevo código.</span>';
     return;
   }
-  // Reintentar init por si no se ejecutó al cargar
   try{emailjs.init({publicKey:ejsKey});}catch(e){}
   try{
     await emailjs.send(ejsSvc,ejsTpl,{
@@ -1166,12 +1248,12 @@ async function sendOTPEmail(u,code,session){
       location:session.country||'–',
       app_name:'ControlUnificado v5'
     },{publicKey:ejsKey});
-    // Si llega aquí, se envió bien — quitar el código visible
-    if(otpEl){const sp=otpEl.querySelector('span');if(sp)sp.remove();}
     toast('📧 Código enviado a '+maskEmail(u.email),'var(--green)',3000);
   }catch(e){
-    console.warn('[2FA send error]',e.text||e.message||e,'. OTP:',code);
-    // El código ya se ve en pantalla — no hace falta toast adicional
+    // Si falla el envío: mostrar error genérico, NUNCA el código
+    const otpEl=document.getElementById('otpExpiry');
+    if(otpEl){const sp=otpEl.querySelector('span[data-err]');if(sp)sp.remove();const err=document.createElement('span');err.dataset.err='1';err.style.cssText='color:var(--red);font-weight:700';err.textContent=' ⚠ Error al enviar. Solicita un nuevo código.';otpEl.appendChild(err);}
+    console.warn('[2FA send error - OTP NOT shown in UI]',e.text||e.message||e);
   }
 }
 
@@ -1270,7 +1352,79 @@ async function completeLogin(u){
   // Capture session metadata
   const session=await captureSession();
   logSessionEvent(u,'login_ok','Login exitoso',session);
+  // Forzar cambio de contraseña en primer login
+  if(u.mustChangePassword){
+    _loginUser=u;
+    showForcedPasswordChange(u);
+    return;
+  }
   loginSuccess(u);
+}
+
+function showForcedPasswordChange(u){
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('loginStep1').style.display='none';
+  document.getElementById('loginStep2').style.display='none';
+  document.getElementById('pinSection').style.display='none';
+  // Inyectar pantalla de cambio forzado
+  const card=document.querySelector('#loginWrap .login-card');
+  const div=document.createElement('div');
+  div.id='forcePassSection';
+  div.innerHTML=`
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:28px">🔐</div>
+      <div style="font-weight:800;font-size:15px;margin-top:6px">Debes cambiar tu contraseña</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px">Requerido en el primer acceso</div>
+    </div>
+    <div class="fg" style="margin-bottom:8px">
+      <span class="flbl">Nueva contraseña <span class="freq">*</span></span>
+      <input id="fpNewPass" type="password" placeholder="Mínimo 8 caracteres" oninput="checkPassStrength(this.value)">
+    </div>
+    <div id="passStrengthWrap2" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:4px;border-radius:2px;background:var(--bg4);overflow:hidden">
+          <div id="passStrengthBar2" style="height:100%;border-radius:2px;transition:width .3s,background .3s;width:0%"></div>
+        </div>
+        <span id="passStrengthLbl2" style="font-size:10px;font-weight:700;min-width:40px"></span>
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <span class="flbl">Confirmar contraseña <span class="freq">*</span></span>
+      <input id="fpNewPass2" type="password" placeholder="Repetir contraseña">
+    </div>
+    <div id="fpErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
+    <button class="btn btn-p" style="width:100%;padding:10px;font-size:14px" onclick="doForcedPassChange()">✓ Guardar y continuar</button>`;
+  // Ajuste del indicador de fuerza para este campo
+  div.querySelector('#fpNewPass').addEventListener('input',function(){
+    const bar=document.getElementById('passStrengthBar2');
+    const lbl=document.getElementById('passStrengthLbl2');
+    let score=0;const v=this.value;
+    if(v.length>=8)score++;if(v.length>=12)score++;
+    if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^a-zA-Z0-9]/.test(v))score++;
+    const levels=[['0%','var(--red)','Muy débil'],['20%','var(--red)','Débil'],['40%','var(--amber)','Regular'],['65%','var(--amber)','Buena'],['85%','var(--green)','Fuerte'],['100%','var(--green)','Muy fuerte']];
+    const[w,bg,txt]=levels[Math.min(score,5)];
+    if(bar){bar.style.width=w;bar.style.background=bg;}
+    if(lbl){lbl.textContent=txt;lbl.style.color=bg;}
+  });
+  card.appendChild(div);
+}
+
+async function doForcedPassChange(){
+  const pass=document.getElementById('fpNewPass')?.value||'';
+  const pass2=document.getElementById('fpNewPass2')?.value||'';
+  const errEl=document.getElementById('fpErr');
+  errEl.style.display='none';
+  if(pass.length<8){errEl.textContent='Mínimo 8 caracteres';errEl.style.display='block';return;}
+  if(pass!==pass2){errEl.textContent='Las contraseñas no coinciden';errEl.style.display='block';return;}
+  const{hash,salt}=await hashPassword(pass,null);
+  const u=_loginUser;
+  u.passwordHash=hash;u.passwordSalt=salt;u.mustChangePassword=false;
+  DB.usuarios=DB.usuarios.map(x=>x.id===u.id?u:x);
+  saveDB();
+  const sec=document.getElementById('forcePassSection');
+  if(sec)sec.remove();
+  loginSuccess(u);
+  toast('✅ Contraseña actualizada','var(--green)');
 }
 
 function logSessionEvent(u,action,detail,session){
@@ -1292,9 +1446,9 @@ function updatePinDots(){}
 let pinVal='',pinUid='';
 function selectUser(id){pinUid=id;pinVal='';updatePinDots();document.getElementById('pinErr').style.display='none';const u=DB.usuarios.find(x=>x.id===id);if(!u)return;setLang(u.lang||'es');applyLang();document.getElementById('pinUserName').textContent=u.nombre;document.getElementById('loginList').style.display='none';document.getElementById('pinSection').style.display='block';setTimeout(()=>document.getElementById('pinInp').focus(),100);}
 function backToList(){document.getElementById('loginList').style.display='block';document.getElementById('pinSection').style.display='none';pinVal='';updatePinDots();}
-function updatePinDots(){for(let i=0;i<4;i++){const d=document.getElementById('pd'+i);if(d)d.className='pdot'+(i<pinVal.length?' f':'');}}
-function numPress(n){if(n==='del'){pinVal=pinVal.slice(0,-1);updatePinDots();document.getElementById('pinErr').style.display='none';}else if(n==='ok')tryPin();else if(pinVal.length<4){pinVal+=n;updatePinDots();if(pinVal.length===4)setTimeout(tryPin,150);}}
-function syncPinInp(){const v=(document.getElementById('pinInp').value||'').replace(/\D/g,'').slice(0,4);pinVal=v;updatePinDots();if(v.length===4)setTimeout(tryPin,150);}
+function updatePinDots(){for(let i=0;i<6;i++){const d=document.getElementById('pd'+i);if(d)d.className='pdot'+(i<pinVal.length?' f':'');}}
+function numPress(n){if(n==='del'){pinVal=pinVal.slice(0,-1);updatePinDots();document.getElementById('pinErr').style.display='none';}else if(n==='ok')tryPin();else if(pinVal.length<6){pinVal+=n;updatePinDots();if(pinVal.length===6)setTimeout(tryPin,150);}}
+function syncPinInp(){const v=(document.getElementById('pinInp').value||'').replace(/\D/g,'').slice(0,6);pinVal=v;updatePinDots();if(v.length===6)setTimeout(tryPin,150);}
 function tryPin(){const u=DB.usuarios.find(x=>x.id===pinUid);if(u&&pinVal===u.pin)loginSuccess(u);else{document.getElementById('pinErr').style.display='block';pinVal='';updatePinDots();}}
 function loginSuccess(u){
   CU=u;saveSession();setLang(u.lang||'es');
@@ -1303,7 +1457,7 @@ function loginSuccess(u){
   document.getElementById('mainTabs').style.display='flex';
   document.getElementById('appMain').style.display='block';
   const badge=u.rol==='superadmin'?` <span class="badge-sa">⭐SA</span>`:u.rol==='supervisor'?` <span class="badge-sup">🔑</span>`:'';
-  document.getElementById('hdrUser').innerHTML=u.nombre+badge;
+  document.getElementById('hdrUser').innerHTML=esc(u.nombre)+badge;
   const defT={superadmin:['dash','ingresos','ingresos2','eventos','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','mensajes','usuarios'],supervisor:['dash','ingresos','ingresos2','eventos','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','usuarios'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda'],visor:['ingresos','ingresos2','agenda']};
   const allowed=u.tabs||defT[u.rol]||['dash','ingresos'];
   document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>b.style.display=allowed.includes(b.dataset.tab)?'':'none');
@@ -2117,9 +2271,9 @@ function renderUsuarios(){
     <div style="background:var(--all);border:1.5px solid #fde68a;border-radius:var(--r2);padding:10px 14px;margin-bottom:12px;font-size:12px">⭐ <b>SuperAdmin</b> controla qué pestañas ve cada usuario. El idioma se configura individualmente.</div>
     <div class="tbl-wrap"><table class="dtbl"><thead><tr><th>Nombre</th><th>Rol</th><th>PIN</th><th>Idioma</th><th>Pestañas</th><th>Permisos</th><th></th></tr></thead><tbody>
       ${DB.usuarios.map(u=>{const l=LANGS_UI.find(x=>x.code===(u.lang||'es'));const rol={superadmin:'⭐ SA',supervisor:'🔑 Sup',controlador_rampa:'🚦 Ctrl',editor:'✏️ Ed',visor:'👁 Visor'}[u.rol]||u.rol;const defT={superadmin:['dash','ingresos','ingresos2','eventos','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','mensajes','usuarios'],supervisor:['dash','ingresos','ingresos2','eventos','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','usuarios'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda'],visor:['ingresos','ingresos2','agenda']};const tabs=u.tabs||defT[u.rol]||[];const TN={dash:'📊',ingresos:'🔖 Ref',ingresos2:'🚛 Ing',flota:'📦',conductores:'👤',agenda:'📅',analytics:'📈',vehiculos:'📜',auditoria:'📂',papelera:'🗑',recintos:'🏟',usuarios:'👥'};return`<tr>
-        <td style="font-weight:700">${u.nombre}</td><td style="font-size:12px">${rol}</td>
-        <td><span style="font-family:'JetBrains Mono',monospace;background:var(--bg4);padding:2px 8px;border-radius:4px;font-size:12px">••••</span></td>
-        <td style="font-size:16px" title="${l?.name||''}">${l?l.flag:'🌍'}</td>
+        <td style="font-weight:700">${esc(u.nombre)}</td><td style="font-size:12px">${esc(rol)}</td>
+        <td><span style="font-family:'JetBrains Mono',monospace;background:var(--bg4);padding:2px 8px;border-radius:4px;font-size:12px">••••••</span></td>
+        <td style="font-size:16px" title="${esc(l?.name||'')}">${l?l.flag:'🌍'}</td>
         <td style="font-size:10px;color:var(--text3)">${tabs.map(t=>TN[t]||t).join(' ')}</td>
         <td style="font-size:11px">${u.rol==='superadmin'||u.rol==='supervisor'?'Todos':Object.entries(u.permisos||{}).filter(([,v])=>v).map(([k])=>({canAdd:'Add',canEdit:'Ed',canDel:'Del',canStatus:'St',canExport:'Exp',canSpecial:'LN'}[k]||k)).join(', ')}</td>
         <td><div style="display:flex;gap:3px">${isSA()||CU.id===u.id?`<button class="btn btn-edit btn-xs" onclick="openUserModal('${u.id}')">✏️</button>`:''}${isSA()&&u.id!==CU.id?`<button class="btn btn-danger btn-xs" onclick="askDelUser('${u.id}')">🗑</button>`:''}${isSA()&&u.rol==='supervisor'?`<button class="btn btn-xs ${u.canClean?'btn-r':'btn-gh'}" onclick="toggleCleanPermission('${u.id}')" title="${u.canClean?'Quitar permiso limpiar':'Dar permiso limpiar'}">${u.canClean?'🔓':'🔒'}</button>`:''}</div></td>
@@ -3204,14 +3358,17 @@ function askDelMsg(id){askDel('Eliminar mensaje','',()=>{DB.mensajesRampa=DB.men
 
 // ═══ RESET ALL DATA ═══
 function resetAllData(){
+  if(!isSA()){toast('🔒 Solo SuperAdmin puede ejecutar este reset','var(--red)',4000);return;}
   if(!confirm('⚠️ ¿BORRAR TODOS LOS DATOS?\n\nSe eliminará: ingresos, conductores, eventos, recintos, agenda, historial, etc.\n\nEsta acción NO se puede deshacer.'))return;
-  if(!confirm('🔴 ÚLTIMA CONFIRMACIÓN\n\n¿Estás seguro? Se perderán TODOS los datos.'))return;
+  const frase=prompt('🔴 ÚLTIMA CONFIRMACIÓN\n\nEscribe exactamente: BORRAR TODO\n\npara confirmar el reset total:');
+  if((frase||'').trim()!=='BORRAR TODO'){toast('Frase incorrecta — operación cancelada','var(--amber)',4000);return;}
   const keepKeys=['cu1_fbUrl','cu1_fbKey','cu1_apiKey','cu1_customTelCodes'];
   const saved={};keepKeys.forEach(k=>{const v=localStorage.getItem(k);if(v)saved[k]=v;});
-  const _pc1={...DB.printCfg1};const _pc2={...DB.printCfg2};
-  DB.movimientos=[];DB.ingresos=[];DB.ingresos2=[];DB.listaNegra=[];DB.enEspera=[];DB.mensajesRampa=[];DB.conductores=[];DB.auditLog=[];DB.eventos=[];DB.agenda=[];DB.recintos=[];DB.vehiculos=[];DB.papelera=[];DB.exportLog=[];DB.editHistory=[];DB.printPhrases={};DB.printPhrases2={};DB.tabSorts={};DB.colOrders={};DB.activeEventId=null;DB.activeEventIds=[];DB.defaultEventId=null;DB.printCfg1=_pc1;DB.printCfg2=_pc2;
+  const _pc1={...DB.printCfg1};const _pc2={...DB.printCfg2};const _usuarios=[...DB.usuarios];
+  DB.movimientos=[];DB.ingresos=[];DB.ingresos2=[];DB.listaNegra=[];DB.enEspera=[];DB.mensajesRampa=[];DB.conductores=[];DB.auditLog=[];DB.eventos=[];DB.agenda=[];DB.recintos=[];DB.vehiculos=[];DB.papelera=[];DB.exportLog=[];DB.editHistory=[];DB.printPhrases={};DB.printPhrases2={};DB.tabSorts={};DB.colOrders={};DB.activeEventId=null;DB.activeEventIds=[];DB.defaultEventId=null;DB.printCfg1=_pc1;DB.printCfg2=_pc2;DB.usuarios=_usuarios;
   localStorage.removeItem(SK);
   keepKeys.forEach(k=>{if(saved[k])localStorage.setItem(k,saved[k]);});
+  logAudit('reset_total','sistema','Reset total ejecutado por: '+(CU?.nombre||'?'));
   saveDB();
   toast('🗑 Todos los datos eliminados','var(--red)');
   renderTab(curTab);renderHdr();
@@ -3248,25 +3405,28 @@ async function saveUser(){
   const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
   if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
   if(pass&&pass!==pass2){toast('Las contraseñas no coinciden','var(--red)');return;}
-  if(pin&&(pin.length!==4||!/^\d{4}$/.test(pin))){toast('PIN: exactamente 4 dígitos','var(--red)');return;}
+  if(pin&&(pin.length<6||pin.length>8||!/^\d+$/.test(pin))){toast('PIN: mínimo 6 dígitos numéricos','var(--red)');return;}
   if(pin&&pin!==pin2){toast('Los PINs no coinciden','var(--red)');return;}
   if(twoFA&&!email){toast('Email requerido para activar 2FA','var(--amber)');return;}
   const permisos={canAdd:document.getElementById('fpAdd').checked,canEdit:document.getElementById('fpEdit').checked,canDel:document.getElementById('fpDel').checked,canStatus:document.getElementById('fpStat').checked,canExport:document.getElementById('fpExp').checked,canSpecial:document.getElementById('fpBL').checked};
   const tabMap=[['ftDash','dash'],['ftIng','ingresos'],['ftIng2','ingresos2'],['ftFlota','flota'],['ftCond','conductores'],['ftAg','agenda'],['ftAn','analytics'],['ftVeh','vehiculos'],['ftAud','auditoria'],['ftPap','papelera'],['ftRec','recintos'],['ftUs','usuarios']];
   const tabs=tabMap.filter(([eid])=>document.getElementById(eid)?.checked).map(([,tab])=>tab);
   const oldUser=editUserId?DB.usuarios.find(x=>x.id===editUserId):null;
-  // Hash password if provided
+  // Hash password con PBKDF2 si se proporcionó
   let passwordHash=oldUser?.passwordHash||'';
-  if(pass){passwordHash=await hashPassword(pass);}
+  let passwordSalt=oldUser?.passwordSalt||'';
+  if(pass){const result=await hashPassword(pass,null);passwordHash=result.hash;passwordSalt=result.salt;}
+  const isNew=!editUserId;
   const u={
     id:editUserId||uid(),nombre:nom,username,email,
-    passwordHash,twoFA,
+    passwordHash,passwordSalt,twoFA,
     rol:document.getElementById('fuRol').value,
     lang:document.getElementById('fuLang').value||'es',
-    pin:pin||(oldUser?.pin||'0000'),
+    pin:pin||(oldUser?.pin||''),
     permisos,tabs,
     loginAttempts:oldUser?.loginAttempts||0,
-    lockedUntil:oldUser?.lockedUntil||null
+    lockedUntil:oldUser?.lockedUntil||null,
+    mustChangePassword:isNew?true:(oldUser?.mustChangePassword||false)
   };
   if(editUserId)DB.usuarios=DB.usuarios.map(x=>x.id===editUserId?u:x);else DB.usuarios.push(u);
   if(CU?.id===u.id){CU=u;setLang(u.lang||'es');applyLang();}
@@ -4318,7 +4478,7 @@ const _QR_BASE='https://carlosreyesrivera12.github.io/control/INDEX';
 localStorage.setItem('cu1_fbUrl',_FB_URL);
 localStorage.setItem('cu1_fbKey',_FB_KEY);
 localStorage.setItem('cu1_qrBaseUrl',_QR_BASE);
-localStorage.removeItem('cu1_noSync');
+// SEGURIDAD: No eliminar cu1_noSync aquí — lo gestiona usarSinSync con control de acceso
 const savedFbUrl=_FB_URL;
 if(typeof firebase==='undefined'){
   // Firebase CDN no cargó — mostrar setup como fallback
@@ -4336,6 +4496,63 @@ if(typeof firebase==='undefined'){
   showLogin();
 }
 if(loadSession()){loginSuccess(CU);}
+
+// ═══ SETUP INICIAL — Si no hay usuarios, lanzar asistente ═══
+function checkFirstRun(){
+  if(DB.usuarios.length===0){
+    // No hay ningún usuario — mostrar asistente de creación del primer SuperAdmin
+    showFirstRunSetup();
+  }
+}
+function showFirstRunSetup(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('setupWrap').style.display='none';
+  // Crear overlay de primer setup
+  if(document.getElementById('firstRunWrap'))return;
+  const wrap=document.createElement('div');
+  wrap.id='firstRunWrap';
+  wrap.className='setup-wrap';
+  wrap.innerHTML=`<div class="login-card" style="max-width:420px">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:36px">🔐</div>
+      <div style="font-weight:900;font-size:20px">Primera configuración</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px">Crea el usuario SuperAdmin inicial</div>
+    </div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Nombre completo <span class="freq">*</span></span><input id="fr_nom" placeholder="Nombre del administrador"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Usuario <span class="freq">*</span></span><input id="fr_user" placeholder="nombre_usuario (sin espacios)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Email (para 2FA)</span><input id="fr_email" type="email" placeholder="admin@empresa.com"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Contraseña <span class="freq">*</span></span><input id="fr_pass" type="password" placeholder="Mínimo 8 caracteres"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Confirmar contraseña <span class="freq">*</span></span><input id="fr_pass2" type="password" placeholder="Repetir contraseña"></div>
+    <div class="fg" style="margin-bottom:14px"><span class="flbl">PIN (mínimo 6 dígitos)</span><input id="fr_pin" type="password" inputmode="numeric" maxlength="8" placeholder="Acceso rápido por PIN"></div>
+    <div id="fr_err" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
+    <button class="btn btn-p" style="width:100%;padding:10px;font-size:14px" onclick="doFirstRunSetup()">✓ Crear SuperAdmin y continuar</button>
+  </div>`;
+  document.body.appendChild(wrap);
+}
+async function doFirstRunSetup(){
+  const nom=(document.getElementById('fr_nom').value||'').trim();
+  const username=(document.getElementById('fr_user').value||'').trim();
+  const email=(document.getElementById('fr_email').value||'').trim();
+  const pass=document.getElementById('fr_pass').value;
+  const pass2=document.getElementById('fr_pass2').value;
+  const pin=document.getElementById('fr_pin').value;
+  const errEl=document.getElementById('fr_err');
+  errEl.style.display='none';
+  if(!nom){errEl.textContent='Nombre obligatorio';errEl.style.display='block';return;}
+  if(!username){errEl.textContent='Usuario obligatorio';errEl.style.display='block';return;}
+  if(pass.length<8){errEl.textContent='Contraseña mínimo 8 caracteres';errEl.style.display='block';return;}
+  if(pass!==pass2){errEl.textContent='Las contraseñas no coinciden';errEl.style.display='block';return;}
+  if(pin&&(pin.length<6||!/^\d+$/.test(pin))){errEl.textContent='PIN: mínimo 6 dígitos';errEl.style.display='block';return;}
+  const{hash,salt}=await hashPassword(pass,null);
+  const u={id:'u_sa_'+uid(),nombre:nom,username,email,passwordHash:hash,passwordSalt:salt,pin:pin||'',twoFA:!!(email&&pin),rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es',mustChangePassword:false,loginAttempts:0,lockedUntil:null};
+  DB.usuarios=[u];
+  saveDB();
+  const w=document.getElementById('firstRunWrap');
+  if(w)w.remove();
+  toast('✅ SuperAdmin creado. Inicia sesión.','var(--green)');
+  showLogin();
+}
+checkFirstRun();
 
 // ═══ QR TRACKING SYSTEM ═══
 (function(){
@@ -4536,25 +4753,25 @@ if(loadSession()){loginSuccess(CU);}
     const html=`<div style="max-width:420px;margin:0 auto;padding:16px;font-family:'Segoe UI',system-ui,sans-serif">
       <div style="text-align:center;margin-bottom:16px"><span style="font-size:40px">🔐</span></div>
       <div style="text-align:center;font-size:14px;font-weight:800;margin-bottom:12px">Ingresa tu PIN de operario</div>
-      <div id="trkPinDots" style="display:flex;justify-content:center;gap:12px;margin-bottom:16px">
-        <div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div>
+      <div id="trkPinDots" style="display:flex;justify-content:center;gap:10px;margin-bottom:16px">
+        <div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div>
       </div>
       <div id="trkPinErr" style="display:none;text-align:center;color:#dc2626;font-size:12px;font-weight:700;margin-bottom:8px">PIN incorrecto</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:0 auto">
         ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<div></div>':`<button onclick="trkPinKey('${k}')" style="padding:16px;border-radius:12px;background:#fff;border:1.5px solid #e2e8f0;font-size:20px;font-weight:800;cursor:pointer">${k}</button>`).join('')}
       </div>
       <button onclick="renderTracking()" style="width:100%;max-width:240px;margin:12px auto 0;display:block;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:700;background:#f1f5f9;color:#64748b;cursor:pointer">← Volver</button>
-      <style>.pd{width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;background:#fff}.pd.f{background:#3b82f6;border-color:#3b82f6}</style>
+      <style>.pd{width:16px;height:16px;border-radius:50%;border:2px solid #cbd5e1;background:#fff}.pd.f{background:#3b82f6;border-color:#3b82f6}</style>
     </div>`;
     wrap.innerHTML=html;
 
     window.trkPinKey=function(k){
       if(k==='⌫'){pin=pin.slice(0,-1);}
-      else if(pin.length<4){pin+=k;}
+      else if(pin.length<6){pin+=k;}
       // Update dots
       document.querySelectorAll('#trkPinDots .pd').forEach((d,i)=>d.className='pd'+(i<pin.length?' f':''));
       document.getElementById('trkPinErr').style.display='none';
-      if(pin.length===4){
+      if(pin.length===6){
         const u=DB.usuarios.find(x=>x.pin===pin);
         if(u){
           trkUser=u;
