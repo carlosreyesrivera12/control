@@ -181,6 +181,7 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
 .cr-copy{position:fixed;bottom:6px;right:12px;font-size:10px;color:var(--text4);font-family:'Inter',system-ui,sans-serif;letter-spacing:0.3px;pointer-events:none;z-index:50;opacity:.6}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 <!-- SETUP -->
@@ -192,21 +193,70 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
     <div class="fg" style="margin-bottom:10px"><span class="flbl">URL Firebase <span class="freq">*</span></span><input id="fbUrlInp" value="https://devolucioncontrol-v5-default-rtdb.firebaseio.com/" style="font-family:'JetBrains Mono',monospace;font-size:12px"></div>
     <div class="fg" style="margin-bottom:10px"><span class="flbl">Clave operación</span><input id="fbKeyInp" value="controlunificado" style="font-family:'JetBrains Mono',monospace"></div>
     <div class="fg" style="margin-bottom:14px"><span class="flbl">Google Vision API Key (OCR matrículas)</span><input id="apiKeyInp" type="password" placeholder="AIza..."></div>
-    <div style="display:flex;gap:8px"><button class="btn btn-p" style="flex:1" onclick="connectFirebase()">🔥 Conectar Firebase</button><button class="btn btn-gh" onclick="usarSinSync()">Sin sync</button></div>
+    <div class="fg" style="margin-bottom:10px;border-top:1px solid var(--border);padding-top:10px"><span class="flbl">📧 EmailJS — Public Key (para 2FA)</span><input id="ejsKeyInp" placeholder="user_XXXXXXXXXXXXXXX" style="font-family:'JetBrains Mono',monospace;font-size:11px"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div class="fg"><span class="flbl">Service ID</span><input id="ejsSvcInp" placeholder="service_XXXXXX" style="font-family:'JetBrains Mono',monospace;font-size:11px"></div><div class="fg"><span class="flbl">Template ID</span><input id="ejsTplInp" placeholder="template_XXXXXX" style="font-family:'JetBrains Mono',monospace;font-size:11px"></div></div><div style="margin-bottom:12px;padding:7px 10px;background:var(--bll);border-radius:var(--r);border:1px solid #bfdbfe;font-size:10px;color:var(--blue);line-height:1.5">💡 Crea cuenta en <b>emailjs.com</b> (gratis 200/mes). Variables de plantilla: <b>{{to_email}}, {{to_name}}, {{otp_code}}, {{device}}, {{browser}}, {{ip}}</b>. Sin EmailJS el código aparece en consola del navegador.</div><div style="display:flex;gap:8px"><button class="btn btn-p" style="flex:1" onclick="connectFirebase()">🔥 Conectar Firebase</button><button class="btn btn-gh" onclick="usarSinSync()">Sin sync</button></div>
   </div>
 </div>
 <!-- LOGIN -->
 <div class="login-wrap" id="loginWrap" style="display:none">
-  <div class="login-card">
-    <div style="text-align:center;margin-bottom:16px"><div style="font-size:36px">🔗</div><div style="font-weight:900;font-size:20px">Control<span style="color:var(--blue)">Unificado</span> <span class="v-badge">v5</span></div></div>
-    <div id="loginList">
-      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase">Selecciona usuario</div>
-      <div class="u-list" id="uList"></div>
-      <div style="margin-top:10px"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:6px">🌍 Idioma</div><div class="lang-grid" id="loginLangGrid" style="max-height:none"></div></div>
-      <div style="margin-top:10px;display:flex;gap:6px"><button class="btn btn-gh btn-sm" onclick="cambiarFirebase()" style="flex:1;display:none">⚙️ Config</button><button class="btn btn-gh btn-sm" onclick="usarSinSync()">Sin sync</button></div>
+  <div class="login-card" style="max-width:400px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:32px">🔗</div>
+      <div style="font-weight:900;font-size:20px">Control<span style="color:var(--blue)">Unificado</span> <span class="v-badge">v5</span></div>
     </div>
+
+    <!-- PASO 1: Credenciales -->
+    <div id="loginStep1">
+      <div class="fg" style="margin-bottom:10px">
+        <span class="flbl">Usuario o email</span>
+        <input id="loginIdent" type="text" placeholder="usuario o email@..." autocomplete="username"
+          oninput="loginIdentChange()" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+      </div>
+      <div class="fg" style="margin-bottom:6px">
+        <span class="flbl">Contraseña / PIN</span>
+        <div style="display:flex;gap:4px">
+          <input id="loginPass" type="password" placeholder="Contraseña o PIN de 4 dígitos" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()" style="flex:1">
+          <button class="btn btn-gh" onclick="togglePassVis()" style="padding:6px 10px;font-size:14px" id="loginEyeBtn">👁</button>
+        </div>
+      </div>
+      <div id="loginStrip" style="display:none;margin-bottom:10px;padding:6px 10px;border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:6px;font-weight:700"></div>
+      <div id="loginErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
+      <button class="btn btn-p" style="width:100%;padding:10px;font-size:14px;margin-bottom:8px" onclick="doLogin()" id="loginBtn">Acceder</button>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-gh btn-sm" onclick="usarSinSync()" style="flex:1">Sin sync</button>
+        <button class="btn btn-gh btn-sm" onclick="cambiarFirebase()" style="flex:1;display:none" id="btnCfgLogin">⚙️ Config</button>
+      </div>
+      <div style="margin-top:10px"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:6px">🌍 Idioma</div><div class="lang-grid" id="loginLangGrid" style="max-height:none"></div></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;justify-content:center"><div class="sd sd-o" id="loginSyncDot" style="width:8px;height:8px"></div><span id="loginSyncLbl" style="font-size:10px;color:var(--text3)">Comprobando...</span></div>
+    </div>
+
+    <!-- PASO 2: Código 2FA -->
+    <div id="loginStep2" style="display:none">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:28px;margin-bottom:6px">✉️</div>
+        <div style="font-weight:800;font-size:15px">Verificación en 2 pasos</div>
+        <div id="login2FAMsg" style="font-size:12px;color:var(--text3);margin-top:4px"></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:10px" id="otpBoxes">
+        <input class="nk" id="otp0" maxlength="1" inputmode="numeric" style="flex:1;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace;height:48px" oninput="otpMove(0,this)">
+        <input class="nk" id="otp1" maxlength="1" inputmode="numeric" style="flex:1;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace;height:48px" oninput="otpMove(1,this)">
+        <input class="nk" id="otp2" maxlength="1" inputmode="numeric" style="flex:1;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace;height:48px" oninput="otpMove(2,this)">
+        <input class="nk" id="otp3" maxlength="1" inputmode="numeric" style="flex:1;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace;height:48px" oninput="otpMove(3,this)">
+        <input class="nk" id="otp4" maxlength="1" inputmode="numeric" style="flex:1;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace;height:48px" oninput="otpMove(4,this)">
+        <input class="nk" id="otp5" maxlength="1" inputmode="numeric" style="flex:1;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace;height:48px" oninput="otpMove(5,this)" onkeydown="if(event.key==='Enter')verifyOTP()">
+      </div>
+      <div id="otpExpiry" style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:10px"></div>
+      <div id="otpErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;text-align:center"></div>
+      <button class="btn btn-p" style="width:100%;padding:10px;margin-bottom:8px" onclick="verifyOTP()">Verificar código</button>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-gh btn-sm" style="flex:1" onclick="backToStep1()">← Volver</button>
+        <button class="btn btn-gh btn-sm" style="flex:1" id="resendBtn" onclick="resendOTP()">Reenviar código</button>
+      </div>
+    </div>
+
+    <!-- PIN clásico (fallback usuarios sin email) -->
     <div id="pinSection" style="display:none">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><button class="btn btn-gh btn-sm" onclick="backToList()">← Volver</button><span id="pinUserName" style="font-weight:700;font-size:14px"></span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><button class="btn btn-gh btn-sm" onclick="backToStep1()">← Volver</button><span id="pinUserName" style="font-weight:700;font-size:14px"></span></div>
       <div class="pin-dots"><div class="pdot" id="pd0"></div><div class="pdot" id="pd1"></div><div class="pdot" id="pd2"></div><div class="pdot" id="pd3"></div></div>
       <input id="pinInp" type="password" inputmode="numeric" maxlength="4" style="display:none" oninput="syncPinInp()">
       <div class="numpad">
@@ -216,7 +266,6 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
         <button class="nk" onclick="numPress('del')" style="font-size:14px">⌫</button><button class="nk" onclick="numPress('0')">0</button><button class="nk btn-p" onclick="numPress('ok')">OK</button>
       </div>
       <div id="pinErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-top:8px">PIN incorrecto</div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;justify-content:center"><div class="sd sd-o" id="loginSyncDot" style="width:8px;height:8px"></div><span id="loginSyncLbl" style="font-size:10px;color:var(--text3)">Comprobando...</span></div>
     </div>
   </div>
 </div>
@@ -511,11 +560,27 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
 <div class="ov" id="mUser"><div class="modal">
   <div class="mhdr"><div class="mttl" id="mUserTitle">Nuevo Usuario</div><button class="btn-x" onclick="closeOv('mUser')">✕</button></div>
   <div class="fgrid">
-    <div class="fg s2"><span class="flbl">Nombre <span class="freq">*</span></span><input id="fuNom"></div>
+    <div class="fg s2"><span class="flbl">Nombre completo <span class="freq">*</span></span><input id="fuNom"></div>
+    <div class="fg"><span class="flbl">Nombre de usuario <span class="freq">*</span></span><input id="fuUsername" placeholder="sin espacios" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')"></div>
+    <div class="fg"><span class="flbl">Email (para 2FA)</span><input id="fuEmail" type="email" placeholder="usuario@empresa.com"></div>
+    <div class="fg"><span class="flbl">Contraseña</span><input id="fuPass" type="password" placeholder="Dejar vacío = no cambia" oninput="checkPassStrength(this.value)"></div>
+    <div class="fg"><span class="flbl">Confirmar contraseña</span><input id="fuPass2" type="password" placeholder="Repetir contraseña"></div>
+    <div class="fg"><span class="flbl">PIN (4 dígitos) — acceso rápido</span><input id="fuPin" type="password" maxlength="4" inputmode="numeric" placeholder="----"></div>
+    <div class="fg"><span class="flbl">Confirmar PIN</span><input id="fuPin2" type="password" maxlength="4" inputmode="numeric" placeholder="----"></div>
+    <div id="passStrengthWrap" style="display:none;grid-column:1/-1">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:4px;border-radius:2px;background:var(--bg4);overflow:hidden">
+          <div id="passStrengthBar" style="height:100%;border-radius:2px;transition:width .3s,background .3s;width:0%"></div>
+        </div>
+        <span id="passStrengthLbl" style="font-size:10px;font-weight:700;min-width:40px"></span>
+      </div>
+    </div>
     <div class="fg"><span class="flbl">Idioma interfaz</span><select id="fuLang"><option value="es">🇪🇸 Español</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option><option value="pl">🇵🇱 Polski</option><option value="ro">🇷🇴 Română</option><option value="it">🇮🇹 Italiano</option><option value="pt">🇵🇹 Português</option><option value="nl">🇳🇱 Nederlands</option><option value="ru">🇷🇺 Русский</option><option value="uk">🇺🇦 Українська</option></select></div>
     <div class="fg"><span class="flbl">Rol <span class="freq">*</span></span><select id="fuRol" onchange="updateRolPerms()"><option id="fuRolSA" value="superadmin" style="display:none">⭐ SuperAdmin</option><option value="supervisor">🔑 Supervisor</option><option value="controlador_rampa">🚦 Controlador Rampa</option><option value="editor">✏️ Editor</option><option value="visor">👁 Visor</option></select></div>
-    <div class="fg"><span class="flbl">PIN (4 dígitos) <span class="freq">*</span></span><input id="fuPin" type="password" maxlength="4" inputmode="numeric" placeholder="----"></div>
-    <div class="fg"><span class="flbl">Confirmar PIN</span><input id="fuPin2" type="password" maxlength="4" inputmode="numeric" placeholder="----"></div>
+    <div class="fg s2" style="display:flex;align-items:center;gap:10px">
+      <label class="tgl" id="tgl2FA"><input type="checkbox" id="fu2FA" onchange="updTgl(this)"><span>✉️ Verificación 2FA por email</span></label>
+      <span style="font-size:10px;color:var(--text3)">Requiere email configurado</span>
+    </div>
   </div>
   <div style="margin-top:12px;padding:10px;background:var(--bg3);border-radius:var(--r)" id="permsWrap">
     <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">PERMISOS</div>
@@ -666,10 +731,10 @@ const TRACKING_STEPS=[
 const PRINT_LABELS={posicion:'🔢 Posición',matricula:'🚛 Matrícula',telefono:'📱 Teléfono',nombre:'👤 Nombre',apellido:'👤 Apellido',empresa:'🏢 Empresa',hall:'🏭 Hall',stand:'📍 Stand',puertaHall:'🚪 Puerta Hall',llamador:'📞 Llamador',ref:'🔖 Ref/Booking',montador:'🔧 Montador',expositor:'🎪 Expositor',remolque:'🚚 Remolque',tipoVehiculo:'🚗 Tipo Vehículo',descargaTipo:'📦 Serv. Descarga/Carga',pasaporte:'🪪 Pasaporte/DNI',fechaNacimiento:'🎂 F. Nacimiento',pais:'🌍 País',email:'✉️ Email',comentario:'📝 Comentario',horario:'🕐 Horario Ingreso'};
 const PAISES=[{code:'+34',flag:'🇪🇸'},{code:'+33',flag:'🇫🇷'},{code:'+49',flag:'🇩🇪'},{code:'+39',flag:'🇮🇹'},{code:'+351',flag:'🇵🇹'},{code:'+44',flag:'🇬🇧'},{code:'+31',flag:'🇳🇱'},{code:'+32',flag:'🇧🇪'},{code:'+41',flag:'🇨🇭'},{code:'+43',flag:'🇦🇹'},{code:'+45',flag:'🇩🇰'},{code:'+46',flag:'🇸🇪'},{code:'+47',flag:'🇳🇴'},{code:'+48',flag:'🇵🇱'},{code:'+40',flag:'🇷🇴'},{code:'+36',flag:'🇭🇺'},{code:'+420',flag:'🇨🇿'},{code:'+421',flag:'🇸🇰'},{code:'+385',flag:'🇭🇷'},{code:'+386',flag:'🇸🇮'},{code:'+359',flag:'🇧🇬'},{code:'+30',flag:'🇬🇷'},{code:'+353',flag:'🇮🇪'},{code:'+358',flag:'🇫🇮'},{code:'+370',flag:'🇱🇹'},{code:'+371',flag:'🇱🇻'},{code:'+372',flag:'🇪🇪'},{code:'+380',flag:'🇺🇦'},{code:'+7',flag:'🇷🇺'},{code:'+90',flag:'🇹🇷'},{code:'+212',flag:'🇲🇦'},{code:'+213',flag:'🇩🇿'},{code:'+216',flag:'🇹🇳'},{code:'+966',flag:'🇸🇦'},{code:'+971',flag:'🇦🇪'},{code:'+86',flag:'🇨🇳'},{code:'+91',flag:'🇮🇳'},{code:'+81',flag:'🇯🇵'},{code:'+82',flag:'🇰🇷'},{code:'+1',flag:'🇺🇸'},{code:'+52',flag:'🇲🇽'},{code:'+55',flag:'🇧🇷'},{code:'+54',flag:'🇦🇷'},{code:'+57',flag:'🇨🇴'},{code:'+56',flag:'🇨🇱'},{code:'+51',flag:'🇵🇪'},{code:'+593',flag:'🇪🇨'},{code:'+598',flag:'🇺🇾'},{code:'+61',flag:'🇦🇺'},{code:'+27',flag:'🇿🇦'},{code:'+355',flag:'🇦🇱'},{code:'+376',flag:'🇦🇩'},{code:'+374',flag:'🇦🇲'},{code:'+994',flag:'🇦🇿'},{code:'+375',flag:'🇧🇾'},{code:'+387',flag:'🇧🇦'},{code:'+357',flag:'🇨🇾'},{code:'+995',flag:'🇬🇪'},{code:'+354',flag:'🇮🇸'},{code:'+383',flag:'🇽🇰'},{code:'+352',flag:'🇱🇺'},{code:'+356',flag:'🇲🇹'},{code:'+373',flag:'🇲🇩'},{code:'+377',flag:'🇲🇨'},{code:'+382',flag:'🇲🇪'},{code:'+389',flag:'🇲🇰'},{code:'+381',flag:'🇷🇸'},{code:'+378',flag:'🇸🇲'},{code:'+20',flag:'🇪🇬'},{code:'+234',flag:'🇳🇬'},{code:'+254',flag:'🇰🇪'},{code:'+233',flag:'🇬🇭'},{code:'+225',flag:'🇨🇮'},{code:'+221',flag:'🇸🇳'},{code:'+237',flag:'🇨🇲'},{code:'+255',flag:'🇹🇿'},{code:'+256',flag:'🇺🇬'},{code:'+251',flag:'🇪🇹'},{code:'+258',flag:'🇲🇿'},{code:'+60',flag:'🇲🇾'},{code:'+62',flag:'🇮🇩'},{code:'+63',flag:'🇵🇭'},{code:'+65',flag:'🇸🇬'},{code:'+66',flag:'🇹🇭'},{code:'+84',flag:'🇻🇳'},{code:'+880',flag:'🇧🇩'},{code:'+92',flag:'🇵🇰'},{code:'+94',flag:'🇱🇰'},{code:'+961',flag:'🇱🇧'},{code:'+962',flag:'🇯🇴'},{code:'+964',flag:'🇮🇶'},{code:'+965',flag:'🇰🇼'},{code:'+968',flag:'🇴🇲'},{code:'+970',flag:'🇵🇸'},{code:'+972',flag:'🇮🇱'},{code:'+973',flag:'🇧🇭'},{code:'+974',flag:'🇶🇦'},{code:'+58',flag:'🇻🇪'},{code:'+53',flag:'🇨🇺'},{code:'+507',flag:'🇵🇦'},{code:'+506',flag:'🇨🇷'},{code:'+502',flag:'🇬🇹'},{code:'+503',flag:'🇸🇻'},{code:'+504',flag:'🇭🇳'},{code:'+505',flag:'🇳🇮'},{code:'+591',flag:'🇧🇴'},{code:'+595',flag:'🇵🇾'},{code:'+592',flag:'🇬🇾'},{code:'+64',flag:'🇳🇿'}];
 const DEF_USERS=[
-  {id:'u_sa',nombre:'SuperAdmin',pin:'0000',rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es'},
-  {id:'u_sup',nombre:'Supervisor',pin:'1111',rol:'supervisor',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es'},
-  {id:'u_ctrl',nombre:'Control Rampa',pin:'2222',rol:'controlador_rampa',permisos:{canAdd:true,canEdit:false,canDel:false,canStatus:true,canExport:false,canSpecial:false},lang:'es'},
-  {id:'u_ed1',nombre:'Editor 1',pin:'3333',rol:'editor',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:false},lang:'es'}
+  {id:'u_sa',nombre:'SuperAdmin',username:'superadmin',email:'',passwordHash:'',pin:'0000',twoFA:false,rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es'},
+  {id:'u_sup',nombre:'Supervisor',username:'supervisor',email:'',passwordHash:'',pin:'1111',twoFA:false,rol:'supervisor',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true},lang:'es'},
+  {id:'u_ctrl',nombre:'Control Rampa',username:'controlrampa',email:'',passwordHash:'',pin:'2222',twoFA:false,rol:'controlador_rampa',permisos:{canAdd:true,canEdit:false,canDel:false,canStatus:true,canExport:false,canSpecial:false},lang:'es'},
+  {id:'u_ed1',nombre:'Editor 1',username:'editor1',email:'',passwordHash:'',pin:'3333',twoFA:false,rol:'editor',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:false},lang:'es'}
 ];
 let DB={movimientos:[],ingresos:[],ingresos2:[],listaNegra:[],enEspera:[],mensajesRampa:[],conductores:[],auditLog:[],eventos:[],agenda:[],recintos:[],usuarios:[...DEF_USERS],activeEventId:null,activeEventIds:[],defaultEventId:null,printFieldOrder:[...PRINT_DEF],hiddenPrintFields:[],editHistory:[],vehiculos:[],papelera:[],exportLog:[],printPhrases:{},printPhrases2:{},tabSorts:{},tabOrder:[],colOrders:{},tabEvents:{},printCfg1:{fieldOrder:[...PRINT_DEF],hiddenFields:[],favEventId:null,qrTracking:true},printTemplates:[],printCfg2:{qrTracking:true,fieldOrder:['empresa','hall','stand','expositor','comentario','llamador','ref','montador','nombre','apellido','pasaporte','remolque','telefono','matricula','posicion','email','fechaNacimiento','pais','horario'],hiddenFields:['llamador','ref','montador','nombre','apellido','pasaporte','email','horario','fechaNacimiento','pais','remolque','matricula','telefono','posicion'],favEventId:null}};
 let fbApp=null,fbDb=null,fbRef=null,fbConnected=false,fbKey='controlunificado',writeDebounce=null,bc=null;
@@ -933,8 +998,290 @@ function canExport(){return hasPerm('canExport');}
 function canSpecial(){return hasPerm('canSpecial');}
 
 // ═══ LOGIN ═══
-function showLogin(){document.getElementById('loginWrap').style.display='flex';document.getElementById('loginList').style.display='block';document.getElementById('pinSection').style.display='none';pendingLangCode=CUR_LANG;buildLoginLangGrid();initLogin();}
-function initLogin(){const ul=document.getElementById('uList');if(!ul)return;ul.innerHTML=DB.usuarios.map(u=>{const ico={superadmin:'⭐',supervisor:'🔑',controlador_rampa:'🚦',editor:'✏️',visor:'👁'}[u.rol]||'👤';const rol={superadmin:'SuperAdmin',supervisor:'Supervisor',controlador_rampa:'Ctrl Rampa',editor:'Editor',visor:'Visor'}[u.rol]||u.rol;const l=LANGS_UI.find(x=>x.code===(u.lang||'es'));return`<button class="ubtn${u.rol==='superadmin'?' sa':''}" onclick="selectUser('${u.id}')"><span class="ui">${ico}</span><div><div class="un">${u.nombre}</div><div class="ur">${rol} ${l?l.flag:''}</div></div></button>`;}).join('');}
+// ═══ LOGIN — nuevo sistema ═══
+let _loginUser=null,_otpCode='',_otpExpiry=0,_otpAttempts=0,_resendTimer=null;
+
+function showLogin(){
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('loginStep1').style.display='block';
+  document.getElementById('loginStep2').style.display='none';
+  document.getElementById('pinSection').style.display='none';
+  document.getElementById('loginIdent').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginErr').style.display='none';
+  document.getElementById('loginStrip').style.display='none';
+  pendingLangCode=CUR_LANG;buildLoginLangGrid();
+  setTimeout(()=>document.getElementById('loginIdent').focus(),200);
+}
+function initLogin(){}  // legacy compat
+
+function loginIdentChange(){
+  document.getElementById('loginErr').style.display='none';
+  const v=document.getElementById('loginIdent').value.trim();
+  const found=DB.usuarios.find(u=>u.username===v||u.email===v||u.nombre===v);
+  const strip=document.getElementById('loginStrip');
+  if(found){
+    strip.style.display='flex';
+    strip.style.background='var(--gll)';strip.style.color='var(--green)';
+    strip.innerHTML='<div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0"></div> '+found.nombre+' · '+({superadmin:'SuperAdmin',supervisor:'Supervisor',controlador_rampa:'Ctrl Rampa',editor:'Editor',visor:'Visor'}[found.rol]||found.rol);
+  } else {strip.style.display='none';}
+}
+function togglePassVis(){
+  const inp=document.getElementById('loginPass');
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+async function doLogin(){
+  const ident=(document.getElementById('loginIdent').value||'').trim();
+  const pass=(document.getElementById('loginPass').value||'').trim();
+  const errEl=document.getElementById('loginErr');
+  errEl.style.display='none';
+  if(!ident||!pass){errEl.textContent='Completa todos los campos';errEl.style.display='block';return;}
+
+  // Buscar usuario por username, email o nombre
+  const u=DB.usuarios.find(x=>x.username===ident||x.email===ident||x.nombre===ident);
+  if(!u){errEl.textContent='Usuario no encontrado';errEl.style.display='block';return;}
+
+  // Comprobar bloqueo
+  if(u.lockedUntil&&Date.now()<u.lockedUntil){
+    const mins=Math.ceil((u.lockedUntil-Date.now())/60000);
+    errEl.textContent=`Cuenta bloqueada. Intenta en ${mins} min.`;errEl.style.display='block';return;
+  }
+
+  // ── Verificar credencial ──
+  let credOK=false;
+  if(u.passwordHash){
+    // Tiene contraseña configurada
+    const hashed=await hashPassword(pass);
+    credOK=(hashed===u.passwordHash);
+  }
+  if(!credOK&&u.pin){
+    // Fallback PIN (4 dígitos)
+    credOK=(pass===u.pin);
+  }
+
+  if(!credOK){
+    // Incrementar intentos
+    u.loginAttempts=(u.loginAttempts||0)+1;
+    if(u.loginAttempts>=5){
+      u.lockedUntil=Date.now()+30*60*1000;
+      u.loginAttempts=0;
+      saveDB();
+      errEl.textContent='Demasiados intentos. Cuenta bloqueada 30 minutos.';errEl.style.display='block';
+      logSessionEvent(u,'blocked','Cuenta bloqueada por intentos');
+      return;
+    }
+    const left=5-u.loginAttempts;
+    saveDB();
+    errEl.textContent=`Contraseña/PIN incorrecto. Intentos restantes: ${left}`;errEl.style.display='block';
+    return;
+  }
+
+  // Credencial OK — resetear intentos
+  u.loginAttempts=0;u.lockedUntil=null;saveDB();
+  _loginUser=u;
+  setLang(u.lang||'es');applyLang();
+
+  // ── 2FA ──
+  if(u.twoFA&&u.email){
+    await initiateOTP(u);
+  } else {
+    completeLogin(u);
+  }
+}
+
+async function hashPassword(pass){
+  const enc=new TextEncoder().encode(pass);
+  const buf=await crypto.subtle.digest('SHA-256',enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function checkPassStrength(v){
+  const w=document.getElementById('passStrengthWrap');
+  const bar=document.getElementById('passStrengthBar');
+  const lbl=document.getElementById('passStrengthLbl');
+  if(!v){w.style.display='none';return;}
+  w.style.display='block';
+  let score=0;
+  if(v.length>=8)score++;if(v.length>=12)score++;
+  if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^a-zA-Z0-9]/.test(v))score++;
+  const levels=[['0%','var(--red)','Muy débil'],['20%','var(--red)','Débil'],['40%','var(--amber)','Regular'],['65%','var(--amber)','Buena'],['85%','var(--green)','Fuerte'],['100%','var(--green)','Muy fuerte']];
+  const [w2,bg,txt]=levels[Math.min(score,5)];
+  bar.style.width=w2;bar.style.background=bg;lbl.textContent=txt;lbl.style.color=bg;
+}
+
+async function initiateOTP(u){
+  // Generar código 6 dígitos
+  _otpCode=String(Math.floor(100000+Math.random()*900000));
+  _otpExpiry=Date.now()+10*60*1000; // 10 minutos
+  _otpAttempts=0;
+
+  // Capturar sesión para incluir en email
+  const session=await captureSession();
+
+  // Mostrar paso 2
+  document.getElementById('loginStep1').style.display='none';
+  document.getElementById('loginStep2').style.display='block';
+  document.getElementById('login2FAMsg').textContent=`Código enviado a ${maskEmail(u.email)}`;
+  startOTPTimer();
+
+  // Enviar email
+  await sendOTPEmail(u,_otpCode,session);
+}
+
+async function resendOTP(){
+  if(!_loginUser)return;
+  _otpCode=String(Math.floor(100000+Math.random()*900000));
+  _otpExpiry=Date.now()+10*60*1000;
+  _otpAttempts=0;
+  [0,1,2,3,4,5].forEach(i=>{const el=document.getElementById('otp'+i);if(el)el.value='';});
+  document.getElementById('otpErr').style.display='none';
+  const session=await captureSession();
+  await sendOTPEmail(_loginUser,_otpCode,session);
+  startOTPTimer();
+  toast('📧 Código reenviado','var(--green)');
+}
+
+async function sendOTPEmail(u,code,session){
+  const ejsKey=localStorage.getItem('cu1_ejsKey');
+  const ejsSvc=localStorage.getItem('cu1_ejsSvc');
+  const ejsTpl=localStorage.getItem('cu1_ejsTpl');
+  if(!ejsKey||!ejsSvc||!ejsTpl){
+    toast('⚠️ EmailJS no configurado — código: '+code,'var(--amber)',10000);
+    console.log('[2FA OTP]',code);
+    return;
+  }
+  try{
+    await emailjs.send(ejsSvc,ejsTpl,{
+      to_email:u.email,
+      to_name:u.nombre,
+      otp_code:code,
+      device:session.device,
+      browser:session.browser,
+      ip:session.ip||'–',
+      location:session.country||'–',
+      app_name:'ControlUnificado v5'
+    },{publicKey:ejsKey});
+  }catch(e){
+    toast('⚠️ Error al enviar email — código: '+code,'var(--amber)',10000);
+    console.warn('[2FA send error]',e,'. OTP:',code);
+  }
+}
+
+let _otpTimerInterval=null;
+function startOTPTimer(){
+  clearInterval(_otpTimerInterval);
+  const btn=document.getElementById('resendBtn');
+  let resendCd=60;
+  if(btn){btn.disabled=true;btn.textContent='Reenviar (60s)';}
+  _otpTimerInterval=setInterval(()=>{
+    const left=Math.max(0,Math.ceil((_otpExpiry-Date.now())/1000));
+    const mins=Math.floor(left/60),secs=left%60;
+    const el=document.getElementById('otpExpiry');
+    if(el)el.textContent=left>0?`Expira en ${mins}:${String(secs).padStart(2,'0')}`:'⏰ Código expirado';
+    resendCd--;
+    if(btn&&resendCd>0){btn.textContent=`Reenviar (${resendCd}s)`;}
+    else if(btn){btn.disabled=false;btn.textContent='Reenviar código';}
+    if(left<=0)clearInterval(_otpTimerInterval);
+  },1000);
+}
+
+function otpMove(idx,inp){
+  inp.value=inp.value.replace(/[^0-9]/g,'').slice(-1);
+  if(inp.value&&idx<5)document.getElementById('otp'+(idx+1))?.focus();
+  // Auto-verify when all filled
+  if([0,1,2,3,4,5].every(i=>(document.getElementById('otp'+i)?.value||'')!=''))verifyOTP();
+}
+
+function verifyOTP(){
+  const entered=[0,1,2,3,4,5].map(i=>document.getElementById('otp'+i)?.value||'').join('');
+  const errEl=document.getElementById('otpErr');
+  if(entered.length!==6){errEl.textContent='Introduce los 6 dígitos';errEl.style.display='block';return;}
+  if(Date.now()>_otpExpiry){errEl.textContent='⏰ Código expirado. Reenvía uno nuevo.';errEl.style.display='block';return;}
+  if(entered!==_otpCode){
+    _otpAttempts++;
+    if(_otpAttempts>=3){
+      errEl.textContent='Demasiados intentos. Vuelve a empezar.';errEl.style.display='block';
+      setTimeout(backToStep1,2000);return;
+    }
+    errEl.textContent=`Código incorrecto. Intentos restantes: ${3-_otpAttempts}`;errEl.style.display='block';
+    [0,1,2,3,4,5].forEach(i=>{const el=document.getElementById('otp'+i);if(el)el.value='';});
+    document.getElementById('otp0')?.focus();return;
+  }
+  clearInterval(_otpTimerInterval);
+  completeLogin(_loginUser);
+}
+
+function backToStep1(){
+  clearInterval(_otpTimerInterval);
+  document.getElementById('loginStep1').style.display='block';
+  document.getElementById('loginStep2').style.display='none';
+  document.getElementById('pinSection').style.display='none';
+  _loginUser=null;_otpCode='';
+}
+
+async function captureSession(){
+  const ua=navigator.userAgent;
+  const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'–';
+  const lang=navigator.language||'–';
+  // Device detection
+  const isMob=/Mobi|Android/i.test(ua);
+  const isTab=/Tablet|iPad/i.test(ua);
+  const deviceType=isTab?'Tablet':isMob?'Móvil':'Escritorio';
+  // Browser
+  let browser='Desconocido';
+  if(/Edg\//.test(ua))browser='Edge';
+  else if(/Chrome\//.test(ua))browser='Chrome';
+  else if(/Firefox\//.test(ua))browser='Firefox';
+  else if(/Safari\//.test(ua)&&!/Chrome/.test(ua))browser='Safari';
+  // OS
+  let os='–';
+  if(/Windows NT/.test(ua))os='Windows';
+  else if(/Mac OS X/.test(ua))os='macOS';
+  else if(/Android/.test(ua))os='Android';
+  else if(/iPhone|iPad/.test(ua))os='iOS';
+  else if(/Linux/.test(ua))os='Linux';
+  // IP (best effort)
+  let ip='–',country='–';
+  try{
+    const r=await Promise.race([
+      fetch('https://api.ipify.org?format=json').then(x=>x.json()),
+      new Promise((_,rej)=>setTimeout(()=>rej('timeout'),3000))
+    ]);
+    ip=r.ip||'–';
+  }catch(e){}
+  return{ua,browser,os,deviceType,device:`${deviceType} · ${os}`,tz,lang,ip,country,ts:nowL()};
+}
+
+function maskEmail(email){
+  if(!email||!email.includes('@'))return email;
+  const [local,domain]=email.split('@');
+  return local.slice(0,2)+'***@'+domain;
+}
+
+async function completeLogin(u){
+  // Capture session metadata
+  const session=await captureSession();
+  logSessionEvent(u,'login_ok','Login exitoso',session);
+  loginSuccess(u);
+}
+
+function logSessionEvent(u,action,detail,session){
+  if(!DB.auditLog)DB.auditLog=[];
+  const entry={
+    id:uid(),ts:nowL(),user:u?.nombre||'?',userId:u?.id||'?',
+    action,entity:'sesion',detail,
+    session:session||null
+  };
+  DB.auditLog.unshift(entry);
+  if(DB.auditLog.length>500)DB.auditLog=DB.auditLog.slice(0,500);
+  saveDB();
+}
+
+// Compat
+function selectUser(id){}
+function backToList(){backToStep1();}
+function updatePinDots(){}
 let pinVal='',pinUid='';
 function selectUser(id){pinUid=id;pinVal='';updatePinDots();document.getElementById('pinErr').style.display='none';const u=DB.usuarios.find(x=>x.id===id);if(!u)return;setLang(u.lang||'es');applyLang();document.getElementById('pinUserName').textContent=u.nombre;document.getElementById('loginList').style.display='none';document.getElementById('pinSection').style.display='block';setTimeout(()=>document.getElementById('pinInp').focus(),100);}
 function backToList(){document.getElementById('loginList').style.display='block';document.getElementById('pinSection').style.display='none';pinVal='';updatePinDots();}
@@ -959,7 +1306,7 @@ function loginSuccess(u){
   const firstTab=allowed[0]||'ingresos';goTab(firstTab,document.querySelector('#mainTabs .btn-tab[data-tab="'+firstTab+'"]'));
   renderHdr();
 }
-function doLogout(){CU=null;saveSession();['loginWrap'].forEach(id=>document.getElementById(id).style.display='flex');['appHdr','mainTabs','appMain'].forEach(id=>document.getElementById(id).style.display='none');initLogin();}
+function doLogout(){if(CU)logSessionEvent(CU,'logout','Cierre de sesión');CU=null;saveSession();['loginWrap'].forEach(id=>document.getElementById(id).style.display='flex');['appHdr','mainTabs','appMain'].forEach(id=>document.getElementById(id).style.display='none');showLogin();}
 
 // ═══ HEADER ═══
 function renderHdr(){
@@ -1420,6 +1767,18 @@ function exportVehiculos(){if(!(DB.vehiculos||[]).length){toast('Sin datos','var
 
 // ═══ RENDER AUDITORÍA ═══
 function renderAuditoria(){
+  if(isSA()){
+    const sessions=(DB.auditLog||[]).filter(e=>e.entity==='sesion').slice(0,50);
+    const sesEl=document.getElementById('sessionAuditList');
+    if(sesEl){sesEl.innerHTML=sessions.length?sessions.map(e=>{
+      const ok=e.action==='login_ok',block=e.action==='blocked';
+      const s=e.session;
+      const icon=ok?'✓':block?'🔒':'⚠';
+      const bg=ok?'var(--gll)':block?'var(--rll)':'var(--all)';
+      const color=ok?'var(--green)':block?'var(--red)':'var(--amber)';
+      return'<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px"><div style="width:24px;height:24px;border-radius:6px;background:'+bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+icon+'</div><div style="flex:1;min-width:0"><div style="font-weight:700">'+e.user+' <span style="font-size:10px;font-weight:400;color:'+color+'">'+e.detail+'</span></div>'+(s?'<div style="font-size:11px;color:var(--text3);margin-top:1px">📱 '+(s.device||'–')+' · '+(s.browser||'–')+' · 🌍 '+(s.ip||'–')+'</div>':'')+'</div><div style="font-size:10px;color:var(--text3);flex-shrink:0">'+e.ts+'</div></div>';
+    }).join(''):'<div style="padding:8px 0;font-size:12px;color:var(--text3)">Sin sesiones registradas</div>';}
+  }
   if(!isSup()){document.getElementById('tab-auditoria').innerHTML='<div class="empty"><div class="et">Sin permiso</div></div>';return;}
   let items=[...DB.exportLog||[]];
   const q=(DB._audQ||'').toLowerCase();
@@ -2856,7 +3215,7 @@ function openUserModal(id){
   document.getElementById('mUserTitle').textContent=u?'Editar usuario':'Nuevo usuario';
   document.getElementById('btnUserLbl').textContent=u?'Guardar':'Crear';
   const set=(eid,v)=>{const el=document.getElementById(eid);if(el)el.value=v||'';};
-  set('fuId',u?.id);set('fuNom',u?.nombre);set('fuRol',u?.rol||'editor');set('fuLang',u?.lang||'es');set('fuPin','');set('fuPin2','');
+  set('fuId',u?.id);set('fuNom',u?.nombre);set('fuUsername',u?.username||'');set('fuEmail',u?.email||'');set('fuRol',u?.rol||'editor');set('fuLang',u?.lang||'es');set('fuPin','');set('fuPin2','');set('fuPass','');set('fuPass2','');const _2fa=document.getElementById('fu2FA');if(_2fa){_2fa.checked=!!(u?.twoFA);updTgl(_2fa);}document.getElementById('passStrengthWrap').style.display='none';
   const saOpt=document.getElementById('fuRolSA');if(saOpt)saOpt.style.display=isSA()?'':'none';
   updateRolPerms();
   const defT={superadmin:['dash','ingresos','ingresos2','eventos','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','mensajes','usuarios'],supervisor:['dash','ingresos','ingresos2','eventos','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','usuarios'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda'],visor:['ingresos','ingresos2','agenda']};
@@ -2867,16 +3226,41 @@ function openUserModal(id){
 }
 function updateRolPerms(){const rol=(document.getElementById('fuRol')||{}).value||'editor';const full=rol==='supervisor'||rol==='superadmin';['fpAdd','fpEdit','fpDel','fpStat','fpExp','fpBL'].forEach(id=>{const el=document.getElementById(id);if(el){el.checked=full;el.disabled=full;updTgl(el);}});const pw=document.getElementById('permsWrap');if(pw)pw.style.opacity=full?'.6':'1';}
 function updTgl(el){const lbl=el.closest('.tgl');if(!lbl)return;if(el.checked){lbl.classList.add('on');}else{lbl.classList.remove('on');}}
-function saveUser(){
-  const nom=(document.getElementById('fuNom').value||'').trim(),pin=document.getElementById('fuPin').value,pin2=document.getElementById('fuPin2').value;
+async function saveUser(){
+  const nom=(document.getElementById('fuNom').value||'').trim();
+  const username=(document.getElementById('fuUsername').value||'').trim();
+  const email=(document.getElementById('fuEmail').value||'').trim();
+  const pass=document.getElementById('fuPass').value;
+  const pass2=document.getElementById('fuPass2').value;
+  const pin=document.getElementById('fuPin').value;
+  const pin2=document.getElementById('fuPin2').value;
+  const twoFA=document.getElementById('fu2FA')?.checked||false;
   if(!nom){toast('Nombre obligatorio','var(--red)');return;}
-  if(!editUserId&&!pin){toast('PIN obligatorio','var(--red)');return;}
+  if(!username){toast('Nombre de usuario obligatorio','var(--red)');return;}
+  // Check username unique
+  const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
+  if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
+  if(pass&&pass!==pass2){toast('Las contraseñas no coinciden','var(--red)');return;}
   if(pin&&(pin.length!==4||!/^\d{4}$/.test(pin))){toast('PIN: exactamente 4 dígitos','var(--red)');return;}
   if(pin&&pin!==pin2){toast('Los PINs no coinciden','var(--red)');return;}
+  if(twoFA&&!email){toast('Email requerido para activar 2FA','var(--amber)');return;}
   const permisos={canAdd:document.getElementById('fpAdd').checked,canEdit:document.getElementById('fpEdit').checked,canDel:document.getElementById('fpDel').checked,canStatus:document.getElementById('fpStat').checked,canExport:document.getElementById('fpExp').checked,canSpecial:document.getElementById('fpBL').checked};
   const tabMap=[['ftDash','dash'],['ftIng','ingresos'],['ftIng2','ingresos2'],['ftFlota','flota'],['ftCond','conductores'],['ftAg','agenda'],['ftAn','analytics'],['ftVeh','vehiculos'],['ftAud','auditoria'],['ftPap','papelera'],['ftRec','recintos'],['ftUs','usuarios']];
   const tabs=tabMap.filter(([eid])=>document.getElementById(eid)?.checked).map(([,tab])=>tab);
-  const u={id:editUserId||uid(),nombre:nom,rol:document.getElementById('fuRol').value,lang:document.getElementById('fuLang').value||'es',pin:pin||(DB.usuarios.find(x=>x.id===editUserId)?.pin||'0000'),permisos,tabs};
+  const oldUser=editUserId?DB.usuarios.find(x=>x.id===editUserId):null;
+  // Hash password if provided
+  let passwordHash=oldUser?.passwordHash||'';
+  if(pass){passwordHash=await hashPassword(pass);}
+  const u={
+    id:editUserId||uid(),nombre:nom,username,email,
+    passwordHash,twoFA,
+    rol:document.getElementById('fuRol').value,
+    lang:document.getElementById('fuLang').value||'es',
+    pin:pin||(oldUser?.pin||'0000'),
+    permisos,tabs,
+    loginAttempts:oldUser?.loginAttempts||0,
+    lockedUntil:oldUser?.lockedUntil||null
+  };
   if(editUserId)DB.usuarios=DB.usuarios.map(x=>x.id===editUserId?u:x);else DB.usuarios.push(u);
   if(CU?.id===u.id){CU=u;setLang(u.lang||'es');applyLang();}
   saveDB();closeOv('mUser');renderUsuarios();toast('✅ Usuario guardado');
@@ -3907,6 +4291,8 @@ initLocalSync();
 fillTelSels();
 fillLangIng();
 fillIdiomaSelect();
+
+(function(){const _ek=localStorage.getItem('cu1_ejsKey');if(_ek&&typeof emailjs!=='undefined'){try{emailjs.init({publicKey:_ek});}catch(e){}}})();
 
 // ═══ CONFIG FIJA — no se pide al usuario ═══
 const _FB_URL='https://devolucioncontrol-v5-default-rtdb.firebaseio.com/';
