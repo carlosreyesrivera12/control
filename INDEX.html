@@ -1143,28 +1143,35 @@ async function resendOTP(){
 }
 
 async function sendOTPEmail(u,code,session){
-  const ejsKey=localStorage.getItem('cu1_ejsKey')||'6ZhU_NYFyTPdDk5OB';
-  const ejsSvc=localStorage.getItem('cu1_ejsSvc')||'service_44tapzx';
-  const ejsTpl=localStorage.getItem('cu1_ejsTpl')||'__ejs-test-mail-service__';
+  const ejsKey='6ZhU_NYFyTPdDk5OB';
+  const ejsSvc='service_44tapzx';
+  const ejsTpl='template_n440nxc';
+  // Mostrar código siempre en pantalla como fallback visual
+  const otpEl=document.getElementById('otpExpiry');
+  if(otpEl)otpEl.innerHTML+=' <span style="font-weight:700;color:var(--amber)">· Código: '+code+'</span>';
   if(typeof emailjs==='undefined'){
-    toast('⚠️ Sin conexión a EmailJS — código: '+code,'var(--amber)',10000);
-    console.log('[2FA OTP]',code);
+    console.log('[2FA OTP - emailjs no cargó]',code);
     return;
   }
+  // Reintentar init por si no se ejecutó al cargar
+  try{emailjs.init({publicKey:ejsKey});}catch(e){}
   try{
     await emailjs.send(ejsSvc,ejsTpl,{
       to_email:u.email,
       to_name:u.nombre,
       otp_code:code,
-      device:session.device,
-      browser:session.browser,
+      device:session.device||'–',
+      browser:session.browser||'–',
       ip:session.ip||'–',
       location:session.country||'–',
       app_name:'ControlUnificado v5'
     },{publicKey:ejsKey});
+    // Si llega aquí, se envió bien — quitar el código visible
+    if(otpEl){const sp=otpEl.querySelector('span');if(sp)sp.remove();}
+    toast('📧 Código enviado a '+maskEmail(u.email),'var(--green)',3000);
   }catch(e){
-    toast('⚠️ Error al enviar email — código: '+code,'var(--amber)',10000);
-    console.warn('[2FA send error]',e,'. OTP:',code);
+    console.warn('[2FA send error]',e.text||e.message||e,'. OTP:',code);
+    // El código ya se ve en pantalla — no hace falta toast adicional
   }
 }
 
@@ -4293,11 +4300,14 @@ fillLangIng();
 fillIdiomaSelect();
 
 (function(){
-  // EmailJS preconfigurado — valores fijos
   localStorage.setItem('cu1_ejsKey','6ZhU_NYFyTPdDk5OB');
   localStorage.setItem('cu1_ejsSvc','service_44tapzx');
-  localStorage.setItem('cu1_ejsTpl','__ejs-test-mail-service__');
-  if(typeof emailjs!=='undefined'){try{emailjs.init({publicKey:'6ZhU_NYFyTPdDk5OB'})}catch(e){}}
+  localStorage.setItem('cu1_ejsTpl','template_n440nxc');
+  // Intentar init ahora y también diferido por si el script aún no cargó
+  function _initEJS(){if(typeof emailjs!=='undefined'){try{emailjs.init({publicKey:'6ZhU_NYFyTPdDk5OB'});}catch(e){}}}
+  _initEJS();
+  setTimeout(_initEJS,1000);
+  setTimeout(_initEJS,3000);
 })();
 
 // ═══ CONFIG FIJA — no se pide al usuario ═══
