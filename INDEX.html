@@ -207,6 +207,7 @@ input[type="checkbox"]{width:16px;height:16px;accent-color:var(--blue);cursor:po
 .pase-pill{background:#fdf4ff;border:1px solid #e9d5ff;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--purple)}
 .ov{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
 .ov.open{display:flex}
+#mDel{z-index:99990!important;}
 .modal{background:var(--bg2);border-radius:var(--r3);box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:540px;margin:auto;padding:22px;position:relative}
 .modal-lg{max-width:740px}.modal-sm{max-width:380px}
 .mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -765,7 +766,7 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
   <input type="hidden" id="fuId">
 </div></div>
 <!-- MODAL BORRAR -->
-<div class="ov" id="mDel"><div class="modal modal-sm"><div class="mhdr"><div class="mttl" id="delTitle">Confirmar eliminación</div></div><div id="delDetail" style="font-size:13px;color:var(--text3);margin-bottom:16px"></div><div class="ffoot"><button class="btn btn-gh" onclick="closeOv('mDel')">Cancelar</button><button class="btn btn-r" onclick="doDelete()">🗑 Eliminar</button></div></div></div>
+<div class="ov" id="mDel"><div class="modal modal-sm"><div class="mhdr"><div class="mttl" id="delTitle">Confirmar eliminación</div></div><div id="delDetail" style="font-size:13px;color:var(--text3);margin-bottom:16px"></div><div class="ffoot"><button class="btn btn-gh" onclick="closeOv('mDel')">Cancelar</button><button class="btn" id="btnDoDelete" style="background:var(--red);color:#fff;border:none;border-radius:20px;font-weight:700;padding:8px 20px;font-size:13px" onclick="doDelete()">🗑 Sí, eliminar</button></div></div></div>
 <!-- MODAL DETALLE INGRESO -->
 <div class="ov" id="mIngDetail"><div class="modal modal-lg">
   <div class="mhdr"><div class="mttl" id="mIngDetailTitle">Detalle Ingreso</div><button class="btn-x" onclick="closeOv('mIngDetail')">✕</button></div>
@@ -3012,7 +3013,7 @@ function _ingMsgs(){
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
     <button class="btn btn-p btn-sm" onclick="openMsgModal()">📢 Nuevo</button>
     <button class="btn btn-gh btn-sm" onclick="marcarTodosMsgLeidos()">✓ Todos leídos</button>
-    ${isSup()&&DB.mensajesRampa.length?`<button class="btn btn-danger btn-sm" onclick="if(confirm('¿Limpiar todos?')){DB.mensajesRampa=[];saveDB();renderMensajesTab();renderHdr();}">🗑 Limpiar</button>`:''}
+    ${isSup()&&DB.mensajesRampa.length?`<button class="btn btn-danger btn-sm" onclick="askDel('Limpiar todos los mensajes','Se eliminarán <b>'+DB.mensajesRampa.length+'</b> mensajes. Esta acción no se puede deshacer.',()=>{DB.mensajesRampa=[];saveDB();renderMensajesTab();renderHdr();})">🗑 Limpiar</button>`:''}
     ${canExport()?`<button class="btn btn-gh btn-sm" onclick="exportMensajes()">⬇ Excel</button>`:''}
   </div>
   ${items.length?`<div class="tbl-wrap"><table class="dtbl"><thead><tr><th>Tipo</th><th>Título</th><th>Mensaje</th><th>Matrícula</th><th>Hora</th><th>Autor</th><th></th></tr></thead><tbody>
@@ -3025,7 +3026,6 @@ function _ingMsgs(){
       <td style="font-size:10px">${m.autor||'–'}</td>
       <td><div style="display:flex;gap:2px">
         <button class="btn btn-xs btn-gh" title="${m.pausado?'Reactivar':'Pausar'}" onclick="pauseMsg('${m.id}')">${m.pausado?'▶':'⏸'}</button>
-        ${canDel()?`<button class="btn btn-danger btn-xs" onclick="askDelMsg('${m.id}')">🗑</button>`:''}
       </div></td>
     </tr>`;}).join('')}
   </tbody></table></div>`:`<div class="empty"><div class="ei">📢</div><div class="et">Sin mensajes</div></div>`}`;}
@@ -3848,7 +3848,6 @@ function printIngreso2(id){
 }
 function marcarSalidaIng2(id){const i=(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;i.salida=nowL();saveDBNow();renderIngresos2();renderHdr();}
 function reactivarIngreso2(id){const i=(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;i.salida=null;saveDBNow();renderIngresos2();renderHdr();toast('↺ Salida anulada','var(--amber)');}
-function askDelIng2(id){const i=(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;askDel('Eliminar ingreso libre','<b>'+i.matricula+'</b>',()=>{softDelete('ingresos2',id,renderIngresos2);});}
 function showIngDetalle(id,source){
   const col=source||'ingresos';
   const i=(DB[col]||[]).find(x=>x.id===id);if(!i){showIngDetalleBase(id);return;}
@@ -5775,8 +5774,24 @@ function imprimirYGuardarConTpl(fallbackMode){
     if(i)_printWithActiveTpl(cfgK,i,isLib,cfgK,fallbackMode||'normal');
   },400);
 }
-function askDelIng(id){const i=DB.ingresos.find(x=>x.id===id);if(!i)return;askDel('Eliminar ingreso','<b>'+i.matricula+'</b>',()=>{softDelete('ingresos',id,renderIngresos);});}
+// ─── Debounce global para botones de eliminar ───
+// Evita doble-click accidental: cada id solo puede abrir el modal
+// una vez hasta que el modal se cierre o pasen 1500ms.
+const _delDebounce={};
+function _askDelGuarded(id,fn){
+  if(_delDebounce[id])return;
+  _delDebounce[id]=true;
+  setTimeout(()=>{delete _delDebounce[id];},1500);
+  fn();
+}
 
+function askDelIng(id){const i=DB.ingresos.find(x=>x.id===id);if(!i)return;_askDelGuarded('ing_'+id,()=>askDel('Eliminar referencia','<b>'+i.matricula+'</b>',()=>{softDelete('ingresos',id,renderIngresos);}));}
+function askDelIng2(id){const i=(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;_askDelGuarded('ing2_'+id,()=>askDel('Eliminar ingreso','<b>'+i.matricula+'</b>',()=>{softDelete('ingresos2',id,renderIngresos2);}));}
+function askDelAg(id){const a=DB.agenda.find(x=>x.id===id);if(!a)return;_askDelGuarded('ag_'+id,()=>askDel('Eliminar cita','<b>'+a.matricula+'</b> '+a.fecha+' '+a.hora,()=>{softDelete('agenda',id,renderAgenda);}));}
+function askDelCond(id){const c=DB.conductores.find(x=>x.id===id);if(!c)return;_askDelGuarded('cond_'+id,()=>askDel('Eliminar conductor','<b>'+c.nombre+' '+c.apellido+'</b>',()=>{softDelete('conductores',id,renderConductores);}));}
+function askDelMov(id){const m=DB.movimientos.find(x=>x.id===id);if(!m)return;_askDelGuarded('mov_'+id,()=>askDel('Eliminar movimiento','<b>'+m.matricula+'</b>',()=>{softDelete('movimientos',id,renderFlota);}));}
+function askDelEE(id){_askDelGuarded('ee_'+id,()=>askDel('Eliminar de espera','',()=>{DB.enEspera=DB.enEspera.filter(x=>x.id!==id);saveDB();renderIngresos();}));}
+function askDelLN(id){const ln=DB.listaNegra.find(x=>x.id===id);if(!ln)return;_askDelGuarded('ln_'+id,()=>askDel('Eliminar de especial','<b>'+ln.matricula+'</b>',()=>{DB.listaNegra=DB.listaNegra.filter(x=>x.id!==id);saveDB();renderIngresos();}));}
 // ═══ CRUD AGENDA ═══
 function openAgendaModal(a){
   editAgId=a?a.id:null;agReqsTemp=a?.requisitos?[...a.requisitos]:[];
@@ -5834,7 +5849,6 @@ function saveAgenda(){
 }
 function marcarAgLlegado(id){const a=DB.agenda.find(x=>x.id===id);if(!a)return;a.estado='LLEGADO';a.horaReal=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});saveDBNow();renderAgenda();renderHdr();toast('✅ Llegada registrada','var(--green)');}
 function marcarAgSalida(id){const a=DB.agenda.find(x=>x.id===id);if(!a)return;a.estado='SALIDA';a.horaSalida=nowL();saveDBNow();renderAgenda();toast('🔵 Salida registrada');}
-function askDelAg(id){const a=DB.agenda.find(x=>x.id===id);if(!a)return;askDel('Eliminar cita','<b>'+a.matricula+'</b> '+a.fecha+' '+a.hora,()=>{softDelete('agenda',id,renderAgenda);});}
 
 // ═══ CRUD CONDUCTORES ═══
 function openCondModal(c){editCondId=c?c.id:null;document.getElementById('mCondTitle').textContent=c?'Editar conductor':'Nuevo conductor';document.getElementById('btnCondLbl').textContent=c?'Guardar':'Crear';const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};set('fcId',c?.id);set('fcNom',c?.nombre);set('fcApe',c?.apellido);set('fcEmp',c?.empresa);set('fcMat',c?.matricula);set('fcRem',c?.remolque);set('fcHall',c?.hall);set('fcTelP',c?.telPais||'+34');set('fcTel',c?.telefono);set('fcEmail',c?.email);set('fcTipoV',c?.tipoVehiculo||'');set('fcPas',c?.pasaporte);set('fcPais',c?.pais);set('fcFechaNac',c?.fechaNacimiento);set('fcFechaExp',c?.fechaExpiracion);set('fcGps',c?.gpsUrl);set('fcNotas',c?.notas);set('fcEncargado',c?.encargado);set('fcEncTelP',c?.encargadoTelPais||'+34');set('fcEncTel',c?.encargadoTel);set('fcEncEmail',c?.encargadoEmail);fillIdiomaSelect();if(c?.idioma)setTimeout(()=>{const el=document.getElementById('fcIdioma');if(el)el.value=c.idioma;},0);document.getElementById('mCond').classList.add('open');}
@@ -5848,14 +5862,10 @@ function saveCond(){const nom=(document.getElementById('fcNom').value||'').trim(
   } else {
     toast('✅ Conductor guardado');
   }}
-function askDelCond(id){const c=DB.conductores.find(x=>x.id===id);if(!c)return;askDel('Eliminar conductor','<b>'+c.nombre+' '+c.apellido+'</b>',()=>{softDelete('conductores',id,renderConductores);});}
-
 // ═══ CRUD FLOTA ═══
 function openMovModal(m){editMovId=m?m.id:null;document.getElementById('mMovTitle').textContent=m?'Editar movimiento':'Nuevo movimiento';document.getElementById('btnMovLbl').textContent=m?'Guardar':'Añadir';const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};set('fmId',m?.id);set('fmMat',m?.matricula);set('fmRem',m?.remolque);set('fmNom',m?.nombre);set('fmApe',m?.apellido);set('fmEmp',m?.empresa);set('fmHall',m?.hall);set('fmCarga',m?.tipoCarga||'');set('fmStatus',m?.status||'ALMACEN');set('fmPos',m?.posicion);set('fmVuelta',m?.numVuelta||1);set('fmNotas',m?.notas);if(m?.tacografoHora){const el=document.getElementById('fmTaco');if(el)el.value=m.tacografoHora.replace(' ','T');}document.getElementById('mMov').classList.add('open');}
 function saveMov(){const mat=(document.getElementById('fmMat').value||'').trim().toUpperCase(),hall=document.getElementById('fmHall').value;if(!mat||!hall){toast('Matrícula y hall obligatorios','var(--red)');return;}const tacoRaw=document.getElementById('fmTaco').value;const m={id:editMovId||uid(),matricula:mat,remolque:(document.getElementById('fmRem').value||'').trim().toUpperCase(),nombre:(document.getElementById('fmNom').value||'').trim(),apellido:(document.getElementById('fmApe').value||'').trim(),empresa:(document.getElementById('fmEmp').value||'').trim(),hall,tipoCarga:document.getElementById('fmCarga').value,status:document.getElementById('fmStatus').value,posicion:parseInt(document.getElementById('fmPos').value)||0,numVuelta:parseInt(document.getElementById('fmVuelta').value)||1,tacografoHora:tacoRaw?tacoRaw.replace('T',' '):null,notas:(document.getElementById('fmNotas').value||'').trim(),lastStatusTs:nowL(),ts:editMovId?(DB.movimientos.find(x=>x.id===editMovId)?.ts||nowL()):nowL()};if(editMovId)DB.movimientos=DB.movimientos.map(x=>x.id===editMovId?m:x);else DB.movimientos.push(m);saveDB();closeOv('mMov');renderFlota();renderHdr();toast('✅ Guardado');}
 function cambiarEstMov(id,status){const m=DB.movimientos.find(x=>x.id===id);if(!m)return;m.status=status;m.lastStatusTs=nowL();saveDB();renderFlota();renderHdr();}
-function askDelMov(id){const m=DB.movimientos.find(x=>x.id===id);if(!m)return;askDel('Eliminar movimiento','<b>'+m.matricula+'</b>',()=>{softDelete('movimientos',id,renderFlota);});}
-
 // ═══ CRUD EVENTOS ═══
 function openEventoModal(ev){if(!canEditEvento()){toast('Sin permiso para editar eventos','var(--red)');return;}editEvId=ev?ev.id:null;evPuertasTemp=ev?.puertas?[...ev.puertas]:[];document.getElementById('mEvTitle').textContent=ev?'Editar evento':'Nuevo evento';document.getElementById('btnEvLbl').textContent=ev?'Guardar':'Crear';const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};set('evId',ev?.id);set('evNom',ev?.nombre);set('evIni',ev?.ini);set('evFin',ev?.fin);set('evIco',ev?.ico||'📋');set('evRec',ev?.recinto);set('evCiudad',ev?.ciudad);const recSel=document.getElementById('evRecintoId');if(recSel){recSel.innerHTML='<option value="">— Seleccionar recinto —</option>'+(DB.recintos||[]).map(r=>`<option value="${r.id}" ${ev?.recintoId===r.id?'selected':''}>${r.nombre} · ${r.ciudad||''} ${r.pais||''}</option>`).join('');if(ev?.recintoId)recSel.value=ev.recintoId;}const rec=ev?.recintoId?(DB.recintos||[]).find(x=>x.id===ev.recintoId):null;renderEvHallsGrid(rec?rec.halls:[],ev?.halls||[]);const grid=document.getElementById('evCamposGrid');if(grid)grid.innerHTML=EV_CAMPOS.map(k=>{const v=(ev?.campos?.[k]||'show');const colors={off:['var(--border)','var(--bg2)','var(--text4)','✕'],show:['var(--blue)','var(--blue)','#fff','✓'],required:['var(--red)','var(--red)','#fff','★']};const c=colors[v]||colors.show;return`<span id="evF${k}" data-val="${v}" onclick="cycleEvCampo('${k}')" style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:12px;border:1px solid ${c[0]};background:${c[1]};color:${c[2]};font-size:12px;font-weight:700;cursor:pointer;user-select:none;transition:all .15s;opacity:${v==='off'?'.4':'1'}">${c[3]} ${k}</span>`;}).join('');renderPuertasEv();/* phrases moved to print config tab */if(document.getElementById('evPrintTemplate'))document.getElementById('evPrintTemplate').value=ev?.printTemplate||'fullgv';
   const _euGrid=document.getElementById('evUsuariosGrid');if(_euGrid){const _assigned=ev?.usuariosAsignados||[];_euGrid.innerHTML=(DB.usuarios||[]).filter(u=>u.rol!=='superadmin').map(u=>`<label style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;border:1px solid ${_assigned.includes(u.id)?'var(--blue)':'var(--border)'};background:${_assigned.includes(u.id)?'var(--blue)':'var(--bg2)'};color:${_assigned.includes(u.id)?'#fff':'var(--text3)'};font-size:11px;font-weight:700;cursor:pointer;user-select:none"><input type="checkbox" data-ev-user="${u.id}" ${_assigned.includes(u.id)?'checked':''} onchange="const l=this.closest('label');l.style.borderColor=this.checked?'var(--blue)':'var(--border)';l.style.background=this.checked?'var(--blue)':'var(--bg2)';l.style.color=this.checked?'#fff':'var(--text3)'" style="display:none">${u.nombre}</label>`).join('');}
@@ -5935,12 +5945,10 @@ function askDelEvento(id){if(!isSA()){toast('Solo SuperAdmin puede eliminar even
 function openEEModal(e){editEEId=e?e.id:null;document.getElementById('mEETitle').textContent=e?'Editar espera':'Nueva en espera';document.getElementById('btnEELbl').textContent=e?'Guardar':'Añadir';const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};set('eeId',e?.id);set('eeM',e?.matricula);set('eeHora',e?.hora||'');set('eePrio',e?.prioridad||'normal');set('eeCond',e?.conductor);set('eeEmp',e?.empresa);set('eeTel',e?.telefono);set('eeHall',e?.hall);set('eeRef',e?.booking);set('eeNotas',e?.notas);document.getElementById('mEE').classList.add('open');}
 function saveEE(){const mat=(document.getElementById('eeM').value||'').trim().toUpperCase();if(!mat){toast('Matrícula obligatoria','var(--red)');return;}const e={id:editEEId||uid(),matricula:mat,hora:document.getElementById('eeHora').value,prioridad:document.getElementById('eePrio').value,conductor:(document.getElementById('eeCond').value||'').trim(),empresa:(document.getElementById('eeEmp').value||'').trim(),telefono:(document.getElementById('eeTel').value||'').trim(),hall:document.getElementById('eeHall').value,booking:(document.getElementById('eeRef').value||'').trim().toUpperCase(),notas:(document.getElementById('eeNotas').value||'').trim(),estado:'pendiente',ts:nowL(),creadoPor:CU?.nombre||''};if(editEEId)DB.enEspera=DB.enEspera.map(x=>x.id===editEEId?e:x);else DB.enEspera.push(e);autoMsg(e.prioridad==='urgente'?'urgente':e.prioridad==='alta'?'alerta':'info','⏳ '+mat+' en espera',mat+' · Hall: '+(e.hall||'?'),mat);saveDB();closeOv('mEE');renderIngresos();renderHdr();toast('⏳ En espera añadido');}
 function marcarEELlegado(id){const e=DB.enEspera.find(x=>x.id===id);if(!e)return;e.estado='llegado';saveDBNow();openIngModal({matricula:e.matricula,nombre:e.conductor,empresa:e.empresa,hall:e.hall,referencia:e.booking,telefono:e.telefono});renderHdr();}
-function askDelEE(id){askDel('Eliminar de espera','',()=>{DB.enEspera=DB.enEspera.filter(x=>x.id!==id);saveDB();renderIngresos();});}
 
 // ═══ CRUD ESPECIAL ═══
 function openLNModal(ln){if(!canSpecial()){toast('Sin permiso','var(--red)');return;}editLNId=ln?ln.id:null;document.getElementById('mLNTitle').textContent=ln?'Editar':'Añadir Especial';document.getElementById('btnLNLbl').textContent=ln?'Guardar':'Añadir';const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};set('lnId',ln?.id);set('lnM',ln?.matricula);set('lnN',ln?.nivel||'alerta');set('lnMotivo',ln?.motivo);set('lnEmp',ln?.empresa);set('lnHasta',ln?.hasta);document.getElementById('mLN').classList.add('open');}
 function saveLN(){const mat=(document.getElementById('lnM').value||'').trim().toUpperCase(),mot=(document.getElementById('lnMotivo').value||'').trim();if(!mat||!mot){toast('Matrícula y motivo obligatorios','var(--red)');return;}const ln={id:editLNId||uid(),matricula:mat,nivel:document.getElementById('lnN').value,motivo:mot,empresa:(document.getElementById('lnEmp').value||'').trim(),hasta:document.getElementById('lnHasta').value||null,ts:nowL(),usuario:CU?.nombre||''};if(editLNId)DB.listaNegra=DB.listaNegra.map(x=>x.id===editLNId?ln:x);else DB.listaNegra.push(ln);autoMsg('alerta','⭐ Especial',mat+' — '+ln.nivel.toUpperCase()+': '+mot,mat);logAudit('create','listaNegra',mat+' ('+ln.nivel+')');saveDB();closeOv('mLN');renderIngresos();toast('🚫 '+mat+' añadida');}
-function askDelLN(id){const ln=DB.listaNegra.find(x=>x.id===id);if(!ln)return;askDel('Eliminar de especial','<b>'+ln.matricula+'</b>',()=>{DB.listaNegra=DB.listaNegra.filter(x=>x.id!==id);saveDB();renderIngresos();});}
 function showBlkAlert(ln,mat,allowOverride){document.getElementById('baIcon').textContent=ln.nivel==='bloqueo'?'🚫':'⚠️';document.getElementById('baTitle').textContent=ln.nivel==='bloqueo'?'ACCESO DENEGADO':'MATRÍCULA CON ALERTA';document.getElementById('baDetail').innerHTML='<b>Matrícula:</b> '+mat+'<br><b>Nivel:</b> '+ln.nivel.toUpperCase()+'<br><b>Motivo:</b> '+ln.motivo;document.getElementById('baInstr').textContent=ln.nivel==='bloqueo'?'Solo Supervisor puede autorizar.':'Verificar antes de permitir acceso.';document.getElementById('baOverrideBtn').style.display=(allowOverride&&isSup())?'flex':'none';document.getElementById('mBA').classList.add('open');autoMsg(ln.nivel==='bloqueo'?'urgente':'alerta','🚫 Intento acceso LN',mat+' — '+ln.nivel.toUpperCase()+': '+ln.motivo,mat);}
 function blOverride(){closeOv('mBA');const mat=(document.getElementById('fiMat').value||'').trim().toUpperCase();const ev=getActiveEvent();_doSaveIng(mat,(document.getElementById('fiEmp').value||'').trim(),document.getElementById('fiHall').value,ev);}
 
@@ -6241,7 +6249,6 @@ function doGlobalSearch(q){
   if(conds.length)html+=`<div style="font-size:10px;font-weight:900;text-transform:uppercase;color:var(--text3);margin:12px 0 6px;border-bottom:1.5px solid var(--border);padding-bottom:4px">👤 Conductores (${conds.length})</div>`+conds.slice(0,6).map(c=>`<div style="padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:4px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="closeOv('mGlobalSearch');cF.q='${(c.nombre+' '+c.apellido).replace(/'/g,'')}';goTab('conductores');"><span style="font-weight:700">${c.nombre} ${c.apellido}</span><span style="font-size:11px;color:var(--text3)">${c.empresa||''}</span>${c.matricula?`<span class="mchip-sm">${c.matricula}</span>`:''}</div>`).join('');
   el.innerHTML=html||`<div class="empty"><div class="ei">🔍</div><div class="et">Sin resultados para "${q}"</div></div>`;
 }
-function askDelMsg(id){askDel('Eliminar mensaje','',()=>{DB.mensajesRampa=DB.mensajesRampa.filter(x=>x.id!==id);saveDBNow();renderMensajesTab();renderHdr();});}
 
 // ═══ RESET ALL DATA ═══
 function resetAllData(){
@@ -6327,8 +6334,23 @@ async function saveUser(){
   saveDB();closeOv('mUser');renderUsuarios();toast('✅ Usuario guardado');
 }
 function askDelUser(id){const u=DB.usuarios.find(x=>x.id===id);if(!u)return;askDel('Eliminar usuario','<b>'+u.nombre+'</b>',()=>{DB.usuarios=DB.usuarios.filter(x=>x.id!==id);saveDB();renderUsuarios();});}
-function askDel(title,detail,fn){document.getElementById('delTitle').textContent=title;document.getElementById('delDetail').innerHTML=detail;pendingDelFn=fn;document.getElementById('mDel').classList.add('open');}
-function doDelete(){if(pendingDelFn){pendingDelFn();pendingDelFn=null;}closeOv('mDel');}
+function askDel(title,detail,fn){
+  document.getElementById('delTitle').textContent=title;
+  document.getElementById('delDetail').innerHTML=detail||'';
+  pendingDelFn=fn;
+  const btn=document.getElementById('btnDoDelete');
+  if(btn){btn.disabled=false;btn.textContent='🗑 Sí, eliminar';}
+  document.getElementById('mDel').classList.add('open');
+}
+function doDelete(){
+  const btn=document.getElementById('btnDoDelete');
+  if(btn){if(btn.disabled)return;btn.disabled=true;}
+  if(pendingDelFn){
+    try{pendingDelFn();}catch(e){console.error('doDelete error',e);toast('Error al eliminar','var(--red)');}
+    pendingDelFn=null;
+  }
+  closeOv('mDel');
+}
 // ═══ PRINT LAYOUT DRAG ═══
 function initPrintLayout(cfgKey){
   const cfg=cfgKey==='ag'?DB.printCfgAg:(cfgKey==='ing2'?DB.printCfg2:DB.printCfg1);
