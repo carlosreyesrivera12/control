@@ -1395,7 +1395,7 @@ const PAISES=[{code:'+34',flag:'🇪🇸'},{code:'+33',flag:'🇫🇷'},{code:'+
 const DEF_USERS=[];
 let DB={movimientos:[],ingresos:[],ingresos2:[],listaNegra:[],enEspera:[],mensajesRampa:[],conductores:[],auditLog:[],eventos:[],agenda:[],recintos:[],usuarios:[...DEF_USERS],activeEventId:null,activeEventIds:[],defaultEventId:null,printFieldOrder:[...PRINT_DEF],hiddenPrintFields:[],editHistory:[],eventoHistorial:[],eventosPapelera:[],vehiculos:[],papelera:[],exportLog:[],printPhrases:{},printPhrases2:{},tabSorts:{},tabOrder:[],colOrders:{},tabEvents:{},printCfg1:{fieldOrder:[...PRINT_DEF],hiddenFields:[],favEventId:null,qrTracking:false},printCfgAg:{fieldOrder:[...PRINT_DEF],hiddenFields:[],favEventId:null,qrTracking:false},printTemplates:[],printCfg2:{qrTracking:true,fieldOrder:['empresa','hall','stand','expositor','comentario','llamador','ref','montador','nombre','apellido','pasaporte','remolque','telefono','matricula','posicion','email','fechaNacimiento','pais','horario'],hiddenFields:['llamador','ref','montador','nombre','apellido','pasaporte','email','horario','fechaNacimiento','pais','remolque','matricula','telefono','posicion'],favEventId:null},empresas:[],preregistros:[],consentimientos:[]};
 let fbApp=null,fbDb=null,fbRef=null,fbConnected=false,fbKey='controlunificado',writeDebounce=null,bc=null;
-let CU=null,curTab='dash',_autoFillOn=true,_posAutoOn=true,pendingDelFn=null,blkOverrideData=null,_lastMsgCount=0;
+let CU=null,curTab='dash',_autoFillOn=true,_posAutoOn=false,pendingDelFn=null,blkOverrideData=null,_lastMsgCount=0;
 let editIngId=null,editAgId=null,editCondId=null,editMovId=null,editEvId=null,editEEId=null,editLNId=null,editUserId=null;
 let camStream=null,camResultMat='',evBgData='',evPuertasTemp=[],agReqsTemp=[],pendingLangCode='es';
 let _regLang='es';
@@ -1551,7 +1551,7 @@ function confirmLang(){setLang(pendingLangCode);try{if(pendingLangCode&&pendingL
 function connectFirebase(){const url=(document.getElementById('fbUrlInp').value||'').trim();if(!url){toast('URL requerida','var(--red)');return;}fbKey=(document.getElementById('fbKeyInp').value||'controlunificado').trim().replace(/[^a-zA-Z0-9_-]/g,'');const ak=(document.getElementById('apiKeyInp').value||'').trim();if(ak)localStorage.setItem('cu1_apiKey',ak);try{if(fbApp)fbApp.delete();fbApp=firebase.initializeApp({databaseURL:url},'cu1_'+Date.now());fbDb=firebase.database(fbApp);fbRef=fbDb.ref('cu1/'+fbKey);localStorage.setItem('cu1_fbUrl',url);localStorage.setItem('cu1_fbKey',fbKey);localStorage.removeItem('cu1_noSync');document.getElementById('setupWrap').style.display='none';startFirebaseSync();showLogin();}catch(e){toast('❌ '+e.message,'var(--red)');}}
 function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos','ingresos','listaNegra','enEspera','mensajesRampa','conductores','auditLog','eventos','agenda','recintos'];fbRef.on('value',snap=>{
       // Skip overwriting user-config fields if local changes are pending
-      var _dirty=false;try{var _dt=parseInt(localStorage.getItem(SK+'_dirty')||'0');_dirty=_dt>0&&(Date.now()-_dt)<10000;}catch(e){}const rem=snap.val();if(!rem){setSyncStatus('ok');return;}if(rem._session===SID){setSyncStatus('ok');return;}let changed=false;FK.forEach(k=>{if(rem[k]){const arr=Array.isArray(rem[k])?rem[k]:Object.values(rem[k]);if(JSON.stringify(arr)!==JSON.stringify(DB[k])){DB[k]=arr;changed=true;}}});if(rem.activeEventId!==undefined&&rem.activeEventId!==DB.activeEventId){DB.activeEventId=rem.activeEventId;if(rem.activeEventId&&(!DB.activeEventIds||!DB.activeEventIds.length))DB.activeEventIds=[rem.activeEventId];changed=true;}if(rem.printFieldOrder){DB.printFieldOrder=rem.printFieldOrder;}if(rem.hiddenPrintFields){DB.hiddenPrintFields=rem.hiddenPrintFields;}if(rem.activeEventIds)DB.activeEventIds=rem.activeEventIds;if(rem.defaultEventId!==undefined)DB.defaultEventId=rem.defaultEventId;if(rem.editHistory)DB.editHistory=rem.editHistory;if(rem.ingresos2)DB.ingresos2=rem.ingresos2;if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.papelera)DB.papelera=rem.papelera;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases&&!_dirty)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2&&!_dirty)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts&&!_dirty)DB.tabSorts=rem.tabSorts;if(rem.tabOrder&&!_dirty)DB.tabOrder=rem.tabOrder;if(rem.colOrders&&!_dirty)DB.colOrders=rem.colOrders;/* tabEvents removed - single global event */if(rem.printCfg1&&!_dirty)DB.printCfg1=rem.printCfg1;if(rem.printCfg2&&!_dirty)DB.printCfg2=rem.printCfg2;if(rem.printCfgAg&&!_dirty)DB.printCfgAg=rem.printCfgAg;if(rem.printTemplates&&!_dirty)DB.printTemplates=rem.printTemplates;if(rem.printCfgModes&&!_dirty)DB.printCfgModes=rem.printCfgModes;if(rem.camposCfg&&!_dirty)DB.camposCfg=rem.camposCfg;if(rem.eventoHistorial)DB.eventoHistorial=rem.eventoHistorial;if(rem.eventosPapelera)DB.eventosPapelera=rem.eventosPapelera;if(rem._deviceAlerts)DB._deviceAlerts=rem._deviceAlerts;if(rem.devices)DB.devices=rem.devices;if(rem._devRequireApproval!==undefined)DB._devRequireApproval=rem._devRequireApproval;if(rem.usuarios&&!_dirty){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}if(rem.empresas)DB.empresas=Array.isArray(rem.empresas)?rem.empresas:Object.values(rem.empresas);if(rem.preregistros)DB.preregistros=Array.isArray(rem.preregistros)?rem.preregistros:Object.values(rem.preregistros);if(rem.consentimientos)DB.consentimientos=Array.isArray(rem.consentimientos)?rem.consentimientos:Object.values(rem.consentimientos);fbConnected=true;setSyncStatus('ok');
+      var _dirty=false;try{var _dt=parseInt(localStorage.getItem(SK+'_dirty')||'0');_dirty=_dt>0&&(Date.now()-_dt)<10000;}catch(e){}const rem=snap.val();if(!rem){setSyncStatus('ok');if(typeof _checkFirstRunAfterFirebase==='function')_checkFirstRunAfterFirebase();return;}if(rem._session===SID){setSyncStatus('ok');return;}let changed=false;FK.forEach(k=>{if(rem[k]){const arr=Array.isArray(rem[k])?rem[k]:Object.values(rem[k]);if(JSON.stringify(arr)!==JSON.stringify(DB[k])){DB[k]=arr;changed=true;}}});if(rem.activeEventId!==undefined&&rem.activeEventId!==DB.activeEventId){DB.activeEventId=rem.activeEventId;if(rem.activeEventId&&(!DB.activeEventIds||!DB.activeEventIds.length))DB.activeEventIds=[rem.activeEventId];changed=true;}if(rem.printFieldOrder){DB.printFieldOrder=rem.printFieldOrder;}if(rem.hiddenPrintFields){DB.hiddenPrintFields=rem.hiddenPrintFields;}if(rem.activeEventIds)DB.activeEventIds=rem.activeEventIds;if(rem.defaultEventId!==undefined)DB.defaultEventId=rem.defaultEventId;if(rem.editHistory)DB.editHistory=rem.editHistory;if(rem.ingresos2)DB.ingresos2=rem.ingresos2;if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.papelera)DB.papelera=rem.papelera;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases&&!_dirty)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2&&!_dirty)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts&&!_dirty)DB.tabSorts=rem.tabSorts;if(rem.tabOrder&&!_dirty)DB.tabOrder=rem.tabOrder;if(rem.colOrders&&!_dirty)DB.colOrders=rem.colOrders;/* tabEvents removed - single global event */if(rem.printCfg1&&!_dirty)DB.printCfg1=rem.printCfg1;if(rem.printCfg2&&!_dirty)DB.printCfg2=rem.printCfg2;if(rem.printCfgAg&&!_dirty)DB.printCfgAg=rem.printCfgAg;if(rem.printTemplates&&!_dirty)DB.printTemplates=rem.printTemplates;if(rem.printCfgModes&&!_dirty)DB.printCfgModes=rem.printCfgModes;if(rem.camposCfg&&!_dirty)DB.camposCfg=rem.camposCfg;if(rem.eventoHistorial)DB.eventoHistorial=rem.eventoHistorial;if(rem.eventosPapelera)DB.eventosPapelera=rem.eventosPapelera;if(rem._deviceAlerts)DB._deviceAlerts=rem._deviceAlerts;if(rem.devices)DB.devices=rem.devices;if(rem._devRequireApproval!==undefined)DB._devRequireApproval=rem._devRequireApproval;if(rem.usuarios&&!_dirty){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}if(rem.empresas)DB.empresas=Array.isArray(rem.empresas)?rem.empresas:Object.values(rem.empresas);if(rem.preregistros)DB.preregistros=Array.isArray(rem.preregistros)?rem.preregistros:Object.values(rem.preregistros);if(rem.consentimientos)DB.consentimientos=Array.isArray(rem.consentimientos)?rem.consentimientos:Object.values(rem.consentimientos);fbConnected=true;setSyncStatus('ok');
       // Auto-fix SA unlock (one-time, removes itself after running)
       if(!DB._saUnlockDone||DB._saUnlockDone===true||DB._saUnlockDone==='v2'||DB._saUnlockDone==='v3'){
         const _saU=DB.usuarios.find(u=>u.rol==='superadmin'&&(u.nombre==='Carlos'||u.pin==='001990'||u.id==='u_sa'));
@@ -1841,8 +1841,8 @@ function applyEventFieldVisibility(){
   }
   const bar=document.getElementById('fiEventoBar');if(bar)bar.style.display='none';
   renderTipoVehButtons(getFormEvento());
-  // Autocompletar pos según colección y reglas
-  const posEl=document.getElementById('fiPos');
+  // Autocompletar pos — DESACTIVADO ⚡ OFF 🔢
+  /* const posEl=document.getElementById('fiPos');
   if(posEl&&!posEl.value){
     const today=new Date().toISOString().slice(0,10);
     const ev=getFormEvento();
@@ -1854,7 +1854,7 @@ function applyEventFieldVisibility(){
       nextPos=DB.ingresos.filter(i=>i.entrada?.startsWith(today)).length+1;
     }
     posEl.placeholder='Auto ('+nextPos+')';posEl.setAttribute('data-autopos',nextPos);
-  }
+  } */
 }
 function checkBL(mat){return DB.listaNegra.find(x=>x.matricula===mat.toUpperCase()&&(!x.hasta||x.hasta>=new Date().toISOString().slice(0,10)))||null;}
 function checkEE(mat){return DB.enEspera.find(e=>e.matricula===mat.toUpperCase()&&e.estado==='pendiente')||null;}
@@ -2637,6 +2637,8 @@ function loginSuccess(u){
   // Restore autofill preference
   try{const _afPref=localStorage.getItem((SK||'cu1')+'_af'+(CU?.id||''));if(_afPref!==null)_autoFillOn=_afPref==='1';}catch(e){}
   try{const _paPref=localStorage.getItem((SK||'cu1')+'_pa'+(CU?.id||''));if(_paPref!==null)_posAutoOn=_paPref==='1';}catch(e){}
+  // ⚡ OFF — Posición auto desactivada permanentemente: ignorar preferencia guardada
+  _posAutoOn=false;
   const _savedTab=localStorage.getItem(SK+'_tab');const _restoreTab=_savedTab&&allowed.includes(_savedTab)?_savedTab:(allowed[0]||'ingresos');goTab(_restoreTab,document.querySelector('#mainTabs .btn-tab[data-tab="'+_restoreTab+'"]'));
   renderHdr();
 }
@@ -2886,7 +2888,7 @@ function renderIngresos(){
     <div style="display:flex;align-items:center;gap:3px;padding:4px 0;flex-wrap:nowrap;min-height:34px;border-bottom:1px solid var(--border);margin-bottom:4px;overflow-x:auto;scrollbar-width:none">
       ${[['lista','📋 Lista'],['listanegra','⭐ Especial'],['historial','📝 Modificaciones'],...(canCampos()?[['campos','⚙ Campos']]:[])] .map(([s,l])=>`<button class="btn btn-sm ${sub===s?'btn-p':'btn-gh'}" onclick="iF._sub='${s}';renderIngresos()">${l}</button>`).join('')}
       <span style="flex:1"></span>
-      ${canAdd()&&sub!=='campos'?`<button class="btn btn-sm" style="background:#0d9f6e;color:#fff;border:none;border-radius:20px;font-weight:700" onclick="_ingSource='ingresos';openIngModal()">+ Referencia</button><button class="btn btn-sm btn-gh af-toggle-btn" onclick="toggleAutoFill()" style="flex-shrink:0;border-radius:20px">⚡ ${_autoFillOn?tr('on')||'ON':tr('off')||'OFF'}</button><button class="btn btn-sm btn-gh pos-toggle-btn" onclick="togglePosAuto()" style="flex-shrink:0;border-radius:20px">🔢 ${_posAutoOn?tr('on')||'ON':tr('off')||'OFF'}</button>`:''}
+      ${canAdd()&&sub!=='campos'?`<button class="btn btn-sm" style="background:#0d9f6e;color:#fff;border:none;border-radius:20px;font-weight:700" onclick="_ingSource='ingresos';openIngModal()">+ Referencia</button>`:''}
       ${sub!=='historial'&&sub!=='campos'?`<button class="btn btn-s btn-sm" onclick="if(!canImport()){toast('Sin permiso para importar','var(--red)');return;}document.getElementById('xlsxIng').click()">📥 Importar</button><button class="btn btn-gh btn-sm" onclick="dlTemplateIng()">📋 Plantilla</button>`:''}
       ${sub!=='historial'&&sub!=='campos'&&canExport()?`<button class="btn btn-gh btn-sm" onclick="exportIngresos()">⬇ Excel</button>`:''}
       ${sub!=='historial'&&sub!=='campos'&&canClean()?`<button class="btn btn-sm" onclick="cleanTab('ingresos')">🗑 Limpiar</button>`:''} ${sub!=='historial'&&isSA()?`<button class="btn btn-danger btn-sm" onclick="vaciarTab('ingresos')">💥 Vaciar</button>`:''}
@@ -3761,7 +3763,7 @@ function renderIngresos2(){
     <div style="display:flex;align-items:center;gap:3px;padding:4px 0;flex-wrap:nowrap;min-height:34px;border-bottom:1px solid var(--border);margin-bottom:4px;overflow-x:auto;scrollbar-width:none">
       ${[['lista','📋 Lista'],['listanegra','⭐ Especial'],['historial','📝 Modificaciones'],...(canCampos()?[['campos','⚙ Campos']]:[])] .map(([s,l])=>`<button class="btn btn-sm ${sub2===s?'btn-p':'btn-gh'}" onclick="iF['_sub2']='${s}';renderIngresos2()" style="flex-shrink:0">${l}</button>`).join('')}
       <span style="flex:1;min-width:8px"></span>
-      ${canAdd()&&sub2!=='campos'?`<button class="btn btn-sm" style="background:#0d9f6e;color:#fff;border:none;border-radius:20px;font-weight:700;flex-shrink:0" onclick="_ingSource='ingresos2';openIngModal()">+ Ingreso</button><button class="btn btn-sm btn-gh af-toggle-btn" onclick="toggleAutoFill()" style="flex-shrink:0;border-radius:20px">⚡ ${_autoFillOn?tr('on')||'ON':tr('off')||'OFF'}</button><button class="btn btn-sm btn-gh pos-toggle-btn" onclick="togglePosAuto()" style="flex-shrink:0;border-radius:20px">🔢 ${_posAutoOn?tr('on')||'ON':tr('off')||'OFF'}</button>`:''}
+      ${canAdd()&&sub2!=='campos'?`<button class="btn btn-sm" style="background:#0d9f6e;color:#fff;border:none;border-radius:20px;font-weight:700;flex-shrink:0" onclick="_ingSource='ingresos2';openIngModal()">+ Ingreso</button>`:''}
       ${sub2!=='historial'&&sub2!=='campos'?`<button class="btn btn-s btn-sm" style="flex-shrink:0" onclick="if(!canImport()){toast('Sin permiso','var(--red)');return;}document.getElementById('xlsxIng2').click()">📥 Importar</button><button class="btn btn-gh btn-sm" style="flex-shrink:0" onclick="dlTemplateIng2()">📋 Plantilla</button>`:''}
       ${sub2!=='historial'&&sub2!=='campos'&&canExport()?`<button class="btn btn-gh btn-sm" style="flex-shrink:0" onclick="exportIngresos2()">⬇ Excel</button>`:''}
       ${sub2!=='historial'&&sub2!=='campos'&&canClean()?`<button class="btn btn-sm" style="flex-shrink:0" onclick="cleanTab('ingresos2')">🗑 Limpiar</button>`:''}${sub2!=='historial'&&sub2!=='campos'&&isSA()?`<button class="btn btn-danger btn-sm" style="flex-shrink:0" onclick="vaciarTab('ingresos2')">💥 Vaciar</button>`:''}
@@ -5467,8 +5469,15 @@ function _doSaveIngWithPos(mat,emp,hall,ev,atomicPos,now,today,_col,old2,posInpu
     if(_ingSource==='ingresos2'){iF._sub2='lista';renderIngresos2();}else{iF._sub='lista';renderIngresos();}renderHdr();
     toast('✅ Actualizado','var(--green)');
   } else {
-    // Nuevo ingreso: asignar posición post-Firebase
-    _assignPosAfterFirebase(ing,_col,ev);
+    // Nuevo ingreso: asignar posición post-Firebase solo si modo auto ⚡
+    if(_posAutoOn){
+      _assignPosAfterFirebase(ing,_col,ev);
+    } else {
+      // Modo manual: usar la posición que el usuario escribió
+      if(_col==='ingresos2'){iF._sub2='lista';renderIngresos2();}else{iF._sub='lista';renderIngresos();}renderHdr();
+      if(ing.pos)_showPosConfirm(ing.pos,ing,false);
+      else toast('✅ Ingreso registrado','var(--green)');
+    }
   }
 }
 
@@ -7364,11 +7373,23 @@ if(typeof firebase==='undefined'){
 if(loadSession()){loginSuccess(CU);}
 
 // ═══ SETUP INICIAL — Si no hay usuarios, lanzar asistente ═══
+// ⚠️ CORRECCIÓN CRÍTICA DE SEGURIDAD:
+// Firebase carga datos de forma asíncrona. checkFirstRun() se ejecuta antes de que
+// lleguen los datos remotos, por lo que DB.usuarios estará vacío en un navegador nuevo
+// aunque haya usuarios en Firebase → esto causaba que se mostrara el setup y se
+// pudiera crear un nuevo SuperAdmin borrando el sistema. SOLUCIONADO.
+let _fbFirstCheckDone=false;
 function checkFirstRun(){
-  if(DB.usuarios.length===0){
-    // No hay ningún usuario — mostrar asistente de creación del primer SuperAdmin
-    showFirstRunSetup();
-  }
+  // Con Firebase configurado (fbRef existe), NUNCA mostrar setup en carga inicial.
+  // El check real lo hace _checkFirstRunAfterFirebase() desde el callback de Firebase.
+  if(fbRef) return;
+  if(DB.usuarios.length===0) showFirstRunSetup();
+}
+function _checkFirstRunAfterFirebase(){
+  // Solo se llama desde startFirebaseSync cuando Firebase confirma que no hay datos remotos
+  if(_fbFirstCheckDone) return;
+  _fbFirstCheckDone=true;
+  if(DB.usuarios.length===0) showFirstRunSetup();
 }
 function showFirstRunSetup(){
   document.getElementById('loginWrap').style.display='none';
@@ -7409,6 +7430,11 @@ async function doFirstRunSetup(){
   if(pass.length<8){errEl.textContent='Contraseña mínimo 8 caracteres';errEl.style.display='block';return;}
   if(pass!==pass2){errEl.textContent='Las contraseñas no coinciden';errEl.style.display='block';return;}
   if(pin&&(pin.length<6||!/^\d+$/.test(pin))){errEl.textContent='PIN: mínimo 6 dígitos';errEl.style.display='block';return;}
+  // ⚠️ SEGURIDAD: Solo el email autorizado puede crear el SuperAdmin
+  const SA_EMAIL='carlosreyesrivera12@gmail.com';
+  if(email!==SA_EMAIL){errEl.textContent='⛔ Email no autorizado para SuperAdmin. Usa el email de administración correcto.';errEl.style.display='block';return;}
+  // Verificar que no existe ya un SuperAdmin en el sistema (protección anti-reset)
+  if(DB.usuarios.some(u=>u.rol==='superadmin')){errEl.textContent='⛔ Ya existe un SuperAdmin en el sistema. Contacta al administrador.';errEl.style.display='block';return;}
   const{hash,salt}=await hashPassword(pass,null);
   const u={id:'u_sa_'+uid(),nombre:nom,username,email,passwordHash:hash,passwordSalt:salt,pin:pin||'',twoFA:!!(email&&pin),rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true,canPrint:true,canImport:true,canClean:true,canSaveTpl:true,canDelTpl:true,canEditEvento:true,canActivarEvento:true,canMensajes:true},lang:'es',mustChangePassword:false,loginAttempts:0,lockedUntil:null};
   DB.usuarios=[u];
