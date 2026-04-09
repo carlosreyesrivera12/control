@@ -1668,7 +1668,8 @@ function getTabEvent(tab){
   const te=DB.tabEvents||{};
   const evId=te[tab||curTab];
   if(evId){const ev=(DB.eventos||[]).find(e=>e.id===evId);if(ev)return ev;}
-  return getActiveEvent();
+  // Prefer user's personal work event over global active event
+  return getUserWorkEvent()||getActiveEvent();
 }
 function setTabEvent(tab,evId){
   /* tabEvents removed */
@@ -1686,6 +1687,32 @@ function getActiveEvent(){
 function getActiveEvents(){
   const ids=DB.activeEventId?[DB.activeEventId]:[];
   return DB.eventos.filter(e=>ids.includes(e.id));
+}
+// ── Evento de trabajo personal (favorito local por usuario) ──
+// Cada usuario puede elegir con qué evento trabajar localmente.
+// Solo el SA puede activar/desactivar el evento global.
+function _userFavKey(){return SK+'_ufav_'+(CU?.id||'anon');}
+function getUserWorkEventId(){
+  // Devuelve el evento favorito personal si existe y está en la lista,
+  // si no, cae al evento activo global.
+  try{
+    const fav=localStorage.getItem(_userFavKey());
+    if(fav&&DB.eventos.find(e=>e.id===fav))return fav;
+  }catch(e){}
+  return DB.activeEventId||null;
+}
+function getUserWorkEvent(){
+  const id=getUserWorkEventId();
+  return id?DB.eventos.find(e=>e.id===id)||null:null;
+}
+function setUserWorkEvent(evId){
+  try{
+    if(evId)localStorage.setItem(_userFavKey(),evId);
+    else localStorage.removeItem(_userFavKey());
+  }catch(e){}
+  renderTab(curTab);renderHdr();
+  const ev=evId?DB.eventos.find(e=>e.id===evId):null;
+  toast(ev?'⭐ Trabajando con: '+ev.nombre:'⭐ Favorito quitado','var(--blue)',2500);
 }
 
 const _FMAP={remolque:'fg-remolque',tipoVehiculo:'fg-tipoVeh',descargaTipo:'fg-descarga',llamador:'fg-llamador',ref:'fg-ref',empresa:'fg-empresa',montador:'fg-montador',expositor:'fg-expositor',nombre:'fg-nombre',apellido:'fg-apellido',pasaporte:'fg-pasaporte',fechaNacimiento:'fg-fechaNac',fechaExpiracion:'fg-fechaExp',pais:'fg-pais',telefono:'fg-telefono',email:'fg-email',comentario:'fg-comentario',acceso:'fg-acceso',puertaHall:'fg-puertaHall'};
@@ -2043,7 +2070,7 @@ function togglePosAuto(){
 function canCleanPerm(){return isSA()||hasPerm('canClean');}
 function canSaveTpl(){return hasPerm('canSaveTpl');}
 function canDelTpl(){return isSA()||hasPerm('canDelTpl');}
-function canActivarEvento(){return isSA()||hasPerm('canActivarEvento');}
+function canActivarEvento(){return isSA();}
 function canDesactivarEvento(){return isSA();}
 function canMensajes(){return hasPerm('canMensajes');}
 function canEditEvento(){return isSA()||hasPerm('canEditEvento');}
@@ -2656,10 +2683,11 @@ function renderHdr(){
   const esp=DB.listaNegra.length;
   const evCount=DB.activeEventId?1:0;
   const activeEvNames=DB.activeEventId?[DB.eventos.find(e=>e.id===DB.activeEventId)].filter(Boolean):[];
+  const isUserFavEv=ev&&getUserWorkEventId()===ev.id&&ev.id!==DB.activeEventId;
   const w=document.getElementById('hdrCnts');if(!w)return;
   w.innerHTML=`
     <div style="display:flex;align-items:center;gap:4px">
-      ${ev?`<span class="ev-pill" style="font-size:12px;cursor:pointer;margin-left:52px" onclick="goTab('eventos')">${ev.ico||'📋'} ${ev.nombre}</span>`:'<span style="font-size:11px;color:var(--text3);margin-left:52px">Sin evento</span>'}
+      ${ev?`<span class="ev-pill" style="font-size:12px;cursor:pointer;margin-left:52px" onclick="goTab('eventos')" title="${isUserFavEv?'Mi evento favorito':'Evento activo global'}">${ev.ico||'📋'} ${ev.nombre}${isUserFavEv?' <span style="font-size:10px">⭐</span>':''}</span>`:'<span style="font-size:11px;color:var(--text3);margin-left:52px">Sin evento</span>'}
     </div>
     <div style="display:flex;gap:6px;align-items:center" id="hdrStats">
       ${curTab==='recintos'?`<button class="btn btn-sm" onclick="openRecintoModal()" style="background:linear-gradient(90deg,#2563eb,#cbd5e1);color:#fff;border:none;border-radius:20px;font-weight:700"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nuevo recinto</button>`:''}
@@ -2875,8 +2903,9 @@ function _ingHistorial(collection){
 function renderIngresos(){
   const today=new Date().toISOString().slice(0,10);
   let items=[...DB.ingresos];
-  // Filter by tab event if selected, otherwise by active events
-  if(DB.activeEventId)items=items.filter(i=>!i.eventoId||i.eventoId===DB.activeEventId);
+  // Filter by user's work event (personal fav or global active)
+  const _workEvId=getUserWorkEventId();
+  if(_workEvId)items=items.filter(i=>!i.eventoId||i.eventoId===_workEvId);
   const q=(iF.q||'').toLowerCase();
   if(q)items=items.filter(i=>`${i.pos||''} ${i.matricula} ${i.nombre||''} ${i.apellido||''} ${i.empresa||''} ${i.llamador||''} ${i.referencia||''} ${(i.halls||[i.hall||'']).join(' ')} ${i.stand||''} ${i.remolque||''} ${i.montador||''} ${i.expositor||''} ${i.comentario||''} ${i.telefono||''} ${i.email||''} ${i.pasaporte||''} ${i.eventoNombre||''} ${i.puertaHall||''} ${i.tipoCarga||''}`.toLowerCase().includes(q));
   if(iF.fecha)items=items.filter(i=>i.entrada?.startsWith(iF.fecha));
@@ -3715,19 +3744,21 @@ function _ingEventos(tab){
     ${isSA()?`<button class="btn btn-p btn-sm" onclick="openEventoModal()">+ Nuevo evento</button>`:''}
     ${isSA()?`<button class="btn btn-gh btn-sm" onclick="exportEventos()">⬇ Eventos Excel</button>`:''}
     ${isSA()?`<button class="btn btn-s btn-sm" onclick="exportAll()">📦 Backup completo</button>`:''}
-    ${actIds.length&&isSA()?`<button class="btn btn-warning btn-sm" onclick="if(confirm('¿Desactivar evento?')){DB.activeEventId=null;saveDB();${renderFn}();renderHdr();}">⏹ Desactivar evento</button>`:''}
+    ${actIds.length&&isSA()?`<button class="btn btn-warning btn-sm" onclick="askDel('Desactivar evento','¿Desactivar el evento global? Los usuarios perderán su selección.',()=>{DB.activeEventId=null;DB.activeEventIds=[];saveDB();${renderFn}();renderHdr();})">⏹ Desactivar evento</button>`:''}
   </div>
   ${actIds.length?`<div style="background:var(--gll);border:1.5px solid #bbf7d0;border-radius:var(--r2);padding:8px 12px;margin-bottom:4px;font-size:12px"><b>✅ Eventos activos:</b> ${actIds.map(id=>{const ev=DB.eventos.find(x=>x.id===id);return ev?`<span class="ev-pill" style="margin-left:4px">${ev.ico||'📋'} ${ev.nombre}${DB.defaultEventId===id?' ⭐':''}</span>`:''}).join('')}</div>`:''}
   ${items.length?`<div class="tbl-wrap"><table class="dtbl"><thead><tr><th>Evento</th><th>Fechas</th><th>Recinto</th><th>Estado</th><th>Puertas</th><th>Acc.</th></tr></thead><tbody>
-    ${items.map(ev=>{const isActive=actIds.includes(ev.id);const isDefault=DB.defaultEventId===ev.id;const isFav=favId===ev.id;return`<tr style="${isActive?'background:var(--gll)':isFav?'background:var(--bll)':''}">
-      <td>${ev.ico||'📋'} <b>${ev.nombre}</b>${isFav?' <span style="font-size:10px;color:var(--blue)">⭐FAV</span>':''}</td>
+    ${items.map(ev=>{const isActive=actIds.includes(ev.id);const isDefault=DB.defaultEventId===ev.id;const isFav=favId===ev.id;const isUserWork=getUserWorkEventId()===ev.id;return`<tr style="${isActive?'background:var(--gll)':isUserWork?'background:var(--bll)':''}">
+      <td>${ev.ico||'📋'} <b>${ev.nombre}</b>${isUserWork?' <span style="font-size:10px;color:var(--blue)">⭐ Mi favorito</span>':''}</td>
       <td style="font-size:11px">${ev.ini||'–'} → ${ev.fin||'–'}</td>
       <td style="font-size:11px">${ev.recinto||'–'} ${ev.ciudad?'· '+ev.ciudad:''}</td>
       <td>${isActive?`<span class="pill pill-g"><span class="live"></span> ACTIVO${isDefault?' ⭐ DEF':''}</span>`:'<span style="font-size:11px;color:var(--text3)">Inactivo</span>'}</td>
       <td style="font-size:10px">${(ev.puertas||[]).map(p=>`<span style="background:var(--bg3);padding:1px 5px;border-radius:3px;margin:1px;display:inline-block">🚪${p.nombre}${p.qr?` <a href="${p.qr}" target="_blank" style="font-size:9px">🔗</a>`:''}</span>`).join('')||'–'}</td>
       <td><div style="display:flex;gap:2px;flex-wrap:wrap">
-        ${!isActive&&canActivarEvento()?`<button class="btn btn-success btn-xs" onclick="activarEvento('${ev.id}')">▶ Activar</button>`:isActive&&isSA()?`<button class="btn btn-danger btn-xs" onclick="desactivarEvento('${ev.id}')">⏹ Desactivar</button>`:''}
-        ${isActive&&!isDefault?`<button class="btn btn-warning btn-xs" onclick="setDefaultEvento('${ev.id}')" title="Predefinido global">⭐</button>`:''}
+        ${isSA()&&!isActive?`<button class="btn btn-success btn-xs" onclick="activarEvento('${ev.id}')">▶ Activar</button>`:''}
+        ${isSA()&&isActive?`<button class="btn btn-danger btn-xs" onclick="desactivarEvento('${ev.id}')">⏹ Desact.</button>`:''}
+        <button class="btn btn-xs ${isUserWork?'btn-p':'btn-gh'}" onclick="setUserWorkEvent('${ev.id}')" title="${isUserWork?'Quitar favorito personal':'Usar este evento para trabajar'}" style="min-width:28px">${isUserWork?'⭐':'☆'}</button>
+        ${isActive&&!isDefault&&isSA()?`<button class="btn btn-warning btn-xs" onclick="setDefaultEvento('${ev.id}')" title="Predefinido global">★</button>`:''}
         ${canEditEvento()?`<button class="btn btn-edit btn-xs" onclick="openEventoModal(DB.eventos.find(x=>x.id==='${ev.id}'))">✏️</button>`:''}
         ${isSA()?`<button class="btn btn-danger btn-xs" onclick="askDelEvento('${ev.id}')">🗑</button>`:''}
       </div></td>
@@ -3750,8 +3781,9 @@ function setFavEvento(cfgKey,evId){
 function renderIngresos2(){
   const today=new Date().toISOString().slice(0,10);
   let items=[...DB.ingresos2||[]];
-  const aEvIds=(DB.activeEventIds&&DB.activeEventIds.length)?DB.activeEventIds:(DB.activeEventId?[DB.activeEventId]:[]);
-  if(aEvIds.length)items=items.filter(i=>!i.eventoId||aEvIds.includes(i.eventoId));
+  // Filter by user's work event (personal fav or global active)
+  const _workEvId=getUserWorkEventId();
+  if(_workEvId)items=items.filter(i=>!i.eventoId||i.eventoId===_workEvId);
   const q=(iF.q2||'').toLowerCase();
   if(q)items=items.filter(i=>`${i.pos||''} ${i.matricula} ${i.nombre||''} ${i.apellido||''} ${i.empresa||''} ${i.llamador||''} ${i.referencia||''} ${(i.halls||[i.hall||'']).join(' ')} ${i.stand||''} ${i.remolque||''} ${i.montador||''} ${i.expositor||''} ${i.comentario||''} ${i.telefono||''} ${i.email||''} ${i.pasaporte||''} ${i.eventoNombre||''} ${i.puertaHall||''} ${i.tipoCarga||''}`.toLowerCase().includes(q));
   if(iF.hall2)items=items.filter(i=>(i.halls||[i.hall||'']).includes(iF.hall2));
@@ -4639,30 +4671,37 @@ function renderAnalyticsGraficos(){
 // ═══ RENDER EVENTOS TAB ═══
 function renderEventosTab(){
   const items=DB.eventos||[];const actIds=DB.activeEventId?[DB.activeEventId]:[];
+  const workId=getUserWorkEventId();const workEv=workId?items.find(e=>e.id===workId):null;
   document.getElementById('tab-eventos').innerHTML=`
   <div style="margin-bottom:4px;display:flex;gap:6px;flex-wrap:wrap">
     ${isSA()?`<button class="btn btn-p btn-sm" onclick="openEventoModal()">+ Nuevo evento</button>`:''}
     ${isSA()?`<button class="btn btn-gh btn-sm" onclick="exportEventos()">⬇ Eventos Excel</button>`:''}
     ${isSA()?`<button class="btn btn-s btn-sm" onclick="exportAll()">📦 Backup completo</button>`:''}
-    ${actIds.length&&isSA()?`<button class="btn btn-warning btn-sm" onclick="if(confirm('¿Desactivar evento?')){DB.activeEventId=null;saveDB();renderEventosTab();renderHdr();}">⏹ Desactivar evento</button>`:''}
+    ${actIds.length&&isSA()?`<button class="btn btn-warning btn-sm" onclick="askDel('Desactivar evento global','¿Desactivar el evento global para todos los usuarios?',()=>{DB.activeEventId=null;DB.activeEventIds=[];saveDB();renderEventosTab();renderHdr();})">⏹ Desactivar evento</button>`:''}
   </div>
   ${actIds.length?`<div style="background:var(--gll);border:1.5px solid #bbf7d0;border-radius:var(--r2);padding:8px 12px;margin-bottom:4px;font-size:12px"><b>✅ Eventos activos:</b> ${actIds.map(id=>{const ev=items.find(x=>x.id===id);return ev?`<span class="ev-pill" style="margin-left:4px">${ev.ico||'📋'} ${ev.nombre}${DB.defaultEventId===id?' ⭐':''}</span>`:''}).join('')}</div>`:''}
+  ${workEv?`<div style="background:var(--bll);border:1.5px solid #bfdbfe;border-radius:var(--r2);padding:8px 12px;margin-bottom:4px;font-size:12px;display:flex;align-items:center;justify-content:space-between"><span>⭐ <b>Tu evento de trabajo:</b> ${workEv.ico||'📋'} ${workEv.nombre}</span><button class="btn btn-xs btn-gh" onclick="setUserWorkEvent(null)" style="font-size:10px">✕ Quitar</button></div>`:''}
   ${items.length?`<div class="tbl-wrap"><table class="dtbl"><thead><tr><th>Evento</th><th>Fechas</th><th>Recinto</th><th>Estado</th><th>Puertas</th><th>Acc.</th></tr></thead><tbody>
-    ${items.map(ev=>{const isActive=actIds.includes(ev.id);const isDefault=DB.defaultEventId===ev.id;return`<tr style="${isActive?'background:var(--gll)':''}">
-      <td>${ev.ico||'📋'} <b>${ev.nombre}</b></td>
+    ${items.map(ev=>{const isActive=actIds.includes(ev.id);const isDefault=DB.defaultEventId===ev.id;const isUserWork=workId===ev.id;return`<tr style="${isActive?'background:var(--gll)':isUserWork?'background:var(--bll)':''}">
+      <td>${ev.ico||'📋'} <b>${ev.nombre}</b>${isUserWork?' <span style="font-size:10px;color:var(--blue)">⭐ Mi favorito</span>':''}</td>
       <td style="font-size:11px">${ev.ini||'–'} → ${ev.fin||'–'}</td>
       <td style="font-size:11px">${ev.recinto||'–'} ${ev.ciudad?'· '+ev.ciudad:''}</td>
       <td>${isActive?`<span class="pill pill-g"><span class="live"></span> ACTIVO${isDefault?' ⭐ DEF':''}</span>`:'<span style="font-size:11px;color:var(--text3)">Inactivo</span>'}</td>
       <td style="font-size:10px">${(ev.puertas||[]).map(p=>`<span style="background:var(--bg3);padding:1px 5px;border-radius:3px;margin:1px;display:inline-block">🚪${p.nombre}${p.qr?` <a href="${p.qr}" target="_blank" style="font-size:9px">🔗</a>`:''}</span>`).join('')||'–'}</td>
       <td><div style="display:flex;gap:2px;flex-wrap:wrap">
-        ${!isActive?`<button class="btn btn-success btn-xs" onclick="activarEvento('${ev.id}')">▶</button>`:`<button class="btn btn-danger btn-xs" onclick="desactivarEvento('${ev.id}')">⏹</button>`}
-        ${isActive&&!isDefault?`<button class="btn btn-warning btn-xs" onclick="setDefaultEvento('${ev.id}')" title="Predefinido global">⭐</button>`:''}
+        ${isSA()&&!isActive?`<button class="btn btn-success btn-xs" onclick="activarEvento('${ev.id}')">▶ Activar</button>`:''}
+        ${isSA()&&isActive?`<button class="btn btn-danger btn-xs" onclick="desactivarEvento('${ev.id}')">⏹ Desact.</button>`:''}
+        <button class="btn btn-xs ${isUserWork?'btn-p':'btn-gh'}" onclick="setUserWorkEvent(${isUserWork?'null':`'${ev.id}'`})" title="${isUserWork?'Quitar mi favorito':'Usar este evento para trabajar'}" style="min-width:28px">${isUserWork?'⭐':'☆'}</button>
+        ${isSA()&&isActive&&!isDefault?`<button class="btn btn-warning btn-xs" onclick="setDefaultEvento('${ev.id}')" title="Predefinido global">★</button>`:''}
         ${canEditEvento()?`<button class="btn btn-edit btn-xs" onclick="openEventoModal(DB.eventos.find(x=>x.id==='${ev.id}'))">✏️</button>`:''}
         ${isSA()?`<button class="btn btn-danger btn-xs" onclick="askDelEvento('${ev.id}')">🗑</button>`:''}
       </div></td>
     </tr>`;}).join('')}
-  </tbody></table></div>`:`<div style="padding:20px;text-align:center;color:var(--text3)">Sin eventos. Crea uno con + Nuevo evento.</div>`}`;
-}
+  </tbody></table></div>`:`<div style="padding:20px;text-align:center;color:var(--text3)">Sin eventos. Crea uno con + Nuevo evento.</div>`}
+  ${!isSA()&&!DB.activeEventId?`<div style="padding:12px 14px;background:var(--all);border:1px solid #fde68a;border-radius:var(--r2);margin-top:8px;font-size:12px;color:var(--amber)">⚠️ No hay evento activo. Contacta al SuperAdmin para activar uno.</div>`:''}
+  ${isSA()&&(DB.eventoHistorial||[]).length?`<div style="margin-top:18px"><div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:6px">📋 Historial de cambios en eventos</div><div class="tbl-wrap"><table class="dtbl"><thead><tr><th>Evento</th><th>Modificado por</th><th>Fecha</th><th></th></tr></thead><tbody>${(DB.eventoHistorial||[]).map((ev,i)=>`<tr><td><b>${ev.nombre}</b></td><td>${ev._editedBy||'?'}</td><td style="font-size:11px">${ev._editedTs||''}</td><td><button class="btn btn-xs btn-gh" onclick="restoreEventoVersion(${i})">↩ Restaurar</button></td></tr>`).join('')}</tbody></table></div></div>`:''}
+  ${isSA()&&(DB.eventosPapelera||[]).length?`<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:6px">🗑 Eventos eliminados</div><div class="tbl-wrap"><table class="dtbl"><thead><tr><th>Evento</th><th>Eliminado por</th><th>Fecha</th><th></th></tr></thead><tbody>${(DB.eventosPapelera||[]).map((ev,i)=>`<tr><td><b>${ev.nombre}</b></td><td>${ev._deletedBy||'?'}</td><td style="font-size:11px">${ev._deletedTs||''}</td><td><button class="btn btn-xs btn-p" onclick="restoreEventoDeleted(${i})">↩ Restaurar</button></td></tr>`).join('')}</tbody></table></div></div>`:''}
+`;}
 // ═══ RENDER RECINTOS ═══
 let _recHallsTemp=[],_recPuertasTemp=[],editRecId=null;
 function renderRecintos(){
@@ -4833,13 +4872,11 @@ function openIngModal(i){
   // Multi-hall
   _fiHalls=i?.halls?[...i.halls]:(i?.hall?[i.hall]:[]);
   renderHallTags();
-  // Evento activo como default — set selector
+  // Evento de trabajo del usuario como default — set selector
   const _evSel=document.getElementById('fiEventoId');
   if(_evSel){
     if(i?.eventoId)_evSel.value=i.eventoId;
-    else if(DB.activeEventId)_evSel.value=DB.activeEventId;
-    else if(DB.defaultEventId)_evSel.value=DB.defaultEventId;
-    else _evSel.value='';
+    else{const _defEv=getUserWorkEventId()||DB.defaultEventId||'';_evSel.value=_defEv;}
   }
   document.getElementById('fiHistorial').style.display='none';
   document.getElementById('fiBlkWarn').style.display='none';
@@ -5876,10 +5913,10 @@ function restoreEventoDeleted(idx){
   saveDB();renderEventosTab();toast('↩ Evento restaurado','var(--green)');
 }
 function activarEvento(id){
-  if(!canActivarEvento()){toast('Sin permiso para activar eventos','var(--red)');return;}
+  if(!isSA()){toast('Solo SuperAdmin puede activar eventos','var(--red)');return;}
   DB.activeEventId=id||null;
   DB.activeEventIds=id?[id]:[];
-  saveDB();renderTab(curTab);renderHdr();toast(id?'▶ Evento activo: '+(DB.eventos.find(e=>e.id===id)?.nombre||id):'⏹ Sin evento activo');
+  saveDB();renderTab(curTab);renderHdr();toast(id?'▶ Evento activado: '+(DB.eventos.find(e=>e.id===id)?.nombre||id):'⏹ Sin evento activo');
 }
 function desactivarEvento(id){
   if(!isSA()){toast('Solo SuperAdmin puede desactivar eventos','var(--red)');return;}
@@ -5887,6 +5924,7 @@ function desactivarEvento(id){
   saveDB();renderTab(curTab);renderHdr();toast('⏹ Evento desactivado');
 }
 function setDefaultEvento(id){
+  if(!isSA()){toast('Solo SuperAdmin puede cambiar el evento activo','var(--red)');return;}
   DB.activeEventId=id;
   DB.activeEventIds=id?[id]:[];
   saveDB();renderTab(curTab);renderHdr();toast('⭐ Evento activo');
