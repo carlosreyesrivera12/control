@@ -951,6 +951,27 @@
   // ─── API PÚBLICA ──────────────────────────────────────────────────────────
   window._OCR = {
     setService,
+    // runFromBlob: llamado desde captureOCR del INDEX como alternativa a callClaudeOCR
+    runFromBlob: async function(blob) {
+      try {
+        const result = await runOCR(blob);
+        if (result && result.plate) {
+          window.camResultMat = result.plate;
+          const el = document.getElementById('camResult');
+          const btn = document.getElementById('btnCamUse');
+          const st = document.getElementById('camStatus');
+          if (el) el.textContent = result.plate + (result.country ? ' [' + result.country + ']' : '');
+          if (btn) btn.style.display = 'inline-flex';
+          if (st) st.textContent = '✅ Detectada';
+        } else {
+          const st = document.getElementById('camStatus');
+          if (st) st.textContent = '❌ No detectada';
+        }
+      } catch(e) {
+        const st = document.getElementById('camStatus');
+        if (st) st.textContent = '❌ Error: ' + e.message;
+      }
+    },
     _refreshCamToggle: function() { if (typeof _refreshCamToggle === 'function') _refreshCamToggle(); },
     resetStats: function () {
       const _isSA2 = (typeof isSA === 'function' && isSA()) || (window.CU && window.CU.rol === 'superadmin');
