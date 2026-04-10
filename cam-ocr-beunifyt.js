@@ -32,7 +32,7 @@
     DE:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}[A-Z]?$/,
     IT:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
     GB:/^[A-Z]{2}\d{2}[A-Z]{3}$/,
-    PL:/^[A-Z]{2,3}[A-Z0-9]{3,6}$/,
+    PL:/^[A-Z]{2,3}\d{3,5}$|^[A-Z]{2,3}\d{3,5}[A-Z]{1,2}$|^[A-Z]{2,3}[A-Z]{1,2}\d{3,4}$|^[A-Z]{2}\d{4,5}[A-Z]?$/,
     PT:/^[A-Z]{2}\d{2}[A-Z]{2}$|^\d{2}[A-Z]{2}\d{2}$/,
     NL:/^[A-Z]{2}\d{2}[A-Z]{2}$|^\d{2}[A-Z]{3}\d$/,
     BE:/^[1-9][A-Z]{3}\d{3}$/,
@@ -48,7 +48,7 @@
     RO:/^[A-Z]{1,2}\d{2,3}[A-Z]{3}$/,
     BG:/^[A-Z]{1,2}\d{4}[A-Z]{2}$/,
     HR:/^[A-Z]{2}\d{3,4}[A-Z]{2}$/,
-    SI:/^[A-Z]{2}[A-Z0-9]{3,5}$/,
+    SI:/^[A-Z]{2}[A-Z]{1,2}[0-9]{2}$|^[A-Z]{2}[0-9][A-Z]{2}[0-9]{2}$/,
     GR:/^[A-Z]{3}\d{4}$/,
     EE:/^\d{3}[A-Z]{3}$/,
     LV:/^[A-Z]{2}\d{4}$/,
@@ -76,7 +76,7 @@
     AD:/^[A-Z]{1,2}\d{4}$/,
     MC:/^\d{3}[A-Z]{3}$/,
     GI:/^[A-Z]{3}\d{4}$/,
-    SM:/^\d{1,5}$/,
+    SM:/^\d{4,5}$/,
     VA:/^SCV\d{1,5}$/,
     MA:/^\d{1,5}[A-Z]\d{1,2}$/,
     DZ:/^\d{7}\d{4}$/,
@@ -87,7 +87,12 @@
   const BLACKLIST = new Set(['TIR','PL','EU','DE','FR','ES','GB','IT','PT','NL','BE',
     'SCANIA','VOLVO','SCHMITZ','MERCEDES','RENAULT','MAN','DAF','IVECO','FORD',
     'RANGE','ROVER','BMW','AUDI','FIAT','SEAT','OPEL','PEUGEOT','CITROEN',
-    'TRAILER','TRUCK','CARGO','TRANS','LOG','GROUP','SRL','SPA','GMBH','LTD']);
+    'TRAILER','TRUCK','TRUCKS','CARGO','TRANS','LOG','GROUP','SRL','SPA','GMBH','LTD',
+    // Palabras de eventos/lugares que nunca son matrículas
+    'SEAFOOD','BARCELONA','MADRID','FIRA','HALL','STAND','EXPO','FAIR','SALON',
+    'ENTER','EXIT','SALIDA','ENTRADA','ACCESO','CONTROL','RAMPA','PARKING',
+    // Años comunes
+    '2023','2024','2025','2026','2027','2028']);
 
   const FIX_D = {'O':'0','I':'1','Z':'2','S':'5','B':'8','G':'6'};
   const FIX_L = {'0':'O','1':'I','2':'Z','5':'S','8':'B','6':'G'};
@@ -238,23 +243,30 @@
     if (BLACKLIST.has(t)) return -20;
     if (/^[A-Z]{5,}$/.test(t)) return -8; // marcas: SCHMITZ, SCANIA, VOLVO...
     let s = t.length;
-    for (const r of Object.values(PAT)) if (r.test(t)) { s += 15; break; }
+    let _bestBonus = 0;
+    for (const [_cc, _r] of Object.entries(PAT)) {
+      if (_r.test(t)) { const _alts=(_r.source.match(/\|/g)||[]).length; const _b = 15 + Math.min(5, Math.floor(_r.source.length/10/(_alts+1))); if(_b>_bestBonus)_bestBonus=_b; }
+    }
+    s += _bestBonus;
     const hasL = /[A-Z]/.test(t), hasD = /[0-9]/.test(t);
     if (hasL && hasD) s += 10;
     if (!hasD) s -= 8; // penalizar sin dígitos
     return s;
   }
 
+  const SCHEMAS = {
+    ES:'DDDDLLL',FR:'LLDDDLL',DE:'LLLDDD',IT:'LLDDDLL',GB:'LLDDLLL',
+    PL:'LLLAAAAA',PT:'LLDDLL',NL:'LLDDLL',BE:'DLLLDDD',AT:'LLLDDD',
+    CH:'LLDDDDDD',SE:'LLLDDA',NO:'LLDDDDD',DK:'LLDDDDD',CZ:'DLLDDDD',
+    SK:'LLDDDLL',HU:'LLLDDD',RO:'LLDDDLLL',BG:'LLDDDDLL',HR:'LLDDDLL',
+    TR:'DDLLLDDDD',UA:'LLDDDDLL',BY:'DDDDLLD',
+    RS:'LLDDDLL',GE:'LLDDDLL',AL:'LLDDDLL',MK:'LLDDDDLL',
+    AM:'DDLLDDD',AZ:'DDLLDDD',XK:'DDLLLDDD',
+  };
+
   function _matchCountry(plate) {
-    const schemas = {
-      ES:'DDDDLLL',FR:'LLDDDLL',DE:'LLLDDD',IT:'LLDDDLL',GB:'LLDLLLL',
-      PL:'LLLAAAAA',PT:'LLDDLL',NL:'LLDDLL',BE:'DLLLDDD',AT:'LLLDDD',
-      CH:'LLDDDDDD',SE:'LLLDDA',NO:'LLDDDDD',DK:'LLDDDDD',CZ:'DLLDDDD',
-      SK:'LLDDDLL',HU:'LLLDDD',RO:'LLDDDLLL',BG:'LLDDDDLL',HR:'LLDDDLL',
-      TR:'DDLLLDDDD',UA:'LLDDDDLL',BY:'DDDDLLD',
-    };
     for (const [cc, r] of Object.entries(PAT)) {
-      if (r.test(plate)) return { cc, schema: schemas[cc] || '' };
+      if (r.test(plate)) return { cc, schema: SCHEMAS[cc] || '' };
     }
     return null;
   }
@@ -275,36 +287,131 @@
   const CYR2LAT = {'А':'A','В':'B','Е':'E','К':'K','М':'M','Н':'H','О':'O','Р':'P','С':'C','Т':'T','У':'Y','Х':'X'};
 
   function _extractPlate(rawText) {
-    // Normalizar cirílico a latino antes de procesar
-    let normalized = rawText.toUpperCase();
-    Object.entries(CYR2LAT).forEach(([c,l]) => { normalized = normalized.split(c).join(l); });
-    const tokens = normalized
+    // 1. Normalizar: cirílico→latino, mayúsculas
+    let norm = rawText.toUpperCase();
+    Object.entries(CYR2LAT).forEach(([c,l]) => { norm = norm.split(c).join(l); });
+
+    // 2. Tokenizar
+    const tokens = norm
       .replace(/[^A-Z0-9\s\-·\.]/g, ' ')
       .split(/[\s\-·\.]+/)
       .map(t => t.trim())
-      .filter(t => t.length >= 2);
+      .filter(t => t.length >= 1 && (t.length >= 2 || /^[A-Z0-9]$/.test(t)));
 
+    // 3. Generar candidatos: tokens simples + combinaciones 2, 3 y 4
     const cands = [];
     for (let i = 0; i < tokens.length; i++) {
       cands.push({ text: tokens[i], score: _score(tokens[i]) });
+
+      // Combinación 2 tokens (no blacklisteados)
       if (i + 1 < tokens.length) {
-        const c2 = tokens[i] + tokens[i + 1];
-        cands.push({ text: c2, score: _score(c2) + 2 });
+        const bl1 = BLACKLIST.has(tokens[i]), bl2 = BLACKLIST.has(tokens[i+1]);
+        if (!bl1 && !bl2) {
+          const c2 = tokens[i] + tokens[i+1];
+          cands.push({ text: c2, score: _score(c2) + 2 });
+        }
       }
+
+      // Combinación 3 tokens
       if (i + 2 < tokens.length) {
-        const c3 = tokens[i] + tokens[i + 1] + tokens[i + 2];
-        cands.push({ text: c3, score: _score(c3) + 3 });
+        const bl1=BLACKLIST.has(tokens[i]),bl2=BLACKLIST.has(tokens[i+1]),bl3=BLACKLIST.has(tokens[i+2]);
+        // FIX-D: no incluir token de 1 char LETRA al final si el anterior ya es numérico
+        // FIX-D: evitar añadir letra suelta al final solo si el resultado sería >8 chars
+        const c3preview = tokens[i]+tokens[i+1]+tokens[i+2];
+        const lastIsTrailingChar = tokens[i+2].length === 1 && /^[A-Z]$/.test(tokens[i+2]) && /^\d+$/.test(tokens[i+1]) && c3preview.length > 8;
+        if (!bl1 && !bl2 && !bl3 && !lastIsTrailingChar) {
+          const c3 = tokens[i] + tokens[i+1] + tokens[i+2];
+          cands.push({ text: c3, score: _score(c3) + 3 });
+        }
+      }
+
+      // FIX-B: Combinación 4 tokens (para matrículas fragmentadas en 4 partes)
+      if (i + 3 < tokens.length) {
+        const bl1=BLACKLIST.has(tokens[i]),bl2=BLACKLIST.has(tokens[i+1]);
+        const bl3=BLACKLIST.has(tokens[i+2]),bl4=BLACKLIST.has(tokens[i+3]);
+        if (!bl1 && !bl2 && !bl3 && !bl4) {
+          const c4 = tokens[i] + tokens[i+1] + tokens[i+2] + tokens[i+3];
+          // Solo si la combinación tiene sentido como matrícula (5-10 chars)
+          if (c4.length >= 5 && c4.length <= 10) {
+            cands.push({ text: c4, score: _score(c4) + 4 });
+          }
+        }
       }
     }
-    cands.sort((a, b) => b.score - a.score);
+
+    // Ordenar por score desc, desempatar por longitud desc (más chars = más info)
+    cands.sort((a, b) => b.score !== a.score ? b.score - a.score : b.text.length - a.text.length);
     const best = cands[0];
-    if (!best || best.score < 4) return null;
 
-    let plate = best.text.replace(/[^A-Z0-9]/g, '');
-    const matched = _matchCountry(plate);
-    if (matched) plate = _applySchema(plate, matched.schema);
+    // Preferir candidato alfanumérico con longitud mínima de matrícula real (5 chars)
+    const bestAlpha = cands.find(c =>
+      /[A-Z]/.test(c.text) && /[0-9]/.test(c.text) &&
+      c.score >= 6 &&
+      c.text.replace(/[^A-Z0-9]/g,'').length >= 5
+    );
+    const winner = bestAlpha || (best && best.score >= 8 ? best : null);
+    if (!winner) return null;
 
-    return { plate, country: matched?.cc || null, score: best.score };
+    let plate = winner.text.replace(/[^A-Z0-9]/g, '');
+
+    // FIX-A: validar que el resultado casa con algún patrón conocido
+    // Si no casa directo, intentar schema correction con países candidatos
+    let matched = _matchCountry(plate);
+
+    // Si no casa directo, intentar schema correction con países candidatos
+    // Precorrección: si el primer char es confusor letra-dígito y el resultado casa con país
+    // Precorrección: corregir confusor en pos-0 si la versión corregida tiene score >= original
+    if (plate.length >= 5 && FIX_D[plate[0]] && /^[0-9]{2}/.test(plate.slice(1))) {
+      const _pre = FIX_D[plate[0]] + plate.slice(1);
+      if (_matchCountry(_pre) && _score(_pre) >= _score(plate)) plate = _pre;
+    }
+    let matched = _matchCountry(plate);
+    const matchedScore = matched ? _score(plate) : -1;
+
+    // FIX-C: precorrección de confusores OCR
+    // Si ya hay match: solo probar variantes FIX_D (letra→dígito), no FIX_L que rompería
+    // Si no hay match: probar ambos FIX_D y FIX_L
+    if (plate.length >= 4) {
+      const variants = new Set();
+      for (let i = 0; i < plate.length; i++) {
+        const c = plate[i];
+        if (FIX_D[c]) variants.add(plate.slice(0,i) + FIX_D[c] + plate.slice(i+1));
+        // FIX_L solo para chars internos (no pos 0) para evitar 1→I al inicio
+        if (!matched && i > 0 && FIX_L[c]) variants.add(plate.slice(0,i) + FIX_L[c] + plate.slice(i+1));
+      }
+      let bestV = null, bestVScore = matchedScore, bestVM = null;
+      for (const v of variants) {
+        const m2 = _matchCountry(v);
+        if (m2) { const vs = _score(v); if (vs > bestVScore) { bestVScore = vs; bestV = v; bestVM = m2; } }
+      }
+      if (bestV) { plate = bestV; matched = bestVM; }
+    }
+
+    // FIX-E: schema correction multi-pass con todos los países candidatos
+    if (!matched) {
+      const tryCCs = ['ES','FR','GB','DE','IT','PT','NL','BE','AT','CH','UA','TR','RO','BY','PL','HU','SE','NO','DK','BG','HR','SK','CZ','LV','LT','LU','EE','IE','CY','MT','MD','GE','AM','AZ','RS','BA','ME','MK','AL','XK'];
+      for (const tryCC of tryCCs) {
+        const trySchema = SCHEMAS[tryCC];
+        if (!trySchema) continue;
+        const schemaLen = trySchema.replace(/[^DLA]/g,'').length;
+        if (schemaLen !== plate.length) continue;
+        const corrected = _applySchema(plate, trySchema);
+        if (corrected !== plate) {
+          const m2 = _matchCountry(corrected);
+          if (m2 && m2.cc === tryCC) { plate = corrected; matched = m2; break; }
+        }
+      }
+    }
+
+    // Validación final: sin match de país, criterios más estrictos
+    if (!matched) {
+      if (_score(plate) < 15) return null;
+      if (!(/[A-Z]/.test(plate) && /[0-9]/.test(plate))) return null;
+      // Sin match de país conocido, el string NO es una matrícula reconocible
+      return null;
+    }
+
+    return { plate, country: matched?.cc || null, score: winner.score };
   }
 
   // ─── OCR LOCAL (TESSERACT) ────────────────────────────────────────────────
@@ -1007,9 +1114,15 @@
             const ti = tabs.indexOf(tgt);
             container.insertBefore(src, ti > tabs.indexOf(src) ? tgt.nextSibling : tgt);
             if (window.DB) {
-              DB.tabOrder = [...container.querySelectorAll('.btn-tab')].map(b => b.dataset.tab);
-              // Backup por usuario
-              try { const uid = window.CU?.id||'x'; localStorage.setItem('_tabOrder_'+uid, JSON.stringify(DB.tabOrder)); } catch(e2) {}
+              const _tOrder = [...container.querySelectorAll('.btn-tab')].map(b => b.dataset.tab);
+              DB.tabOrder = _tOrder;
+              // Guardar por usuario (igual que tabDrop desktop via override)
+              const _tUid = window.CU?.id;
+              if (_tUid) {
+                if (!DB.tabOrders) DB.tabOrders = {};
+                DB.tabOrders[_tUid] = _tOrder;
+              }
+              try { localStorage.setItem('_tabOrder_'+(_tUid||'x'), JSON.stringify(_tOrder)); } catch(e2) {}
               if (typeof saveDB === 'function') saveDB();
             }
           }
@@ -1208,7 +1321,8 @@
       window.setSyncStatus = function(s) {
         if (typeof _origSync === 'function') _origSync(s);
         if (s === 'ok' && window.CU && typeof applyTabOrder === 'function') {
-          setTimeout(applyTabOrder, 150);
+          // Delay mayor para que Firebase restaure DB.tabOrders antes de aplicar el orden
+          setTimeout(applyTabOrder, 600);
         }
       };
     }
