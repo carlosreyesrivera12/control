@@ -199,6 +199,18 @@
   }
 
   // ─── SCORING & EXTRACCIÓN ─────────────────────────────────────────────────
+  // Exponer _scorePlate globalmente — callClaudeOCR del INDEX la necesita
+  window._scorePlate = function(txt) {
+    const t = (txt||"").replace(/[^A-Z0-9]/g, "");
+    if (t.length < 3 || t.length > 10) return 0;
+    if (BLACKLIST.has(t)) return -10;
+    let s = t.length;
+    for (const r of Object.values(PAT)) if (r.test(t)) { s += 15; break; }
+    const hasL = /[A-Z]/.test(t), hasD = /[0-9]/.test(t);
+    if (hasL && hasD) s += 8; else s -= 2;
+    return s;
+  };
+
   function _score(txt) {
     const t = txt.replace(/[^A-Z0-9]/g, '');
     if (t.length < 3 || t.length > 10) return 0;
@@ -782,34 +794,10 @@
 </div>`;
   }
 
-  // ─── INYECCIÓN EN TAB-USUARIOS ────────────────────────────────────────────
-  // Hook: después de cada renderUsuarios, inyectar la sección si es SA
-  const _origRenderUsuarios = window.renderUsuarios;
-  window.renderUsuarios = function () {
-    if (typeof _origRenderUsuarios === 'function') _origRenderUsuarios();
+  // renderUsuarios: hook reemplazado por MutationObserver (_startTabObserver)
 
-    // Solo SA
-    if (!window.isSA || !isSA()) return;
-
-    const tab = document.getElementById('tab-usuarios');
-    if (!tab) return;
-
-    // Buscar la zona peligrosa e inyectar después
-    const dangerDiv = tab.querySelector('div[style*="var(--rll)"]');
-    if (!dangerDiv) {
-      // Si no encontramos el div, añadir al final
-      const wrap = document.createElement('div');
-      wrap.id = '_ocrStatsSection';
-      tab.appendChild(wrap);
-    } else {
-      // Insertar después del div zona peligrosa
-      const wrap = document.createElement('div');
-      wrap.id = '_ocrStatsSection';
-      dangerDiv.parentNode.insertBefore(wrap, dangerDiv.nextSibling);
-    }
-
-    renderOcrStatsSection();
-  };
+  // ─── FIX: exponer _scorePlate globalmente (Vision la necesita) ───────────
+  window._scorePlate = _score;
 
   // ─── API PÚBLICA ──────────────────────────────────────────────────────────
   window._OCR = {
@@ -818,21 +806,72 @@
       if (!window.isSA || !isSA()) { if (typeof toast === 'function') toast('Solo SA', 'var(--red)'); return; }
       if (!confirm('¿Resetear todos los contadores OCR?')) return;
       if (window.DB) { DB.ocrStats = []; if (typeof saveDB === 'function') saveDB(); }
-      renderOcrStatsSection();
+      _injectOcrSection();
       if (typeof toast === 'function') toast('🗑 Contadores reseteados', 'var(--red)');
     },
     getStats: function () { return (window.DB?.ocrStats) || []; },
     renderStats: renderOcrStatsSection,
   };
 
+  // ─── INYECCIÓN ROBUSTA EN TAB-USUARIOS ───────────────────────────────────
+  // Usamos MutationObserver en el tab-usuarios para detectar cuando se renderiza
+  // Esto evita conflictos con los múltiples patches de renderUsuarios en INDEX
+  function _injectOcrSection() {
+    if (!window.isSA || !isSA()) return;
+    const tab = document.getElementById('tab-usuarios');
+    if (!tab) return;
+
+    // Evitar duplicados
+    const existing = document.getElementById('_ocrStatsSection');
+    if (existing) { renderOcrStatsSection(); return; }
+
+    // Buscar zona peligrosa e insertar después
+    const dangerDiv = Array.from(tab.querySelectorAll('div')).find(d =>
+      d.innerHTML && (
+        d.innerHTML.includes('Borrar TODOS los datos') ||
+        d.innerHTML.includes('Zona peligrosa')
+      ) && d.children.length > 0
+    );
+
+    const wrap = document.createElement('div');
+    wrap.id = '_ocrStatsSection';
+
+    if (dangerDiv) {
+      dangerDiv.parentNode.insertBefore(wrap, dangerDiv.nextSibling);
+    } else {
+      tab.appendChild(wrap);
+    }
+    renderOcrStatsSection();
+  }
+
+  // Observer sobre tab-usuarios
+  function _startTabObserver() {
+    const tab = document.getElementById('tab-usuarios');
+    if (!tab) { setTimeout(_startTabObserver, 500); return; }
+
+    const obs = new MutationObserver(() => {
+      // Re-inyectar siempre que cambie el contenido del tab (renderUsuarios lo vacía y rehace)
+      setTimeout(_injectOcrSection, 80);
+    });
+    obs.observe(tab, { childList: true, subtree: false });
+
+    // También hookear goTab para detectar cuando se navega a usuarios
+    const _origGoTab = window.goTab;
+    window.goTab = function(tab2, btn) {
+      if (typeof _origGoTab === 'function') _origGoTab(tab2, btn);
+      if (tab2 === 'usuarios') setTimeout(_injectOcrSection, 150);
+    };
+  }
+
   // ─── INIT ─────────────────────────────────────────────────────────────────
-  // Precargar Tesseract en background si el servicio es local
   setTimeout(() => {
     ensureOcrStats();
     if (getService() === 'local') initTesseract();
-    // Re-render stats si ya está en tab usuarios
-    if (document.getElementById('_ocrStatsSection')) renderOcrStatsSection();
-  }, 1500);
+    _startTabObserver();
+    // Si ya estamos en tab usuarios al cargar
+    const tab = document.getElementById('tab-usuarios');
+    if (tab && tab.style.display !== 'none') _injectOcrSection();
+  }, 800);
 
   console.log('[BeUnifyT OCR] Módulo cargado. Servicio:', getService());
 
