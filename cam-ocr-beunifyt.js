@@ -27,31 +27,64 @@
 
   // ─── PATRONES 53 PAÍSES ───────────────────────────────────────────────────
   const PAT = {
-    ES:/^\d{4}[BCDFGHJKLMNPRSTUVWXYZ]{3}$/,    FR:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
-    DE:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}[A-Z]?$/, IT:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
-    GB:/^[A-Z]{2}\d{2}[A-Z]{3}$/,              PL:/^[A-Z]{2,3}[A-Z0-9]{4,5}$/,
-    PT:/^[A-Z]{2}\d{2}[A-Z]{2}$/,              NL:/^[A-Z]{2}\d{2}[A-Z]{2}$/,
-    BE:/^[1-9][A-Z]{3}\d{3}$/,                 AT:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}$/,
-    CH:/^[A-Z]{2}\d{1,6}$/,                    SE:/^[A-Z]{3}\d{2}[A-Z0-9]$/,
-    NO:/^[A-Z]{2}\d{5}$/,                       DK:/^[A-Z]{2}\d{5}$/,
-    FI:/^[A-Z]{2,3}\d{1,3}$/,                  CZ:/^\d[A-Z]{2}\d{4}$/,
-    SK:/^[A-Z]{2}\d{3}[A-Z]{2}$/,              HU:/^[A-Z]{3}\d{3}$/,
-    RO:/^[A-Z]{1,2}\d{2,3}[A-Z]{3}$/,          BG:/^[A-Z]{1,2}\d{4}[A-Z]{2}$/,
-    HR:/^[A-Z]{2}\d{3,4}[A-Z]{2}$/,            SI:/^[A-Z]{2}[A-Z0-9]{5}$/,
-    GR:/^[A-Z]{3}\d{4}$/,                       EE:/^\d{3}[A-Z]{3}$/,
-    LV:/^[A-Z]{2}\d{4}$/,                       LT:/^[A-Z]{3}\d{3}$/,
-    LU:/^[A-Z]{2}\d{4}$/,                       IE:/^\d{2,3}[A-Z]{1,2}\d{1,6}$/,
-    CY:/^[A-Z]{3}\d{3}$/,                       MT:/^[A-Z]{3}\d{3}$/,
-    RS:/^[A-Z]{2}\d{3,4}[A-Z]{2}$/,            TR:/^\d{2}[A-Z]{1,3}\d{2,4}$/,
-    UA:/^[A-Z]{2}\d{4}[A-Z]{2}$/,              BY:/^\d{4}[A-Z]{2}\d$/,
-    MD:/^[A-Z]{3}\d{3}$/,                       GE:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
-    AM:/^\d{2}[A-Z]{2}\d{3}$/,                  AZ:/^\d{2}[A-Z]{2}\d{3}$/,
-    BA:/^[A-Z]\d{2}[A-Z]\d{3}$/,               ME:/^[A-Z]{4}\d{3,4}$/,
-    MK:/^[A-Z]{2}\d{4}[A-Z]{2}$/,              AL:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
-    XK:/^\d{2}[A-Z]{3}\d{3}$/,                  IS:/^[A-Z]{1,3}\d{1,3}$/,
-    LI:/^FL\d{1,5}$/,                           AD:/^[A-Z]{1,2}\d{4}$/,
-    MC:/^\d{3}[A-Z]{3}$/,                       GI:/^[A-Z]{3}\d{4}$/,
-    MA:/^\d{1,5}[A-Z]\d{1,2}$/,                TN:/^\d{3}[A-Z]{3}\d{4}$/,
+    // EU-27
+    ES:/^\d{4}[BCDFGHJKLMNPRSTUVWXYZ]{3}$/,           // 1234BCD
+    FR:/^[A-Z]{2}\d{3}[A-Z]{2}$/,                     // AB123CD
+    DE:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}[A-Z]?$/,        // M AB 1234 (hasta 8 chars)
+    IT:/^[A-Z]{2}\d{3}[A-Z]{2}$/,                     // AB123CD
+    GB:/^[A-Z]{2}\d{2}[A-Z]{3}$/,                     // AB12ABC
+    PL:/^[A-Z]{2,3}[A-Z0-9]{3,6}$/,                   // WR94433, WAB12345 (hasta 9)
+    PT:/^[A-Z]{2}\d{2}[A-Z]{2}$|^\d{2}[A-Z]{2}\d{2}$/,
+    NL:/^[A-Z]{2}\d{2}[A-Z]{2}$|^\d{2}[A-Z]{3}\d$/,
+    BE:/^[1-9][A-Z]{3}\d{3}$/,
+    AT:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}[A-Z]?$/,
+    CH:/^[A-Z]{2}\d{1,6}[A-Z]?$/,
+    SE:/^[A-Z]{3}\d{2}[A-Z0-9]$/,
+    NO:/^[A-Z]{2}\d{5}$/,
+    DK:/^[A-Z]{2}\d{5}$/,
+    FI:/^[A-Z]{2,3}\d{1,4}$/,
+    CZ:/^\d[A-Z]{2}\d{4}$/,
+    SK:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
+    HU:/^[A-Z]{3}\d{3}$/,
+    RO:/^[A-Z]{1,2}\d{2,3}[A-Z]{3}$/,
+    BG:/^[A-Z]{1,2}\d{4}[A-Z]{2}$/,
+    HR:/^[A-Z]{2}\d{3,4}[A-Z]{2}$/,
+    SI:/^[A-Z]{2}[A-Z0-9]{3,5}$/,
+    GR:/^[A-Z]{3}\d{4}$/,
+    EE:/^\d{3}[A-Z]{3}$/,
+    LV:/^[A-Z]{2}\d{4}$/,
+    LT:/^[A-Z]{3}\d{3}$/,
+    LU:/^[A-Z]{2}\d{4}$/,
+    IE:/^\d{2,3}[A-Z]{1,2}\d{1,6}$/,
+    CY:/^[A-Z]{3}\d{3}$/,
+    MT:/^[A-Z]{3}\d{3}$/,
+    // No-UE Europa
+    RS:/^[A-Z]{2}\d{3,4}[A-Z]{2}$/,
+    TR:/^\d{2}[A-Z]{1,3}\d{2,5}$/,                    // 34ABC123 (hasta 9)
+    UA:/^[A-Z]{2}\d{4}[A-Z]{2}$/,
+    BY:/^\d{4}[A-Z]{2}\d$/,
+    RU:/^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}$/,
+    MD:/^[A-Z]{3}\d{3}$/,
+    GE:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
+    AM:/^\d{2}[A-Z]{2}\d{3}$/,
+    AZ:/^\d{2}[A-Z]{2}\d{3}$/,
+    BA:/^[A-Z]\d{2}[A-Z]\d{3}$/,
+    ME:/^[A-Z]{2,4}\d{3,4}$/,
+    MK:/^[A-Z]{2}\d{4}[A-Z]{2}$/,
+    AL:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
+    XK:/^\d{2}[A-Z]{3}\d{3}$/,
+    IS:/^[A-Z]{1,3}\d{1,3}$/,
+    LI:/^FL\d{1,5}$/,
+    AD:/^[A-Z]{1,2}\d{4}$/,
+    MC:/^\d{3}[A-Z]{3}$/,
+    GI:/^[A-Z]{3}\d{4}$/,
+    SM:/^\d{1,5}$/,
+    VA:/^SCV\d{1,5}$/,
+    // Norte África / limítrofes
+    MA:/^\d{1,5}[A-Z]\d{1,2}$/,
+    DZ:/^\d{5}\d{2}\d{4}$/,
+    TN:/^\d{3}[A-Z]{3}\d{4}$/,
+    LY:/^\d{6,7}$/,
   };
 
   const BLACKLIST = new Set(['TIR','PL','EU','DE','FR','ES','GB','IT','PT','NL','BE',
@@ -260,14 +293,20 @@
     const cands = [];
     for (let i = 0; i < tokens.length; i++) {
       cands.push({ text: tokens[i], score: _score(tokens[i]) });
+      // Combinar 2 tokens adyacentes
       if (i + 1 < tokens.length) {
-        const combined = tokens[i] + tokens[i + 1];
-        cands.push({ text: combined, score: _score(combined) + 2 });
+        const c2 = tokens[i] + tokens[i + 1];
+        cands.push({ text: c2, score: _score(c2) + 2 });
+      }
+      // Combinar 3 tokens adyacentes (p.ej. "WR 94 433" → "WR94433")
+      if (i + 2 < tokens.length) {
+        const c3 = tokens[i] + tokens[i + 1] + tokens[i + 2];
+        cands.push({ text: c3, score: _score(c3) + 3 });
       }
     }
     cands.sort((a, b) => b.score - a.score);
     const best = cands[0];
-    if (!best || best.score < 5) return null;
+    if (!best || best.score < 4) return null;
 
     let plate = best.text.replace(/[^A-Z0-9]/g, '');
     const matched = _matchCountry(plate);
@@ -531,7 +570,42 @@
     if (typeof closeOv === 'function') closeOv('mCam');
   }
 
-  // ─── BADGE SERVICIO EN MODAL CÁMARA ──────────────────────────────────────
+  // ─── TOGGLE EN MODAL CÁMARA (accesible siempre para SA) ──────────────────
+  function _ensureCamToggle() {
+    if (!window.isSA || !isSA()) return;
+    if (document.getElementById('_camSvcToggle')) return;
+    const modal = document.querySelector('#mCam .modal');
+    if (!modal) return;
+    const svc = getService();
+    const toggle = document.createElement('div');
+    toggle.id = '_camSvcToggle';
+    toggle.style.cssText = 'display:flex;gap:6px;align-items:center;justify-content:center;margin:8px 0 4px;';
+    toggle.innerHTML = `
+      <span style="font-size:10px;color:var(--text3);font-weight:700">Servicio:</span>
+      <button id="_camBtnVision" onclick="window._OCR.setService('vision');window._OCR._refreshCamToggle()"
+        style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;
+          background:${svc==='vision'?'#2563eb':'var(--bg3)'};color:${svc==='vision'?'#fff':'var(--text3)'};border-color:${svc==='vision'?'#2563eb':'var(--border)'}">
+        ☁️ Vision
+      </button>
+      <button id="_camBtnLocal" onclick="window._OCR.setService('local');window._OCR._refreshCamToggle()"
+        style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;
+          background:${svc==='local'?'#059669':'var(--bg3)'};color:${svc==='local'?'#fff':'var(--text3)'};border-color:${svc==='local'?'#059669':'var(--border)'}">
+        🔌 Local
+      </button>`;
+    // Insertar antes de los botones de captura
+    const btnRow = modal.querySelector('div[style*="display:flex"][style*="gap:8px"]');
+    if (btnRow) btnRow.parentNode.insertBefore(toggle, btnRow);
+    else modal.appendChild(toggle);
+  }
+
+  function _refreshCamToggle() {
+    const svc = getService();
+    const v = document.getElementById('_camBtnVision');
+    const l = document.getElementById('_camBtnLocal');
+    if (v) { v.style.background = svc==='vision'?'#2563eb':'var(--bg3)'; v.style.color = svc==='vision'?'#fff':'var(--text3)'; v.style.borderColor = svc==='vision'?'#2563eb':'var(--border)'; }
+    if (l) { l.style.background = svc==='local'?'#059669':'var(--bg3)'; l.style.color = svc==='local'?'#fff':'var(--text3)'; l.style.borderColor = svc==='local'?'#059669':'var(--border)'; }
+    _updateCamBadge();
+  }
   function _updateCamBadge() {
     const existing = document.getElementById('_ocrSvcBadge');
     const modal = document.querySelector('#mCam .modal');
@@ -577,7 +651,6 @@
     const svc = getService();
 
     if (svc === 'local') {
-      // Flujo local
       const modal = document.getElementById('mCam');
       if (!modal) return;
       _ensureLocalUI();
@@ -590,7 +663,7 @@
         const v = document.getElementById('camFeed');
         if (v) { v.srcObject = stream; v.style.display = 'block'; }
         modal.classList.add('open');
-        setTimeout(_updateCamBadge, 100);
+        setTimeout(() => { _updateCamBadge(); _ensureCamToggle(); }, 100);
         initTesseract().then(ok => {
           _setStatus(ok ? '📷 Listo — apunta a la matrícula' : '⚠️ Error iniciando OCR local');
         });
@@ -599,9 +672,8 @@
         document.getElementById('cameraInput')?.click();
       });
     } else {
-      // Flujo Vision original
       if (typeof _origOpenCamModal === 'function') _origOpenCamModal();
-      setTimeout(_updateCamBadge, 300);
+      setTimeout(() => { _updateCamBadge(); _ensureCamToggle(); }, 300);
     }
   };
 
@@ -802,6 +874,7 @@
   // ─── API PÚBLICA ──────────────────────────────────────────────────────────
   window._OCR = {
     setService,
+    _refreshCamToggle,
     resetStats: function () {
       if (!window.isSA || !isSA()) { if (typeof toast === 'function') toast('Solo SA', 'var(--red)'); return; }
       if (!confirm('¿Resetear todos los contadores OCR?')) return;
@@ -813,7 +886,59 @@
     renderStats: renderOcrStatsSection,
   };
 
-  // ─── INYECCIÓN ROBUSTA EN TAB-USUARIOS ───────────────────────────────────
+  // ─── FIX PERSISTENCIA TAB ORDER ──────────────────────────────────────────
+  // El problema: applyTabOrder() se llama en loginSuccess pero Firebase puede
+  // llegar después y sobrescribir DB.tabOrder sin re-aplicar el orden al DOM.
+  // Fix: hookear writeToFirebase y el listener de Firebase para re-aplicar.
+  function _fixTabPersistence() {
+    // Hook setSyncStatus para detectar cuando Firebase confirma sync
+    const _origSetSync = window.setSyncStatus;
+    if (_origSetSync && !window._tabPersistHooked) {
+      window._tabPersistHooked = true;
+      window.setSyncStatus = function(s) {
+        if (typeof _origSetSync === 'function') _origSetSync(s);
+        // Cuando Firebase sincroniza OK, re-aplicar el orden de tabs
+        if (s === 'ok' && typeof applyTabOrder === 'function') {
+          setTimeout(applyTabOrder, 100);
+        }
+      };
+    }
+
+    // Hook tabDrop para guardar por usuario además de en DB global
+    const _origTabDrop = window.tabDrop;
+    if (_origTabDrop && !window._tabDropHooked) {
+      window._tabDropHooked = true;
+      window.tabDrop = function(e) {
+        if (typeof _origTabDrop === 'function') _origTabDrop(e);
+        // Guardar copia por usuario en localStorage como backup inmediato
+        try {
+          const uid = window.CU?.id || 'default';
+          const order = (window.DB?.tabOrder) || [];
+          if (order.length) localStorage.setItem('_tabOrder_' + uid, JSON.stringify(order));
+        } catch(err) {}
+      };
+    }
+
+    // Al aplicar tab order, también intentar restaurar desde backup local si DB está vacío
+    const _origApplyTabOrder = window.applyTabOrder;
+    if (_origApplyTabOrder && !window._applyTabHooked) {
+      window._applyTabHooked = true;
+      window.applyTabOrder = function() {
+        // Si DB.tabOrder está vacío, intentar restaurar desde localStorage
+        if (window.DB && (!DB.tabOrder || !DB.tabOrder.length)) {
+          try {
+            const uid = window.CU?.id || 'default';
+            const saved = localStorage.getItem('_tabOrder_' + uid);
+            if (saved) {
+              const order = JSON.parse(saved);
+              if (order && order.length) DB.tabOrder = order;
+            }
+          } catch(err) {}
+        }
+        if (typeof _origApplyTabOrder === 'function') _origApplyTabOrder();
+      };
+    }
+  }
   // Usamos MutationObserver en el tab-usuarios para detectar cuando se renderiza
   // Esto evita conflictos con los múltiples patches de renderUsuarios en INDEX
   function _injectOcrSection() {
@@ -868,6 +993,7 @@
     ensureOcrStats();
     if (getService() === 'local') initTesseract();
     _startTabObserver();
+    _fixTabPersistence();
     // Si ya estamos en tab usuarios al cargar
     const tab = document.getElementById('tab-usuarios');
     if (tab && tab.style.display !== 'none') _injectOcrSection();
