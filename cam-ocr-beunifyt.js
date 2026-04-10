@@ -27,13 +27,12 @@
 
   // ─── PATRONES 53 PAÍSES ───────────────────────────────────────────────────
   const PAT = {
-    // EU-27
-    ES:/^\d{4}[BCDFGHJKLMNPRSTUVWXYZ]{3}$/,           // 1234BCD
-    FR:/^[A-Z]{2}\d{3}[A-Z]{2}$/,                     // AB123CD
-    DE:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}[A-Z]?$/,        // M AB 1234 (hasta 8 chars)
-    IT:/^[A-Z]{2}\d{3}[A-Z]{2}$/,                     // AB123CD
-    GB:/^[A-Z]{2}\d{2}[A-Z]{3}$/,                     // AB12ABC
-    PL:/^[A-Z]{2,3}[A-Z0-9]{3,6}$/,                   // WR94433, WAB12345 (hasta 9)
+    ES:/^\d{4}[BCDFGHJKLMNPRSTUVWXYZ]{3}$|^[A-Z]{1,2}\d{4}[A-Z]$|^[A-Z]\d{4}[A-Z]{2}$/,
+    FR:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
+    DE:/^[A-Z]{1,3}[A-Z]{1,2}\d{1,4}[A-Z]?$/,
+    IT:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
+    GB:/^[A-Z]{2}\d{2}[A-Z]{3}$/,
+    PL:/^[A-Z]{2,3}[A-Z0-9]{3,6}$/,
     PT:/^[A-Z]{2}\d{2}[A-Z]{2}$|^\d{2}[A-Z]{2}\d{2}$/,
     NL:/^[A-Z]{2}\d{2}[A-Z]{2}$|^\d{2}[A-Z]{3}\d$/,
     BE:/^[1-9][A-Z]{3}\d{3}$/,
@@ -58,12 +57,11 @@
     IE:/^\d{2,3}[A-Z]{1,2}\d{1,6}$/,
     CY:/^[A-Z]{3}\d{3}$/,
     MT:/^[A-Z]{3}\d{3}$/,
-    // No-UE Europa
     RS:/^[A-Z]{2}\d{3,4}[A-Z]{2}$/,
-    TR:/^\d{2}[A-Z]{1,3}\d{2,5}$/,                    // 34ABC123 (hasta 9)
+    TR:/^\d{2}[A-Z]{1,3}\d{2,5}$/,
     UA:/^[A-Z]{2}\d{4}[A-Z]{2}$/,
     BY:/^\d{4}[A-Z]{2}\d$/,
-    RU:/^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}$/,
+    RU:/^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}$|^[ABEHKMOPCTYХ][0-9]{3}[ABEHKMOPCTYХ]{2}[0-9]{2,3}$/,
     MD:/^[A-Z]{3}\d{3}$/,
     GE:/^[A-Z]{2}\d{3}[A-Z]{2}$/,
     AM:/^\d{2}[A-Z]{2}\d{3}$/,
@@ -80,12 +78,11 @@
     GI:/^[A-Z]{3}\d{4}$/,
     SM:/^\d{1,5}$/,
     VA:/^SCV\d{1,5}$/,
-    // Norte África / limítrofes
     MA:/^\d{1,5}[A-Z]\d{1,2}$/,
-    DZ:/^\d{5}\d{2}\d{4}$/,
+    DZ:/^\d{7}\d{4}$/,
     TN:/^\d{3}[A-Z]{3}\d{4}$/,
     LY:/^\d{6,7}$/,
-  };
+  }
 
   const BLACKLIST = new Set(['TIR','PL','EU','DE','FR','ES','GB','IT','PT','NL','BE',
     'SCANIA','VOLVO','SCHMITZ','MERCEDES','RENAULT','MAN','DAF','IVECO','FORD',
@@ -232,27 +229,19 @@
   }
 
   // ─── SCORING & EXTRACCIÓN ─────────────────────────────────────────────────
-  // Exponer _scorePlate globalmente — callClaudeOCR del INDEX la necesita
-  window._scorePlate = function(txt) {
-    const t = (txt||"").replace(/[^A-Z0-9]/g, "");
-    if (t.length < 3 || t.length > 10) return 0;
-    if (BLACKLIST.has(t)) return -10;
-    let s = t.length;
-    for (const r of Object.values(PAT)) if (r.test(t)) { s += 15; break; }
-    const hasL = /[A-Z]/.test(t), hasD = /[0-9]/.test(t);
-    if (hasL && hasD) s += 8; else s -= 2;
-    return s;
-  };
+  // _scorePlate global para callClaudeOCR del INDEX
+  window._scorePlate = _score;
 
   function _score(txt) {
     const t = txt.replace(/[^A-Z0-9]/g, '');
-    if (t.length < 3 || t.length > 10) return 0;
-    if (BLACKLIST.has(t)) return -10;
+    if (t.length < 3 || t.length > 12) return 0;
+    if (BLACKLIST.has(t)) return -20;
+    if (/^[A-Z]{5,}$/.test(t)) return -8; // marcas: SCHMITZ, SCANIA, VOLVO...
     let s = t.length;
     for (const r of Object.values(PAT)) if (r.test(t)) { s += 15; break; }
     const hasL = /[A-Z]/.test(t), hasD = /[0-9]/.test(t);
-    if (hasL && hasD) s += 8;
-    else s -= 2;
+    if (hasL && hasD) s += 10;
+    if (!hasD) s -= 8; // penalizar sin dígitos
     return s;
   }
 
@@ -282,9 +271,14 @@
     return out;
   }
 
+  // Mapa cirílico→latino para matrículas rusas/ucranianas leídas por OCR
+  const CYR2LAT = {'А':'A','В':'B','Е':'E','К':'K','М':'M','Н':'H','О':'O','Р':'P','С':'C','Т':'T','У':'Y','Х':'X'};
+
   function _extractPlate(rawText) {
-    const tokens = rawText
-      .toUpperCase()
+    // Normalizar cirílico a latino antes de procesar
+    let normalized = rawText.toUpperCase();
+    Object.entries(CYR2LAT).forEach(([c,l]) => { normalized = normalized.split(c).join(l); });
+    const tokens = normalized
       .replace(/[^A-Z0-9\s\-·\.]/g, ' ')
       .split(/[\s\-·\.]+/)
       .map(t => t.trim())
@@ -293,12 +287,10 @@
     const cands = [];
     for (let i = 0; i < tokens.length; i++) {
       cands.push({ text: tokens[i], score: _score(tokens[i]) });
-      // Combinar 2 tokens adyacentes
       if (i + 1 < tokens.length) {
         const c2 = tokens[i] + tokens[i + 1];
         cands.push({ text: c2, score: _score(c2) + 2 });
       }
-      // Combinar 3 tokens adyacentes (p.ej. "WR 94 433" → "WR94433")
       if (i + 2 < tokens.length) {
         const c3 = tokens[i] + tokens[i + 1] + tokens[i + 2];
         cands.push({ text: c3, score: _score(c3) + 3 });
@@ -363,6 +355,11 @@
       } catch (e) { /* continuar con la siguiente variante */ }
     }
 
+    // Si no hay resultado bueno, intentar con rotaciones (matrículas fotografiadas de lado)
+    if (!bestResult || bestResult.score < 10) {
+      const rotResult = await _tryRotations(source);
+      if (rotResult && rotResult.score > (bestResult?.score || 0)) return rotResult;
+    }
     return bestResult && bestResult.score >= 5 ? bestResult : null;
   }
 
@@ -570,42 +567,7 @@
     if (typeof closeOv === 'function') closeOv('mCam');
   }
 
-  // ─── TOGGLE EN MODAL CÁMARA (accesible siempre para SA) ──────────────────
-  function _ensureCamToggle() {
-    if (!window.isSA || !isSA()) return;
-    if (document.getElementById('_camSvcToggle')) return;
-    const modal = document.querySelector('#mCam .modal');
-    if (!modal) return;
-    const svc = getService();
-    const toggle = document.createElement('div');
-    toggle.id = '_camSvcToggle';
-    toggle.style.cssText = 'display:flex;gap:6px;align-items:center;justify-content:center;margin:8px 0 4px;';
-    toggle.innerHTML = `
-      <span style="font-size:10px;color:var(--text3);font-weight:700">Servicio:</span>
-      <button id="_camBtnVision" onclick="window._OCR.setService('vision');window._OCR._refreshCamToggle()"
-        style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;
-          background:${svc==='vision'?'#2563eb':'var(--bg3)'};color:${svc==='vision'?'#fff':'var(--text3)'};border-color:${svc==='vision'?'#2563eb':'var(--border)'}">
-        ☁️ Vision
-      </button>
-      <button id="_camBtnLocal" onclick="window._OCR.setService('local');window._OCR._refreshCamToggle()"
-        style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;
-          background:${svc==='local'?'#059669':'var(--bg3)'};color:${svc==='local'?'#fff':'var(--text3)'};border-color:${svc==='local'?'#059669':'var(--border)'}">
-        🔌 Local
-      </button>`;
-    // Insertar antes de los botones de captura
-    const btnRow = modal.querySelector('div[style*="display:flex"][style*="gap:8px"]');
-    if (btnRow) btnRow.parentNode.insertBefore(toggle, btnRow);
-    else modal.appendChild(toggle);
-  }
-
-  function _refreshCamToggle() {
-    const svc = getService();
-    const v = document.getElementById('_camBtnVision');
-    const l = document.getElementById('_camBtnLocal');
-    if (v) { v.style.background = svc==='vision'?'#2563eb':'var(--bg3)'; v.style.color = svc==='vision'?'#fff':'var(--text3)'; v.style.borderColor = svc==='vision'?'#2563eb':'var(--border)'; }
-    if (l) { l.style.background = svc==='local'?'#059669':'var(--bg3)'; l.style.color = svc==='local'?'#fff':'var(--text3)'; l.style.borderColor = svc==='local'?'#059669':'var(--border)'; }
-    _updateCamBadge();
-  }
+  // ─── BADGE SERVICIO EN MODAL CÁMARA ──────────────────────────────────────
   function _updateCamBadge() {
     const existing = document.getElementById('_ocrSvcBadge');
     const modal = document.querySelector('#mCam .modal');
@@ -651,6 +613,7 @@
     const svc = getService();
 
     if (svc === 'local') {
+      // Flujo local
       const modal = document.getElementById('mCam');
       if (!modal) return;
       _ensureLocalUI();
@@ -663,7 +626,7 @@
         const v = document.getElementById('camFeed');
         if (v) { v.srcObject = stream; v.style.display = 'block'; }
         modal.classList.add('open');
-        setTimeout(() => { _updateCamBadge(); _ensureCamToggle(); }, 100);
+        setTimeout(_updateCamBadge, 100);
         initTesseract().then(ok => {
           _setStatus(ok ? '📷 Listo — apunta a la matrícula' : '⚠️ Error iniciando OCR local');
         });
@@ -672,8 +635,15 @@
         document.getElementById('cameraInput')?.click();
       });
     } else {
+      // Flujo Vision original
       if (typeof _origOpenCamModal === 'function') _origOpenCamModal();
-      setTimeout(() => { _updateCamBadge(); _ensureCamToggle(); }, 300);
+      setTimeout(() => {
+        _updateCamBadge();
+        _ensureCamToggle();
+        const v = document.getElementById('camFeed');
+        if (v && _autoMode) v.onloadedmetadata = () => _startVisionMotionLoop(v);
+        if (v && v.readyState >= 2 && _autoMode) _startVisionMotionLoop(v);
+      }, 400);
     }
   };
 
@@ -874,9 +844,10 @@
   // ─── API PÚBLICA ──────────────────────────────────────────────────────────
   window._OCR = {
     setService,
-    _refreshCamToggle,
+    _refreshCamToggle: function() { if (typeof _refreshCamToggle === 'function') _refreshCamToggle(); },
     resetStats: function () {
-      if (!window.isSA || !isSA()) { if (typeof toast === 'function') toast('Solo SA', 'var(--red)'); return; }
+      const _isSA2 = (typeof isSA === 'function' && isSA()) || (window.CU && window.CU.rol === 'superadmin');
+      if (!_isSA2) { if (typeof toast === 'function') toast('Solo SA', 'var(--red)'); return; }
       if (!confirm('¿Resetear todos los contadores OCR?')) return;
       if (window.DB) { DB.ocrStats = []; if (typeof saveDB === 'function') saveDB(); }
       _injectOcrSection();
@@ -886,65 +857,15 @@
     renderStats: renderOcrStatsSection,
   };
 
-  // ─── FIX PERSISTENCIA TAB ORDER ──────────────────────────────────────────
-  // El problema: applyTabOrder() se llama en loginSuccess pero Firebase puede
-  // llegar después y sobrescribir DB.tabOrder sin re-aplicar el orden al DOM.
-  // Fix: hookear writeToFirebase y el listener de Firebase para re-aplicar.
-  function _fixTabPersistence() {
-    // Hook setSyncStatus para detectar cuando Firebase confirma sync
-    const _origSetSync = window.setSyncStatus;
-    if (_origSetSync && !window._tabPersistHooked) {
-      window._tabPersistHooked = true;
-      window.setSyncStatus = function(s) {
-        if (typeof _origSetSync === 'function') _origSetSync(s);
-        // Cuando Firebase sincroniza OK, re-aplicar el orden de tabs
-        if (s === 'ok' && typeof applyTabOrder === 'function') {
-          setTimeout(applyTabOrder, 100);
-        }
-      };
-    }
-
-    // Hook tabDrop para guardar por usuario además de en DB global
-    const _origTabDrop = window.tabDrop;
-    if (_origTabDrop && !window._tabDropHooked) {
-      window._tabDropHooked = true;
-      window.tabDrop = function(e) {
-        if (typeof _origTabDrop === 'function') _origTabDrop(e);
-        // Guardar copia por usuario en localStorage como backup inmediato
-        try {
-          const uid = window.CU?.id || 'default';
-          const order = (window.DB?.tabOrder) || [];
-          if (order.length) localStorage.setItem('_tabOrder_' + uid, JSON.stringify(order));
-        } catch(err) {}
-      };
-    }
-
-    // Al aplicar tab order, también intentar restaurar desde backup local si DB está vacío
-    const _origApplyTabOrder = window.applyTabOrder;
-    if (_origApplyTabOrder && !window._applyTabHooked) {
-      window._applyTabHooked = true;
-      window.applyTabOrder = function() {
-        // Si DB.tabOrder está vacío, intentar restaurar desde localStorage
-        if (window.DB && (!DB.tabOrder || !DB.tabOrder.length)) {
-          try {
-            const uid = window.CU?.id || 'default';
-            const saved = localStorage.getItem('_tabOrder_' + uid);
-            if (saved) {
-              const order = JSON.parse(saved);
-              if (order && order.length) DB.tabOrder = order;
-            }
-          } catch(err) {}
-        }
-        if (typeof _origApplyTabOrder === 'function') _origApplyTabOrder();
-      };
-    }
-  }
+  // ─── INYECCIÓN ROBUSTA EN TAB-USUARIOS ───────────────────────────────────
   // Usamos MutationObserver en el tab-usuarios para detectar cuando se renderiza
   // Esto evita conflictos con los múltiples patches de renderUsuarios en INDEX
   function _injectOcrSection() {
-    if (!window.isSA || !isSA()) return;
     const tab = document.getElementById('tab-usuarios');
     if (!tab) return;
+    const _isSA = (typeof isSA === 'function' && isSA()) ||
+                  (window.CU && window.CU.rol === 'superadmin');
+    if (!_isSA) return;
 
     // Evitar duplicados
     const existing = document.getElementById('_ocrStatsSection');
@@ -988,12 +909,348 @@
     };
   }
 
+  // ─── FIX PERSISTENCIA SECCIONES IMPRESIÓN ───────────────────────────────
+  // Bug en INDEX: localStorage.setItem('key','subkey', value) tiene 3 args — inválido
+  // Fix: hookear _pcInitSectionDrag para guardar orden en DB correctamente
+  function _fixPcSectionPersist() {
+    const _orig = window._pcInitSectionDrag;
+    if (!_orig || window._pcSectionPersistFixed) return;
+    window._pcSectionPersistFixed = true;
+    window._pcInitSectionDrag = function(panel) {
+      if (!panel) return;
+      // Restaurar orden guardado en DB
+      const panelId = panel.id || panel.dataset.cfgKey || 'default';
+      if (window.DB && DB.pcSecOrders && DB.pcSecOrders[panelId]) {
+        const order = DB.pcSecOrders[panelId];
+        order.forEach(secId => {
+          const sec = panel.querySelector(`.pc-sec[data-sec-id="${secId}"]`);
+          if (sec) panel.appendChild(sec);
+        });
+      }
+      // Llamar original
+      _orig(panel);
+      // Parchear el drop handler para guardar en DB
+      panel.querySelectorAll('.pc-sec').forEach(sec => {
+        const oldDrop = sec.ondrop;
+        sec.addEventListener('drop', function() {
+          setTimeout(() => {
+            const order = Array.from(panel.querySelectorAll('.pc-sec'))
+              .map(s => s.dataset.secId || '').filter(Boolean);
+            if (!window.DB) return;
+            if (!DB.pcSecOrders) DB.pcSecOrders = {};
+            DB.pcSecOrders[panelId] = order;
+            if (typeof saveDB === 'function') saveDB();
+          }, 50);
+        }, true);
+      });
+    };
+  }
+
+  // ─── FIX TOUCH DRAG PARA MÓVIL ───────────────────────────────────────────
+  // Los eventos drag/drop HTML5 no funcionan en móvil iOS/Android
+  // Añadimos soporte touch para: tabs, columnas de tabla, campos de impresión
+  function _addTouchDragSupport() {
+    if (window._touchDragInstalled) return;
+    window._touchDragInstalled = true;
+
+    let _tdSrc = null, _tdClone = null, _tdOffX = 0, _tdOffY = 0;
+
+    function _makeDraggableTouch(el, getContainer, onDrop) {
+      el.addEventListener('touchstart', e => {
+        _tdSrc = el;
+        const t = e.touches[0];
+        const r = el.getBoundingClientRect();
+        _tdOffX = t.clientX - r.left;
+        _tdOffY = t.clientY - r.top;
+        _tdClone = el.cloneNode(true);
+        _tdClone.style.cssText = `position:fixed;opacity:.7;pointer-events:none;z-index:9999;width:${r.width}px;left:${t.clientX - _tdOffX}px;top:${t.clientY - _tdOffY}px;`;
+        document.body.appendChild(_tdClone);
+        el.style.opacity = '0.4';
+        e.preventDefault();
+      }, { passive: false });
+
+      el.addEventListener('touchmove', e => {
+        if (!_tdClone) return;
+        const t = e.touches[0];
+        _tdClone.style.left = (t.clientX - _tdOffX) + 'px';
+        _tdClone.style.top  = (t.clientY - _tdOffY) + 'px';
+        e.preventDefault();
+      }, { passive: false });
+
+      el.addEventListener('touchend', e => {
+        if (!_tdSrc || !_tdClone) return;
+        const t = e.changedTouches[0];
+        _tdClone.remove(); _tdClone = null;
+        _tdSrc.style.opacity = '';
+        // Find drop target
+        const elBelow = document.elementFromPoint(t.clientX, t.clientY);
+        const container = getContainer();
+        if (container && elBelow) {
+          const target = elBelow.closest ? elBelow.closest('[data-tab],[data-field],[data-col]') : null;
+          if (target && target !== _tdSrc) onDrop(_tdSrc, target, container);
+        }
+        _tdSrc = null;
+      }, { passive: false });
+    }
+
+    // Hook tabs touch
+    function _installTabsTouch() {
+      const bar = document.getElementById('mainTabs');
+      if (!bar || bar._touchInstalled) return;
+      bar._touchInstalled = true;
+      bar.querySelectorAll('.btn-tab').forEach(btn => {
+        _makeDraggableTouch(btn,
+          () => document.getElementById('mainTabs'),
+          (src, tgt, container) => {
+            if (src.dataset.tab === tgt.dataset.tab) return;
+            const tabs = [...container.querySelectorAll('.btn-tab')];
+            const ti = tabs.indexOf(tgt);
+            container.insertBefore(src, ti > tabs.indexOf(src) ? tgt.nextSibling : tgt);
+            if (window.DB) {
+              DB.tabOrder = [...container.querySelectorAll('.btn-tab')].map(b => b.dataset.tab);
+              // Backup por usuario
+              try { const uid = window.CU?.id||'x'; localStorage.setItem('_tabOrder_'+uid, JSON.stringify(DB.tabOrder)); } catch(e2) {}
+              if (typeof saveDB === 'function') saveDB();
+            }
+          }
+        );
+      });
+    }
+
+    // Hook campos impresión touch
+    function _installPfiTouch() {
+      document.querySelectorAll('.pfi[draggable]').forEach(el => {
+        if (el._touchInstalled) return;
+        el._touchInstalled = true;
+        _makeDraggableTouch(el,
+          () => el.parentElement,
+          (src, tgt, container) => {
+            const items = [...container.querySelectorAll('.pfi')];
+            const fi = items.indexOf(tgt);
+            container.insertBefore(src, fi > items.indexOf(src) ? tgt.nextSibling : tgt);
+            const ck = src.dataset.cfg || 'ing1';
+            const order = [...container.querySelectorAll('.pfi')].map(e2 => e2.dataset.field);
+            const cfg = ck==='ag'?window.DB?.printCfgAg:ck==='ing2'?window.DB?.printCfg2:window.DB?.printCfg1;
+            if (cfg) { cfg.fieldOrder = order; if (typeof saveDB === 'function') saveDB(); }
+          }
+        );
+      });
+    }
+
+    // Observar DOM para instalar touch cuando aparezcan los elementos
+    const obs = new MutationObserver(() => {
+      _installTabsTouch();
+      _installPfiTouch();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+    // Instalar inmediatamente si ya están
+    setTimeout(() => { _installTabsTouch(); _installPfiTouch(); }, 1000);
+  }
+
+  // ─── FIX ROTACIÓN OCR ────────────────────────────────────────────────────
+  // Matrículas rotadas 90° (foto de coche de lado)
+  async function _tryRotations(source) {
+    const angles = [0, 90, 270, 180];
+    for (const angle of angles) {
+      let canvas;
+      if (angle === 0) {
+        canvas = source instanceof HTMLCanvasElement ? source : null;
+        if (!canvas) {
+          canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          if (source instanceof HTMLVideoElement) {
+            canvas.width = source.videoWidth; canvas.height = source.videoHeight;
+          } else if (source instanceof Blob) {
+            const bmp = await createImageBitmap(source);
+            canvas.width = bmp.width; canvas.height = bmp.height;
+            ctx.drawImage(bmp, 0, 0);
+          }
+        }
+      } else {
+        // Rotar
+        const base = document.createElement('canvas');
+        const bCtx = base.getContext('2d');
+        let W, H;
+        if (source instanceof HTMLVideoElement) {
+          W = source.videoWidth; H = source.videoHeight;
+        } else if (source instanceof HTMLCanvasElement) {
+          W = source.width; H = source.height;
+        } else { continue; }
+        if (angle === 90 || angle === 270) { canvas = document.createElement('canvas'); canvas.width = H; canvas.height = W; }
+        else { canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H; }
+        const rCtx = canvas.getContext('2d');
+        rCtx.translate(canvas.width/2, canvas.height/2);
+        rCtx.rotate(angle * Math.PI / 180);
+        rCtx.drawImage(source instanceof HTMLVideoElement ? (() => { const c=document.createElement('canvas'); c.width=W; c.height=H; c.getContext('2d').drawImage(source,0,0); return c; })() : source, -W/2, -H/2);
+      }
+      const result = await _runLocalOCR(canvas);
+      if (result && result.score >= 10) return result; // buena lectura → parar
+    }
+    return null;
+  }
+
+  // ─── FIX MOTION LOOP EN VISION ────────────────────────────────────────────
+  function _startVisionMotionLoop(video) {
+    if (_scanLoop) clearInterval(_scanLoop);
+    _prevFrame = null; _stableStart = null;
+    _scanLoop = setInterval(async () => {
+      if (!video.srcObject || _scanning || video.readyState < 2) return;
+      const frame = _getFrame(video);
+      if (!_prevFrame) { _prevFrame = frame; return; }
+      const diff = _frameDiff(_prevFrame, frame);
+      _prevFrame = frame;
+      if (diff > MOTION_THRESHOLD) { _stableStart = null; _setStatus('🚛 Detectando vehículo...'); return; }
+      if (!_stableStart) { _stableStart = Date.now(); return; }
+      const elapsed = Date.now() - _stableStart;
+      _setStatus('📸 Estabilizando... ' + Math.min(100, Math.round(elapsed/STABILITY_MS*100)) + '%');
+      if (elapsed >= STABILITY_MS && _autoMode && !_scanning) {
+        _stableStart = null;
+        // Capturar frame para Vision
+        const c = document.createElement('canvas');
+        c.width = video.videoWidth; c.height = video.videoHeight;
+        c.getContext('2d').drawImage(video, 0, 0);
+        c.toBlob(async blob => { await _captureAndProcess(blob); }, 'image/jpeg', 0.92);
+      }
+    }, SCAN_INTERVAL_MS);
+  }
+
+  // ─── FIX TAB ORDER POR USUARIO ──────────────────────────────────────────
+  // DB.tabOrder es global — un usuario mueve tabs y afecta a todos.
+  // Fix: usar DB.tabOrders[userId] por usuario, con fallback a DB.tabOrder.
+  function _fixTabOrderPerUser() {
+    if (window._tabOrderPerUserFixed) return;
+    window._tabOrderPerUserFixed = true;
+
+    // Asegurar que DB.tabOrders existe
+    function _ensureTabOrders() {
+      if (window.DB && !DB.tabOrders) DB.tabOrders = {};
+    }
+
+    // Override applyTabOrder para leer orden del usuario actual
+    const _origApply = window.applyTabOrder;
+    if (_origApply) {
+      window.applyTabOrder = function() {
+        _ensureTabOrders();
+        const uid = window.CU?.id;
+        if (uid && window.DB && DB.tabOrders && DB.tabOrders[uid] && DB.tabOrders[uid].length) {
+          // Usar orden específico del usuario
+          const saved = DB.tabOrders[uid];
+          DB.tabOrder = saved; // sincronizar para que _origApply funcione
+        } else if (uid) {
+          // Intentar restaurar desde localStorage backup
+          try {
+            const local = localStorage.getItem('_tabOrder_' + uid);
+            if (local) {
+              const parsed = JSON.parse(local);
+              if (parsed && parsed.length) {
+                _ensureTabOrders();
+                DB.tabOrders[uid] = parsed;
+                DB.tabOrder = parsed;
+              }
+            }
+          } catch(e) {}
+        }
+        if (typeof _origApply === 'function') _origApply();
+      };
+    }
+
+    // Override tabDrop para guardar por usuario
+    const _origDrop = window.tabDrop;
+    if (_origDrop) {
+      window.tabDrop = function(e) {
+        if (typeof _origDrop === 'function') _origDrop(e);
+        // Guardar en DB.tabOrders[userId]
+        const uid = window.CU?.id;
+        if (!uid || !window.DB) return;
+        _ensureTabOrders();
+        const bar = document.getElementById('mainTabs');
+        if (!bar) return;
+        const order = [...bar.querySelectorAll('.btn-tab')].map(b => b.dataset.tab);
+        DB.tabOrders[uid] = order;
+        DB.tabOrder = order; // mantener compatibilidad
+        try { localStorage.setItem('_tabOrder_' + uid, JSON.stringify(order)); } catch(er) {}
+        if (typeof saveDB === 'function') saveDB();
+      };
+    }
+
+    // Override loginSuccess para aplicar orden del usuario que entra
+    const _origLogin = window.loginSuccess;
+    if (_origLogin) {
+      window.loginSuccess = function(u) {
+        if (typeof _origLogin === 'function') _origLogin(u);
+        // Re-aplicar orden específico del usuario tras login
+        setTimeout(() => {
+          _ensureTabOrders();
+          if (u && DB.tabOrders && DB.tabOrders[u.id] && DB.tabOrders[u.id].length) {
+            DB.tabOrder = DB.tabOrders[u.id];
+          } else if (u) {
+            try {
+              const local = localStorage.getItem('_tabOrder_' + u.id);
+              if (local) {
+                const parsed = JSON.parse(local);
+                if (parsed && parsed.length) {
+                  _ensureTabOrders();
+                  DB.tabOrders[u.id] = parsed;
+                  DB.tabOrder = parsed;
+                }
+              }
+            } catch(e) {}
+          }
+          if (typeof applyTabOrder === 'function') applyTabOrder();
+        }, 200);
+      };
+    }
+
+    // Hook setSyncStatus: cuando Firebase sincroniza, re-aplicar orden usuario
+    const _origSync = window.setSyncStatus;
+    if (_origSync && !window._syncHooked) {
+      window._syncHooked = true;
+      window.setSyncStatus = function(s) {
+        if (typeof _origSync === 'function') _origSync(s);
+        if (s === 'ok' && window.CU && typeof applyTabOrder === 'function') {
+          setTimeout(applyTabOrder, 150);
+        }
+      };
+    }
+
+    // También parchear writeToFirebase/saveDB para incluir tabOrders
+    const _origSaveDB = window.saveDB;
+    if (_origSaveDB && !window._saveDBTabOrdersHooked) {
+      window._saveDBTabOrdersHooked = true;
+      window.saveDB = function() {
+        // Asegurar tabOrders en DB antes de guardar
+        _ensureTabOrders();
+        if (typeof _origSaveDB === 'function') _origSaveDB();
+        // Guardar tabOrders en localStorage como backup
+        try {
+          localStorage.setItem('_tabOrders_all', JSON.stringify(DB.tabOrders));
+        } catch(e) {}
+      };
+    }
+
+    // Restaurar tabOrders desde localStorage al iniciar (antes de Firebase)
+    try {
+      if (window.DB) {
+        _ensureTabOrders();
+        const saved = localStorage.getItem('_tabOrders_all');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') {
+            DB.tabOrders = { ...parsed, ...DB.tabOrders }; // merge, DB wins
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
   // ─── INIT ─────────────────────────────────────────────────────────────────
   setTimeout(() => {
     ensureOcrStats();
     if (getService() === 'local') initTesseract();
     _startTabObserver();
-    _fixTabPersistence();
+    _fixPcSectionPersist();
+    _addTouchDragSupport();
+    _fixTabOrderPerUser();
     // Si ya estamos en tab usuarios al cargar
     const tab = document.getElementById('tab-usuarios');
     if (tab && tab.style.display !== 'none') _injectOcrSection();
