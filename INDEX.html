@@ -889,8 +889,31 @@ a:hover{color:#3a4558;}
 <!-- MODAL LANG -->
 <div class="ov" id="mLangPicker"><div class="modal modal-sm" style="display:flex;flex-direction:column;max-height:90vh"><div class="mhdr"><div class="mttl">🌍 Idioma</div><button class="btn-x" onclick="closeOv('mLangPicker')">✕</button></div><div style="font-size:12px;color:var(--text3);margin-bottom:10px">Elige tu idioma. Se guarda en tu perfil.</div><div class="lang-grid" id="langGrid" style="max-height:360px;overflow-y:auto;margin-bottom:0"></div><div class="ffoot" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);flex-shrink:0"><button class="btn btn-gh" onclick="closeOv('mLangPicker')">Cancelar</button><button class="btn btn-p" onclick="confirmLang()">✓ Confirmar</button></div></div></div>
 <!-- MODAL CAMARA OCR -->
-<div class="ov" id="mCam"><div class="modal"><div class="mhdr"><div class="mttl">📷 Escanear Matrícula</div><button class="btn-x" onclick="closeCam()">✕</button></div><div style="position:relative"><video id="camFeed" autoplay playsinline muted></video><canvas id="camCanvas" style="display:none"></canvas></div><div id="camResult" style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900;text-align:center;min-height:30px;color:#4a5568"></div><div id="camStatus" style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px"></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-t" style="flex:1" onclick="captureOCR()">📸 Capturar</button><button class="btn btn-g" id="btnCamUse" style="display:none" onclick="useCamResult()">✓ Usar</button></div><div style="margin-top:8px;text-align:center"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="processCameraCapture(this)"><button class="btn btn-gh btn-sm" onclick="document.getElementById('cameraInput').click()">📁 Elegir imagen</button></div></div></div>
-<!-- APP HEADER -->
+<div class="ov" id="mCam"><div class="modal">
+<div class="mhdr"><div class="mttl">📷 Escanear Matrícula</div><button class="btn-x" onclick="closeCam()">✕</button></div>
+<div style="position:relative"><video id="camFeed" autoplay playsinline muted style="width:100%;border-radius:0;background:#000;max-height:260px;object-fit:cover"></video><canvas id="camCanvas" style="display:none"></canvas></div>
+<div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;min-height:44px;margin-top:12px">
+  <div>
+    <div id="camResult" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900;color:var(--text);letter-spacing:.04em;min-height:24px"></div>
+    <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
+      <span id="camStatusBadge" style="display:none;background:var(--gll);color:var(--green);border:1.5px solid #a7f3d0;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800">✅ Detectada</span>
+      <span id="camSvcBadge" style="display:none;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;border:1.5px solid #bfdbfe;background:#eff6ff;color:#2563eb">☁️ Vision</span>
+    </div>
+  </div>
+</div>
+<div id="camStatus" style="font-size:11px;color:var(--text3);text-align:center;padding:4px 0;display:none"></div>
+<div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+  <button class="btn btn-t" style="flex:1" onclick="captureOCR()">📸 Capturar</button>
+  <button class="btn btn-g" id="btnCamUse" style="display:none" onclick="useCamResult()">✓ Usar</button>
+  <button id="btnOcrSvcToggle" style="display:none;padding:6px 10px;border-radius:8px;border:1.5px solid #2563eb;background:#eff6ff;color:#2563eb;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;align-items:center;gap:5px" onclick="_toggleOcrService()" title="Cambiar servicio OCR (solo SA)">
+    <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>
+    <span id="ocrSvcLabel">Vision</span>
+    <span style="font-size:9px;opacity:.6">▾</span>
+  </button>
+</div>
+<div style="margin-top:8px"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="processCameraCapture(this)"><button class="btn btn-gh btn-sm" onclick="document.getElementById('cameraInput').click()">📁 Elegir imagen</button></div>
+</div></div>
+<!-- APP HEADER --><!-- APP HEADER -->
 <div class="app-hdr" id="appHdr" style="display:none">
   <div style="display:flex;align-items:center;width:100%;gap:6px;min-width:0;overflow:hidden;flex:1">
     <!-- LOGO + MARCA — siempre visible, izquierda -->
@@ -5224,7 +5247,18 @@ function renderUsuarios(){
   // Placeholder para stats OCR — cam-ocr-beunifyt.js lo rellena tras render
   if(isSA())h+='<div id="_ocrStatsSection" style="margin-top:16px"></div>';
   // Llamar renderStats directamente después de insertar el DOM
-  if(isSA())setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},80);
+  if(isSA())setTimeout(function(){
+    var _sec=document.getElementById('_ocrStatsSection');
+    if(_sec&&window._OCR&&typeof window._OCR.renderStats==='function'){
+      window._OCR.renderStats();
+    }
+  },80);
+  if(isSA())setTimeout(function(){
+    var _sec=document.getElementById('_ocrStatsSection');
+    if(_sec&&(!_sec.innerHTML||_sec.innerHTML.trim()==='')&&window._OCR&&typeof window._OCR.renderStats==='function'){
+      window._OCR.renderStats();
+    }
+  },400);
   var _uFocused=document.activeElement&&document.activeElement.id==='_uSearchInput';
   var _uCaretPos=_uFocused?(document.activeElement.selectionStart||0):0;
   document.getElementById('tab-usuarios').innerHTML=h;
@@ -7854,7 +7888,53 @@ function loadEvBg(inp){
   reader.readAsDataURL(file);
   inp.value='';
 }
-function openCamModal(){document.getElementById('camResult').textContent='';document.getElementById('camStatus').textContent='';document.getElementById('btnCamUse').style.display='none';camResultMat='';if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{camStream=stream;const v=document.getElementById('camFeed');v.srcObject=stream;v.style.display='block';document.getElementById('mCam').classList.add('open');}).catch(()=>{document.getElementById('cameraInput').click();});}else{document.getElementById('cameraInput').click();}}
+function openCamModal(){
+  document.getElementById('camResult').textContent='';
+  var _st=document.getElementById('camStatus');if(_st){_st.textContent='';_st.style.display='none';}
+  document.getElementById('btnCamUse').style.display='none';
+  var _sb=document.getElementById('camStatusBadge');if(_sb)_sb.style.display='none';
+  var _svb=document.getElementById('camSvcBadge');if(_svb)_svb.style.display='none';
+  camResultMat='';
+  // Mostrar toggle servicio solo si SA
+  var _tog=document.getElementById('btnOcrSvcToggle');
+  if(_tog){
+    _tog.style.display=isSA()?'inline-flex':'none';
+    _updateOcrSvcToggleUI();
+  }
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{
+      camStream=stream;const v=document.getElementById('camFeed');v.srcObject=stream;v.style.display='block';
+      document.getElementById('mCam').classList.add('open');
+    }).catch(()=>{document.getElementById('cameraInput').click();});
+  }else{document.getElementById('cameraInput').click();}
+}
+function _updateOcrSvcToggleUI(){
+  var tog=document.getElementById('btnOcrSvcToggle');
+  var lbl=document.getElementById('ocrSvcLabel');
+  var badge=document.getElementById('camSvcBadge');
+  if(!tog)return;
+  var svc=(window._OCR&&typeof window._OCR.getService==='function')?window._OCR.getService():(window.DB&&DB.ocrService)||'vision';
+  if(svc==='vision'){
+    if(lbl)lbl.textContent='Vision';
+    tog.style.borderColor='#2563eb';tog.style.color='#2563eb';tog.style.background='#eff6ff';
+    if(badge){badge.style.borderColor='#bfdbfe';badge.style.background='#eff6ff';badge.style.color='#2563eb';badge.textContent='☁️ Vision';}
+  }else{
+    if(lbl)lbl.textContent='Local';
+    tog.style.borderColor='var(--green)';tog.style.color='var(--green)';tog.style.background='var(--gll)';
+    if(badge){badge.style.borderColor='#a7f3d0';badge.style.background='var(--gll)';badge.style.color='var(--green)';badge.textContent='🔌 Local';}
+  }
+}
+function _toggleOcrService(){
+  if(!isSA())return;
+  var svc=(window._OCR&&typeof window._OCR.getService==='function')?window._OCR.getService():(window.DB&&DB.ocrService)||'vision';
+  var next=svc==='vision'?'local':'vision';
+  if(window._OCR&&typeof window._OCR.setService==='function'){window._OCR.setService(next);}
+  else{if(window.DB){DB.ocrService=next;if(typeof saveDB==='function')saveDB();}}
+  _updateOcrSvcToggleUI();
+  // Actualizar stats en tab usuarios si está abierto
+  if(typeof renderOcrStatsSection==='function')renderOcrStatsSection();
+  if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();
+}
 function closeCam(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}closeOv('mCam');}
 function captureOCR(){const v=document.getElementById('camFeed'),c=document.getElementById('camCanvas');if(!v.srcObject){document.getElementById('camStatus').textContent='Sin cámara activa';return;}c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);c.toBlob(async function(blob){// Usar cam-ocr si disponible, fallback a Vision API
 if(window._OCR&&typeof window._OCR.runFromBlob==='function'){await window._OCR.runFromBlob(blob);}else{await callClaudeOCR(blob);}},'image/jpeg',0.92);}
@@ -7932,7 +8012,11 @@ async function callClaudeOCR(blob,_isCrop){
       camResultMat=plate;
       document.getElementById('camResult').textContent=plate;
       document.getElementById('btnCamUse').style.display='inline-flex';
-      st.textContent='✅ Detectada'+(_isCrop?' (recortada)':'');
+      // Mostrar badges de la muestra
+      var _sb=document.getElementById('camStatusBadge');if(_sb)_sb.style.display='inline-block';
+      var _svb=document.getElementById('camSvcBadge');if(_svb)_svb.style.display='inline-block';
+      st.style.display='none';
+      _updateOcrSvcToggleUI();
     }else{
       st.textContent='❌ No detectada. Intenta de nuevo.';
     }
