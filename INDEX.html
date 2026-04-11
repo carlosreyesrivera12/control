@@ -2161,7 +2161,7 @@ function canPrint(){return hasPerm('canPrint');}
 function canImport(){return hasPerm('canImport');}
 function canCampos(){return isSup()||hasPerm('canCampos');}
 function canOcr(){return isSA()||hasPerm('canOcr');}
-function _setOcrSvc(svc){if(!window.DB)return;DB.ocrService=svc;if(typeof saveDB==='function')saveDB();if(window._OCR&&typeof window._OCR.setService==='function')window._OCR.setService(svc);if(typeof renderUsuarios==='function')renderUsuarios();if(typeof _updateOcrSvcToggleUI==='function')_updateOcrSvcToggleUI();}
+function _setOcrSvc(svc){if(typeof DB==='undefined')return;DB.ocrService=svc;if(typeof saveDB==='function')saveDB();if(window._OCR&&typeof window._OCR.setService==='function')window._OCR.setService(svc);if(typeof renderUsuarios==='function')renderUsuarios();if(typeof _updateOcrSvcToggleUI==='function')_updateOcrSvcToggleUI();}
 function _doEmergencyReset(){
   const pin=document.getElementById('emergencyPin').value.trim();
   const u=DB.usuarios.find(x=>x.pin===pin&&x.rol==='superadmin');
@@ -5252,8 +5252,8 @@ function renderUsuarios(){
       var _sec=document.getElementById('_ocrStatsSection');
       if(!_sec)return;
       if(window._OCR&&typeof window._OCR.renderStats==='function'){window._OCR.renderStats();return;}
-      var svc=(window.DB&&DB.ocrService)||'vision';
-      var stats=(window.DB&&DB.ocrStats)||[];
+      var svc=(typeof DB!=='undefined'&&DB.ocrService)||'vision';
+      var stats=(typeof DB!=='undefined'&&DB.ocrStats)||[];
       var vI=0,vE=0,lI=0,lE=0;
       stats.forEach(function(s){var sv=s.servicio||'vision';if(sv==='vision'){vI++;if(s.exito)vE++;}else{lI++;if(s.exito)lE++;}});
       var vF=vI-vE,lF=lI-lE,tI=vI+lI,tE=vE+lE,tF=tI-tE;
@@ -7947,7 +7947,7 @@ function _updateOcrSvcToggleUI(){
   var lbl=document.getElementById('ocrSvcLabel');
   var badge=document.getElementById('camSvcBadge');
   if(!tog)return;
-  var svc=(window._OCR&&typeof window._OCR.getService==='function')?window._OCR.getService():(window.DB&&DB.ocrService)||'vision';
+  var svc=(window._OCR&&typeof window._OCR.getService==='function')?window._OCR.getService():(typeof DB!=='undefined'&&DB.ocrService)||'vision';
   if(svc==='vision'){
     if(lbl)lbl.textContent='Vision';
     tog.style.borderColor='#2563eb';tog.style.color='#2563eb';tog.style.background='#eff6ff';
@@ -7960,10 +7960,10 @@ function _updateOcrSvcToggleUI(){
 }
 function _toggleOcrService(){
   if(!isSA())return;
-  var svc=(window._OCR&&typeof window._OCR.getService==='function')?window._OCR.getService():(window.DB&&DB.ocrService)||'vision';
+  var svc=(window._OCR&&typeof window._OCR.getService==='function')?window._OCR.getService():(typeof DB!=='undefined'&&DB.ocrService)||'vision';
   var next=svc==='vision'?'local':'vision';
   if(window._OCR&&typeof window._OCR.setService==='function'){window._OCR.setService(next);}
-  else{if(window.DB){DB.ocrService=next;if(typeof saveDB==='function')saveDB();}}
+  else{if(typeof DB!=='undefined'){DB.ocrService=next;if(typeof saveDB==='function')saveDB();}}
   _updateOcrSvcToggleUI();
   // Actualizar stats en tab usuarios si está abierto
   if(typeof renderOcrStatsSection==='function')renderOcrStatsSection();
