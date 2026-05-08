@@ -426,7 +426,7 @@ a:hover{color:#3a4558;}
           <span id="lbl_operadorBtn">ACCEDER</span>
         </button>
         <button class="btn" style="width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="loginChoose('empresa')">
-          <span id="lbl_empresaBtn">'+tr('btnEmpresa')+'</span>
+          <span id="lbl_empresaBtn">EMPRESA</span>
         </button>
       </div>
     </div>
@@ -436,9 +436,9 @@ a:hover{color:#3a4558;}
       <div id="loginLangDrop" style="display:none;position:fixed;z-index:99999;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.18);overflow:hidden;max-height:360px;overflow-y:auto"></div>
     </div>
   </div>
-  <div class="login-card" style="max-width:320px;width:100%;display:none;min-height:500px;display:none" id="loginCard1">
+  <div class="login-card" style="max-width:320px;width:100%;display:none;min-height:500px" id="loginCard1">
     <!-- PASO 1: Credenciales operador -->
-    <div id="loginStep1" style="display:none;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%">
+    <div id="loginStep1" style="display:none;flex-direction:column;justify-content:center;align-items:center;height:100%">
       <button class="btn btn-p" style="width:auto;min-width:180px;padding:10px 32px;font-size:14px;margin-top:30px;display:block;margin-left:auto;margin-right:auto" onclick="doLogin()" id="lbl_loginBtn">Acceder</button>
       <button class="btn btn-gh" style="width:auto;min-width:180px;padding:10px 32px;font-size:14px;margin-top:8px;display:block;margin-left:auto;margin-right:auto;color:#111" onclick="loginBackToChoice()" id="lbl_loginBack">← Volver</button>
     </div>
@@ -463,7 +463,7 @@ a:hover{color:#3a4558;}
       <button class="btn btn-p" style="width:100%;padding:10px;margin-bottom:8px" onclick="verifyOTP()" id="lbl_verifyBtn">Verificar código</button>
       <div style="display:flex;gap:6px">
         <button class="btn btn-gh btn-sm" style="flex:1" onclick="backToStep1()">← Volver</button>
-        <button class="btn btn-gh btn-sm" style="flex:1" id="resendBtn" id="lbl_resendBtn" onclick="resendOTP()">Reenviar código</button>
+        <button class="btn btn-gh btn-sm" style="flex:1" id="lbl_resendBtn" onclick="resendOTP()">Reenviar código</button>
       </div>
     </div>
 
@@ -497,7 +497,7 @@ a:hover{color:#3a4558;}
     <div class="fg s2"><span class="flbl" data-i18n="matricula">Matrícula <span class="freq">*</span></span>
       <div style="display:flex;gap:4px;position:relative">
         <div style="position:relative;flex:1">
-          <input id="fiMat" style="font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase;padding-right:32px" oninput="this.value=this.value.toUpperCase();checkMatOnInput(this.value);searchMatUnified(this.value)" onfocus="searchMatUnified(this.value)" onblur="setTimeout(()=>document.getElementById('fiMatResults').classList.remove('open'),200)" placeholder="🔍 "+tr('searchRef') autocomplete="off">
+          <input id="fiMat" style="font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase;padding-right:32px" oninput="this.value=this.value.toUpperCase();checkMatOnInput(this.value);searchMatUnified(this.value)" onfocus="searchMatUnified(this.value)" onblur="setTimeout(()=>document.getElementById('fiMatResults').classList.remove('open'),200)" data-i18n-ph="searchRef" placeholder="🔍 Matrícula, nombre o empresa..." autocomplete="off">
           <span id="fiMatClearBtn" onclick="clearMatField()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:14px;color:var(--text3)">✕</span>
           <div class="dr" id="fiMatResults"></div>
         </div>
@@ -660,7 +660,7 @@ a:hover{color:#3a4558;}
 <div class="ov" id="mRecinto"><div class="modal modal-lg">
   <div class="mhdr"><div class="mttl" id="mRecTitle">Nuevo Recinto</div><button class="btn-x" onclick="closeOv('mRecinto')">✕</button></div>
   <div class="fgrid">
-    <div class="fg s2"><span class="flbl">Nombre del recinto <span class="freq">*</span></span><input id="recNom" data-i18n-ph="phVenueName" placeholder="'+tr('phVenueName')+'"></div>
+    <div class="fg s2"><span class="flbl">Nombre del recinto <span class="freq">*</span></span><input id="recNom" data-i18n-ph="phVenueName" placeholder="Ej: FIRA BARCELONA GRAN VIA"></div>
     <div class="fg"><span class="flbl">Ciudad</span><input id="recCiudad" data-i18n-ph="phCity" placeholder="Barcelona"></div>
     <div class="fg"><span class="flbl">País</span><input id="recPais" data-i18n-ph="phCountryName" placeholder="España"></div>
   </div>
@@ -939,7 +939,7 @@ a:hover{color:#3a4558;}
 <!-- TABS -->
 <div class="tabs-bar" id="mainTabs" style="display:none">
   <button class="btn-tab" data-tab="dash"        onclick="goTab('dash',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
-  <button class="btn-tab" data-tab="ingresos"    onclick="goTab('ingresos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>'+tr('ingresos')+'</button>
+  <button class="btn-tab" data-tab="ingresos"    onclick="goTab('ingresos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>🔖 Referencia</button>
   <button class="btn-tab" data-tab="ingresos2"   onclick="goTab('ingresos2',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l5 3-5 3V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>${tr('ingresos2')}</button>
   <button class="btn-tab" data-tab="flota" style="display:none"       onclick="goTab('flota',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Embalaje</button>
   <button class="btn-tab" data-tab="conductores" style="display:none" onclick="goTab('conductores',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>Conductores</button>
@@ -1043,8 +1043,8 @@ a:hover{color:#3a4558;}
         </select>
         <select id="pVehFiltTipo" style="height:32px;border-radius:20px;font-size:11px;width:auto;padding:0 24px 0 10px" onchange="pFilterVehiculos()">
           <option value="">Todos los tipos</option>
-          <option value="trailer">${tr('trailerType')}</option><option value="semiremolque">'+tr('semirremolque')+'</option>
-          <option value="camion">${tr('camion')}</option><option value="furgoneta">'+tr('furgoneta')+'</option><option value="otro">Otro</option>
+          <option value="trailer">Trailer</option><option value="semiremolque">Semirremolque</option>
+          <option value="camion">Camión</option><option value="furgoneta">Furgoneta</option><option value="otro">Otro</option>
         </select>
         <select id="pVehFiltEst" style="height:32px;border-radius:20px;font-size:11px;width:auto;padding:0 24px 0 10px" onchange="pFilterVehiculos()">
           <option value="">Todos los estados</option>
@@ -1175,10 +1175,10 @@ a:hover{color:#3a4558;}
             <div id="pHallTags" style="display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--r);min-height:34px;align-items:center">
               <button class="btn btn-s btn-xs" onclick="pToggleHallInput()">+ Hall</button>
             </div>
-            <div id="pHallInputWrap" style="display:none;margin-top:6px;display:none">
+            <div id="pHallInputWrap" style="display:none;margin-top:6px">
               <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px" id="pHallPills"></div>
               <div style="display:flex;gap:4px">
-                <input id="pHallFreeInput" type="text" data-i18n-ph="phWriteHall" placeholder="'+tr('phWriteHall')+'" style="flex:1;border-radius:20px;font-size:12px;height:32px" onkeydown="if(event.key==='Enter'){pAddHallFromInput();event.preventDefault();}">
+                <input id="pHallFreeInput" type="text" data-i18n-ph="phWriteHall" placeholder="Escribe hall (ej: 2A, CS...)" style="flex:1;border-radius:20px;font-size:12px;height:32px" onkeydown="if(event.key==='Enter'){pAddHallFromInput();event.preventDefault();}">
                 <button class="btn btn-s btn-xs" onclick="pAddHallFromInput()">Añadir</button>
               </div>
             </div>
@@ -1209,7 +1209,7 @@ a:hover{color:#3a4558;}
           <div class="portal-card-title" style="color:#4a5568">📋 Registro sin referencia — período estimado</div>
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px">
             <div id="pPer1" style="border:2px solid #3a4558;border-radius:var(--r2);padding:9px;text-align:center;cursor:pointer;background:var(--bg2)" onclick="pSelPeriodo(1)">
-              <div style="font-size:15px">🏛</div><div style="font-size:10px;font-weight:700;color:#4a5568" id="pPerLbl1">'+tr('evento')+'</div>
+              <div style="font-size:15px">🏛</div><div style="font-size:10px;font-weight:700;color:#4a5568" id="pPerLbl1">Evento</div>
             </div>
             <div id="pPer2" style="border:2px solid var(--border);border-radius:var(--r2);padding:9px;text-align:center;cursor:pointer" onclick="pSelPeriodo(2)">
               <div style="font-size:15px">📅</div><div style="font-size:10px;font-weight:700;color:var(--text2)" id="pPerLbl2">Semana</div>
@@ -1223,7 +1223,7 @@ a:hover{color:#3a4558;}
           </div>
           <div class="sg sg2" style="margin-bottom:8px">
             <div><div class="hdr-cl" style="margin-bottom:3px" id="pNrefLblVeh">Vehículo *</div><select id="pNrefVeh"></select></div>
-            <div id="pNrefEvField" style="display:none"><div class="hdr-cl" style="margin-bottom:3px" id="pNrefLblEvento">'+tr('evento')+'</div><select id="pNrefEvento"></select></div>
+            <div id="pNrefEvField" style="display:none"><div class="hdr-cl" style="margin-bottom:3px" id="pNrefLblEvento">Evento</div><select id="pNrefEvento"></select></div>
             <div id="pNrefDesdeField"><div class="hdr-cl" style="margin-bottom:3px" id="pNrefLblDesde">Fecha inicio</div><input id="pNrefDesde" type="date"></div>
             <div><div class="hdr-cl" style="margin-bottom:3px" id="pNrefLblHall">Hall</div><input id="pNrefHall" type="text" placeholder="Ej: 5, 2A, CS…" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
             <div id="pNrefHastaField"><div class="hdr-cl" style="margin-bottom:3px" id="pNrefLblHasta">Fecha fin</div><input id="pNrefHasta" type="date"></div>
@@ -5366,7 +5366,7 @@ function renderUsuarios(){
   h+='</div></div>';
   // ── Subtabs ──
   h+='<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:20px;overflow:hidden;width:fit-content;margin-bottom:10px">';
-  var _stOp=_usub==='operadores';h+='<div style="padding:5px 16px;font-size:11px;font-weight:700;cursor:pointer;background:'+(_stOp?'#4a5568':'var(--bg2)')+';color:'+(_stOp?'#fff':'var(--text3)')+';border-right:1px solid var(--border)" onclick="window._uSub=(window._uSub===&quot;operadores&quot;?&quot;operadores&quot;:&quot;operadores&quot;);window._uSub=&quot;operadores&quot;;renderUsuarios()">👤 '+tr('operadores')+'  ('+operadoresU.length+')</div>';
+  var _stOp=_usub==='operadores';h+='<div style="padding:5px 16px;font-size:11px;font-weight:700;cursor:pointer;background:'+(_stOp?'#4a5568':'var(--bg2)')+';color:'+(_stOp?'#fff':'var(--text3)')+';border-right:1px solid var(--border)" onclick="window._uSub=&quot;operadores&quot;;renderUsuarios()">👤 '+tr('operadores')+'  ('+operadoresU.length+')</div>';
   var _stEm=_usub==='empresas';h+='<div style="padding:5px 16px;font-size:11px;font-weight:700;cursor:pointer;background:'+(_stEm?'#4a5568':'var(--bg2)')+';color:'+(_stEm?'#f7f7f7':'var(--text3)')+'" onclick="window._uSub=&quot;empresas&quot;;renderUsuarios()">🏢 Empresas ('+empresasU.length+')</div>';
   h+='</div>';
   // ── Search + filters ──
@@ -5405,7 +5405,7 @@ function renderUsuarios(){
       });
       h+='</tbody></table></div>';
     } else {
-      h+='<div class="tbl-wrap"><table class="dtbl"><thead><tr><th>'+tr('nombre')+'</th><th>'+tr('thRole')+'</th><th>'+tr('thPin')+'</th><th>'+tr('thLanguage')+'</th><th>'+tr('thTabs')+'as</th><th>Permisos</th><th></th></tr></thead><tbody>';
+      h+='<div class="tbl-wrap"><table class="dtbl"><thead><tr><th>'+tr('nombre')+'</th><th>'+tr('thRole')+'</th><th>'+tr('thPin')+'</th><th>'+tr('thLanguage')+'</th><th>'+tr('thTabs')+'</th><th>Permisos</th><th></th></tr></thead><tbody>';
       listBase.forEach(function(u){
         var l=LANGS_UI.find(function(x){return x.code===(u.lang||'es');});
         var rol=rolMap[u.rol]||u.rol;
@@ -9732,7 +9732,7 @@ function _buildEmpresasContent(emps,pres,_sub,q,fNivel,fEvento){
     }).sort(function(a,b){return(b.creadoTs||'').localeCompare(a.creadoTs||'');});
     h+='<div style="font-size:11px;color:var(--text3);margin-bottom:6px">'+filteredP.length+' preregistro'+(filteredP.length!==1?'s':'')+(filteredP.length<pres.length?' de '+pres.length:'')+'</div>';
     h+='<div class="tbl-wrap"><table class="dtbl"><thead><tr>';
-    h+='<th>'+tr('thCompany')+'</th><th>'+tr('thEvent')+'</th><th>'+tr('thPlate')+'</th><th>'+tr('thTrailer')+'</th><th>'+tr('thDriver')+'tor</th><th>Ref.</th><th>'+tr('lblExpositor')+'</th><th>'+tr('hall')+'</th><th>'+tr('stand')+'</th><th>'+tr('fechaPlan')+'</th><th>'+tr('hora')+'</th><th>'+tr('descarga')+'</th><th>'+tr('estado')+'</th><th>'+tr('creado')+'</th>';
+    h+='<th>'+tr('thCompany')+'</th><th>'+tr('thEvent')+'</th><th>'+tr('thPlate')+'</th><th>'+tr('thTrailer')+'</th><th>'+tr('thDriver')+'</th><th>Ref.</th><th>'+tr('lblExpositor')+'</th><th>'+tr('hall')+'</th><th>'+tr('stand')+'</th><th>'+tr('fechaPlan')+'</th><th>'+tr('hora')+'</th><th>'+tr('descarga')+'</th><th>'+tr('estado')+'</th><th>'+tr('creado')+'</th>';
     h+='</tr></thead><tbody>';
     filteredP.forEach(function(p){
       var stBg=p.estado==='preregistrado'?'var(--bll)':p.estado==='en_camino'?'var(--all)':p.estado==='en_recinto'?'var(--gll)':'var(--bg3)';
@@ -10941,7 +10941,7 @@ function pRenderEstado(){
     return;
   }
   var html='<div class="tbl-wrap"><table class="dtbl"><thead><tr>';
-  html+='<th>'+tr('thCompany')+'</th><th>'+tr('thEvent')+'</th><th>'+tr('thPlate')+'</th><th>'+tr('thTrailer')+'</th><th>'+tr('thDriver')+'tor</th><th>Ref.</th><th>'+tr('lblExpositor')+'</th><th>'+tr('hall')+'</th><th>'+tr('stand')+'</th><th>'+tr('fechaPlan')+'</th><th>'+tr('hora')+'</th><th>'+tr('descarga')+'</th><th>'+tr('estado')+'</th><th>'+tr('creado')+'</th>';
+  html+='<th>'+tr('thCompany')+'</th><th>'+tr('thEvent')+'</th><th>'+tr('thPlate')+'</th><th>'+tr('thTrailer')+'</th><th>'+tr('thDriver')+'</th><th>Ref.</th><th>'+tr('lblExpositor')+'</th><th>'+tr('hall')+'</th><th>'+tr('stand')+'</th><th>'+tr('fechaPlan')+'</th><th>'+tr('hora')+'</th><th>'+tr('descarga')+'</th><th>'+tr('estado')+'</th><th>'+tr('creado')+'</th>';
   html+='</tr></thead><tbody>';
   pres.forEach(function(p){
     var mat=(p.matricula||'').toUpperCase();
