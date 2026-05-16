@@ -43,7 +43,7 @@
 [data-theme="soft"] #appHdr{background:#f0e8d0;border-bottom-color:#d4c088}
 #appHdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 10px;height:48px;display:flex;align-items:center;position:sticky;top:0;z-index:200;overflow:visible;min-width:0}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:15px;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:15.5px;letter-spacing:.15px;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg3)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 input,select,textarea{font-family:inherit;font-size:14px;outline:none;width:100%;padding:8px 12px;border:1.5px solid var(--border2);border-radius:var(--r);background:var(--bg2);color:var(--text);transition:border-color .15s;-webkit-appearance:none;appearance:none}
 input[type=date]{height:30px;font-size:11px;padding:4px 7px;box-sizing:border-box;width:auto;min-width:110px;max-width:130px}
@@ -53,7 +53,7 @@ textarea{resize:vertical;min-height:60px}
 button{cursor:pointer;border:none;border-radius:var(--r);transition:all .15s;font-weight:600;white-space:nowrap;font-family:inherit;display:inline-flex;align-items:center;gap:4px;justify-content:center}
 button:active{transform:scale(.97)}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.app-hdr{display:flex;align-items:center;gap:4px;padding:0 10px;height:48px;background:var(--bg2);border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.app-hdr{display:flex;align-items:center;gap:4px;padding:0 12px;height:42px;background:var(--bg2);border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
 .logo{display:flex;align-items:center;gap:7px;flex-shrink:0}
 .logo-ico{width:34px;height:34px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0}
 .logo-txt{font-size:16px;font-weight:900;letter-spacing:-.4px;white-space:nowrap}
@@ -68,10 +68,20 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .sd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sd-g{background:#22c55e;animation:blink 2s infinite}.sd-y{background:#4a5568}.sd-r{background:var(--red)}.sd-o{background:var(--text4)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.tabs-bar{display:flex;align-items:center;gap:3px;padding:4px 10px;background:var(--bg3);border-bottom:1px solid var(--border);overflow-x:auto;position:sticky;top:48px;z-index:99;scrollbar-width:none;justify-content:flex-start;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+.tabs-bar{display:flex;align-items:center;gap:3px;padding:2px 12px;background:var(--bg3);border-bottom:1px solid var(--border);overflow-x:auto;position:sticky;top:42px;z-index:99;scrollbar-width:none;justify-content:flex-start;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
 .tabs-bar::-webkit-scrollbar{display:none}
-.btn-tab{padding:6px 13px;border-radius:20px;background:transparent;color:var(--text3);font-size:13px;font-weight:500;border:none;white-space:nowrap;flex-shrink:0;transition:all .15s;display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em}
+.tg-grp-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:18px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:color .1s;outline:none;-webkit-tap-highlight-color:transparent}
+.tg-grp-btn:hover{background:var(--bg4)}
+.tg-grp-btn:focus,.tg-grp-btn:focus-visible{outline:none}
+.tg-grp-btn:not(.active):focus{background:var(--bg3);color:var(--text2)}
+.tg-grp-btn:not(.active):active{background:var(--bg3)}
+.btn-tab:not(.active):active{background:transparent}
+.tg-grp-btn.active{background:linear-gradient(135deg,#4a5568,#2d3748);color:#fff;border-color:#2d3748}
+.tg-grp-btn.active:hover{background:linear-gradient(135deg,#3a4558,#1f2733)}
+.btn-tab{padding:5px 11px;border-radius:20px;background:transparent;color:var(--text3);font-size:12.5px;font-weight:500;border:none;white-space:nowrap;flex-shrink:0;transition:color .1s;display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em;outline:none;-webkit-tap-highlight-color:transparent}
 .btn-tab:hover{color:var(--text);background:rgba(37,99,235,.07);border-radius:20px}
+.btn-tab:focus,.btn-tab:focus-visible{outline:none}
+.btn-tab:not(.active):focus{background:transparent;color:var(--text3)}
 .btn-tab.active{background:#4a5568;color:#f7f7f7;border:none;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .btn-tab:active{transform:none}
 .btn-tab.tab-dragging{opacity:.4;cursor:grabbing}
@@ -82,7 +92,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .dtbl th.col-drag-over{background:var(--bll)!important;border-left:2px solid #3a4558}
 .dtbl th[draggable]{cursor:grab}
 .dtbl th[draggable]:hover{background:var(--bg4)}
-.app-main{padding:6px 10px;max-width:1400px;margin:0 auto}.app-main>div>*+*{margin-top:0}
+.app-main{padding:6px 12px;max-width:2200px;margin:0 auto}.app-main>div>*+*{margin-top:0}
 .card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh);padding:14px}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:4px}
 .sec-ttl{font-size:15px;font-weight:800;display:flex;align-items:center;gap:5px;letter-spacing:-.01em}
@@ -114,10 +124,10 @@ input[type="checkbox"]{width:16px;height:16px;accent-color:#4a5568;cursor:pointe
 .stat-n{font-size:16px;font-weight:900;line-height:1.1;font-family:'JetBrains Mono',monospace}
 .stat-l{font-size:10px;color:var(--text3);font-weight:700;margin-top:2px;text-transform:uppercase}
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;border-radius:var(--r);border:1.5px solid var(--border);box-shadow:var(--sh)}
-.dtbl{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto;color:var(--text)}.dtbl th,.dtbl td{white-space:nowrap}
+.dtbl{width:100%;border-collapse:collapse;font-size:13.5px;table-layout:auto;color:var(--text)}.dtbl th,.dtbl td{white-space:nowrap}
 #tab-recintos .dtbl,#tab-recintos .dtbl td,#tab-recintos .dtbl th,#tab-recintos .dtbl b{color:#111!important}
 .dtbl th{background:var(--bg3);padding:7px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text3);border-bottom:1.5px solid var(--border);white-space:nowrap}
-.dtbl td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.dtbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;letter-spacing:.35px}
 .dtbl tr:last-child td{border-bottom:none}
 .dtbl tr:hover td{background:var(--bg3)}
 .mchip{background:var(--text);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.5px;white-space:nowrap;display:inline-block}
@@ -341,7 +351,7 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
 .pill-b{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
 .btn-edit{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
 
-.pc-btn-3d{background:linear-gradient(to bottom,#f5f5f5,#e8e8e8);border:1px solid #c0c0c0;border-bottom:3px solid #a0a0a0;border-radius:7px;color:#2c2c2c;font-size:10px;font-weight:600;padding:4px 10px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.7);transition:all .08s ease;white-space:nowrap;flex-shrink:0;letter-spacing:.01em;}
+.pc-btn-3d{background:linear-gradient(to bottom,#f5f5f5,#e8e8e8);border:1px solid #c0c0c0;border-bottom:3px solid #a0a0a0;border-radius:6px;color:#2c2c2c;font-size:10px;font-weight:600;padding:3px 8px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.7);transition:all .08s ease;white-space:nowrap;flex-shrink:0;letter-spacing:.01em;}
 .pc-btn-3d:hover{background:linear-gradient(to bottom,#fafafa,#eeeeee);border-color:#b0b0b0;border-bottom-color:#909090;}
 .pc-btn-3d:active{background:linear-gradient(to bottom,#e0e0e0,#ebebeb);border-top:3px solid #a0a0a0;border-bottom:1px solid #c0c0c0;box-shadow:inset 0 1px 3px rgba(0,0,0,.12);transform:translateY(1px);}
 .pc-btn-3d.on{background:linear-gradient(to bottom,#e0e0e8,#d4d4e0);border-color:#9898b0;border-bottom-color:#7878a0;color:#1a1a2a;box-shadow:inset 0 2px 3px rgba(0,0,0,.10);}
@@ -914,6 +924,13 @@ a:hover{color:#3a4558;}
     <!-- EVENTO ACTIVO — oculto en móvil -->
     <div class="hdr-cnt-wrap hdr-hide-mobile" id="hdrCnts" style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     </div>
+    <!-- GRUPOS DE PESTAÑAS — a la derecha del badge de evento -->
+    <div id="tgGroupBar" style="display:none;align-items:center;gap:4px;flex-shrink:0;margin-left:6px">
+      <button class="tg-grp-btn" data-grp="op"  onclick="tgSelectGroup('op')">📊 Operativa</button>
+      <button class="tg-grp-btn" data-grp="per" onclick="tgSelectGroup('per')">🚚 Logística</button>
+      <button class="tg-grp-btn" data-grp="cfg" onclick="tgSelectGroup('cfg')">🏟 Configuración</button>
+      <button class="tg-grp-btn" data-grp="dat" onclick="tgSelectGroup('dat')">📂 Datos</button>
+    </div>
     <!-- SPACER -->
     <div style="flex:1"></div>
     <div class="hdr-right" style="display:flex;align-items:center;gap:4px;flex-shrink:0">
@@ -938,23 +955,42 @@ a:hover{color:#3a4558;}
 </div>
 <!-- TABS -->
 <div class="tabs-bar" id="mainTabs" style="display:none">
-  <button class="btn-tab" data-tab="dash"        onclick="goTab('dash',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
-  <button class="btn-tab" data-tab="ingresos"    onclick="goTab('ingresos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>🔖 Referencia</button>
-  <button class="btn-tab" data-tab="ingresos2"   onclick="goTab('ingresos2',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l5 3-5 3V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>${tr('ingresos2')}</button>
-  <button class="btn-tab" data-tab="flota" style="display:none"       onclick="goTab('flota',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Embalaje</button>
-  <button class="btn-tab" data-tab="conductores" style="display:none" onclick="goTab('conductores',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>Conductores</button>
-  <button class="btn-tab" data-tab="agenda" style="display:none"      onclick="goTab('agenda',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Agenda</button>
-  <button class="btn-tab" data-tab="analytics" style="display:none"   onclick="goTab('analytics',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Análisis</button>
-  <button class="btn-tab" data-tab="vehiculos" style="display:none"   onclick="goTab('vehiculos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Historial</button>
-  <button class="btn-tab" data-tab="auditoria"   onclick="goTab('auditoria',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Archivos</button>
-  <button class="btn-tab" data-tab="papelera" style="display:none"    onclick="goTab('papelera',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Papelera</button>
-  <button class="btn-tab" data-tab="impresion"  onclick="goTab('impresion',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Impresión</button>
-  <button class="btn-tab" data-tab="recintos"    onclick="goTab('recintos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Recintos</button>
-  <button class="btn-tab" data-tab="eventos" onclick="goTab('eventos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Eventos</button>
-  <button class="btn-tab" data-tab="mensajes"    onclick="goTab('mensajes',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Mensajes</button>
-  <button class="btn-tab" data-tab="usuarios" style="display:none"    onclick="goTab('usuarios',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Usuarios</button>
-  <button class="btn-tab" data-tab="empresas" style="display:none" onclick="goTab('empresas',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>${tr('companies')}</button>
+  <!-- GRUPO 1: OPERATIVA -->
+  <button class="btn-tab tg-orig" data-tab="dash"        onclick="goTab('dash',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
+  <button class="btn-tab tg-orig" data-tab="ingresos"    onclick="goTab('ingresos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>Referencia</button>
+  <button class="btn-tab tg-orig" data-tab="ingresos2"   onclick="goTab('ingresos2',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l5 3-5 3V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Ingresos</button>
+  <button class="btn-tab tg-orig" data-tab="agenda" style="display:none"      onclick="goTab('agenda',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Agenda</button>
+  <!-- SEP1 -->
+  <div class="tg-sep-line" style="width:1px;height:20px;background:linear-gradient(180deg,transparent,#999,transparent);margin:0 4px;flex-shrink:0"></div>
+  <!-- GRUPO 2: PERSONAS -->
+  <button class="btn-tab tg-orig" data-tab="conductores" style="display:none" onclick="goTab('conductores',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>Conductores</button>
+  <button class="btn-tab tg-orig" data-tab="flota" style="display:none"       onclick="goTab('flota',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Embalaje</button>
+  <button class="btn-tab tg-orig" data-tab="usuarios" style="display:none"    onclick="goTab('usuarios',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Usuarios</button>
+  <button class="btn-tab tg-orig" data-tab="empresas" style="display:none" onclick="goTab('empresas',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>Empresas</button>
+  <!-- SEP2 -->
+  <div class="tg-sep-line" style="width:1px;height:20px;background:linear-gradient(180deg,transparent,#999,transparent);margin:0 4px;flex-shrink:0"></div>
+  <!-- GRUPO 3: CONFIGURACIÓN -->
+  <button class="btn-tab tg-orig" data-tab="recintos"    onclick="goTab('recintos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Recintos</button>
+  <button class="btn-tab tg-orig" data-tab="eventos" onclick="goTab('eventos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Eventos</button>
+  <button class="btn-tab tg-orig" data-tab="impresion"  onclick="goTab('impresion',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Impresión</button>
+  <!-- SEP3 -->
+  <div class="tg-sep-line" style="width:1px;height:20px;background:linear-gradient(180deg,transparent,#999,transparent);margin:0 4px;flex-shrink:0"></div>
+  <!-- GRUPO 4: DATOS -->
+  <button class="btn-tab tg-orig" data-tab="analytics" style="display:none"   onclick="goTab('analytics',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Análisis</button>
+  <button class="btn-tab tg-orig" data-tab="vehiculos" style="display:none"   onclick="goTab('vehiculos',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Historial</button>
+  <button class="btn-tab tg-orig" data-tab="auditoria"   onclick="goTab('auditoria',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Archivos</button>
+  <button class="btn-tab tg-orig" data-tab="mensajes"    onclick="goTab('mensajes',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Mensajes</button>
+  <button class="btn-tab tg-orig" data-tab="papelera" style="display:none"    onclick="goTab('papelera',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Papelera</button>
+  <button class="btn-tab tg-orig" data-tab="btnstats" onclick="tgShowStats()" title="Estadísticas de uso de botones"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>Uso botones</button>
 </div>
+
+<style>
+.btn-tab.tg-orig{display:none}
+.tg-sep-line{display:none!important}
+.btn-tab.tg-orig.tg-visible{display:inline-flex}
+</style>
+
+
 <!-- STATS BAR -->
 <div id="statsBar" style="display:none;padding:3px 14px;background:var(--bg2);border-bottom:0.5px solid var(--border);font-size:10px;font-weight:700;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center"></div>
 <!-- ══════════════════════════════════════════════
@@ -2989,7 +3025,20 @@ function loginSuccess(u){
   document.getElementById('hdrUser').innerHTML=esc(u.nombre)+badge;
   const defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda']};
   const allowed=u.tabs||defT[u.rol]||['dash','ingresos'];
-  document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>b.style.display=allowed.includes(b.dataset.tab)?'':'none');
+  // Marcar permisos por rol. NO se usa style.display inline:
+  // las pestañas arrancan ocultas por CSS y solo tgEnsureFilter (clase tg-visible)
+  // muestra las permitidas. Así un usuario nunca ve módulos que no le corresponden.
+  // btnstats (uso de botones) es visible si el rol accede al grupo Datos.
+  const _verDatos=allowed.includes('dash')||allowed.includes('analytics')||allowed.includes('vehiculos');
+  document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>{
+    if(b.dataset.tab){
+      b.style.display='';  // limpiar cualquier inline previo
+      const _perm=b.dataset.tab==='btnstats'?_verDatos:allowed.includes(b.dataset.tab);
+      b.setAttribute('data-perm-hidden',_perm?'0':'1');
+    }
+  });
+  const _gb=document.getElementById('tgGroupBar');
+  if(_gb)_gb.style.display='flex';
   logAudit('login','usuario','Login: '+u.nombre);setTimeout(applyTabOrder,50);
   // SA: show new device alert if any
   if(isSA()&&DB._deviceAlerts&&DB._deviceAlerts.length){
@@ -3019,6 +3068,8 @@ function loginSuccess(u){
   const _restoreTab=_savedTab&&allowed.includes(_savedTab)?_savedTab:(allowed.includes('ingresos')?'ingresos':allowed[0]||'dash');
   goTab(_restoreTab,document.querySelector('#mainTabs .btn-tab[data-tab="'+_restoreTab+'"]'));
   renderHdr();
+  // Filtrar la sub-barra al grupo de la pestaña restaurada
+  if(typeof tgSyncGroupToActiveTab==='function')tgSyncGroupToActiveTab();
 }
 function doLogout(){if(CU)logSessionEvent(CU,'logout','Cierre de sesión');CU=null;saveSession();try{localStorage.removeItem(SK+'_tab');}catch(e){};if(window._portalLiveInterval)clearInterval(window._portalLiveInterval);var pw=document.getElementById('portalWrap');if(pw)pw.style.display='none';var rw=document.getElementById('regEmpWrap');if(rw)rw.style.display='none';var elw=document.getElementById('empLoginWrap');if(elw)elw.style.display='none';['loginWrap'].forEach(id=>document.getElementById(id).style.display='flex');['appHdr','mainTabs','appMain'].forEach(id=>document.getElementById(id).style.display='none');showLogin();}
 
@@ -3055,7 +3106,19 @@ function renderHdr(){
 
 function _saveSubTab(tab,sub){try{localStorage.setItem((SK||'cu1')+'_subtab_'+tab+'_'+(CU?.id||''),sub);}catch(e){}}
 function _loadSubTab(tab,def){try{return localStorage.getItem((SK||'cu1')+'_subtab_'+tab+'_'+(CU?.id||''))||def;}catch(e){return def;}}
-function goTab(tab,btn){curTab=tab;try{localStorage.setItem(SK+'_tab',tab);}catch(e){};document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.querySelector('#mainTabs [data-tab="'+tab+'"]');if(b)b.classList.add('active');}document.querySelectorAll('#appMain .app-main > div').forEach(d=>d.style.display='none');const t=document.getElementById('tab-'+tab);if(t)t.style.display='block';renderHdr();(function(){var _map={dash:renderDash,ingresos:renderIngresos,ingresos2:renderIngresos2,flota:renderFlota,conductores:renderConductores,agenda:renderAgenda,analytics:renderAnalytics,vehiculos:renderVehiculos,auditoria:renderAuditoria,papelera:renderPapelera,impresion:renderImpresion,recintos:renderRecintos,eventos:renderEventosTab,mensajes:renderMensajesTab,usuarios:function(){renderUsuarios();setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},200);},empresas:function(){if(typeof renderEmpresasTab==='function')renderEmpresasTab();}};(_map[tab]||function(){})();setTimeout(_autoInitDrag,200);})();}
+function goTab(tab,btn){curTab=tab;try{localStorage.setItem(SK+'_tab',tab);}catch(e){};document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.querySelector('#mainTabs [data-tab="'+tab+'"]');if(b)b.classList.add('active');}document.querySelectorAll('#appMain .app-main > div').forEach(d=>d.style.display='none');const t=document.getElementById('tab-'+tab);if(t)t.style.display='block';if(typeof tgEnsureFilter==='function')tgEnsureFilter();
+  // El cambio visual de pestaña ya está hecho. El render del contenido (que varía
+  // mucho de peso entre pestañas) se difiere al siguiente frame para que el cambio
+  // se sienta inmediato y uniforme en TODAS las pestañas.
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      renderHdr();
+      var _map={dash:renderDash,ingresos:renderIngresos,ingresos2:renderIngresos2,flota:renderFlota,conductores:renderConductores,agenda:renderAgenda,analytics:renderAnalytics,vehiculos:renderVehiculos,auditoria:renderAuditoria,papelera:renderPapelera,impresion:renderImpresion,recintos:renderRecintos,eventos:renderEventosTab,mensajes:renderMensajesTab,usuarios:function(){renderUsuarios();setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},200);},empresas:function(){if(typeof renderEmpresasTab==='function')renderEmpresasTab();}};
+      (_map[tab]||function(){})();
+      setTimeout(_autoInitDrag,200);
+    });
+  });
+}
 function renderTab(t){goTab(t);}
 
 // ═══ DASHBOARD ═══
@@ -3601,28 +3664,26 @@ function _ingPrintCfg(cfgKey){
   // Plantillas de diseño guardadas
   const tpls=(DB.printTemplates||[]).map((t,idx)=>{
     const _dIng1=_dm['dest_ing1']===t.name,_dIng2=_dm['dest_ing2']===t.name,_dAg=_dm['dest_ag']===t.name;
-    const chip=(on,lbl)=>`<span onclick="toggleTplDest('${t.name}','dest_${lbl}','${cfgKey}')" style="cursor:pointer;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700;border:0.5px solid;${on?'background:#4a5568;color:#f7f7f7;border-color:#3a4558':'background:var(--bg3);color:var(--text3);border-color:var(--border)'}">${{ing1:'Ref',ing2:'Ing',ag:'Ag',cond:'Cond',flota:'Emb'}[lbl]||lbl}${on?' ✓':''}</span>`;
-    return`<div style="display:flex;align-items:center;gap:5px;padding:6px 8px;border-radius:6px;background:var(--bg2);border:0.5px solid var(--border)">
-      <div style="flex:1;min-width:0">
-        <div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px;cursor:pointer" onclick="loadPrintTemplate('${t.name}','${cfgKey}')"> ${t.name} <span style="font-size:9px;color:var(--text3)">${t.mode==='troquel'?'✂':''} ${t.paperSize||'A4'}</span></div>
-        <div style="display:flex;gap:3px;flex-wrap:wrap">${chip(_dIng1,'ing1')}${chip(_dIng2,'ing2')}${chip(_dAg,'ag')}${chip(_dm['dest_cond']===t.name,'cond')}${chip(_dm['dest_flota']===t.name,'flota')}</div>
+    const chip=(on,lbl)=>`<span class="tpl-dest-chip" data-tpl="${(t.name||'').replace(/"/g,'&quot;')}" data-dest="dest_${lbl}" onclick="toggleTplDest('${t.name}','dest_${lbl}','${cfgKey}')" style="cursor:pointer;padding:2px 9px;border-radius:11px;font-size:10px;font-weight:700;border:1px solid;${on?'background:#4a5568;color:#f7f7f7;border-color:#3a4558':'background:var(--bg3);color:var(--text3);border-color:var(--border2)'}">${{ing1:'Ref',ing2:'Ing',ag:'Ag',cond:'Cond',flota:'Emb'}[lbl]||lbl}<span class="tpl-chk">${on?' ✓':''}</span></span>`;
+    const actBtn=(fn,title,svg,danger)=>`<button onclick="${fn}" title="${title}" style="width:30px;height:30px;border-radius:7px;border:1px solid ${danger?'#d99':'var(--border2)'};background:${danger?'#fef2f2':'var(--bg)'};color:${danger?'#b91c1c':'var(--text2)'};cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">${svg}</button>`;
+    return`<div style="display:flex;flex-direction:column;gap:6px;padding:8px 9px;border-radius:8px;background:var(--bg2);border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="loadPrintTemplate('${t.name}','${cfgKey}')">
+          <div style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)">${t.name}</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:600;margin-top:1px">${t.mode==='troquel'?'✂ Troquel · ':''}${t.paperSize||'A4'}</div>
+        </div>
+        ${actBtn("loadPrintTemplate('"+t.name+"','"+cfgKey+"')","Cargar plantilla",'<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',false)}
+        ${actBtn("editPrintTpl("+idx+",'"+cfgKey+"')","Renombrar",'<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',false)}
+        ${actBtn("delPrintTpl("+idx+",'"+cfgKey+"')","Eliminar",'<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>',true)}
       </div>
-      <button onclick="loadPrintTemplate('${t.name}','${cfgKey}')" title=tr('cargar') style="width:26px;height:26px;border-radius:6px;border:0.5px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-      <button onclick="editPrintTpl(${idx},'${cfgKey}')" title="Renombrar" style="width:26px;height:26px;border-radius:6px;border:0.5px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-      <button onclick="delPrintTpl(${idx},'${cfgKey}')" title="Eliminar" style="width:26px;height:26px;border-radius:6px;border:0.5px solid #fca5a5;background:#8b3a3a;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center">
-        <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-      </button>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:6px">${chip(_dIng1,'ing1')}${chip(_dIng2,'ing2')}${chip(_dAg,'ag')}${chip(_dm['dest_cond']===t.name,'cond')}${chip(_dm['dest_flota']===t.name,'flota')}</div>
     </div>`;
   }).join('');
 
   // Plantillas de imágenes guía
   const bgTpls=(DB.printBgTemplates||[]).map((t,i)=>
-    `<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;background:var(--bg2);border:0.5px solid var(--border)">
-      <span style="font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🖼 ${t.name}</span>
+    `<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;background:var(--bg2);border:0.5px solid var(--border);flex-wrap:wrap">
+      <span style="font-size:11px;flex:1;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🖼 ${t.name}</span>
       <button onclick="pcLoadBgTpl('${cfgKey}',${i})" style="width:26px;height:26px;border-radius:6px;border:0.5px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center" title=tr('cargar')>
         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
@@ -3645,7 +3706,7 @@ function _ingPrintCfg(cfgKey){
   <style>
   #pv-${cfgKey}{position:relative;background:#fff;border:1px solid #aaa;overflow:visible;width:794px;height:1123px;flex-shrink:0;font-family:'Arial',sans-serif;transform-origin:top left;}
   #pc-canvas-wrap-${cfgKey}{touch-action:pan-y;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .pfc-${cfgKey}{position:absolute;border:1.5px solid #000;background:rgba(255,255,255,.96);border-radius:2px;padding:1px 4px;font-size:8px;font-weight:700;cursor:move;z-index:10;display:flex;align-items:baseline;line-height:1.4;user-select:none;min-width:50px;max-width:200px}
+  .pfc-${cfgKey}{position:absolute;border:1.5px solid #000;background:rgba(255,255,255,.96);border-radius:2px;padding:1px 4px;font-size:8px;font-weight:700;cursor:move;z-index:10;display:flex;align-items:baseline;line-height:1.4;user-select:none;min-width:50px;max-width:200px;letter-spacing:normal}
   .pfc-${cfgKey}.pfc-sel{border:2px solid #3b5bdb;background:#eff6ff;z-index:20}
   .pfc-${cfgKey} .pfc-line{flex:1;min-width:20px;border-bottom:1px solid #000;height:1px;margin:0 2px;align-self:flex-end;margin-bottom:2px}
   .pfc-${cfgKey} .pfc-val{font-weight:400;margin-left:3px}
@@ -3680,19 +3741,27 @@ function _ingPrintCfg(cfgKey){
   .pc-btn-3d.save:hover{background:linear-gradient(to bottom,#fafafa 0%,#eeeeee 100%);}
   .pc-sep-v{width:1px;height:22px;background:#d0d0d0;flex-shrink:0;margin:0 6px;}
   .pc-grp-lbl{font-size:9px;color:#787878;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-right:3px;}
-  .pc-sec{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;overflow:hidden}
-  .pc-sec-hdr{display:flex;align-items:center;gap:7px;padding:7px 10px;border-bottom:0.5px solid var(--border);background:var(--bg3)}
+  .pc-sec{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;overflow:visible;min-width:0}
+  .pc-sec-hdr{display:flex;align-items:center;gap:7px;padding:7px 10px;border-bottom:0.5px solid var(--border);background:var(--bg3);flex-wrap:wrap;row-gap:4px}
   .pc-sec-hdr span{font-size:10px;font-weight:700;color:var(--text2)}
-  .pc-sec-body{padding:8px 10px;display:flex;flex-direction:column;gap:7px}
-  .pc-row{display:flex;align-items:center;gap:6px}
+  .pc-sec-body{padding:8px 10px;display:flex;flex-direction:column;gap:7px;min-width:0;overflow:visible}
+  .pc-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
   .pc-lbl{font-size:10px;color:var(--text3);min-width:40px}
-  @media(max-width:640px){#pcfg-${cfgKey}{padding:6px!important}.pc-outer-${cfgKey}{grid-template-columns:1fr!important;overflow-x:visible!important}}
+  .pc-sec input,.pc-sec select,.pc-sec textarea{min-width:0;max-width:100%;box-sizing:border-box}
+  .pc-sec button{flex-shrink:0}
+  .pc-sec-body>div{min-width:0}
+  .pc-side-${cfgKey}{display:flex;flex-direction:column;gap:8px;min-width:0;max-height:calc(100vh - 90px);overflow-y:auto;overflow-x:hidden;padding-right:4px}
+  .pc-side-${cfgKey}::-webkit-scrollbar{width:6px}
+  .pc-side-${cfgKey}::-webkit-scrollbar-thumb{background:#c8c8d0;border-radius:3px}
+  .pc-outer-${cfgKey} .pc-btn-3d{white-space:nowrap}
+  @media(max-width:1200px){.pc-outer-${cfgKey}{grid-template-columns:1fr!important;overflow-x:visible!important}.pc-side-${cfgKey}{max-height:none!important;overflow-y:visible!important}}
+  @media(max-width:640px){#pcfg-${cfgKey}{padding:6px!important}}
   </style>
 
-  <div class="pc-outer-${cfgKey}" style="display:grid;grid-template-columns:280px 1fr;gap:12px;overflow-x:auto">
+  <div class="pc-outer-${cfgKey}" style="display:grid;grid-template-columns:260px minmax(450px,1fr) 320px;gap:12px;overflow-x:auto;align-items:start">
 
-  <!-- ══ PANEL IZQUIERDO ══ -->
-  <div style="display:flex;flex-direction:column;gap:8px;align-self:start;position:sticky;top:0;max-height:calc(100vh - 70px);overflow-y:auto;padding-right:2px;min-width:0">
+  <!-- ══ PANEL IZQUIERDO (Imagen + Campos) ══ -->
+  <div class="pc-side-${cfgKey}">
 
     <!-- 1. Imagen de guía -->
     <div class="pc-sec" data-sec-id="guia">
@@ -3728,112 +3797,17 @@ function _ingPrintCfg(cfgKey){
         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         <span>${tr('camposDise')}</span>
         <span style="flex:1"></span>
-        <span id="pc-fld-arrow-${cfgKey}" style="font-size:11px;color:var(--text3)">▸</span>
+        <span id="pc-fld-arrow-${cfgKey}" style="font-size:11px;color:var(--text3)">▾</span>
       </div>
-      <div id="pc-fld-body-${cfgKey}" style="display:none;flex-direction:column;gap:2px;padding:6px 8px 8px;max-height:320px;overflow-y:auto;border-top:0.5px solid var(--border)">
+      <div id="pc-fld-body-${cfgKey}" style="display:flex;flex-direction:column;gap:2px;padding:6px 8px 8px;max-height:600px;overflow-y:auto;border-top:0.5px solid var(--border)">
         <div id="pc-palette-${cfgKey}" style="display:flex;flex-direction:column;gap:2px"></div>
       </div>
     </div>
 
-    <!-- 3. Documento -->
-    <div class="pc-sec" data-sec-id="documento">
-      <div class="pc-sec-hdr" style="background:#fffbeb;border-bottom-color:#fde68a">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <span>${tr('documento')}</span>
-      </div>
-      <div class="pc-sec-body">
-        <div class="pc-row">
-          <span class="pc-lbl">${tr('fuente')}</span>
-          <select onchange="setPrintCfgFont('${cfgKey}',this.value);this.style.fontFamily=this.value" style="flex:1;font-size:11px;padding:3px 6px;border-radius:6px;border:0.5px solid var(--border);background:var(--bg);font-family:${font};cursor:pointer">${fontOpts}</select>
-        </div>
-        <div class="pc-row">
-          <span class="pc-lbl">${tr('papel')}</span>
-          ${['A3','A4','A5'].map(sz=>`<button class="pc-btn-3d ${paperSize===sz?'on':''}" style="font-size:11px;font-weight:600" onclick="setPaperSize('${cfgKey}','${sz}')">${sz}</button>`).join('')}
-          <div style="width:1px;height:16px;background:var(--border);margin:0 2px"></div>
-          <button id="pc-orient-${cfgKey}" class="pc-btn-3d" onclick="pcToggleOrient('${cfgKey}')">${cfg.landscape?'↔ Horiz':'↕ Vert'}</button>
-        </div>
-        <div class="pc-row">
-          <span class="pc-lbl">${tr('modo')}</span>
-          <button class="pc-btn-3d ${mode==='normal'?'on':''}" style="font-size:11px;font-weight:700" onclick="setFormPrintMode('normal');setTimeout(()=>{const el=document.getElementById('pcfg-${cfgKey}');if(el){const ck='${cfgKey}';window._impSub=ck==='ag'?'ag':ck==='ing2'?'ing2':'ing1';renderImpresion();}},50)">Normal</button>
-          <button class="btn btn-xs ${mode==='troquel'?'':'btn-gh'}" style="padding:2px 12px;font-size:11px;font-weight:700" onclick="setFormPrintMode('troquel');setTimeout(()=>{const el=document.getElementById('pcfg-${cfgKey}');if(el){const ck='${cfgKey}';window._impSub=ck==='ag'?'ag':ck==='ing2'?'ing2':'ing1';renderImpresion();}},50)">✂ Troquel</button>
-        </div>
-      </div>
-    </div>
+  </div><!-- END PANEL IZQUIERDO -->
 
-    <!-- 4. Frases y QR -->
-    <div class="pc-sec" data-sec-id="frases">
-      <div class="pc-sec-hdr" style="background:#faf5ff;border-bottom-color:#e9d5ff">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 00-2 2v3M16 21v-3M21 21v-3"/></svg>
-        <span>${tr('contenido')}</span>
-      </div>
-      <div class="pc-sec-body" style="gap:5px">
-        <div class="pc-row">
-          <span style="font-size:11px;font-weight:600;flex:1">${tr('qrTracking')}</span>
-          <button class="btn btn-xs ${cfg.qrTracking!==false?'btn-p':'btn-gh'}" style="font-size:10px;padding:1px 8px" onclick="pcQuickAddPhrase('qr','${cfgKey}')">+ Canvas</button>
-          <div style="display:flex;align-items:center;gap:5px;cursor:pointer" onclick="toggleQR('${cfgKey}')">
-            <div style="width:28px;height:15px;border-radius:8px;background:${cfg.qrTracking!==false?'#4a5568':'var(--border2)'};position:relative">
-              <div style="width:11px;height:11px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${cfg.qrTracking!==false?'15':'2'}px"></div>
-            </div>
-            <span style="font-size:10px;font-weight:700;min-width:22px;color:${cfg.qrTracking!==false?'#f7f7f7':'var(--text3)'}">${cfg.qrTracking!==false?'ON':'OFF'}</span>
-          </div>
-        </div>
-        ${['p1','p2','p3'].map(pk=>{
-          const isOn=pk==='p1'?cfg.ph1On===true:pk==='p2'?cfg.ph2On!==false:cfg.ph3On===true;
-          const labels={'p1':'Frase 1 — bajo matrícula','p2':`Frase 2 — pie ficha`,'p3':'Frase 3 — QR acceso'};
-          const bodyHtml=pk==='p3'
-            ?`<div style="padding:4px 0 2px;display:flex;flex-direction:column;gap:3px">
-                <input id="pcp3n-${cfgKey}" data-i18n-ph="phDoorName" placeholder="${tr('phDoorName')}" value="${(ph3.nombre||'').replace(/"/g,'&quot;')}" style="font-size:11px;border:0.5px solid var(--border);border-radius:5px;padding:3px 6px;background:var(--bg);width:100%" oninput="savePuerta3('${cfgKey}')">
-                <input id="pcp3u-${cfgKey}" placeholder="Link Google Maps..." value="${(ph3.url||'').replace(/"/g,'&quot;')}" style="font-size:11px;border:0.5px solid var(--border);border-radius:5px;padding:3px 6px;background:var(--bg);width:100%" oninput="savePuerta3('${cfgKey}')">
-              </div>`
-            :`<textarea id="pcph${pk.slice(1)}-${cfgKey}" rows="2" style="width:100%;font-size:11px;border:none;border-top:0.5px solid var(--border);padding:4px 7px;resize:none;background:var(--bg)" oninput="pcSavePhrase('${cfgKey}')">${pk==='p1'?ph1Val:ph2Val}</textarea>`;
-          return`<div style="border:0.5px solid var(--border);border-radius:6px;overflow:hidden">
-            <div style="display:flex;align-items:center;gap:5px;padding:4px 8px;background:var(--bg3)">
-              <span style="font-size:10px;font-weight:600;flex:1">${labels[pk]}</span>
-              <button class="btn btn-xs ${isOn?'btn-p':'btn-gh'}" style="font-size:10px;padding:1px 7px" onclick="pcQuickAddPhrase('${pk}','${cfgKey}')" ${isOn?'':'disabled'}>+ Canvas</button>
-              <div style="display:flex;align-items:center;gap:4px;cursor:pointer" onclick="pcTogglePhrase('${pk}','${cfgKey}')">
-                <div style="width:28px;height:15px;border-radius:8px;background:${isOn?'#4a5568':'var(--border2)'};position:relative">
-                  <div style="width:11px;height:11px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${isOn?'15':'2'}px"></div>
-                </div>
-                <span style="font-size:10px;font-weight:700;min-width:22px;color:${isOn?'#f7f7f7':'var(--text3)'}">${isOn?'ON':'OFF'}</span>
-              </div>
-            </div>
-            ${isOn?bodyHtml:''}
-          </div>`;
-        }).join('')}
-      </div>
-    </div>
-
-    <!-- 5. Plantilla de diseño -->
-    <div class="pc-sec" data-sec-id="plantilla">
-      <div class="pc-sec-hdr">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
-        <span>${tr('plantillaDise')}</span>
-      </div>
-      <div class="pc-sec-body">
-        <div id="pctpl-confirm-${cfgKey}" style="display:none;background:var(--all);border:0.5px solid #fde68a;border-radius:6px;padding:6px 8px;font-size:11px">
-          <div style="font-weight:700;margin-bottom:4px">${tr('confirmarGuardado')}</div>
-          <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px">
-            <span id="pctpl-cfmt-${cfgKey}" style="background:#4a5568;color:#f7f7f7;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700"></span>
-            <span id="pctpl-csz-${cfgKey}" style="background:var(--bg3);color:var(--text);padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700"></span>
-            <span id="pctpl-cnm-${cfgKey}" style="background:var(--bg3);color:var(--text);padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700"></span>
-          </div>
-          <div style="display:flex;gap:4px">
-            <button class="btn btn-xs btn-gh" style="flex:1" onclick="document.getElementById('pctpl-confirm-${cfgKey}').style.display='none'">${tr('cancel')}</button>
-            <button class="pc-btn-3d" style="flex:1" onclick="confirmSavePrintTemplate('${cfgKey}')">💾 Confirmar</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:5px;align-items:center">
-          <input id="pctpl-name-${cfgKey}" placeholder="${tr('phConfigName')}" style="flex:1;font-size:11px;padding:5px 8px;border:0.5px solid var(--border);border-radius:6px;background:var(--bg)">
-          <button class="pc-btn-3d" onclick="if(!canSaveTpl()){toast(tr('sinPermiso'),'var(--red)');return;}preSavePrintTemplate('${cfgKey}')">Guardar</button>
-        </div>
-        ${tpls?`<div style="display:flex;flex-direction:column;gap:4px;margin-top:2px">${tpls}</div>`:''}
-      </div>
-    </div>
-
-  </div><!-- END LEFT PANEL -->
-
-  <!-- ══ PANEL DERECHO: CANVAS ══ -->
-  <div style="display:flex;flex-direction:column;gap:6px;position:sticky;top:0;align-self:start;max-height:calc(100vh - 70px);overflow-y:auto">
+  <!-- ══ PANEL CENTRAL: CANVAS ══ -->
+  <div style="display:flex;flex-direction:column;gap:6px;min-width:0;overflow:visible">
 
     <!-- BARRA HERRAMIENTAS -->
     <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:5px 8px;display:flex;flex-direction:column;gap:4px">
@@ -3854,6 +3828,7 @@ function _ingPrintCfg(cfgKey){
         </button>
         <div class="pc-sep-v"></div>
         <button class="pc-btn-3d" onclick="pcToggleLabelMode('${cfgKey}')" id="pc-lblbtn-${cfgKey}">Etiq+Val</button>
+        <button class="pc-btn-3d" id="pc-focus-${cfgKey}" onclick="pcToggleFocus('${cfgKey}')" title="Pantalla casi completa para el canvas (oculta paneles laterales)">⛶ Enfoque</button>
         <button class="pc-btn-3d" style="color:var(--red)" onclick="if(!canDelTpl()){toast(tr('sinPermiso'),'var(--red)');return;}pcClearAll('${cfgKey}')"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right:2px;vertical-align:-1px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>${tr('limpiar')}</button>
       </div>
 
@@ -3929,7 +3904,153 @@ function _ingPrintCfg(cfgKey){
     </div>
     <div style="font-size:9px;color:var(--text3);text-align:center;margin-top:3px">Guía azul = alineación horizontal · Guía roja = alineación vertical</div>
 
-  </div><!-- END RIGHT PANEL -->
+  </div><!-- END PANEL CENTRAL CANVAS -->
+
+  <!-- ══ PANEL DERECHO (Documento + Contenido + Plantilla) ══ -->
+  <div class="pc-side-${cfgKey}">
+
+    <!-- 3. Documento -->
+    <div class="pc-sec" data-sec-id="documento">
+      <div class="pc-sec-hdr" style="background:#fffbeb;border-bottom-color:#fde68a">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>${tr('documento')}</span>
+      </div>
+      <div class="pc-sec-body">
+        <div class="pc-row">
+          <span class="pc-lbl">${tr('fuente')}</span>
+          <select onchange="setPrintCfgFont('${cfgKey}',this.value);this.style.fontFamily=this.value" style="flex:1;font-size:11px;padding:3px 6px;border-radius:6px;border:0.5px solid var(--border);background:var(--bg);font-family:${font};cursor:pointer">${fontOpts}</select>
+        </div>
+        <div class="pc-row">
+          <span class="pc-lbl">${tr('papel')}</span>
+          ${['A3','A4','A5'].map(sz=>`<button class="pc-btn-3d ${paperSize===sz?'on':''}" style="font-size:11px;font-weight:600" onclick="setPaperSize('${cfgKey}','${sz}')">${sz}</button>`).join('')}
+          <div style="width:1px;height:16px;background:var(--border);margin:0 2px"></div>
+          <button id="pc-orient-${cfgKey}" class="pc-btn-3d" onclick="pcToggleOrient('${cfgKey}')">${cfg.landscape?'↔ Horiz':'↕ Vert'}</button>
+        </div>
+        <div class="pc-row">
+          <span class="pc-lbl">${tr('modo')}</span>
+          <button class="pc-btn-3d ${mode==='normal'?'on':''}" style="font-size:11px;font-weight:700" onclick="setFormPrintMode('normal');setTimeout(()=>{const el=document.getElementById('pcfg-${cfgKey}');if(el){const ck='${cfgKey}';window._impSub=ck==='ag'?'ag':ck==='ing2'?'ing2':'ing1';renderImpresion();}},50)">Normal</button>
+          <button class="btn btn-xs ${mode==='troquel'?'':'btn-gh'}" style="padding:2px 12px;font-size:11px;font-weight:700" onclick="setFormPrintMode('troquel');setTimeout(()=>{const el=document.getElementById('pcfg-${cfgKey}');if(el){const ck='${cfgKey}';window._impSub=ck==='ag'?'ag':ck==='ing2'?'ing2':'ing1';renderImpresion();}},50)">✂ Troquel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Frases y QR -->
+    <div class="pc-sec" data-sec-id="frases">
+      <div class="pc-sec-hdr" style="background:#faf5ff;border-bottom-color:#e9d5ff;cursor:pointer" onclick="pcToggleContenido('${cfgKey}')">
+        <span class="pc-cont-arrow-${cfgKey}" style="display:inline-block;transition:transform .15s;font-size:9px">▼</span>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 00-2 2v3M16 21v-3M21 21v-3"/></svg>
+        <span>${tr('contenido')}</span>
+      </div>
+      <div class="pc-sec-body pc-cont-body-${cfgKey}" style="gap:5px">
+        <div class="pc-row">
+          <span style="font-size:11px;font-weight:600;flex:1">${tr('qrTracking')}</span>
+          <button class="btn btn-xs ${cfg.qrTracking!==false?'btn-p':'btn-gh'}" style="font-size:10px;padding:1px 8px" onclick="pcQuickAddPhrase('qr','${cfgKey}')">+ Canvas</button>
+          <div style="display:flex;align-items:center;gap:5px;cursor:pointer" onclick="toggleQR('${cfgKey}')">
+            <div style="width:28px;height:15px;border-radius:8px;background:${cfg.qrTracking!==false?'#4a5568':'var(--border2)'};position:relative">
+              <div style="width:11px;height:11px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${cfg.qrTracking!==false?'15':'2'}px"></div>
+            </div>
+            <span style="font-size:10px;font-weight:700;min-width:22px;color:${cfg.qrTracking!==false?'#f7f7f7':'var(--text3)'}">${cfg.qrTracking!==false?'ON':'OFF'}</span>
+          </div>
+        </div>
+        ${['p1','p2','p3'].map(pk=>{
+          const isOn=pk==='p1'?cfg.ph1On===true:pk==='p2'?cfg.ph2On!==false:cfg.ph3On===true;
+          const labels={'p1':'Frase 1 — bajo matrícula','p2':`Frase 2 — pie ficha`,'p3':'Frase 3 — QR acceso'};
+          const bodyHtml=pk==='p3'
+            ?`<div style="padding:4px 0 2px;display:flex;flex-direction:column;gap:3px">
+                <input id="pcp3n-${cfgKey}" data-i18n-ph="phDoorName" placeholder="${tr('phDoorName')}" value="${(ph3.nombre||'').replace(/"/g,'&quot;')}" style="font-size:11px;border:0.5px solid var(--border);border-radius:5px;padding:3px 6px;background:var(--bg);width:100%" oninput="savePuerta3('${cfgKey}')">
+                <input id="pcp3u-${cfgKey}" placeholder="Link Google Maps..." value="${(ph3.url||'').replace(/"/g,'&quot;')}" style="font-size:11px;border:0.5px solid var(--border);border-radius:5px;padding:3px 6px;background:var(--bg);width:100%" oninput="savePuerta3('${cfgKey}')">
+              </div>`
+            :`<textarea id="pcph${pk.slice(1)}-${cfgKey}" rows="2" style="width:100%;font-size:11px;border:none;border-top:0.5px solid var(--border);padding:4px 7px;resize:none;background:var(--bg)" oninput="pcSavePhrase('${cfgKey}')">${pk==='p1'?ph1Val:ph2Val}</textarea>`;
+          return`<div style="border:0.5px solid var(--border);border-radius:6px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:5px;padding:4px 8px;background:var(--bg3)">
+              <span style="font-size:10px;font-weight:600;flex:1">${labels[pk]}</span>
+              <button class="btn btn-xs ${isOn?'btn-p':'btn-gh'}" style="font-size:10px;padding:1px 7px" onclick="pcQuickAddPhrase('${pk}','${cfgKey}')" ${isOn?'':'disabled'}>+ Canvas</button>
+              <div style="display:flex;align-items:center;gap:4px;cursor:pointer" onclick="pcTogglePhrase('${pk}','${cfgKey}')">
+                <div style="width:28px;height:15px;border-radius:8px;background:${isOn?'#4a5568':'var(--border2)'};position:relative">
+                  <div style="width:11px;height:11px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${isOn?'15':'2'}px"></div>
+                </div>
+                <span style="font-size:10px;font-weight:700;min-width:22px;color:${isOn?'#f7f7f7':'var(--text3)'}">${isOn?'ON':'OFF'}</span>
+              </div>
+            </div>
+            ${isOn?bodyHtml:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- 4b. Dirección y QR — sección desplegable independiente -->
+    <div class="pc-sec" data-sec-id="direccionqr">
+      <div class="pc-sec-hdr" style="background:#fff7ed;border-bottom-color:#fed7aa;cursor:pointer" onclick="pcToggleDirQR('${cfgKey}')">
+        <span class="pc-dirqr-arrow-${cfgKey}" style="display:inline-block;transition:transform .15s;font-size:9px">▼</span>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Dirección y QR</span>
+      </div>
+      <div class="pc-sec-body pc-dirqr-body-${cfgKey}" style="gap:5px">
+        <!-- CUADRO 1: TEXTO LIBRE -->
+        <div style="border:0.5px solid var(--border);border-radius:6px;overflow:hidden;background:#eff6ff">
+          <div style="display:flex;align-items:center;gap:5px;padding:4px 8px;background:#bfdbfe">
+            <span style="font-size:10px;font-weight:700;flex:1;color:#1e3a8a">📝 Texto libre (dirección)</span>
+          </div>
+          <div style="padding:6px 8px;display:flex;flex-direction:column;gap:5px">
+            <textarea id="pcp3txt-${cfgKey}" rows="3" placeholder="Texto que se imprime literal. Ej:&#10;Carrer de les Ciències, 45&#10;08908 L'Hospitalet de Llobregat" style="font-size:11px;border:0.5px solid var(--border);border-radius:5px;padding:4px 6px;background:var(--bg);width:100%;resize:vertical;font-family:inherit;line-height:1.3" oninput="savePuerta3Texto('${cfgKey}')">${((cfg.puerta3&&cfg.puerta3.textoLibre)||'').replace(/</g,'&lt;')}</textarea>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              <button class="btn btn-xs btn-p" style="font-size:10px;padding:2px 8px;font-weight:700" onclick="pcAddDirTextoToCanvas('${cfgKey}')" title="Añade el texto tal cual como chip al canvas">📝 + Texto al canvas</button>
+              <button class="btn btn-xs btn-gh" style="font-size:9px;padding:1px 5px;color:var(--red)" onclick="document.getElementById('pcp3txt-${cfgKey}').value='';savePuerta3Texto('${cfgKey}')">✕ Limpiar</button>
+            </div>
+          </div>
+        </div>
+        <!-- CUADRO 2: QR -->
+        <div style="border:0.5px solid var(--border);border-radius:6px;overflow:hidden;margin-top:6px;background:#fff7ed">
+          <div style="display:flex;align-items:center;gap:5px;padding:4px 8px;background:#fed7aa">
+            <span style="font-size:10px;font-weight:700;flex:1;color:#7c2d12">🔲 QR — URL / dirección Maps</span>
+          </div>
+          <div style="padding:6px 8px;display:flex;flex-direction:column;gap:5px">
+            <textarea id="pcp3d-${cfgKey}" rows="2" placeholder="URL o dirección que abre el QR. Ej:&#10;https://maps.app.goo.gl/..." style="font-size:11px;border:0.5px solid var(--border);border-radius:5px;padding:4px 6px;background:var(--bg);width:100%;resize:vertical;font-family:inherit;line-height:1.3" oninput="savePuerta3('${cfgKey}')">${((cfg.puerta3&&cfg.puerta3.dirMaps)||'').replace(/</g,'&lt;')}</textarea>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              <button class="btn btn-xs btn-p" style="font-size:10px;padding:2px 8px;font-weight:700;background:#4a5568" onclick="pcAddQrDirToCanvas('${cfgKey}')" title="Genera el QR y lo añade al canvas">🔲 + QR al canvas</button>
+            </div>
+            <div style="display:flex;gap:3px;flex-wrap:wrap;border-top:0.5px dashed var(--border);padding-top:4px">
+              <span style="font-size:9px;color:var(--text3);align-self:center">Plantillas:</span>
+              <button class="btn btn-xs btn-gh" style="font-size:9px;padding:1px 5px" onclick="pcSugerirDirQR('${cfgKey}','fira-gv')">Fira GV</button>
+              <button class="btn btn-xs btn-gh" style="font-size:9px;padding:1px 5px" onclick="pcSugerirDirQR('${cfgKey}','fira-mm')">Fira MM</button>
+              <button class="btn btn-xs btn-gh" style="font-size:9px;padding:1px 5px" onclick="pcSugerirDirQR('${cfgKey}','ifema')">IFEMA</button>
+              <button class="btn btn-xs btn-gh" style="font-size:9px;padding:1px 5px;color:var(--red)" onclick="document.getElementById('pcp3d-${cfgKey}').value='';savePuerta3('${cfgKey}')">✕ Limpiar</button>
+            </div>
+            <div style="font-size:9px;color:var(--text3);line-height:1.3">El QR es escaneable y abre la dirección en Maps.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Plantilla de diseño -->
+    <div class="pc-sec" data-sec-id="plantilla">
+      <div class="pc-sec-hdr">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+        <span>${tr('plantillaDise')}</span>
+      </div>
+      <div class="pc-sec-body">
+        <div id="pctpl-confirm-${cfgKey}" style="display:none;background:var(--all);border:0.5px solid #fde68a;border-radius:6px;padding:6px 8px;font-size:11px">
+          <div style="font-weight:700;margin-bottom:4px">${tr('confirmarGuardado')}</div>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px">
+            <span id="pctpl-cfmt-${cfgKey}" style="background:#4a5568;color:#f7f7f7;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700"></span>
+            <span id="pctpl-csz-${cfgKey}" style="background:var(--bg3);color:var(--text);padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700"></span>
+            <span id="pctpl-cnm-${cfgKey}" style="background:var(--bg3);color:var(--text);padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700"></span>
+          </div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-xs btn-gh" style="flex:1" onclick="document.getElementById('pctpl-confirm-${cfgKey}').style.display='none'">${tr('cancel')}</button>
+            <button class="pc-btn-3d" style="flex:1" onclick="confirmSavePrintTemplate('${cfgKey}')">💾 Confirmar</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center">
+          <input id="pctpl-name-${cfgKey}" placeholder="${tr('phConfigName')}" style="flex:1;font-size:11px;padding:5px 8px;border:0.5px solid var(--border);border-radius:6px;background:var(--bg)">
+          <button class="pc-btn-3d" onclick="if(!canSaveTpl()){toast(tr('sinPermiso'),'var(--red)');return;}preSavePrintTemplate('${cfgKey}')">Guardar</button>
+        </div>
+        ${tpls?`<div style="display:flex;flex-direction:column;gap:4px;margin-top:2px">${tpls}</div>`:''}
+      </div>
+    </div>
+
+  </div><!-- END PANEL DERECHO -->
+
   </div><!-- END GRID -->
   </div><!-- END pcfg -->
   `;
@@ -4079,18 +4200,100 @@ function setPrintCfgFont(cfgKey,font){
   else{goTab('impresion',null);window._impSub='ing1';renderImpresion();}
   setTimeout(()=>{initPrintLayout(cfgKey);initPcCanvas(cfgKey);});
 }
+window._savePuerta3Timers={};
 function savePuerta3(cfgKey){
   const cfg=cfgKey==='ag'?DB.printCfgAg:cfgKey==='ing2'?DB.printCfg2:DB.printCfg1;
+  const prev=cfg.puerta3||{};
+  // Actualizar el objeto en memoria inmediatamente (barato, sin guardar)
   cfg.puerta3={
-    nombre:(document.getElementById('tabPuerta3Nom_'+cfgKey)?.value||'').trim(),
-    url:(document.getElementById('tabPuerta3Url_'+cfgKey)?.value||'').trim()
+    nombre:(document.getElementById('pcp3n-'+cfgKey)?.value??prev.nombre??'').trim(),
+    url:(document.getElementById('pcp3u-'+cfgKey)?.value??prev.url??'').trim(),
+    dirMaps:(document.getElementById('pcp3d-'+cfgKey)?.value??prev.dirMaps??'').trim()
   };
-  saveDB();
-  if(cfgKey==='ag'){goTab('impresion',null);window._impSub='ag';renderImpresion();}
-  else if(cfgKey==='ing2'){goTab('impresion',null);window._impSub='ing2';renderImpresion();}
-  else{goTab('impresion',null);window._impSub='ing1';renderImpresion();}
-  setTimeout(()=>{initPrintLayout(cfgKey);initPcCanvas(cfgKey);});
-  toast('🚪 QR de puerta guardado','var(--text2)');
+  // Debounce: guardar en DB y refrescar QR sólo cuando el usuario deja de escribir.
+  // Evita decenas de saveDB + llamadas a la API de QR en cada tecla (causaba cuelgue).
+  clearTimeout(window._savePuerta3Timers[cfgKey]);
+  window._savePuerta3Timers[cfgKey]=setTimeout(function(){
+    saveDB();
+    var pl=window['pcPlaced_'+cfgKey];
+    if(pl){
+      Object.keys(pl).forEach(function(k){
+        if(k.replace(/_\d+$/,'')==='qrDireccion'&&window['pcRefreshChip_'+cfgKey]){
+          window['pcRefreshChip_'+cfgKey](k);
+        }
+      });
+    }
+  },650);
+}
+
+// Sugerir dirección de Google Maps según recinto conocido
+function pcSugerirDirQR(cfgKey,preset){
+  const SUGER={
+    'fira-gv':'https://www.google.com/maps/search/?api=1&query=Fira+Barcelona+Gran+Via+Av+Joan+Carles+I+58+L%27Hospitalet',
+    'fira-mm':'https://www.google.com/maps/search/?api=1&query=Fira+Barcelona+Montjuic+Av+Reina+Maria+Cristina+Barcelona',
+    'ifema':'https://www.google.com/maps/search/?api=1&query=IFEMA+Madrid+Av+Partenon+5+Madrid'
+  };
+  const url=SUGER[preset]||'https://www.google.com/maps/search/?api=1&query=Fira+Barcelona';
+  const inp=document.getElementById('pcp3d-'+cfgKey);
+  if(inp){inp.value=url;savePuerta3(cfgKey);toast('📍 Dirección sugerida añadida','var(--text2)');}
+}
+
+// Añadir el chip QR Dirección al canvas desde el botón + Canvas del panel
+function pcAddQrDirToCanvas(cfgKey){
+  const cfg=cfgKey==='ag'?DB.printCfgAg:cfgKey==='ing2'?DB.printCfg2:DB.printCfg1;
+  const dir=(cfg.puerta3&&cfg.puerta3.dirMaps)||'';
+  if(!dir){toast('⚠ Escribe primero un texto/dirección/URL','var(--amber)');document.getElementById('pcp3d-'+cfgKey)?.focus();return;}
+  setTimeout(function(){
+    var maker=window['pcCreateChip_'+cfgKey]||window['pcMake_'+cfgKey];
+    if(maker){
+      const placed=window['pcPlaced_'+cfgKey]||{};
+      let fk='qrDireccion';
+      for(let i=2;placed[fk];i++)fk='qrDireccion_'+i;
+      maker(fk,10,50,30,false);
+      toast('🔲 QR añadido al canvas — arrastralo y redimensiona con A+/A++','#4a5568');
+    } else {
+      toast('⚠ Canvas no listo, intenta de nuevo','var(--amber)');
+    }
+  },100);
+}
+
+// Guardar el texto libre (cuadro separado del QR). Con debounce.
+window._savePuerta3TextoTimers={};
+function savePuerta3Texto(cfgKey){
+  const cfg=cfgKey==='ag'?DB.printCfgAg:cfgKey==='ing2'?DB.printCfg2:DB.printCfg1;
+  if(!cfg.puerta3)cfg.puerta3={};
+  cfg.puerta3.textoLibre=(document.getElementById('pcp3txt-'+cfgKey)?.value||'').trim();
+  clearTimeout(window._savePuerta3TextoTimers[cfgKey]);
+  window._savePuerta3TextoTimers[cfgKey]=setTimeout(function(){
+    saveDB();
+    var pl=window['pcPlaced_'+cfgKey];
+    if(pl){
+      Object.keys(pl).forEach(function(k){
+        if(k.replace(/_\d+$/,'')==='_dirTexto'&&window['pcRefreshChip_'+cfgKey]){
+          window['pcRefreshChip_'+cfgKey](k);
+        }
+      });
+    }
+  },650);
+}
+
+// Añadir el texto literal de la dirección al canvas como chip de texto libre
+function pcAddDirTextoToCanvas(cfgKey){
+  const cfg=cfgKey==='ag'?DB.printCfgAg:cfgKey==='ing2'?DB.printCfg2:DB.printCfg1;
+  const txt=(cfg.puerta3&&cfg.puerta3.textoLibre)||'';
+  if(!txt){toast('⚠ Escribe primero un texto/dirección','var(--amber)');document.getElementById('pcp3txt-'+cfgKey)?.focus();return;}
+  setTimeout(function(){
+    var maker=window['pcCreateChip_'+cfgKey]||window['pcMake_'+cfgKey];
+    if(maker){
+      const placed=window['pcPlaced_'+cfgKey]||{};
+      let fk='_dirTexto';
+      for(let i=2;placed[fk];i++)fk='_dirTexto_'+i;
+      maker(fk,10,60,10,false);
+      toast('📝 Texto añadido al canvas — arrastralo','#4a5568');
+    } else {
+      toast('⚠ Canvas no listo, intenta de nuevo','var(--amber)');
+    }
+  },100);
 }
 function setPrintCfgMode(cfgKey,mode){
   if(!DB.printCfgModes)DB.printCfgModes={};
@@ -4251,7 +4454,7 @@ function _ingEventos(tab){
     <div style="font-size:10px;font-weight:900;color:#4a5568;text-transform:uppercase;margin-bottom:6px">⭐ Condiciones de impresión</div>
     <div style="display:flex;gap:3px;margin-bottom:6px">
       <button class="btn btn-sm ${!isTab2?'btn-p':'btn-gh'}" onclick="renderPrintCfg('ing1')"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>${tr('ingresos')}</button>
-      <button class="btn btn-sm ${isTab2?'btn-p':'btn-gh'}" onclick="renderPrintCfg('ing2')"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l5 3-5 3"/></svg>${tr('ingresos2')}</button>
+      <button class="btn btn-sm ${isTab2?'btn-p':'btn-gh'}" onclick="renderPrintCfg('ing2')"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l5 3-5 3"/></svg>Ingresos</button>
       <span style="flex:1"></span>
       <button class="btn btn-sm btn-gh" id="btnPreviewNormal_${isTab2?'ing2':'ing1'}" onclick="printPreviewWithCfg('${isTab2?'ing2':'ing1'}')">👁 Vista previa</button>
       <button class="btn btn-sm" id="btnPreviewTrq_${isTab2?'ing2':'ing1'}" style="background:#4a5568;color:#f7f7f7;border:none;border-radius:20px" onclick="(function(k){if(!DB.printCfgModes)DB.printCfgModes={};DB.printCfgModes[k]='troquel';printPreviewWithCfg(k);})('${isTab2?'ing2':'ing1'}')">✂ Vista troquelado</button>
@@ -4760,7 +4963,19 @@ function renderImpresion(){
     </div>
     ${_ingPrintCfg(sub)}
   </div>`;
-  setTimeout(()=>{initPrintLayout(sub);initPcCanvas(sub);const _lp=document.getElementById('pcfg-'+sub);if(_lp){const _leftPanel=_lp.querySelector('[style*="flex-direction:column"][style*="gap:8px"]');if(_leftPanel)_pcInitSectionDrag(_leftPanel);}},100);
+  // Inicializar el canvas en el siguiente frame (sin espera fija de 100ms).
+  // Guard: si renderImpresion se llama varias veces seguidas (es habitual,
+  // p.ej. goTab('impresion')+renderImpresion()), solo la última inicializa
+  // el canvas — evita inicializarlo 2 veces y tardar el doble.
+  window._renderImpresionToken=(window._renderImpresionToken||0)+1;
+  const _myToken=window._renderImpresionToken;
+  requestAnimationFrame(function(){
+    if(_myToken!==window._renderImpresionToken)return; // hubo un render posterior
+    initPrintLayout(sub);
+    initPcCanvas(sub);
+    const _lp=document.getElementById('pcfg-'+sub);
+    if(_lp){const _leftPanel=_lp.querySelector('[style*="flex-direction:column"][style*="gap:8px"]');if(_leftPanel)_pcInitSectionDrag(_leftPanel);}
+  });
 }
 function renderPapelera(){
   let items=[...DB.papelera||[]];
@@ -7249,12 +7464,20 @@ function toggleTplDest(tplName,destKey,cfgKey){
   if(DB.printCfgModes[destKey]===tplName){delete DB.printCfgModes[destKey];}
   else{DB.printCfgModes[destKey]=tplName;}
   saveDB();
-  if(cfgKey==='ag'){goTab('impresion',null);window._impSub='ag';renderImpresion();}
-  else if(cfgKey==='ing2'){goTab('impresion',null);window._impSub='ing2';renderImpresion();}
-  else{goTab('impresion',null);window._impSub='ing1';renderImpresion();}
-  setTimeout(()=>{initPrintLayout(cfgKey);initPcCanvas(cfgKey);});
-  const dNames={'dest_ing1':'Referencia','dest_ing2':'Ingresos','dest_ag':'Agenda'};
-  const assigned=DB.printCfgModes[destKey]===tplName;
+  // Actualizar SOLO los chips afectados en pantalla — sin reconstruir toda la pestaña.
+  // Un destino (Ref/Ing/Ag...) solo puede estar asignado a una plantilla a la vez:
+  // se enciende el chip elegido y se apagan los del mismo destino en otras plantillas.
+  var assigned=DB.printCfgModes[destKey]===tplName;
+  document.querySelectorAll('.tpl-dest-chip[data-dest="'+destKey+'"]').forEach(function(ch){
+    var isThis=ch.getAttribute('data-tpl')===tplName;
+    var on=isThis&&assigned;
+    ch.style.background=on?'#4a5568':'var(--bg3)';
+    ch.style.color=on?'#f7f7f7':'var(--text3)';
+    ch.style.borderColor=on?'#3a4558':'var(--border)';
+    var chk=ch.querySelector('.tpl-chk');
+    if(chk)chk.textContent=on?' ✓':'';
+  });
+  const dNames={'dest_ing1':'Referencia','dest_ing2':'Ingresos','dest_ag':'Agenda','dest_cond':'Conductores','dest_flota':'Embalaje'};
   toast((assigned?'✓ ':'✕ ')+(dNames[destKey]||destKey)+' → '+(assigned?tplName:'sin plantilla'),'var(--text2)');
 }
 function delPrintTpl(idx,cfgKey){
@@ -7396,6 +7619,7 @@ function _buildPrintHtml(ing,isLib,forceMode){
     fechaNacimiento:ing.fechaNacimiento||'',
     comentario:ing.comentario||'',
     horario:ing.entrada?new Date(ing.entrada.replace(' ','T')).toLocaleString(undefined,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'',
+    fecha:new Date().toLocaleDateString(undefined,{day:'2-digit',month:'2-digit',year:'numeric'}),
     eventoNombre:ing.eventoNombre||ev&&ev.nombre||'',
     pase:ing.pase||'',gpsUrl:ing.gpsUrl||''
   };
@@ -7408,15 +7632,45 @@ function _buildPrintHtml(ing,isLib,forceMode){
     descargaTipo:tr('descarga'),tipoCarga:'Tipo Carga',referencia:'Referencia',
     llamador:'Llamador',pasaporte:'Pasaporte/DNI',email:'Email',
     pais:'Pais',fechaNacimiento:'F.Nacimiento',comentario:'Comentario',
-    horario:'Hora ingreso',eventoNombre:'Evento',pase:'Pase/Acceso',gpsUrl:'GPS'
+    horario:'Hora ingreso',fecha:'Fecha',eventoNombre:'Evento',pase:'Pase/Acceso',gpsUrl:'GPS'
   };
 
   var chipsHtml='';
   var bln=checkBL(mat);
-  var labelMode=(cfg&&cfg.labelMode)||0;
+  var labelMode=(cfg&&typeof cfg.labelMode!=='undefined')?cfg.labelMode:2;
+  // Recoger contenedores QR de dirección para generar después
+  var qrDirContainers=[];
+  var qrDirUrl=(cfg&&cfg.puerta3&&cfg.puerta3.dirMaps)||'';
   Object.keys(layout).forEach(function(k){
     var p=layout[k];
     var baseK=k.replace(/_\d+$/,'');
+    // Caso especial: QR Dirección (Google Maps)
+    if(baseK==='qrDireccion'){
+      // Tamaño en px — MISMA unidad que el canvas para que coincida el dimensionado.
+      // El canvas usa width:fs px; aquí replicamos exactamente eso.
+      var qpxSize=Math.max(p.fs||16,10);
+      var qpx=qpxSize*4;  // alta resolución para impresión (4x el tamaño real)
+      var contId='qrDir_'+k.replace(/[^a-zA-Z0-9_]/g,'');
+      qrDirContainers.push(contId);
+      var qrImg='';
+      if(qrDirUrl){
+        // Usar API QR Server (servicio público, sin CORS, devuelve PNG directo)
+        var apiUrl='https://api.qrserver.com/v1/create-qr-code/?size='+qpx+'x'+qpx+'&data='+encodeURIComponent(qrDirUrl)+'&margin=0';
+        qrImg='<img id="'+contId+'" src="'+apiUrl+'" style="width:'+qpxSize+'px;height:'+qpxSize+'px;display:block" alt="QR Dirección" crossorigin="anonymous">';
+      } else {
+        qrImg='<div id="'+contId+'" style="width:'+qpxSize+'px;height:'+qpxSize+'px;border:1px dashed #999;display:flex;align-items:center;justify-content:center;font-size:6pt;color:#999;text-align:center;padding:1mm;box-sizing:border-box">⚠ Configura dirección Maps en Impresión</div>';
+      }
+      chipsHtml+='<div style="position:absolute;left:'+p.x+'%;top:'+p.y+'%;font-family:\''+font+'\',Arial,sans-serif">'+qrImg+'</div>';
+      return;
+    }
+    // Caso especial: texto libre de la dirección
+    if(baseK==='_dirTexto'){
+      var dtFs=Math.round((p.fs||10)*0.95);
+      var dtSrc=(cfg&&cfg.puerta3&&cfg.puerta3.textoLibre)||'';
+      var dtTxt=dtSrc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      chipsHtml+='<div style="position:absolute;left:'+p.x+'%;top:'+p.y+'%;font-family:\''+font+'\',Arial,sans-serif;font-size:'+dtFs+'px;font-weight:600;color:#000;line-height:1.3;white-space:normal;max-width:60mm">'+dtTxt+'</div>';
+      return;
+    }
     var val=VAL[baseK]||'';
     var lbl=LABEL[baseK]||baseK;
     // Scale: canvas ~440px wide maps to A4 210mm. At 96dpi A4=794px. Factor≈1.8
@@ -7445,7 +7699,7 @@ function _buildPrintHtml(ing,isLib,forceMode){
   var ph2Html=phrase2?('<div style="position:absolute;bottom:6px;left:4%;right:4%;border:1px solid #000;padding:2px 6px;font-size:6.5px;font-weight:700;font-family:\''+font+'\',Arial,sans-serif;line-height:1.4">'+phrase2+'</div>'):'';
   var ph3Html=(puerta3.nombre||puerta3.url)?('<div style="position:absolute;bottom:6px;right:4%;border:1px solid #3a4558;padding:2px 6px;font-size:6px;font-weight:700;font-family:\''+font+'\',Arial,sans-serif;color:#166534;background:#f8fafc">'+(puerta3.nombre||puerta3.url)+'</div>'):'';
   var lnHtml=bln?('<div style="position:absolute;top:2%;left:4%;right:4%;background:#fef2f2;border:2px solid #8b3a3a;border-radius:4px;padding:3px 8px;font-size:7px;font-weight:700;color:#8b3a3a;font-family:\''+font+'\',Arial,sans-serif">&#9888; '+(bln.nivel||'').toUpperCase()+': '+bln.motivo+'</div>'):'';
-  var bgImg=cfg&&cfg.bgImage?('<img src="'+cfg.bgImage+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;opacity:'+(cfg.bgOpacity||0.35)+';">'):'';
+  var bgImg=cfg&&cfg.bgImage?('<img class="bg-guia" src="'+cfg.bgImage+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;opacity:'+(cfg.bgOpacity||0.35)+';">'):'';
   var cutLine=isTroquel?'<div style="position:absolute;top:50%;left:0;right:0;height:2px;background:#000"></div>':'';
 
   var html='<!DOCTYPE html><html lang="'+lang+'"><head><meta charset="UTF-8"><title>'+mat+'</title>'
@@ -7454,23 +7708,27 @@ function _buildPrintHtml(ing,isLib,forceMode){
     +'body{font-family:\''+font+'\',Arial,sans-serif;background:#fff;width:'+pW+'}'
     +'.page{position:relative;width:'+pW+';height:'+pH+';background:#fff;overflow:hidden}'
     +'.btn-wrap{position:fixed;bottom:16px;right:16px;display:flex;gap:8px;z-index:999}'
-    +'@media print{.btn-wrap{display:none}}'
+    +'@media print{.btn-wrap{display:none}.bg-guia{display:none!important}}'
     +'</style></head><body>'
     +'<div class="page">'
     +bgImg+lnHtml+chipsHtml+ph1Html+ph2Html+ph3Html+cutLine
     +'</div>'
     +'<div class="btn-wrap">'
-    +'<button onclick="window.print()" style="background:#4a5568;color:#fff;border:none;border-radius:20px;padding:10px 22px;font-size:14px;font-weight:800;cursor:pointer">'+tr('print')+'</button>'
-    +'<button onclick="window.close()" style="background:#fff;color:#f7f7f7;border:1.5px solid #ccc;border-radius:20px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer">X</button>'
+    +'<button onclick="window.print()" style="background:#4a5568;color:#fff;border:none;border-radius:20px;padding:10px 22px;font-size:14px;font-weight:800;cursor:pointer">🖨 '+tr('print')+'</button>'
+    +'<button onclick="window.close()" style="background:#fff;color:#888;border:1.5px solid #ccc;border-radius:20px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer">X</button>'
     +'</div>'
     +'<script>'
     +'document.addEventListener(\'keydown\',function(e){if(e.key===\'Escape\')window.close();});'
+    +'// Al terminar de imprimir (o cancelar el diálogo de Chrome), cerrar esta ventana\n'
+    +'window.addEventListener("afterprint",function(){setTimeout(function(){window.close();},150);});'
     +'(function(){'
     +'var qrUrl="'+qrUrl+'";'
     +'function doQR(id){var el=document.getElementById(id);if(!el)return;try{new QRCode(el,{text:qrUrl,width:40,height:40,correctLevel:QRCode.CorrectLevel.M});}catch(e){}}'
     +'function loadQR(){doQR("pqr1");doQR("pqr2");}'
     +'if(typeof QRCode!=="undefined"){loadQR();}else{var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=loadQR;document.head.appendChild(s);}'
-    +'setTimeout(function(){window.print();},800);'
+    +'// Esperar a que las imágenes QR carguen y abrir el diálogo de impresión de Chrome directamente\n'
+    +'function waitImgsThenPrint(){var imgs=document.querySelectorAll(\'img[id^="qrDir_"]\');if(!imgs.length){setTimeout(function(){window.print();},500);return;}var pending=imgs.length;function done(){pending--;if(pending<=0)setTimeout(function(){window.print();},200);}imgs.forEach(function(im){if(im.complete&&im.naturalWidth)done();else{im.addEventListener("load",done);im.addEventListener("error",function(){console.warn("[QR-DIR] img error",im.src);done();});}});setTimeout(function(){window.print();},3000);}'
+    +'waitImgsThenPrint();'
     +'})();'
     +'<\/script>'
     +'</body></html>';
@@ -8934,9 +9192,10 @@ function pcTogglePhrase(pk,cfgKey){
     const ckMap={'p1':'_ph1','p2':'_ph2','p3':'_ph2'};
     const chipKey=ckMap[pk];
     const isOn=pk==='p1'?cfg.ph1On===true:pk==='p2'?cfg.ph2On!==false:cfg.ph3On===true;
-    if(chipKey&&isOn&&window['pcMake_'+cfgKey]){
+    var maker=window['pcCreateChip_'+cfgKey]||window['pcMake_'+cfgKey];
+    if(chipKey&&isOn&&maker){
       const placed=window['pcPlaced_'+cfgKey]||{};
-      if(!placed[chipKey])window['pcMake_'+cfgKey](chipKey,5,pk==='p1'?22:88,8,false);
+      if(!placed[chipKey])maker(chipKey,5,pk==='p1'?22:88,8,false);
     }
   },200);
   if(cfgKey==='ag'){goTab('impresion',null);window._impSub='ag';renderImpresion();}
@@ -8958,6 +9217,45 @@ function pcToggleFields(ck){
     if(pal&&!pal.children.length&&window['pcRenderPalette_'+ck])window['pcRenderPalette_'+ck]();
   }
 }
+// Plegar/desplegar la sección "Contenido" (QR Tracking + Frases). Estado guardado.
+function pcToggleContenido(ck){
+  const body=document.querySelector('.pc-cont-body-'+ck);
+  const arrow=document.querySelector('.pc-cont-arrow-'+ck);
+  if(!body)return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'flex';
+  if(arrow)arrow.style.transform=open?'rotate(-90deg)':'';
+  try{localStorage.setItem('beunify_contenido_collapsed',open?'1':'0');}catch(e){}
+}
+// Aplicar el estado guardado de la sección Contenido tras render
+function pcApplyContenidoState(ck){
+  let collapsed=false;
+  try{collapsed=localStorage.getItem('beunify_contenido_collapsed')==='1';}catch(e){}
+  if(!collapsed)return;
+  const body=document.querySelector('.pc-cont-body-'+ck);
+  const arrow=document.querySelector('.pc-cont-arrow-'+ck);
+  if(body)body.style.display='none';
+  if(arrow)arrow.style.transform='rotate(-90deg)';
+}
+// Plegar/desplegar la sección "Dirección y QR". Estado guardado.
+function pcToggleDirQR(ck){
+  const body=document.querySelector('.pc-dirqr-body-'+ck);
+  const arrow=document.querySelector('.pc-dirqr-arrow-'+ck);
+  if(!body)return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'flex';
+  if(arrow)arrow.style.transform=open?'rotate(-90deg)':'';
+  try{localStorage.setItem('beunify_dirqr_collapsed',open?'1':'0');}catch(e){}
+}
+function pcApplyDirQRState(ck){
+  let collapsed=false;
+  try{collapsed=localStorage.getItem('beunify_dirqr_collapsed')==='1';}catch(e){}
+  if(!collapsed)return;
+  const body=document.querySelector('.pc-dirqr-body-'+ck);
+  const arrow=document.querySelector('.pc-dirqr-arrow-'+ck);
+  if(body)body.style.display='none';
+  if(arrow)arrow.style.transform='rotate(-90deg)';
+}
 // ── QUICK ADD PHRASE TO CANVAS ──
 function pcQuickAddPhrase(pk,ck){
   const cfg=ck==='ag'?DB.printCfgAg:ck==='ing2'?DB.printCfg2:ck==='cond'?DB.printCfgCond:ck==='flota'?DB.printCfgFlota:DB.printCfg1;
@@ -8970,16 +9268,19 @@ function pcQuickAddPhrase(pk,ck){
   saveDB();
   // Lanzar como chip arrastrable (no en posición fija)
   setTimeout(function(){
-    if(chipKey&&window['pcMake_'+ck]){
+    var maker=window['pcCreateChip_'+ck]||window['pcMake_'+ck];
+    if(chipKey&&maker){
       const placed=window['pcPlaced_'+ck]||{};
       if(!placed[chipKey]){
-        // Posición inicial centrada
-        window['pcMake_'+ck](chipKey,10,50,8,false);
+        // Posición inicial centrada — tamaño mayor para QR
+        var initSize=pk==='qr'?20:10;
+        maker(chipKey,10,50,initSize,false);
       }
+    } else {
+      console.warn('[pcQuickAddPhrase] pcCreateChip_'+ck+' no disponible');
     }
-    initPrintLayout(ck);initPcCanvas(ck);
   },200);
-  toast('Frase añadida al canvas — arrastrala','var(--text2)');
+  toast('Añadido al canvas — arrastralo','var(--text2)');
 }
 // ── PRE-SAVE VALIDATION ──
 function preSavePrintTemplate(cfgKey){
@@ -9030,33 +9331,65 @@ function pcToggleLabelMode(ck){
 function initPcCanvas(cfgKey){
   var CK=cfgKey;
   var SNAP=2;
+  // Aplicar estado guardado de las secciones plegables (Contenido / Dirección y QR)
+  requestAnimationFrame(function(){
+    if(typeof pcApplyContenidoState==='function')pcApplyContenidoState(CK);
+    if(typeof pcApplyDirQRState==='function')pcApplyDirQRState(CK);
+  });
+  // Inicializar labelMode desde cfg (default: 2 = Solo Valor)
+  var _cfgInit=CK==='ag'?DB.printCfgAg:CK==='ing2'?DB.printCfg2:CK==='cond'?DB.printCfgCond:CK==='flota'?DB.printCfgFlota:DB.printCfg1;
+  if(_cfgInit){
+    if(typeof _cfgInit.labelMode==='undefined'){_cfgInit.labelMode=2;saveDB();}
+    _pcLabelMode[CK]=_cfgInit.labelMode;
+    // Sincronizar visual del botón con el modo activo
+    requestAnimationFrame(function(){
+      var btnLb=document.getElementById('pc-lblbtn-'+CK);
+      if(btnLb){
+        var m=_pcLabelMode[CK];
+        if(m===0){btnLb.style.background='';btnLb.style.color='';btnLb.textContent='Etiq+Valor';}
+        else if(m===1){btnLb.style.background='#5a6a8a';btnLb.style.color='#f0ede8';btnLb.textContent='Etiq+Línea';}
+        else{btnLb.style.background='#4a5568';btnLb.style.color='#f7f7f7';btnLb.textContent='Solo Valor';}
+      }
+    });
+  }
   // ─── FIELDS: include posicion, matricula, telefono, QR ───
   var FIELDS=[
-    {k:'posicion',l:'Nº Posición',demo:'7'},
-    {k:'matricula',l:'Matrícula',demo:'AB1234CD'},
-    {k:'telefonoCompleto',l:'Teléfono',demo:'+34 600 123456'},
-    {k:'nombreCompleto',l:'Nombre y Apellido',demo:'Juan García'},
-    {k:'empresa',l:'Empresa',demo:'Empresa Demo S.L.'},
-    {k:'expositor',l:'Expositor',demo:'ExpoDemo SL'},
-    {k:'montador',l:'Montador',demo:'MontajeXL'},
-    {k:'hall',l:'Hall',demo:'Hall 5'},
-    {k:'stand',l:'Stand',demo:'B-200'},
-    {k:'puertaHall',l:'Puerta Hall',demo:'P3'},
-    {k:'remolque',l:'Remolque',demo:'TR5678X'},
-    {k:'tipoVehiculo',l:'Tipo Vehículo',demo:'Semiremolque'},
-    {k:'descargaTipo',l:tr('descarga'),demo:'Manual'},
-    {k:'tipoCarga',l:'Tipo Carga',demo:'Mercancía'},
-    {k:'referencia',l:'Referencia',demo:'REF-001'},
-    {k:'llamador',l:'Llamador',demo:'12345'},
-    {k:'pasaporte',l:'Pasaporte/DNI',demo:'12345678Z'},
-    {k:'email',l:'Email',demo:'demo@empresa.com'},
-    {k:'pais',l:tr('phCountryName'),demo:'España'},
-    {k:'fechaNacimiento',l:'F. Nacimiento',demo:'01/01/1985'},
-    {k:'comentario',l:'Comentario',demo:'Vista previa'},
-    {k:'horario',l:'Hora Ingreso',demo:'09:45'},
-    {k:'eventoNombre',l:'Evento',demo:'ALIMENTARIA 2026'},
-    {k:'pase',l:'Pase/Acceso',demo:'Hall 5'},
-    {k:'gpsUrl',l:'GPS/Dirección',demo:'Metal·lúrgia 52'},
+    {k:'posicion',l:'Nº Posición',demo:'7',g:'ident'},
+    {k:'matricula',l:'Matrícula',demo:'AB1234CD',g:'ident'},
+    {k:'telefonoCompleto',l:'Teléfono',demo:'+34 600 123456',g:'persona'},
+    {k:'nombreCompleto',l:'Nombre y Apellido',demo:'Juan García',g:'persona'},
+    {k:'empresa',l:'Empresa',demo:'Empresa Demo S.L.',g:'empresa'},
+    {k:'expositor',l:'Expositor',demo:'ExpoDemo SL',g:'empresa'},
+    {k:'montador',l:'Montador',demo:'MontajeXL',g:'empresa'},
+    {k:'hall',l:'Hall',demo:'Hall 5',g:'ubicacion'},
+    {k:'stand',l:'Stand',demo:'B-200',g:'ubicacion'},
+    {k:'puertaHall',l:'Puerta Hall',demo:'P3',g:'ubicacion'},
+    {k:'remolque',l:'Remolque',demo:'TR5678X',g:'vehiculo'},
+    {k:'tipoVehiculo',l:'Tipo Vehículo',demo:'Semiremolque',g:'vehiculo'},
+    {k:'descargaTipo',l:tr('descarga'),demo:'Manual',g:'vehiculo'},
+    {k:'tipoCarga',l:'Tipo Carga',demo:'Mercancía',g:'vehiculo'},
+    {k:'referencia',l:'Referencia',demo:'REF-001',g:'ident'},
+    {k:'llamador',l:'Llamador',demo:'12345',g:'ident'},
+    {k:'pasaporte',l:'Pasaporte/DNI',demo:'12345678Z',g:'persona'},
+    {k:'email',l:'Email',demo:'demo@empresa.com',g:'persona'},
+    {k:'pais',l:tr('phCountryName'),demo:'España',g:'persona'},
+    {k:'fechaNacimiento',l:'F. Nacimiento',demo:'01/01/1985',g:'persona'},
+    {k:'comentario',l:'Comentario',demo:'Vista previa',g:'otros'},
+    {k:'horario',l:'Hora Ingreso',demo:'09:45',g:'otros'},
+    {k:'fecha',l:'📅 Fecha',demo:'16/05/2026',g:'otros'},
+    {k:'eventoNombre',l:'Evento',demo:'ALIMENTARIA 2026',g:'otros'},
+    {k:'pase',l:'Pase/Acceso',demo:'Hall 5',g:'otros'},
+    {k:'gpsUrl',l:'GPS/Dirección',demo:'Metal·lúrgia 52',g:'ubicacion'},
+    {k:'qrDireccion',l:'📍 QR Dirección',demo:'QR Google Maps',g:'ubicacion'},
+  ];
+  // Grupos del panel "Campos del diseño"
+  var FIELD_GROUPS=[
+    {id:'ident',    l:'🔖 Identificación'},
+    {id:'persona',  l:'👤 Persona'},
+    {id:'empresa',  l:'🏢 Empresa'},
+    {id:'ubicacion',l:'📍 Ubicación'},
+    {id:'vehiculo', l:'🚛 Vehículo'},
+    {id:'otros',    l:'📋 Otros'},
   ];
   // ─── AUTO LAYOUT ───
   var AUTO=[
@@ -9126,6 +9459,26 @@ function initPcCanvas(cfgKey){
     if(k==='_qr'){
       var qrsz=p.fs||16;
       content='<svg width="'+qrsz+'" height="'+qrsz+'" viewBox="0 0 5 5" shape-rendering="crispEdges"><rect width="2" height="2" fill="#000"/><rect x="1" y="1" width="1" height="1" fill="#fff"/><rect x="3" width="2" height="2" fill="#000"/><rect y="3" width="2" height="2" fill="#000"/><rect x="2" y="2" width="3" height="3" fill="#000"/><rect x="3" y="3" width="2" height="2" fill="#fff"/></svg>';
+    } else if(baseKey==='qrDireccion'){
+      // QR de dirección Google Maps — SOLO el QR, sin texto
+      var cfgQd=CK==='ag'?DB.printCfgAg:CK==='ing2'?DB.printCfg2:DB.printCfg1;
+      var dirCfg=(cfgQd.puerta3||{}).dirMaps||'';
+      var qdsz=Math.max(p.fs||16,16);
+      if(dirCfg){
+        var apiUrl='https://api.qrserver.com/v1/create-qr-code/?size='+(qdsz*4)+'x'+(qdsz*4)+'&data='+encodeURIComponent(dirCfg)+'&margin=0';
+        content='<img src="'+apiUrl+'" style="width:'+qdsz+'px;height:'+qdsz+'px;display:block" alt="QR">';
+      } else {
+        content='<div style="width:'+qdsz+'px;height:'+qdsz+'px;border:1px dashed #b45309;display:flex;align-items:center;justify-content:center;font-size:'+Math.max(qdsz/6,7)+'px;color:#b45309;text-align:center;line-height:1.1">⚠ Sin dirección</div>';
+      }
+    } else if(baseKey==='_dirTexto'){
+      // Chip de texto libre con la dirección (multilinea)
+      var cfgDt=CK==='ag'?DB.printCfgAg:CK==='ing2'?DB.printCfg2:DB.printCfg1;
+      var dirTxt=(cfgDt.puerta3||{}).textoLibre||'';
+      if(dirTxt){
+        content='<span style="white-space:pre-wrap;line-height:1.25;font-size:inherit;color:#000;font-weight:600;max-width:240px;display:inline-block">'+dirTxt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span>';
+      } else {
+        content='<span style="color:#b45309;font-size:inherit">⚠ Sin texto</span>';
+      }
     } else if(k==='_ph1'){
       var cfg1=CK==='ag'?DB.printCfgAg:CK==='ing2'?DB.printCfg2:DB.printCfg1;
       var ph1v=(cfg1.phrases&&cfg1.phrases[CUR_LANG||'es'])||'Frase 1...';
@@ -9201,11 +9554,16 @@ function initPcCanvas(cfgKey){
       var base=k.replace(/_\d+$/,'');
       placed_counts[base]=(placed_counts[base]||0)+1;
     });
-    el.innerHTML=FIELDS.map(function(f){
+    // Estado de colapso por sección (guardado en localStorage)
+    var _fgKey='beunify_fieldgroups_collapsed';
+    function _fgLoad(){try{return JSON.parse(localStorage.getItem(_fgKey)||'{}');}catch(e){return{};}}
+    function _fgSave(s){try{localStorage.setItem(_fgKey,JSON.stringify(s));}catch(e){}}
+    var _fgState=_fgLoad();
+    // Función que dibuja un campo individual
+    function _renderField(f){
       var cnt=placed_counts[f.k]||0;
       var isPlaced=cnt>0;
       var dot='<div style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:'+(isPlaced?'#94a3b8':'#3b5bdb')+';margin-right:5px"></div>';
-      // Duplicate button (add another instance)
       var addBtn='<button data-bk="'+f.k+'" data-action="add" style="padding:1px 5px;border-radius:20px;font-size:10px;background:#e0f2fe;color:#0369a1;border:0.5px solid #7dd3fc;cursor:pointer;flex-shrink:0" title="Añadir otro">+</button>';
       var lineBtn=isPlaced?('<button data-bk="'+f.k+'" data-action="toggle" style="padding:1px 4px;border-radius:20px;font-size:9px;border:0.5px solid #cbd5e1;background:var(--bg3);color:var(--text3);cursor:pointer;flex-shrink:0">✏</button>'):'';
       var cntBadge=cnt>1?('<span style="font-size:9px;background:#3b5bdb;color:#fff;border-radius:10px;padding:0 5px;margin-left:3px">×'+cnt+'</span>'):(isPlaced?'<span style="font-size:9px;color:#a5b4fc;margin-left:3px">✓</span>':'');
@@ -9214,7 +9572,36 @@ function initPcCanvas(cfgKey){
         +dot+'<span'+(isPlaced?' style="opacity:.6"':'')+'>'+f.l+'</span>'+cntBadge+'</div>'
         +lineBtn+addBtn
         +'</div>';
+    }
+    // Dibujar por secciones
+    el.innerHTML=FIELD_GROUPS.map(function(grp){
+      var fieldsInGroup=FIELDS.filter(function(f){return f.g===grp.id;});
+      if(!fieldsInGroup.length)return'';
+      var collapsed=_fgState[grp.id]===true;
+      var placedInGrp=fieldsInGroup.filter(function(f){return(placed_counts[f.k]||0)>0;}).length;
+      var hdr='<div class="fg-hdr" data-fgid="'+grp.id+'" style="display:flex;align-items:center;gap:4px;padding:5px 6px;margin-top:4px;border-radius:5px;background:var(--bg3);cursor:pointer;user-select:none;font-size:10px;font-weight:800;color:#4a5568;text-transform:uppercase;letter-spacing:.3px">'
+        +'<span class="fg-arrow" style="transition:transform .15s;display:inline-block;font-size:9px'+(collapsed?'':';transform:rotate(90deg)')+'">▶</span>'
+        +'<span style="flex:1">'+grp.l+'</span>'
+        +'<span style="font-size:9px;font-weight:600;color:var(--text3)">'+placedInGrp+'/'+fieldsInGroup.length+'</span>'
+        +'</div>';
+      var body='<div class="fg-body" data-fgbody="'+grp.id+'" style="display:'+(collapsed?'none':'flex')+';flex-direction:column;gap:3px;padding:3px 0 3px 4px">'
+        +fieldsInGroup.map(_renderField).join('')
+        +'</div>';
+      return hdr+body;
     }).join('');
+    // Bind colapso de secciones
+    el.querySelectorAll('.fg-hdr').forEach(function(h){
+      h.onclick=function(){
+        var gid=this.dataset.fgid;
+        var body=el.querySelector('.fg-body[data-fgbody="'+gid+'"]');
+        var arrow=this.querySelector('.fg-arrow');
+        var nowCollapsed=body.style.display!=='none';
+        body.style.display=nowCollapsed?'none':'flex';
+        if(arrow)arrow.style.transform=nowCollapsed?'':'rotate(90deg)';
+        _fgState[gid]=nowCollapsed;
+        _fgSave(_fgState);
+      };
+    });
     // Bind drag
     el.querySelectorAll('[draggable="true"]').forEach(function(e){
       e.ondragstart=function(ev){window.pcDragKey=this.dataset.fk;ev.dataTransfer.effectAllowed='move';};
@@ -9422,13 +9809,15 @@ function resetPrintCfgDia0(cfgKey){
   window.pcResizeSel=function(ck,d){
     var sk=window['pcSelKey_'+ck];var pl=window['pcPlaced_'+ck];
     if(!sk||!pl||!pl[sk])return;
-    pl[sk].fs=Math.max(5,Math.min(72,(pl[sk].fs||8)+d));  // max 72px
+    pl[sk].fs=Math.max(5,Math.min(200,(pl[sk].fs||8)+d));  // max 200px (QR grandes)
     var cfg2=ck==='ag'?DB.printCfgAg:ck==='ing2'?DB.printCfg2:ck==='cond'?DB.printCfgCond:ck==='flota'?DB.printCfgFlota:DB.printCfg1;
     cfg2.fieldLayout=Object.assign({},pl);saveDB();
     var el=document.getElementById('pfc-'+ck+'-'+sk);
     if(el)el.style.fontSize=pl[sk].fs+'px';
-    var si=document.getElementById('pc-selinfo-'+ck);
+    // Para QR Dirección refrescar el innerHTML (img tiene width/height fijos)
     var bk=sk.replace(/_\d+$/,'');
+    if(bk==='qrDireccion'&&window['pcRefreshChip_'+ck]){window['pcRefreshChip_'+ck](sk);}
+    var si=document.getElementById('pc-selinfo-'+ck);
     var f=FIELDS.find(function(x){return x.k===bk;})||{l:sk};
     if(si)si.textContent=f.l+' · '+pl[sk].fs+'px · '+(pl[sk].line?'✏ línea':'📋 dato');
   };
@@ -11705,9 +12094,229 @@ if(_origOpenIng){
   };
 }
 
-console.log('[BeUnifyT] Módulo flota avanzada cargado ✓');
+console.log('[BeUnifyT] Módulo flota avanzado cargado ✓');
 
+// Quitar el foco de botones tras click — evita que el estado :focus
+// deje un botón con fondo oscuro "pegado" al bailar entre pestañas/grupos.
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('.btn-tab,.tg-grp-btn,.btn,.pill-hall');
+  if(btn&&typeof btn.blur==='function'){
+    // blur tras el frame para no interferir con el handler del propio botón
+    requestAnimationFrame(function(){try{btn.blur();}catch(_){}});
+  }
+},true);
 
+// ═══════════════════════════════════════════════════════
+// GRUPOS DE PESTAÑAS — 4 botones en header, sub-barra abajo
+// ═══════════════════════════════════════════════════════
+const TG_MAP={
+  op:['ingresos','ingresos2','agenda','mensajes'],
+  per:['conductores','flota','empresas'],
+  cfg:['recintos','eventos','impresion','usuarios','auditoria','papelera'],
+  dat:['dash','analytics','vehiculos','btnstats']
+};
+window._tgCurrentGroup=null;
+
+window.tgSelectGroup=function(grp){
+  window._tgCurrentGroup=grp;
+  const allowed=TG_MAP[grp]||[];
+  // Aplicar el filtro (muestra solo permitidas + del grupo, vía clase CSS)
+  tgEnsureFilter();
+  // Si la pestaña activa no está en el grupo, navegar a la primera permitida del grupo
+  const curActive=document.querySelector('#mainTabs .btn-tab.active')?.dataset.tab;
+  if(!allowed.includes(curActive)){
+    const firstVisible=allowed.find(t=>{
+      const bb=document.querySelector('#mainTabs .btn-tab[data-tab="'+t+'"]');
+      return bb&&bb.getAttribute('data-perm-hidden')!=='1';
+    });
+    if(firstVisible&&typeof goTab==='function'){
+      const bb=document.querySelector('#mainTabs .btn-tab[data-tab="'+firstVisible+'"]');
+      goTab(firstVisible,bb);
+    }
+  }
+};
+
+// Detectar qué grupo contiene la pestaña activa y seleccionarlo
+window.tgSyncGroupToActiveTab=function(){
+  const cur=document.querySelector('#mainTabs .btn-tab.active')?.dataset.tab;
+  if(!cur)return;
+  for(const grp of Object.keys(TG_MAP)){
+    if(TG_MAP[grp].includes(cur)){
+      if(window._tgCurrentGroup!==grp)tgSelectGroup(grp);
+      return;
+    }
+  }
+};
+
+// Mantener el filtro aplicado — se llama al final de cada goTab
+window.tgEnsureFilter=function(){
+  // Si no hay grupo seleccionado, detectarlo de la pestaña activa
+  if(!window._tgCurrentGroup){
+    const cur=document.querySelector('#mainTabs .btn-tab.active')?.dataset.tab;
+    for(const grp of Object.keys(TG_MAP)){
+      if(TG_MAP[grp].includes(cur)){window._tgCurrentGroup=grp;break;}
+    }
+  }
+  if(!window._tgCurrentGroup)return;
+  const grp=window._tgCurrentGroup;
+  const allowed=TG_MAP[grp]||[];
+  // Marcar botón activo
+  document.querySelectorAll('.tg-grp-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.grp===grp);
+  });
+  // Mostrar SOLO pestañas permitidas (por rol) Y del grupo activo.
+  // Las demás quedan ocultas vía CSS (display:none por defecto).
+  document.querySelectorAll('#mainTabs .btn-tab.tg-orig').forEach(b=>{
+    const tab=b.dataset.tab;
+    const permitida=b.getAttribute('data-perm-hidden')!=='1';
+    if(permitida&&allowed.includes(tab)){
+      b.classList.add('tg-visible');
+    } else {
+      b.classList.remove('tg-visible');
+    }
+  });
+  document.querySelectorAll('#mainTabs .tg-sep-line').forEach(s=>s.style.display='none');
+};
+
+// Inicializar tras login (el login llama tgSyncGroupToActiveTab directamente)
+// Este fallback cubre el caso de sesión ya iniciada al cargar
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    const mt=document.getElementById('mainTabs');
+    if(mt&&mt.style.display!=='none'){
+      const gb=document.getElementById('tgGroupBar');
+      if(gb)gb.style.display='flex';
+      document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>{
+        if(b.dataset.tab&&!b.hasAttribute('data-perm-hidden')){
+          b.setAttribute('data-perm-hidden',b.style.display==='none'?'1':'0');
+        }
+      });
+      if(typeof tgSyncGroupToActiveTab==='function')tgSyncGroupToActiveTab();
+    }
+  },800);
+});
+
+// ═══════════════════════════════════════════════════════
+// TRACKER DE USO DE BOTONES
+// Guarda en localStorage cuántas veces se hace click en cada botón
+// para identificar botones que no se usan y poder eliminarlos
+// ═══════════════════════════════════════════════════════
+const BTN_STATS_KEY='beunify_btn_stats_v1';
+function _btnStatsLoad(){try{return JSON.parse(localStorage.getItem(BTN_STATS_KEY)||'{}');}catch(e){return{};}}
+function _btnStatsSave(s){try{localStorage.setItem(BTN_STATS_KEY,JSON.stringify(s));}catch(e){}}
+function _btnLabel(el){
+  // Identificador del botón: id || data-tab || data-tg || texto recortado
+  if(el.id)return '#'+el.id;
+  if(el.dataset.tab)return 'tab:'+el.dataset.tab;
+  if(el.dataset.tg)return 'tg:'+el.dataset.tg;
+  if(el.dataset.tgGrp)return 'grp:'+el.dataset.tgGrp;
+  const t=(el.textContent||'').trim().replace(/\s+/g,' ').substring(0,50);
+  const oc=(el.getAttribute('onclick')||'').substring(0,40);
+  return (t||'btn')+(oc?' | '+oc:'');
+}
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('button,.btn,.btn-tab,.btn-sm,.btn-xs,.pc-btn-3d,.tg-btn');
+  if(!btn)return;
+  const key=_btnLabel(btn);
+  if(!key||key==='btn')return;
+  const s=_btnStatsLoad();
+  if(!s[key])s[key]={n:0,first:Date.now(),last:Date.now()};
+  s[key].n++;
+  s[key].last=Date.now();
+  _btnStatsSave(s);
+},true);
+
+window.tgShowStats=function(){
+  const s=_btnStatsLoad();
+  const entries=Object.entries(s).sort((a,b)=>b[1].n-a[1].n);
+  const total=entries.reduce((a,[,v])=>a+v.n,0);
+  // Modal overlay
+  let ov=document.getElementById('btnStatsOv');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.id='btnStatsOv';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+    document.body.appendChild(ov);
+  }
+  const fmt=(t)=>{const d=Math.floor((Date.now()-t)/86400000);return d===0?'hoy':d===1?'ayer':'hace '+d+'d';};
+  const rows=entries.map(([k,v])=>{
+    const bar=Math.min(100,(v.n/Math.max(1,entries[0][1].n))*100);
+    return `<tr><td style="padding:4px 6px;font-family:monospace;font-size:10px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${k.replace(/"/g,'&quot;')}">${k.replace(/</g,'&lt;')}</td>
+      <td style="padding:4px 6px;font-weight:700;text-align:right">${v.n}</td>
+      <td style="padding:4px 6px;width:100px"><div style="background:linear-gradient(90deg,#4a5568,#7280a0);width:${bar}%;height:8px;border-radius:4px"></div></td>
+      <td style="padding:4px 6px;font-size:9px;color:#888">${fmt(v.last)}</td></tr>`;
+  }).join('');
+  const unused=entries.filter(([,v])=>v.n===0).length;
+  const lowUse=entries.filter(([,v])=>v.n<=2).length;
+  ov.innerHTML=`<div style="background:#fff;border-radius:14px;width:min(900px,100%);max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+    <div style="padding:14px 18px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px">
+      <h3 style="margin:0;font-size:15px;font-weight:800">📊 Estadísticas de uso de botones</h3>
+      <span style="font-size:11px;color:#666">${entries.length} botones · ${total} clicks · ${lowUse} con ≤2 usos</span>
+      <span style="flex:1"></span>
+      <button onclick="if(confirm('Borrar todas las estadísticas?')){localStorage.removeItem('${BTN_STATS_KEY}');tgShowStats();}" style="background:#fee;color:#a00;border:1px solid #fcc;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer">🗑 Reset</button>
+      <button onclick="tgExportStats()" style="background:#eef;color:#048;border:1px solid #cce;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer">⬇ Exportar CSV</button>
+      <button onclick="document.getElementById('btnStatsOv').remove()" style="background:#4a5568;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:13px;cursor:pointer">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:8px 12px">
+      ${entries.length?`<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="border-bottom:1.5px solid #ddd"><th style="text-align:left;padding:6px;color:#666;font-weight:700">Botón</th><th style="text-align:right;padding:6px;color:#666;font-weight:700">Usos</th><th style="text-align:left;padding:6px;color:#666;font-weight:700">Frecuencia</th><th style="text-align:left;padding:6px;color:#666;font-weight:700">Último</th></tr></thead><tbody>${rows}</tbody></table>`:'<div style="padding:30px;text-align:center;color:#888">Sin clicks registrados aún. Usa la app un rato y vuelve.</div>'}
+    </div>
+  </div>`;
+};
+window.tgExportStats=function(){
+  const s=_btnStatsLoad();
+  const csv='Boton,Usos,PrimerUso,UltimoUso\n'+Object.entries(s).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>{
+    const q=x=>'"'+String(x).replace(/"/g,'""')+'"';
+    return [q(k),v.n,q(new Date(v.first).toISOString()),q(new Date(v.last).toISOString())].join(',');
+  }).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='button-stats-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+
+// ═══════════════════════════════════════════════════════
+// MODO ENFOQUE — Canvas de impresión a pantalla casi completa
+// ═══════════════════════════════════════════════════════
+window._pcFocusMode={};
+window.pcToggleFocus=function(cfgKey){
+  const wrap=document.getElementById('pcfg-'+cfgKey);
+  if(!wrap)return;
+  const outer=wrap.querySelector('.pc-outer-'+cfgKey);
+  if(!outer)return;
+  const isFocus=!window._pcFocusMode[cfgKey];
+  window._pcFocusMode[cfgKey]=isFocus;
+  const sides=wrap.querySelectorAll('.pc-side-'+cfgKey);
+  if(isFocus){
+    // ENFOQUE: ocultar paneles laterales, canvas a 1 columna
+    sides.forEach(s=>s.style.display='none');
+    outer.style.setProperty('grid-template-columns','1fr','important');
+    setTimeout(function(){
+      const w=wrap.offsetWidth-30;
+      const z=Math.min(150,Math.max(50,Math.floor(w/794*100)));
+      if(typeof pcSetZoom==='function')pcSetZoom(cfgKey,z);
+    },80);
+  } else {
+    // SALIR: restaurar las 3 columnas EXPLÍCITAMENTE (no depender del CSS,
+    // que el @media de pantallas estrechas podría pisar dejando todo vertical).
+    sides.forEach(s=>s.style.display='');
+    if(window.innerWidth>1200){
+      outer.style.setProperty('grid-template-columns','260px minmax(450px,1fr) 320px','important');
+    } else {
+      // En pantallas estrechas el layout vertical es el correcto
+      outer.style.removeProperty('grid-template-columns');
+    }
+    setTimeout(function(){
+      if(typeof pcSetZoom==='function')pcSetZoom(cfgKey,76);
+    },80);
+  }
+  const btn=document.getElementById('pc-focus-'+cfgKey);
+  if(btn){
+    btn.classList.toggle('on',isFocus);
+    btn.innerHTML=isFocus?'⬜ Salir enfoque':'⛶ Enfoque';
+  }
+};
 
 }); // end window.addEventListener('load')
 </script>
