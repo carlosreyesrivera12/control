@@ -12,6 +12,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#f7f8fc;--bg2:#fff;--bg3:#f0f2f8;--bg4:#e4e7f1;--text:#0f172a;--text2:#334155;--text3:#6b7280;--text4:#9ca3af;--border:#e4e7f1;--border2:#c8cdd9;--blue:#1a56db;--bll:#eef2ff;--green:#0d9f6e;--gll:#ecfdf5;--red:#e02424;--rll:#fff1f1;--amber:#c47b10;--all:#fffbeb;--purple:#6d28d9;--pll:#f5f3ff;--teal:#0e7490;--almacen:#7a6a4a;--sot:#3a4558;--fira:#3a5a3a;--r:6px;--r2:10px;--r3:16px;--sh:0 1px 3px rgba(0,0,0,.06);--sh2:0 4px 16px rgba(0,0,0,.1)}
 
@@ -468,6 +469,15 @@ a:hover{color:#3a4558;}
         <div id="loginErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:4px">
+        <button class="btn" id="googleLoginBtn" onclick="doGoogleLogin()" style="width:fit-content;min-width:230px;padding:11px 22px;font-size:14px;font-weight:700;background:#fff;color:#3c4043;border:1.5px solid #dadce0;border-radius:24px;justify-content:center;display:flex;align-items:center;gap:10px">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          <span id="lbl_googleBtn">Entrar con Google</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:8px;width:230px;margin:2px 0">
+          <div style="flex:1;height:1px;background:var(--border2)"></div>
+          <span style="font-size:10px;color:var(--text3);font-weight:700">O</span>
+          <div style="flex:1;height:1px;background:var(--border2)"></div>
+        </div>
         <button class="btn" style="width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="doLogin()">
           <span id="lbl_operadorBtn">ACCEDER</span>
         </button>
@@ -1973,22 +1983,8 @@ function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos'
         // No restaurar papelera si está protegida
         if(!_isDeleteProtected('papelera')&&rem.papelera)DB.papelera=rem.papelera;
         if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases&&!_dirty)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2&&!_dirty)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts&&!_dirty)DB.tabSorts=rem.tabSorts;if(rem.tabOrder&&!_dirty)DB.tabOrder=rem.tabOrder;if(rem.colOrders&&!_dirty)DB.colOrders=rem.colOrders;if(rem.printCfg1&&!_dirty)DB.printCfg1=rem.printCfg1;if(rem.printCfg2&&!_dirty)DB.printCfg2=rem.printCfg2;if(rem.printCfgAg&&!_dirty)DB.printCfgAg=rem.printCfgAg;if(rem.printTemplates&&!_dirty)DB.printTemplates=rem.printTemplates;if(rem.printCfgModes&&!_dirty)DB.printCfgModes=rem.printCfgModes;if(rem.camposCfg&&!_dirty)DB.camposCfg=rem.camposCfg;if(rem.eventoHistorial)DB.eventoHistorial=rem.eventoHistorial;if(rem.eventosPapelera)DB.eventosPapelera=rem.eventosPapelera;if(rem._deviceAlerts)DB._deviceAlerts=rem._deviceAlerts;if(rem.devices)DB.devices=rem.devices;if(rem._devRequireApproval!==undefined)DB._devRequireApproval=rem._devRequireApproval;if(rem.usuarios&&!_dirty){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}if(rem.empresas)DB.empresas=Array.isArray(rem.empresas)?rem.empresas:Object.values(rem.empresas);if(rem.preregistros)DB.preregistros=Array.isArray(rem.preregistros)?rem.preregistros:Object.values(rem.preregistros);if(rem.consentimientos)DB.consentimientos=Array.isArray(rem.consentimientos)?rem.consentimientos:Object.values(rem.consentimientos);fbConnected=true;setSyncStatus('ok');
-      // Auto-fix SA unlock (one-time, removes itself after running)
-      if(!DB._saUnlockDone||DB._saUnlockDone===true||DB._saUnlockDone==='v2'||DB._saUnlockDone==='v3'){
-        const _saU=DB.usuarios.find(u=>u.rol==='superadmin'&&(u.nombre==='Carlos'||u.pin==='001990'||u.id==='u_sa'));
-        if(_saU){
-          _saU.loginAttempts=0;
-          _saU.lockedUntil=null;
-          _saU.mustChangePassword=false;
-          _saU.email='carlosreyesrivera12@gmail.com';
-          _saU.twoFA=false;
-          _saU.pin='001990';
-          _saU.passwordHash=null;
-          _saU.passwordSalt=null;
-          DB._saUnlockDone='v4';
-          saveDBNow();
-        }
-      }
+      // Auto-fix SA unlock — DESACTIVADO (era una brecha de seguridad).
+      // El acceso superadmin ahora se gestiona vía login con Google (_SA_EMAIL).
       if(changed){saveLocalDB();if(CU){renderTab(curTab);renderHdr();}}},()=>setSyncStatus('error'));fbDb.ref('.info/connected').on('value',snap=>{fbConnected=snap.val();setSyncStatus(fbConnected?'ok':'error');const d=document.getElementById('loginSyncDot'),l=document.getElementById('loginSyncLbl');if(d)d.className='sd '+(fbConnected?'sd-g':'sd-r');});}
 function writeToFirebase(){if(!fbRef)return;clearTimeout(writeDebounce);writeDebounce=setTimeout(()=>{fbRef.set({_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},/* tabEvents removed */printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false}).then(()=>{setSyncStatus('ok');try{localStorage.removeItem(SK+'_dirty');}catch(e){}}).catch(()=>setSyncStatus('error'));},350);}
 function initLocalSync(){try{bc=new BroadcastChannel('cu1_sync');bc.onmessage=()=>{
@@ -2498,21 +2494,12 @@ function canOcr(){return isSA()||hasPerm('canOcr');}
 function _setOcrSvc(svc){if(typeof DB==='undefined')return;DB.ocrService=svc;if(typeof saveDB==='function')saveDB();if(window._OCR&&typeof window._OCR.setService==='function')window._OCR.setService(svc);if(typeof renderUsuarios==='function')renderUsuarios();if(typeof _updateOcrSvcToggleUI==='function')_updateOcrSvcToggleUI();}
 function _doEmergencyReset(){
   const pin=document.getElementById('emergencyPin').value.trim();
-  const u=DB.usuarios.find(x=>x.pin===pin&&x.rol==='superadmin');
+  // El reset de emergencia ya NO acepta ningún PIN fijo del código.
+  // Solo permite resetear una cuenta superadmin escribiendo su PIN real actual.
+  const u=DB.usuarios.find(x=>x.pin===pin&&x.rol==='superadmin'&&pin&&pin.length>=6);
   if(!u){
-    // Also try matching by known pin
-    const u2=DB.usuarios.find(x=>x.rol==='superadmin');
-    if(u2&&(pin==='001990'||u2.pin===pin)){
-      u2.loginAttempts=0;u2.lockedUntil=null;u2.mustChangePassword=false;
-      u2.passwordHash=null;u2.passwordSalt=null;u2.twoFA=false;u2.pin=pin;
-      DB._saUnlockDone='emergency';
-      saveDBNow();
-      document.getElementById('emergencyPanel').style.display='none';
-      document.getElementById('loginErr').style.display='none';
-      alert('✅ Cuenta reseteada. Entra con PIN: '+pin);
-      return;
-    }
-    alert('PIN no reconocido');return;
+    alert('PIN no reconocido. La recuperación de superadmin se hace iniciando sesión con Google.');
+    return;
   }
   u.loginAttempts=0;u.lockedUntil=null;u.mustChangePassword=false;
   u.passwordHash=null;u.passwordSalt=null;u.twoFA=false;
@@ -2962,6 +2949,94 @@ function _guessDeviceLabel(ua){
   if(/Windows/.test(s))return '💻 Windows';
   if(/Linux/.test(s))return '🖥 Linux';
   return '❓ Desconocido';
+}
+// ═══ LOGIN CON GOOGLE (Gmail) ═══
+// Flujo: popup de Google → se obtiene el email → se decide el acceso:
+//  · _SA_EMAIL  → superadmin (creador de la app)
+//  · email que coincide con un usuario existente → entra con ese rol
+//  · email invitado (usuario con ese email registrado) → entra
+//  · cualquier otro Gmail → ACCESO DENEGADO (no fue invitado)
+// Tras identificar al usuario se usa completeLogin (dispositivo de confianza).
+async function doGoogleLogin(){
+  const errEl=document.getElementById('loginErr');
+  if(errEl)errEl.style.display='none';
+  const btn=document.getElementById('googleLoginBtn');
+  if(!fbAuth){
+    if(typeof firebase!=='undefined'){try{fbAuth=firebase.auth(fbApp);}catch(e){}}
+  }
+  if(!fbAuth){
+    if(errEl){errEl.textContent='Servicio de Google no disponible. Reintenta en unos segundos.';errEl.style.display='block';}
+    return;
+  }
+  if(btn){btn.disabled=true;btn.style.opacity='.6';}
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({prompt:'select_account'});
+    const res=await fbAuth.signInWithPopup(provider);
+    const gEmail=((res.user&&res.user.email)||'').trim().toLowerCase();
+    const gName=(res.user&&res.user.displayName)||gEmail.split('@')[0];
+    if(!gEmail){
+      if(errEl){errEl.textContent='No se pudo obtener el email de Google.';errEl.style.display='block';}
+      if(btn){btn.disabled=false;btn.style.opacity='1';}
+      return;
+    }
+    // ── Caso 1: superadmin / creador ──
+    if(gEmail===_SA_EMAIL.toLowerCase()){
+      let sa=DB.usuarios.find(u=>(u.email||'').trim().toLowerCase()===gEmail);
+      if(!sa){
+        // Crear la cuenta superadmin si aún no existe
+        sa={id:'u_sa',nombre:gName||'Carlos',username:'carlos',email:_SA_EMAIL,rol:'superadmin',
+            lang:CUR_LANG||'es',loginAttempts:0,lockedUntil:null,mustChangePassword:false,
+            googleAuth:true,creadoTs:nowL()};
+        DB.usuarios.push(sa);
+        saveDB();
+      } else {
+        sa.rol='superadmin';sa.googleAuth=true;sa.loginAttempts=0;sa.lockedUntil=null;
+        sa.lockedUntil=null;saveDB();
+      }
+      _loginUser=sa;
+      setLang(sa.lang||CUR_LANG||'es');applyLang();
+      completeLogin(sa);
+      return;
+    }
+    // ── Caso 2: usuario invitado (existe en DB.usuarios con ese email) ──
+    const inv=DB.usuarios.find(u=>(u.email||'').trim().toLowerCase()===gEmail);
+    if(inv){
+      if(inv.lockedUntil&&Date.now()<inv.lockedUntil){
+        const mins=Math.ceil((inv.lockedUntil-Date.now())/60000);
+        if(errEl){errEl.textContent='Cuenta bloqueada. Intenta en '+mins+' min.';errEl.style.display='block';}
+        if(btn){btn.disabled=false;btn.style.opacity='1';}
+        try{await fbAuth.signOut();}catch(e){}
+        return;
+      }
+      inv.googleAuth=true;inv.loginAttempts=0;inv.lockedUntil=null;saveDB();
+      _loginUser=inv;
+      setLang(inv.lang||CUR_LANG||'es');applyLang();
+      completeLogin(inv);
+      return;
+    }
+    // ── Caso 3: Gmail NO invitado → acceso denegado ──
+    try{await fbAuth.signOut();}catch(e){}
+    if(errEl){
+      errEl.textContent='⛔ El correo '+gEmail+' no está autorizado. Pide al administrador que te invite.';
+      errEl.style.display='block';
+    }
+    // Avisar al SA: registrar intento de acceso no autorizado
+    if(!DB._deviceAlerts)DB._deviceAlerts=[];
+    DB._deviceAlerts.unshift({ts:nowL(),user:'(no autorizado)',userId:null,email:gEmail,
+      ua:navigator.userAgent,screen:screen.width+'x'+screen.height,noAutorizado:true});
+    if(DB._deviceAlerts.length>50)DB._deviceAlerts=DB._deviceAlerts.slice(0,50);
+    saveDB();
+    if(btn){btn.disabled=false;btn.style.opacity='1';}
+  }catch(e){
+    let msg='Error al entrar con Google.';
+    if(e&&e.code==='auth/popup-closed-by-user')msg='Ventana de Google cerrada.';
+    else if(e&&e.code==='auth/unauthorized-domain')msg='Dominio no autorizado en Firebase. Añade carlosreyesrivera12.github.io en Authentication → Settings.';
+    else if(e&&e.code==='auth/popup-blocked')msg='El navegador bloqueó la ventana. Permite ventanas emergentes.';
+    else if(e&&e.message)msg=e.message;
+    if(errEl){errEl.textContent=msg;errEl.style.display='block';}
+    if(btn){btn.disabled=false;btn.style.opacity='1';}
+  }
 }
 async function completeLogin(u){
   // Capture session metadata
@@ -6607,20 +6682,31 @@ function _absorberRegistroRampa(ing){
   //  - salida      = hora de salida al recinto (se registra al dar salida)
   const rampa=(donor===ing)?ing:donor;          // el que aportó matrícula+pos por Rampa
   const _ahora=nowL();
+  // Traer SIEMPRE la posición del registro de Rampa (la del parking)
   if(rampa.pos)receptor.pos=rampa.pos;
   receptor.matricula=mat;
-  // Hora de Rampa: la del registro rápido (su entrada o su propia rampaHora)
+  // Hora de Rampa REAL: la del registro rápido de Rampa (no estimada).
   receptor.rampaHora=rampa.rampaHora||rampa.entrada||receptor.rampaHora||null;
+  receptor._rampaHoraEstimada=false;             // es hora real, no aproximada
+  receptor._noAbsorber=true;                     // evita re-absorción en el paso final
   // Hora de Oficina: AHORA — momento en que oficina hace el match/absorción
   receptor.oficinaHora=_ahora;
   receptor.entrada=_ahora;
   if(rampa.remolque&&!receptor.remolque)receptor.remolque=rampa.remolque;
   if(rampa.hall&&!receptor.hall)receptor.hall=rampa.hall;
   if(rampa.halls&&rampa.halls.length&&!(receptor.halls&&receptor.halls.length))receptor.halls=[...rampa.halls];
+  if(rampa.telefono&&!receptor.telefono)receptor.telefono=rampa.telefono;
+  if(rampa.tipoVehiculo&&!receptor.tipoVehiculo)receptor.tipoVehiculo=rampa.tipoVehiculo;
   receptor._absorbido=true;
+  // Persistir el receptor en DB
+  const _rix=DB.ingresos.findIndex(x=>x.id===receptor.id);
+  if(_rix>=0)DB.ingresos[_rix]=receptor;
   // Eliminar el registro donante (fusión total)
   DB.ingresos=DB.ingresos.filter(x=>x.id!==donor.id);
-  toast('🔗 Registro fusionado: '+mat+' · Rampa '+(receptor.rampaHora?receptor.rampaHora.slice(11,16):'–')+' → Oficina '+_ahora.slice(11,16),'var(--text2)');
+  // Si el registro que se está guardando (ing) era el donante, marcar que ya
+  // no debe seguir procesándose como registro independiente.
+  if(donor===ing){ing._fusionadoEn=receptor.id;ing._noAbsorber=true;}
+  toast('🔗 Registro fusionado: '+mat+(receptor.pos?' · Pos. '+receptor.pos:'')+' · Rampa '+(receptor.rampaHora?fmt(receptor.rampaHora,'t'):'–')+' → Oficina '+fmt(_ahora,'t'),'var(--text2)');
 }
 // ═══ IMPORTADOR CON MAPEO DE COLUMNAS (Referencia) ═══
 // Campos destino disponibles para mapear cada columna pegada.
@@ -6915,20 +7001,22 @@ function _doSaveIngWithPos(mat,emp,hall,ev,atomicPos,now,today,_col,old2,posInpu
     }
   }
   // ── REGISTRO DE HORAS DE TRAZABILIDAD (módulo Referencia) ──
-  // Se aplica SIEMPRE — registro nuevo o editado — para que ningún registro
-  // de Referencia con matrícula real quede sin Oficina Hora ni Rampa Hora.
-  if(_col==='ingresos'){
+  // Se aplica al registro que quedó vivo. Si fue absorbido o es el donante de
+  // una fusión, sus horas ya las gestionó _absorberRegistroRampa.
+  if(_col==='ingresos' && !ing._fusionadoEn){
     const _matReal=mat&&!mat.startsWith('REF-')&&!mat.startsWith('IMP-');
-    if(_matReal){
+    const _ix=DB.ingresos.findIndex(x=>x.id===ing.id);
+    if(_matReal && _ix>=0){
+      // Oficina Hora: si no la tiene (no vino de absorción), es ahora.
       if(!ing.oficinaHora)ing.oficinaHora=now;
+      // Rampa Hora: si NO pasó por Rampa (no hay registro absorbido) y falta,
+      // se estima 5 min antes. Si vino de absorción ya tiene la hora REAL.
       if(!ing.rampaHora){
         ing.rampaHora=addMin(ing.oficinaHora,-5);
         ing._rampaHoraEstimada=true;
       }
+      DB.ingresos[_ix]=ing;
     }
-    // Persistir las horas en el objeto guardado en DB
-    const _ix=DB.ingresos.findIndex(x=>x.id===ing.id);
-    if(_ix>=0)DB.ingresos[_ix]=ing;
   }
   saveDB();closeOv('mIng');
   logAudit(editIngId?'editar_ing':'ingreso','ingreso',mat+' Halls:'+(halls.join(','))||'');
@@ -6987,8 +7075,10 @@ function _doSaveIngWithPos(mat,emp,hall,ev,atomicPos,now,today,_col,old2,posInpu
       if(_ag.telefono&&!ing.telefono){ing.telefono=_ag.telefono;_ingChanged=true;}
       // ENTRADA = fecha de la cita (+hora si existe). La cita siempre tiene fecha.
       if(_ag.fecha){
+        // _ag.fecha puede venir como 'YYYY-MM-DD' o ya con hora ('YYYY-MM-DD HH:MM:SS')
+        const _fSolo=String(_ag.fecha).slice(0,10);
         const _ho=(_ag.hora||'').trim();
-        ing.entrada=_ag.fecha+(_ho?('T'+(_ho.length===5?_ho:_ho.padStart(5,'0'))):'T00:00');
+        ing.entrada=_fSolo+(_ho?(' '+(_ho.length>=5?_ho.slice(0,5):_ho.padStart(5,'0'))):' 00:00');
         ing._entradaDesdeAgenda=true;
         _ingChanged=true;
       }
@@ -9157,6 +9247,19 @@ fillIdiomaSelect();
 const _FB_URL='https://devolucioncontrol-v5-default-rtdb.firebaseio.com/';
 const _FB_KEY='controlunificado';
 const _QR_BASE='https://carlosreyesrivera12.github.io/control/INDEX';
+// Config completo del proyecto Firebase (necesario para Authentication con Google)
+const _FB_CONFIG={
+  apiKey:"AIzaSyCqMF19ayrIUWtvORlqf1YXZ9JLxPxhf0Y",
+  authDomain:"devolucioncontrol-v5.firebaseapp.com",
+  databaseURL:"https://devolucioncontrol-v5-default-rtdb.firebaseio.com",
+  projectId:"devolucioncontrol-v5",
+  storageBucket:"devolucioncontrol-v5.firebasestorage.app",
+  messagingSenderId:"877514210087",
+  appId:"1:877514210087:web:84790afc6d5625e8a80702"
+};
+// Email del superadmin / creador de la app — único Gmail con rol superadmin.
+const _SA_EMAIL='carlosreyesrivera12@gmail.com';
+let fbAuth=null;
 localStorage.setItem('cu1_fbUrl',_FB_URL);
 localStorage.setItem('cu1_fbKey',_FB_KEY);
 localStorage.setItem('cu1_qrBaseUrl',_QR_BASE);
@@ -9168,9 +9271,10 @@ function _connectFirebaseWhenReady(_tries){
   if(typeof firebase!=='undefined'){
     try{
       fbKey=_FB_KEY;
-      fbApp=firebase.initializeApp({databaseURL:_FB_URL},'cu1_auto_'+Date.now());
+      fbApp=firebase.initializeApp(_FB_CONFIG,'cu1_auto_'+Date.now());
       fbDb=firebase.database(fbApp);
       fbRef=fbDb.ref('cu1/'+_FB_KEY);
+      try{ fbAuth=firebase.auth(fbApp); }catch(e){console.warn('Auth:',e);}
       startFirebaseSync();
     }catch(e){console.warn('Firebase:',e);}
     return;
