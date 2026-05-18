@@ -1981,7 +1981,7 @@ function confirmLang(){setLang(pendingLangCode);try{if(pendingLangCode&&pendingL
 
 // ═══ FIREBASE ═══
 function connectFirebase(){const url=(document.getElementById('fbUrlInp').value||'').trim();if(!url){toast('URL requerida','var(--red)');return;}fbKey=(document.getElementById('fbKeyInp').value||'controlunificado').trim().replace(/[^a-zA-Z0-9_-]/g,'');const ak=(document.getElementById('apiKeyInp').value||'').trim();if(ak)localStorage.setItem('cu1_apiKey',ak);try{if(fbApp)fbApp.delete();fbApp=firebase.initializeApp({databaseURL:url},'cu1_'+Date.now());fbDb=firebase.database(fbApp);fbRef=fbDb.ref('cu1/'+fbKey);localStorage.setItem('cu1_fbUrl',url);localStorage.setItem('cu1_fbKey',fbKey);localStorage.removeItem('cu1_noSync');document.getElementById('setupWrap').style.display='none';startFirebaseSync();showLogin();}catch(e){toast('❌ '+e.message,'var(--red)');}}
-function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos','ingresos','listaNegra','enEspera','mensajesRampa','conductores','auditLog','eventos','agenda','recintos'];fbRef.on('value',snap=>{
+function startFirebaseSync(){if(!fbRef)return;setSyncStatus('connecting');const FK=['movimientos','ingresos','listaNegra','enEspera','mensajesRampa','conductores','auditLog','eventos','agenda','recintos'];try{fbRef.off('value');}catch(e){}fbRef.on('value',snap=>{
       var _dirty=false;try{var _dt=parseInt(localStorage.getItem(SK+'_dirty')||'0');_dirty=_dt>0&&(Date.now()-_dt)<10000;}catch(e){}const rem=snap.val();if(!rem){setSyncStatus('ok');if(typeof _checkFirstRunAfterFirebase==='function')_checkFirstRunAfterFirebase();return;}if(rem._session===SID){setSyncStatus('ok');return;}let changed=false;FK.forEach(k=>{
         // ── No restaurar colecciones que acaban de ser borradas localmente ──
         if(_isDeleteProtected(k))return;
@@ -9743,8 +9743,12 @@ function _connectFirebaseWhenReady(_tries){
         fbAuth.onAuthStateChanged(function(usr){
           if(usr){
             window._fbAuthUser=usr;
-            // Reconectar la sincronización ya autenticada
-            try{startFirebaseSync();}catch(e){console.warn('resync:',e);}
+            // Re-sincronizar UNA vez cuando el usuario se autentica, para que
+            // la conexión vaya autenticada (necesario con reglas auth!=null).
+            if(!window._resyncDone){
+              window._resyncDone=true;
+              try{startFirebaseSync();}catch(e){console.warn('resync:',e);}
+            }
           }else{
             window._fbAuthUser=null;
           }
