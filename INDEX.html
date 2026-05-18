@@ -473,7 +473,6 @@ a:hover{color:#3a4558;}
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           <span id="lbl_googleBtn">Entrar con Google</span>
         </button>
-        <input id="loginInviteCode" type="text" placeholder="Código de invitación (si tienes)" maxlength="6" style="width:230px;text-align:center;text-transform:uppercase;letter-spacing:.18em;font-size:13px;font-weight:700;padding:8px 10px;border:1.5px solid var(--border2);border-radius:18px;background:var(--bg2)" oninput="this.value=this.value.toUpperCase()">
         <div style="display:flex;align-items:center;gap:8px;width:230px;margin:2px 0">
           <div style="flex:1;height:1px;background:var(--border2)"></div>
           <span style="font-size:10px;color:var(--text3);font-weight:700">O</span>
@@ -909,16 +908,6 @@ a:hover{color:#3a4558;}
   <div class="ffoot"><button class="btn btn-gh" onclick="closeOv('mUser')">${tr('cancel')}</button><button class="btn btn-p" id="btnUserLbl" onclick="saveUser()">Crear</button></div>
   <input type="hidden" id="fuId">
 </div></div>
-<!-- MODAL INVITAR USUARIO -->
-<div class="ov" id="mInvite"><div class="modal modal-lg"><div class="mhdr"><div class="mttl">🎟 Invitar nuevo usuario</div><button class="x" onclick="closeOv('mInvite')">✕</button></div>
-  <div id="mInviteBody" style="display:flex;flex-direction:column;gap:10px"></div>
-  <div class="ffoot"><button class="btn btn-gh" onclick="closeOv('mInvite')">${tr('cancel')}</button><button class="btn btn-p" id="btnInviteCreate" onclick="doCreateInvite()">Generar código</button></div>
-</div></div>
-<!-- MODAL RESULTADO INVITACIÓN -->
-<div class="ov" id="mInviteResult"><div class="modal modal-sm"><div class="mhdr"><div class="mttl">✅ Invitación creada</div><button class="x" onclick="closeOv('mInviteResult')">✕</button></div>
-  <div id="mInviteResultBody" style="font-size:13px"></div>
-  <div class="ffoot"><button class="btn btn-p" onclick="closeOv('mInviteResult')">Hecho</button></div>
-</div></div>
 <!-- MODAL BORRAR -->
 <div class="ov" id="mDel"><div class="modal modal-sm"><div class="mhdr"><div class="mttl" id="delTitle"><span id="lbl_delTitle">Confirmar eliminación</span></div></div><div id="delDetail" style="font-size:13px;color:var(--text3);margin-bottom:16px"></div><div class="ffoot"><button class="btn btn-gh" onclick="closeOv('mDel')">${tr('cancel')}</button><button class="btn" id="btnDoDelete" style="background:#8b3a3a;color:#fff;border:none;border-radius:20px;font-weight:700;padding:8px 20px;font-size:13px" onclick="doDelete()"><span id="lbl_yesDelete">🗑 Sí, eliminar</span></button></div></div></div>
 <!-- MODAL DETALLE INGRESO -->
@@ -1024,7 +1013,6 @@ a:hover{color:#3a4558;}
         </button>
         <div id="themeMenu" style="display:none;position:absolute;right:0;top:calc(100%+6px);background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:6px;z-index:9999;min-width:160px;box-shadow:var(--sh2)"></div>
       </div>
-      <button class="btn btn-gh btn-sm" onclick="openMyCredentials()" title="Mi usuario y clave" style="font-size:13px;border-radius:20px;padding:3px 8px;flex-shrink:0">🔑</button>
       <button class="btn btn-gh btn-sm" onclick="doLogout()" title="Cerrar sesión" style="border-radius:20px;padding:3px 8px;font-size:11px;font-weight:700;flex-shrink:0;display:inline-flex;align-items:center;gap:3px"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Salir</button>
     </div>
   </div>
@@ -2698,42 +2686,6 @@ async function doLogin(){
     errEl.textContent=`Cuenta bloqueada. Intenta en ${mins} min.`;errEl.style.display='block';return;
   }
 
-  // ── Login con usuario + clave vía FIREBASE AUTH ──
-  // Si el usuario tiene email y clave vinculada a Firebase, se autentica
-  // contra Firebase Auth de verdad — así la sesión es segura y la base de
-  // datos puede exigir auth!=null. El usuario escribe su username; aquí se
-  // resuelve a su email para autenticar.
-  if(u.email&&fbAuth){
-    try{
-      await fbAuth.signInWithEmailAndPassword(u.email,pass);
-      // Credencial Firebase OK
-      u.loginAttempts=0;u.lockedUntil=null;
-      if(fbAuth.currentUser&&fbAuth.currentUser.uid)u.fbUid=fbAuth.currentUser.uid;
-      saveDB();
-      _loginUser=u;
-      const _lang=window._step0LangChosen?CUR_LANG:(u.lang||CUR_LANG||'es');
-      window._step0LangChosen=false;
-      setLang(_lang);applyLang();
-      if(u.twoFA&&u.email){await initiateOTP(u);}else{completeLogin(u);}
-      return;
-    }catch(fe){
-      // Si Firebase rechaza pero NO es por credenciales (red, etc.), seguir
-      // con el modo local. Si es credencial inválida, mostrar error.
-      if(fe&&(fe.code==='auth/wrong-password'||fe.code==='auth/invalid-credential'||fe.code==='auth/invalid-login-credentials')){
-        u.loginAttempts=(u.loginAttempts||0)+1;
-        if(u.loginAttempts>=5){u.lockedUntil=Date.now()+30*60*1000;u.loginAttempts=0;saveDB();
-          errEl.textContent='Demasiados intentos. Cuenta bloqueada 30 minutos.';errEl.style.display='block';return;}
-        saveDB();
-        errEl.textContent=tr('wrongPassPin')+'. '+tr('attemptsLeft')+': '+(5-u.loginAttempts);
-        errEl.style.display='block';return;
-      }
-      if(fe&&fe.code==='auth/user-not-found'){
-        // El usuario aún no tiene credencial en Firebase Auth — cae al modo local.
-      }
-      // Otros errores (red): continúa al modo local de respaldo abajo.
-    }
-  }
-
   // ── Verificar credencial ──
   let credOK=false;
   // Try PIN first — simple and fast
@@ -3031,17 +2983,16 @@ async function doGoogleLogin(){
     // ── Caso 1: superadmin / creador ──
     if(gEmail===_SA_EMAIL.toLowerCase()){
       let sa=DB.usuarios.find(u=>(u.email||'').trim().toLowerCase()===gEmail);
-      const _uid=(res.user&&res.user.uid)||null;
       if(!sa){
         // Crear la cuenta superadmin si aún no existe
         sa={id:'u_sa',nombre:gName||'Carlos',username:'carlos',email:_SA_EMAIL,rol:'superadmin',
             lang:CUR_LANG||'es',loginAttempts:0,lockedUntil:null,mustChangePassword:false,
-            googleAuth:true,fbUid:_uid,creadoTs:nowL()};
+            googleAuth:true,creadoTs:nowL()};
         DB.usuarios.push(sa);
         saveDB();
       } else {
         sa.rol='superadmin';sa.googleAuth=true;sa.loginAttempts=0;sa.lockedUntil=null;
-        if(_uid)sa.fbUid=_uid;saveDB();
+        sa.lockedUntil=null;saveDB();
       }
       _loginUser=sa;
       setLang(sa.lang||CUR_LANG||'es');applyLang();
@@ -3058,67 +3009,16 @@ async function doGoogleLogin(){
         try{await fbAuth.signOut();}catch(e){}
         return;
       }
-      inv.googleAuth=true;inv.loginAttempts=0;inv.lockedUntil=null;
-      if(res.user&&res.user.uid)inv.fbUid=res.user.uid;
-      saveDB();
+      inv.googleAuth=true;inv.loginAttempts=0;inv.lockedUntil=null;saveDB();
       _loginUser=inv;
       setLang(inv.lang||CUR_LANG||'es');applyLang();
-      // Si aún tiene credenciales pendientes, ofrecer crearlas
-      if(inv.credencialesPendientes){
-        showCreateCredentials(inv,false);
-        return;
-      }
       completeLogin(inv);
       return;
     }
-    // ── Caso 3: Gmail no registrado → comprobar código de invitación ──
-    // Acepta un código de la URL (?invite=) o uno escrito en el campo.
-    let invCode=getInviteCodeFromUrl();
-    if(!invCode){
-      const ci=document.getElementById('loginInviteCode');
-      if(ci&&ci.value.trim())invCode=ci.value.trim().toUpperCase();
-    }
-    if(invCode){
-      try{
-        const inv=await validateInvite(invCode,gEmail);
-        // Crear el usuario con EXACTAMENTE el rol/tabs/permisos de la invitación
-        const nuevo={
-          id:uid(),
-          nombre:inv.displayName||gName||gEmail.split('@')[0],
-          username:'',
-          email:gEmail,
-          rol:inv.rol||'visor',
-          tabs:inv.tabs||[],
-          permisos:inv.permisos||{},
-          lang:CUR_LANG||'es',
-          googleAuth:true,
-          fbUid:(res.user&&res.user.uid)||null,
-          invitedBy:inv.createdBy||null,
-          inviteCode:invCode,
-          loginAttempts:0,lockedUntil:null,mustChangePassword:false,
-          credencialesPendientes:true,
-          creadoTs:nowL()
-        };
-        DB.usuarios.push(nuevo);
-        saveDB();
-        await consumeInvite(invCode,nuevo.id,gEmail);
-        _loginUser=nuevo;
-        setLang(nuevo.lang||CUR_LANG||'es');applyLang();
-        toast('✅ Invitación aceptada','var(--text2)');
-        // Pedir crear usuario + clave de respaldo (Opción A, no bloqueante)
-        showCreateCredentials(nuevo,true);
-        return;
-      }catch(invErr){
-        try{await fbAuth.signOut();}catch(e){}
-        if(errEl){errEl.textContent='⛔ '+(invErr.message||'Código de invitación no válido');errEl.style.display='block';}
-        if(btn){btn.disabled=false;btn.style.opacity='1';}
-        return;
-      }
-    }
-    // Sin invitación válida → acceso denegado
+    // ── Caso 3: Gmail NO invitado → acceso denegado ──
     try{await fbAuth.signOut();}catch(e){}
     if(errEl){
-      errEl.textContent='⛔ El correo '+gEmail+' no está autorizado. Pide al administrador un código de invitación.';
+      errEl.textContent='⛔ El correo '+gEmail+' no está autorizado. Pide al administrador que te invite.';
       errEl.style.display='block';
     }
     // Avisar al SA: registrar intento de acceso no autorizado
@@ -3198,184 +3098,6 @@ async function completeLogin(u){
     return;
   }
   loginSuccess(u);
-}
-
-// ═══ CREAR / MODIFICAR CREDENCIALES (usuario + clave) ═══
-// Tras aceptar la invitación con Google, el usuario crea un nombre de usuario
-// único y una clave. La clave se VINCULA a su cuenta de Firebase Auth
-// (linkWithCredential) — así puede entrar luego con usuario+clave en cualquier
-// dispositivo y sigue siendo autenticación real de Firebase.
-let _credUser=null;        // usuario para el que se crean credenciales
-let _credIsFirstTime=true; // true = recién invitado; false = modificando
-function showCreateCredentials(u,isFirstTime){
-  _credUser=u;
-  _credIsFirstTime=isFirstTime!==false;
-  document.getElementById('loginWrap').style.display='flex';
-  ['loginStep0','loginStep1','loginStep2','pinSection'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.style.display='none';
-  });
-  const card=document.querySelector('#loginWrap .login-card');
-  let div=document.getElementById('credSection');
-  if(div)div.remove();
-  div=document.createElement('div');
-  div.id='credSection';
-  const yaTiene=!!u.username;
-  div.innerHTML=
-    '<div style="text-align:center;margin-bottom:14px">'
-      +'<div style="font-size:28px">🔑</div>'
-      +'<div style="font-weight:800;font-size:15px;margin-top:6px">'+(yaTiene?'Tus credenciales de acceso':'Crea tu acceso de respaldo')+'</div>'
-      +'<div style="font-size:12px;color:var(--text3);margin-top:4px">Con este usuario y clave podrás entrar en dispositivos donde no tengas tu Gmail.</div>'
-    +'</div>'
-    +'<div class="fg" style="margin-bottom:8px"><span class="flbl">Nombre de usuario</span>'
-      +'<input id="credUser" placeholder="ej: carlos.r" value="'+(u.username||'')+'" autocomplete="off" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,\'\')"></div>'
-    +'<div class="fg" style="margin-bottom:8px"><span class="flbl">Clave'+(yaTiene?' (deja vacío para no cambiarla)':'')+'</span>'
-      +'<input id="credPass" type="password" placeholder="Mínimo 8 caracteres"></div>'
-    +'<div class="fg" style="margin-bottom:12px"><span class="flbl">Repetir clave</span>'
-      +'<input id="credPass2" type="password" placeholder="Repite la clave"></div>'
-    +'<div id="credErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>'
-    +'<button class="btn btn-p" style="width:100%;padding:10px;font-size:14px;justify-content:center" onclick="doSaveCredentials()">✓ Guardar y continuar</button>'
-    +'<button class="btn btn-gh" style="width:100%;padding:8px;font-size:12px;margin-top:6px;justify-content:center" onclick="skipCredentials()">'+(_credIsFirstTime?'Ahora no, entrar directamente':'Cancelar')+'</button>';
-  card.appendChild(div);
-}
-async function doSaveCredentials(){
-  const errEl=document.getElementById('credErr');
-  errEl.style.display='none';
-  const uname=(document.getElementById('credUser').value||'').trim().toLowerCase();
-  const p1=document.getElementById('credPass').value;
-  const p2=document.getElementById('credPass2').value;
-  const u=_credUser;
-  if(!u){return;}
-  const yaTiene=!!u.username;
-  if(!uname){errEl.textContent='Escribe un nombre de usuario.';errEl.style.display='block';return;}
-  if(uname.length<3){errEl.textContent='El usuario debe tener al menos 3 caracteres.';errEl.style.display='block';return;}
-  // Comprobar que el nombre de usuario no esté repetido
-  const repe=DB.usuarios.find(x=>(x.username||'').toLowerCase()===uname&&x.id!==u.id);
-  if(repe){errEl.textContent='Ese nombre de usuario ya está en uso. Elige otro.';errEl.style.display='block';return;}
-  // La clave: obligatoria si es primera vez; opcional si ya tenía
-  const cambiaClave=!!p1;
-  if(!yaTiene&&!p1){errEl.textContent='Crea una clave.';errEl.style.display='block';return;}
-  if(cambiaClave){
-    if(p1.length<8){errEl.textContent='La clave debe tener al menos 8 caracteres.';errEl.style.display='block';return;}
-    if(p1!==p2){errEl.textContent='Las claves no coinciden.';errEl.style.display='block';return;}
-  }
-  const btn=document.querySelector('#credSection .btn-p');
-  if(btn){btn.disabled=true;btn.textContent='Guardando…';}
-  // Vincular la clave a Firebase Auth (email/password) sobre la cuenta de Google
-  if(cambiaClave&&fbAuth&&fbAuth.currentUser){
-    try{
-      const cred=firebase.auth.EmailAuthProvider.credential(u.email,p1);
-      try{
-        await fbAuth.currentUser.linkWithCredential(cred);
-      }catch(linkErr){
-        // Si la credencial ya estaba vinculada, actualizar la contraseña
-        if(linkErr&&(linkErr.code==='auth/provider-already-linked'||linkErr.code==='auth/email-already-in-use'||linkErr.code==='auth/credential-already-in-use')){
-          await fbAuth.currentUser.updatePassword(p1);
-        }else{
-          throw linkErr;
-        }
-      }
-    }catch(e){
-      let msg='No se pudo guardar la clave en el sistema seguro.';
-      if(e&&e.code==='auth/weak-password')msg='Clave demasiado débil.';
-      else if(e&&e.code==='auth/requires-recent-login')msg='Por seguridad, vuelve a entrar con Google y reintenta.';
-      else if(e&&e.message)msg=e.message;
-      errEl.textContent=msg;errEl.style.display='block';
-      if(btn){btn.disabled=false;btn.textContent='✓ Guardar y continuar';}
-      return;
-    }
-  }
-  // Guardar usuario y hash local de la clave (respaldo)
-  u.username=uname;
-  if(cambiaClave){
-    try{
-      const r=await hashPassword(p1,null);
-      u.passwordHash=r.hash;u.passwordSalt=r.salt;
-    }catch(e){}
-  }
-  u.credencialesPendientes=false;
-  u.mustChangePassword=false;
-  DB.usuarios=DB.usuarios.map(x=>x.id===u.id?u:x);
-  saveDB();
-  const cs=document.getElementById('credSection');if(cs)cs.remove();
-  toast('✅ Credenciales guardadas','var(--text2)');
-  completeLogin(u);
-}
-function skipCredentials(){
-  const u=_credUser;
-  const cs=document.getElementById('credSection');if(cs)cs.remove();
-  if(_credIsFirstTime&&u){
-    // Entrar directamente; las credenciales quedan pendientes para otra vez
-    completeLogin(u);
-  }else{
-    // Modo modificación cancelado → volver al login
-    showLogin();
-  }
-}
-// Permite al usuario modificar su nombre de usuario y clave.
-// Para cambiar la clave (Firebase Auth) hace falta haber entrado con Google
-// en esta sesión; si no, solo deja cambiar el nombre de usuario.
-function openMyCredentials(){
-  if(!CU){return;}
-  const conGoogle=!!(fbAuth&&fbAuth.currentUser&&(fbAuth.currentUser.email||'').toLowerCase()===(CU.email||'').toLowerCase());
-  const body=document.getElementById('mInviteBody');
-  // Reutiliza el modal mInvite como contenedor genérico
-  document.querySelector('#mInvite .mttl').textContent='🔑 Mi usuario y clave';
-  body.innerHTML=
-    '<div class="fg"><span class="flbl">Nombre de usuario</span>'
-      +'<input id="myCredUser" value="'+((CU.username||'').replace(/"/g,'&quot;'))+'" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,\'\')"></div>'
-    +(conGoogle
-      ?'<div class="fg"><span class="flbl">Nueva clave (vacío = no cambiar)</span><input id="myCredPass" type="password" placeholder="Mínimo 8 caracteres"></div>'
-       +'<div class="fg"><span class="flbl">Repetir clave</span><input id="myCredPass2" type="password" placeholder="Repite la clave"></div>'
-      :'<p style="font-size:12px;color:var(--amber);margin:4px 0">Para cambiar tu clave, entra con Google. Ahora solo puedes cambiar el nombre de usuario.</p>')
-    +'<div id="myCredErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>';
-  const footBtn=document.getElementById('btnInviteCreate');
-  footBtn.textContent='Guardar';
-  footBtn.setAttribute('onclick','doSaveMyCredentials()');
-  document.getElementById('mInvite').classList.add('open');
-}
-async function doSaveMyCredentials(){
-  const errEl=document.getElementById('myCredErr');
-  if(errEl)errEl.style.display='none';
-  const uname=(document.getElementById('myCredUser').value||'').trim().toLowerCase();
-  if(!uname||uname.length<3){if(errEl){errEl.textContent='El usuario debe tener al menos 3 caracteres.';errEl.style.display='block';}return;}
-  const repe=DB.usuarios.find(x=>(x.username||'').toLowerCase()===uname&&x.id!==CU.id);
-  if(repe){if(errEl){errEl.textContent='Ese nombre de usuario ya está en uso.';errEl.style.display='block';}return;}
-  const passEl=document.getElementById('myCredPass');
-  const p1=passEl?passEl.value:'';
-  const p2=document.getElementById('myCredPass2')?document.getElementById('myCredPass2').value:'';
-  if(p1){
-    if(p1.length<8){if(errEl){errEl.textContent='La clave debe tener al menos 8 caracteres.';errEl.style.display='block';}return;}
-    if(p1!==p2){if(errEl){errEl.textContent='Las claves no coinciden.';errEl.style.display='block';}return;}
-    try{
-      if(fbAuth&&fbAuth.currentUser){
-        try{
-          const cred=firebase.auth.EmailAuthProvider.credential(CU.email,p1);
-          await fbAuth.currentUser.linkWithCredential(cred);
-        }catch(le){
-          if(le&&(le.code==='auth/provider-already-linked'||le.code==='auth/email-already-in-use'||le.code==='auth/credential-already-in-use')){
-            await fbAuth.currentUser.updatePassword(p1);
-          }else{throw le;}
-        }
-      }
-      const r=await hashPassword(p1,null);
-      CU.passwordHash=r.hash;CU.passwordSalt=r.salt;
-    }catch(e){
-      let msg='No se pudo cambiar la clave.';
-      if(e&&e.code==='auth/requires-recent-login')msg='Por seguridad, vuelve a entrar con Google y reintenta.';
-      else if(e&&e.message)msg=e.message;
-      if(errEl){errEl.textContent=msg;errEl.style.display='block';}
-      return;
-    }
-  }
-  CU.username=uname;
-  DB.usuarios=DB.usuarios.map(x=>x.id===CU.id?CU:x);
-  saveDB();
-  closeOv('mInvite');
-  // Restaurar el modal a su estado de invitación
-  document.querySelector('#mInvite .mttl').textContent='🎟 Invitar nuevo usuario';
-  const fb=document.getElementById('btnInviteCreate');
-  fb.textContent='Generar código';fb.setAttribute('onclick','doCreateInvite()');
-  toast('✅ Credenciales actualizadas','var(--text2)');
 }
 
 function showForcedPasswordChange(u){
@@ -6174,7 +5896,6 @@ function renderUsuarios(){
   h+='<span style="background:var(--all);border:1px solid #fde68a;border-radius:var(--r);padding:2px 8px;font-size:11px">'+tr('saControla')+'</span>';
   h+='<span style="flex:1"></span>';
   if(isSA())h+='<button class="btn btn-p btn-sm" onclick="openUserModal()">'+tr('addUser')+'</button>';
-  if(isSA())h+='<button class="btn btn-sm" style="background:#4a5568;color:#f7f7f7;border:1px solid #3a4558;font-weight:700;border-radius:20px" onclick="openInviteForm()">🎟 Invitar</button>';
   if(isSA())h+='<button class="btn btn-gh btn-sm" onclick="exportUsuarios()" title="Excel"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>';
   if(isSA())h+='<label class="btn btn-s btn-sm" style="cursor:pointer" title="Importar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><input type="file" accept=".xlsx,.xls" style="display:none" onchange="importUsuarios(this)"></label>';
   if(isSA())h+='<button class="btn btn-gh btn-sm" onclick="dlTemplateUsuarios()">📋 Plantilla</button>';
@@ -8188,166 +7909,6 @@ function openUserModal(id){
 }
 function updateRolPerms(){const rol=(document.getElementById('fuRol')||{}).value||'editor';const full=rol==='supervisor'||rol==='superadmin';['fpAdd','fpEdit','fpDel','fpStat','fpExp','fpBL','fpPrint','fpImport','fpClean','fpSaveTpl','fpDelTpl','fpEvEdit','fpActivarEv','fpSave','fpMsg'].forEach(id=>{const el=document.getElementById(id);if(el){el.checked=full;el.disabled=full;updTgl(el);}});const pw=document.getElementById('permsWrap');if(pw)pw.style.opacity=full?'.6':'1';}
 function updTgl(el){const lbl=el.closest('.tgl');if(!lbl)return;if(el.checked){lbl.classList.add('on');}else{lbl.classList.remove('on');}}
-// ═══════════════════════════════════════════════════════════════
-// MÓDULO DE INVITACIONES POR CÓDIGO  (adaptado a Realtime Database)
-// Las invitaciones se guardan en cu1/<key>/invites/{CODIGO}.
-// Cada invitación lleva rol + tabs + permisos para que el usuario
-// se cree con EXACTAMENTE los accesos definidos por el superadmin.
-// Código de 6 caracteres, 7 días de validez, un solo uso.
-// ═══════════════════════════════════════════════════════════════
-function _invRef(){
-  if(!fbDb)return null;
-  return fbDb.ref('cu1/'+_FB_KEY+'/invites');
-}
-function _genInviteCode(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I
-  let c='';for(let i=0;i<6;i++)c+=chars[Math.floor(Math.random()*chars.length)];
-  return c;
-}
-// Crea una invitación. payload: {email,displayName,rol,tabs,permisos}
-async function createInvite(payload,creator){
-  const root=_invRef();
-  if(!root)throw new Error('Sin conexión a la base de datos');
-  for(let i=0;i<6;i++){
-    const code=_genInviteCode();
-    const snap=await root.child(code).get();
-    if(snap.exists())continue;
-    const expiresAt=Date.now()+7*24*60*60*1000;
-    const inv={
-      email:(payload.email||'').toLowerCase().trim(),
-      displayName:payload.displayName||'',
-      rol:payload.rol||'visor',
-      tabs:payload.tabs||[],
-      permisos:payload.permisos||{},
-      used:false,usedBy:null,usedAt:null,
-      createdBy:(creator&&creator.email)||'',
-      createdAt:Date.now(),
-      expiresAt:expiresAt
-    };
-    await root.child(code).set(inv);
-    return {code,expiresAt};
-  }
-  throw new Error('No se pudo generar un código único');
-}
-async function getAllInvites(){
-  const root=_invRef();if(!root)return [];
-  const snap=await root.get();
-  if(!snap.exists())return [];
-  const val=snap.val()||{};
-  return Object.keys(val).map(code=>Object.assign({code},val[code]));
-}
-async function getInvite(code){
-  const root=_invRef();if(!root||!code)return null;
-  const snap=await root.child(code.toUpperCase()).get();
-  if(!snap.exists())return null;
-  return Object.assign({code:code.toUpperCase()},snap.val());
-}
-// Valida una invitación. Lanza Error si es inválida/usada/caducada o el email no coincide.
-async function validateInvite(code,email){
-  const inv=await getInvite(code);
-  if(!inv)throw new Error('Código de invitación no válido');
-  if(inv.used)throw new Error('Este código ya fue utilizado');
-  if(inv.expiresAt&&Date.now()>inv.expiresAt)throw new Error('Este código ha caducado');
-  if(email&&inv.email&&inv.email.toLowerCase()!==email.toLowerCase()){
-    throw new Error('Este código es para '+inv.email+', no para '+email);
-  }
-  return inv;
-}
-async function consumeInvite(code,uid,email){
-  const root=_invRef();if(!root)return;
-  await root.child(code.toUpperCase()).update({
-    used:true,usedBy:email,usedByUid:uid,usedAt:Date.now()
-  });
-}
-async function deleteInvite(code){
-  const root=_invRef();if(!root)return;
-  await root.child(code.toUpperCase()).remove();
-}
-// Lee ?invite= de la URL
-function getInviteCodeFromUrl(){
-  try{const p=new URLSearchParams(location.search);const c=p.get('invite');return c?c.toUpperCase():null;}catch(e){return null;}
-}
-// ── UI: formulario para crear invitación (rol + tabs + permisos) ──
-const _INV_ROLES=[['supervisor','🔑 Supervisor'],['controlador_rampa','🔧 Controlador Rampa'],['editor','✏️ Editor'],['visor','👁 Visor']];
-const _INV_TABS=[['dash','📊 Dashboard'],['ingresos','🔖 Referencia'],['ingresos2','🚛 Ingresos'],['agenda','📅 Agenda'],['conductores','👤 Conductores'],['flota','📦 Embalaje'],['empresas','🏢 Empresas'],['analytics','📈 Análisis'],['vehiculos','📜 Historial'],['recintos','🏟 Recintos'],['eventos','📅 Eventos'],['impresion','🖨 Impresión'],['usuarios','👥 Usuarios'],['auditoria','📂 Archivos'],['papelera','🗑 Papelera'],['mensajes','📢 Mensajes']];
-const _INV_PERMS=[['canAdd','➕ Añadir'],['canEdit','✏️ Editar'],['canDel','🗑 Eliminar'],['canStatus','↩ Marcar estado'],['canPrint','🖨 Imprimir'],['canImport','📥 Importar'],['canExport','⬇ Exportar'],['canClean','🧹 Limpiar'],['canSpecial','⭐ Lista especial'],['canSaveTpl','💾 Guardar plantilla'],['canDelTpl','🔄 Eliminar plantilla'],['canEditEvento','✏️ Editar evento'],['canActivarEvento','▶ Activar evento'],['canSaveDay','💾 Exportar día'],['canMensajes','📢 Mensajes rampa'],['canCampos','⚙ Campos visibles'],['canOcr','📷 OCR']];
-function openInviteForm(){
-  if(!isSA()){toast('Solo SuperAdmin','var(--red)');return;}
-  const body=document.getElementById('mInviteBody');
-  body.innerHTML=
-    '<p style="font-size:12px;color:var(--text3);margin:0">Se generará un código de 6 caracteres (válido 7 días, un solo uso). El usuario entrará con su Gmail y este código.</p>'
-    +'<div class="fg"><span class="flbl">Email del invitado (Gmail) *</span><input id="invEmail" type="email" placeholder="persona@gmail.com" style="font-size:13px"></div>'
-    +'<div class="fg"><span class="flbl">Nombre visible</span><input id="invName" placeholder="Nombre del usuario" style="font-size:13px"></div>'
-    +'<div class="fg"><span class="flbl">Rol *</span><select id="invRol" onchange="_invApplyRolDefaults()" style="font-size:13px">'
-      +_INV_ROLES.map(r=>`<option value="${r[0]}">${r[1]}</option>`).join('')+'</select></div>'
-    +'<div><div class="flbl" style="margin-bottom:4px">Pestañas visibles — qué módulos usará</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'
-      +_INV_TABS.map(t=>`<label class="tgl"><input type="checkbox" class="invTab" value="${t[0]}" onchange="updTgl(this)"><span style="font-size:11px">${t[1]}</span></label>`).join('')
-      +'</div></div>'
-    +'<div><div class="flbl" style="margin-bottom:4px">Permisos — qué acciones podrá hacer</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'
-      +_INV_PERMS.map(p=>`<label class="tgl"><input type="checkbox" class="invPerm" value="${p[0]}" onchange="updTgl(this)"><span style="font-size:11px">${p[1]}</span></label>`).join('')
-      +'</div></div>';
-  document.getElementById('mInvite').classList.add('open');
-  _invApplyRolDefaults();
-}
-// Al elegir rol, marca por defecto los tabs/permisos típicos de ese rol (editable después)
-function _invApplyRolDefaults(){
-  const rol=document.getElementById('invRol').value;
-  const defTabs={
-    supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion'],
-    controlador_rampa:['ingresos','ingresos2'],
-    editor:['ingresos','ingresos2','conductores','agenda','impresion'],
-    visor:['ingresos','ingresos2','agenda']
-  }[rol]||['ingresos'];
-  const defPerms={
-    supervisor:_INV_PERMS.map(p=>p[0]),
-    controlador_rampa:['canAdd','canStatus','canOcr'],
-    editor:['canAdd','canEdit','canStatus','canPrint','canImport','canExport'],
-    visor:[]
-  }[rol]||[];
-  document.querySelectorAll('.invTab').forEach(c=>{c.checked=defTabs.includes(c.value);updTgl(c);});
-  document.querySelectorAll('.invPerm').forEach(c=>{c.checked=defPerms.includes(c.value);updTgl(c);});
-}
-async function doCreateInvite(){
-  const email=(document.getElementById('invEmail').value||'').trim().toLowerCase();
-  if(!email||!email.includes('@')){toast('Email inválido','var(--red)');return;}
-  const tabs=[...document.querySelectorAll('.invTab:checked')].map(c=>c.value);
-  const permObj={};
-  [...document.querySelectorAll('.invPerm:checked')].forEach(c=>{permObj[c.value]=true;});
-  const payload={
-    email,
-    displayName:(document.getElementById('invName').value||'').trim(),
-    rol:document.getElementById('invRol').value,
-    tabs:tabs,
-    permisos:permObj
-  };
-  const btn=document.getElementById('btnInviteCreate');
-  btn.disabled=true;btn.textContent='Generando…';
-  try{
-    const {code}=await createInvite(payload,{uid:CU?.id,email:CU?.email||CU?.nombre});
-    closeOv('mInvite');
-    showInviteResult(code,email);
-    if(typeof renderUsuarios==='function')renderUsuarios();
-  }catch(e){
-    toast('Error: '+(e.message||e),'var(--red)');
-  }
-  btn.disabled=false;btn.textContent='Generar código';
-}
-function showInviteResult(code,email){
-  const link=location.origin+location.pathname+'?invite='+code;
-  document.getElementById('mInviteResultBody').innerHTML=
-    '<p style="margin:0 0 10px">Comparte este enlace con <b>'+email+'</b>:</p>'
-    +'<input id="invResLink" value="'+link+'" readonly onfocus="this.select()" style="width:100%;font-size:11px;padding:7px 9px;border:1.5px solid var(--border2);border-radius:6px;background:var(--bg2)">'
-    +'<button class="btn btn-p" style="width:100%;margin:8px 0;justify-content:center" onclick="navigator.clipboard.writeText(document.getElementById(\'invResLink\').value).then(()=>toast(\'📋 Enlace copiado\'))">📋 Copiar enlace</button>'
-    +'<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;margin-bottom:8px">'
-      +'<div style="font-size:10px;color:var(--text3);font-weight:700">CÓDIGO</div>'
-      +'<div style="font-size:24px;font-weight:800;letter-spacing:.25em;font-family:monospace">'+code+'</div></div>'
-    +'<button class="btn btn-gh" style="width:100%;justify-content:center" onclick="navigator.clipboard.writeText(\''+code+'\').then(()=>toast(\'📋 Código copiado\'))">Copiar solo el código</button>'
-    +'<p style="font-size:11px;color:var(--text3);margin:10px 0 0">El invitado entra con su Gmail y este código. Caduca en <b>7 días</b>, un solo uso.</p>';
-  document.getElementById('mInviteResult').classList.add('open');
-}
-
 async function saveUser(){
   const nom=(document.getElementById('fuNom').value||'').trim();
   const username=(document.getElementById('fuUsername').value||'').trim();
