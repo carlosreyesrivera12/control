@@ -473,7 +473,7 @@ a:hover{color:#3a4558;}
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           <span id="lbl_googleBtn">Entrar con Google</span>
         </button>
-        <input id="loginInviteCode" type="text" placeholder="Código de invitación (si tienes)" maxlength="6" style="width:100%;max-width:230px;box-sizing:border-box;text-align:center;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;padding:8px 8px;border:1.5px solid var(--border2);border-radius:18px;background:var(--bg2)" oninput="this.value=this.value.toUpperCase()">
+        <input id="loginInviteCode" type="text" placeholder="Código de invitación (si tienes)" maxlength="6" style="width:230px;text-align:center;text-transform:uppercase;letter-spacing:.18em;font-size:13px;font-weight:700;padding:8px 10px;border:1.5px solid var(--border2);border-radius:18px;background:var(--bg2)" oninput="this.value=this.value.toUpperCase()">
         <div style="display:flex;align-items:center;gap:8px;width:230px;margin:2px 0">
           <div style="flex:1;height:1px;background:var(--border2)"></div>
           <span style="font-size:10px;color:var(--text3);font-weight:700">O</span>
@@ -1796,7 +1796,13 @@ function applyLang(){
   });
   // Placeholder búsqueda global
   var _gs=document.getElementById('globalSearchPh');if(_gs)_gs.placeholder="'+'Buscar posición, matrícula, nombre, empresa, referencia...'+'";
-  // (Pantalla de primera configuración eliminada por seguridad)
+  // Primera configuración — actualizar si está visible
+  var _frTitle=document.querySelector('#firstRunWrap [style*="font-size:20px"]');
+  if(_frTitle)_frTitle.textContent='Primera configuración';
+  var _frSub=document.querySelector('#firstRunWrap [style*="font-size:12px"]');
+  if(_frSub)_frSub.textContent='Crea el usuario SuperAdmin inicial';
+  var _frBtn=document.querySelector('#firstRunWrap .btn-p');
+  if(_frBtn)_frBtn.textContent='✓ Crear SuperAdmin y continuar';
   // Labels primera config
   var _frLabels={'fr_nom':'frNomLbl','fr_user':'frUserLbl','fr_email':'frEmailLbl','fr_pin':'frPinLbl'};
   Object.keys(_frLabels).forEach(function(id){
@@ -1981,7 +1987,7 @@ function confirmLang(){setLang(pendingLangCode);try{if(pendingLangCode&&pendingL
 
 // ═══ FIREBASE ═══
 function connectFirebase(){const url=(document.getElementById('fbUrlInp').value||'').trim();if(!url){toast('URL requerida','var(--red)');return;}fbKey=(document.getElementById('fbKeyInp').value||'controlunificado').trim().replace(/[^a-zA-Z0-9_-]/g,'');const ak=(document.getElementById('apiKeyInp').value||'').trim();if(ak)localStorage.setItem('cu1_apiKey',ak);try{if(fbApp)fbApp.delete();fbApp=firebase.initializeApp({databaseURL:url},'cu1_'+Date.now());fbDb=firebase.database(fbApp);fbRef=fbDb.ref('cu1/'+fbKey);localStorage.setItem('cu1_fbUrl',url);localStorage.setItem('cu1_fbKey',fbKey);localStorage.removeItem('cu1_noSync');document.getElementById('setupWrap').style.display='none';startFirebaseSync();showLogin();}catch(e){toast('❌ '+e.message,'var(--red)');}}
-function startFirebaseSync(){if(!fbRef)return;setSyncStatus('connecting');const FK=['movimientos','ingresos','listaNegra','enEspera','mensajesRampa','conductores','auditLog','eventos','agenda','recintos'];try{fbRef.off('value');}catch(e){}fbRef.on('value',snap=>{
+function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos','ingresos','listaNegra','enEspera','mensajesRampa','conductores','auditLog','eventos','agenda','recintos'];fbRef.on('value',snap=>{
       var _dirty=false;try{var _dt=parseInt(localStorage.getItem(SK+'_dirty')||'0');_dirty=_dt>0&&(Date.now()-_dt)<10000;}catch(e){}const rem=snap.val();if(!rem){setSyncStatus('ok');if(typeof _checkFirstRunAfterFirebase==='function')_checkFirstRunAfterFirebase();return;}if(rem._session===SID){setSyncStatus('ok');return;}let changed=false;FK.forEach(k=>{
         // ── No restaurar colecciones que acaban de ser borradas localmente ──
         if(_isDeleteProtected(k))return;
@@ -2697,9 +2703,7 @@ async function doLogin(){
   // contra Firebase Auth de verdad — así la sesión es segura y la base de
   // datos puede exigir auth!=null. El usuario escribe su username; aquí se
   // resuelve a su email para autenticar.
-  // Firebase Auth solo funciona en http/https — en file:// se usa el modo local.
-  const _httpsOk=(location.protocol==='http:'||location.protocol==='https:');
-  if(u.email&&fbAuth&&_httpsOk){
+  if(u.email&&fbAuth){
     try{
       await fbAuth.signInWithEmailAndPassword(u.email,pass);
       // Credencial Firebase OK
@@ -3005,17 +3009,6 @@ async function doGoogleLogin(){
   const errEl=document.getElementById('loginErr');
   if(errEl)errEl.style.display='none';
   const btn=document.getElementById('googleLoginBtn');
-  // Firebase Auth NO funciona abriendo el archivo localmente (file://).
-  // Requiere https. Avisar de forma clara.
-  if(location.protocol!=='http:'&&location.protocol!=='https:'){
-    if(errEl){
-      errEl.innerHTML='⚠️ El acceso con Google solo funciona desde la web publicada.<br>'
-        +'Abre la app en:<br><b>carlosreyesrivera12.github.io/control/INDEX</b><br>'
-        +'(no abras el archivo descargado directamente)';
-      errEl.style.display='block';
-    }
-    return;
-  }
   if(!fbAuth){
     if(typeof firebase!=='undefined'){try{fbAuth=firebase.auth(fbApp);}catch(e){}}
   }
@@ -8365,21 +8358,10 @@ async function saveUser(){
   const pin2=document.getElementById('fuPin2').value;
   const twoFA=document.getElementById('fu2FA')?.checked||false;
   if(!nom){toast('Nombre obligatorio','var(--red)');return;}
-  const _esNuevo=!editUserId;
-  // Si el usuario tiene email (entrará con Google), el username lo creará él
-  // mismo tras autenticarse. Si NO tiene email, el username es obligatorio.
-  if(!email&&!username){toast('Indica un email (Gmail) o un nombre de usuario','var(--red)');return;}
-  if(_esNuevo&&!email){toast('Recomendado: indica el email Gmail del usuario para que entre con Google','var(--amber)');}
-  // Check username unique (solo si se escribió uno)
-  if(username){
-    const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
-    if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
-  }
-  // Check email unique
-  if(email){
-    const existingE=DB.usuarios.find(x=>(x.email||'').toLowerCase()===email.toLowerCase()&&x.id!==editUserId);
-    if(existingE){toast('Ese email ya está asignado a otro usuario','var(--red)');return;}
-  }
+  if(!username){toast('Nombre de usuario obligatorio','var(--red)');return;}
+  // Check username unique
+  const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
+  if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
   if(pass&&pass!==pass2){toast(tr('passNoMatch'),'var(--red)');return;}
   if(pin&&(pin.length<6||pin.length>8||!/^\d+$/.test(pin))){toast('PIN: mínimo 6 dígitos numéricos','var(--red)');return;}
   if(pin&&pin!==pin2){toast('Los PINs no coinciden','var(--red)');return;}
@@ -8402,10 +8384,6 @@ async function saveUser(){
     permisos,tabs,
     loginAttempts:oldUser?.loginAttempts||0,
     lockedUntil:oldUser?.lockedUntil||null,
-    googleAuth:oldUser?.googleAuth||false,
-    // Si es nuevo y tiene email, podrá entrar directo con Google (sin código)
-    // y al entrar se le pedirá crear su usuario/clave de respaldo.
-    credencialesPendientes:isNew?!!email:(oldUser?.credencialesPendientes||false),
     mustChangePassword:isNew?true:(oldUser?.mustChangePassword||false)
   };
   if(editUserId)DB.usuarios=DB.usuarios.map(x=>x.id===editUserId?u:x);else DB.usuarios.push(u);
@@ -9735,25 +9713,7 @@ function _connectFirebaseWhenReady(_tries){
       fbApp=firebase.initializeApp(_FB_CONFIG,'cu1_auto_'+Date.now());
       fbDb=firebase.database(fbApp);
       fbRef=fbDb.ref('cu1/'+_FB_KEY);
-      try{
-        fbAuth=firebase.auth(fbApp);
-        // Cuando Firebase Auth detecta sesión (login con Google o email/clave),
-        // la conexión a la base de datos pasa a estar AUTENTICADA. Re-disparamos
-        // la sincronización para que las reglas auth!=null la acepten.
-        fbAuth.onAuthStateChanged(function(usr){
-          if(usr){
-            window._fbAuthUser=usr;
-            // Re-sincronizar UNA vez cuando el usuario se autentica, para que
-            // la conexión vaya autenticada (necesario con reglas auth!=null).
-            if(!window._resyncDone){
-              window._resyncDone=true;
-              try{startFirebaseSync();}catch(e){console.warn('resync:',e);}
-            }
-          }else{
-            window._fbAuthUser=null;
-          }
-        });
-      }catch(e){console.warn('Auth:',e);}
+      try{ fbAuth=firebase.auth(fbApp); }catch(e){console.warn('Auth:',e);}
       startFirebaseSync();
     }catch(e){console.warn('Firebase:',e);}
     return;
@@ -9773,42 +9733,71 @@ if(loadSession()){loginSuccess(CU);}
 // pudiera crear un nuevo SuperAdmin borrando el sistema. SOLUCIONADO.
 let _fbFirstCheckDone=false;
 function checkFirstRun(){
-  // El SuperAdmin se crea ÚNICAMENTE cuando _SA_EMAIL entra con Google.
-  // Nunca se muestra un formulario abierto de creación de SuperAdmin.
-  return;
+  // Con Firebase configurado (fbRef existe), NUNCA mostrar setup en carga inicial.
+  // El check real lo hace _checkFirstRunAfterFirebase() desde el callback de Firebase.
+  if(fbRef) return;
+  if(DB.usuarios.length===0) showFirstRunSetup();
 }
 function _checkFirstRunAfterFirebase(){
-  // Sin datos remotos: NO se abre formulario de SuperAdmin (era una brecha).
-  // Simplemente se muestra el login; el SA se autocrea al entrar con Google.
+  // Solo se llama desde startFirebaseSync cuando Firebase confirma que no hay datos remotos
   if(_fbFirstCheckDone) return;
   _fbFirstCheckDone=true;
-  showLogin();
+  if(DB.usuarios.length===0) showFirstRunSetup();
 }
 function showFirstRunSetup(){
-  // Pantalla de "Primera configuración" DESACTIVADA por seguridad.
-  // Permitía a cualquiera crearse como SuperAdmin si la base estaba vacía.
-  // El acceso SuperAdmin se obtiene solo iniciando sesión con el Gmail _SA_EMAIL.
-  const fr=document.getElementById('firstRunWrap');
-  if(fr)fr.remove();
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('setupWrap').style.display='none';
+  // Crear overlay de primer setup
+  if(document.getElementById('firstRunWrap'))return;
+  const wrap=document.createElement('div');
+  wrap.id='firstRunWrap';
+  wrap.className='setup-wrap';
+  wrap.innerHTML=`<div class="login-card" style="max-width:420px">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:36px">🔐</div>
+      <div style="font-weight:900;font-size:20px">${tr('firstRun')}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px">${tr('firstRunSub')}</div>
+    </div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl" data-i18n="frNomLbl">Nombre completo <span class="freq">*</span></span><input id="fr_nom" data-i18n-ph="phAdminName" placeholder="Nombre del administrador"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Usuario <span class="freq">*</span></span><input id="fr_user" data-i18n-ph="phUsername" placeholder="nombre_usuario (sin espacios)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl" data-i18n="frEmailLbl">Email (para 2FA)</span><input id="fr_email" type="email" data-i18n-ph="phAdminEmail" placeholder="admin@empresa.com"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Contraseña <span class="freq">*</span></span><input id="fr_pass" type="password" data-i18n-ph="phMinPass" placeholder="Mínimo 8 caracteres"></div>
+    <div class="fg" style="margin-bottom:8px"><span class="flbl">Confirmar contraseña <span class="freq">*</span></span><input id="fr_pass2" type="password" data-i18n-ph="phRepeatPass" placeholder="Repetir contraseña"></div>
+    <div class="fg" style="margin-bottom:14px"><span class="flbl">PIN (mínimo 6 dígitos)</span><input id="fr_pin" type="password" inputmode="numeric" maxlength="8" data-i18n-ph="phQuickPin" placeholder="Acceso rápido por PIN"></div>
+    <div id="fr_err" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
+    <button class="btn btn-p" style="width:100%;padding:10px;font-size:14px" onclick="doFirstRunSetup()">✓ Crear SuperAdmin y continuar</button>
+  </div>`;
+  document.body.appendChild(wrap);
+}
+async function doFirstRunSetup(){
+  const nom=(document.getElementById('fr_nom').value||'').trim();
+  const username=(document.getElementById('fr_user').value||'').trim();
+  const email=(document.getElementById('fr_email').value||'').trim();
+  const pass=document.getElementById('fr_pass').value;
+  const pass2=document.getElementById('fr_pass2').value;
+  const pin=document.getElementById('fr_pin').value;
+  const errEl=document.getElementById('fr_err');
+  errEl.style.display='none';
+  if(!nom){errEl.textContent=tr('nameRequired');errEl.style.display='block';return;}
+  if(!username){errEl.textContent='Usuario obligatorio';errEl.style.display='block';return;}
+  if(pass.length<8){errEl.textContent=tr('passMin8');errEl.style.display='block';return;}
+  if(pass!==pass2){errEl.textContent=tr('passNoMatch');errEl.style.display='block';return;}
+  if(pin&&(pin.length<6||!/^\d+$/.test(pin))){errEl.textContent=tr('pinMin6');errEl.style.display='block';return;}
+  // ⚠️ SEGURIDAD: Solo el email autorizado puede crear el SuperAdmin
+  const SA_EMAIL='carlosreyesrivera12@gmail.com';
+  if(email!==SA_EMAIL){errEl.textContent='⛔ Email no autorizado para SuperAdmin. Usa el email de administración correcto.';errEl.style.display='block';return;}
+  // Verificar que no existe ya un SuperAdmin en el sistema (protección anti-reset)
+  if(DB.usuarios.some(u=>u.rol==='superadmin')){errEl.textContent='⛔ Ya existe un SuperAdmin en el sistema. Contacta al administrador.';errEl.style.display='block';return;}
+  const{hash,salt}=await hashPassword(pass,null);
+  const u={id:'u_sa_'+uid(),nombre:nom,username,email,passwordHash:hash,passwordSalt:salt,pin:pin||'',twoFA:!!(email&&pin),rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true,canPrint:true,canImport:true,canClean:true,canSaveTpl:true,canDelTpl:true,canEditEvento:true,canActivarEvento:true,canMensajes:true},lang:'es',mustChangePassword:false,loginAttempts:0,lockedUntil:null};
+  DB.usuarios=[u];
+  saveDB();
+  const w=document.getElementById('firstRunWrap');
+  if(w)w.remove();
+  toast('✅ SuperAdmin creado. Inicia sesión.','var(--text2)');
   showLogin();
 }
-// _showFirstRunSetup_DISABLED y doFirstRunSetup ELIMINADOS por seguridad.
-// Permitían crear un SuperAdmin desde un formulario abierto si la base
-// estaba vacía — brecha crítica. El SuperAdmin se crea únicamente cuando
-// el Gmail _SA_EMAIL inicia sesión con Google (ver doGoogleLogin, Caso 1).
-function doFirstRunSetup(){
-  // Función neutralizada: ya no crea SuperAdmin.
-  showLogin();
-}
-// Eliminar cualquier overlay de primera configuración que pudiera existir.
-(function _purgeFirstRun(){
-  try{
-    const fr=document.getElementById('firstRunWrap');
-    if(fr)fr.remove();
-  }catch(e){}
-})();
 checkFirstRun();
-
 
 // ═══ QR TRACKING SYSTEM ═══
 (function(){
