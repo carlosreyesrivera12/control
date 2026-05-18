@@ -473,7 +473,7 @@ a:hover{color:#3a4558;}
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           <span id="lbl_googleBtn">Entrar con Google</span>
         </button>
-        <input id="loginInviteCode" type="text" placeholder="Código de invitación (si tienes)" maxlength="6" style="width:230px;text-align:center;text-transform:uppercase;letter-spacing:.18em;font-size:13px;font-weight:700;padding:8px 10px;border:1.5px solid var(--border2);border-radius:18px;background:var(--bg2)" oninput="this.value=this.value.toUpperCase()">
+        <input id="loginInviteCode" type="text" placeholder="Código de invitación (si tienes)" maxlength="6" style="width:100%;max-width:230px;box-sizing:border-box;text-align:center;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;padding:8px 8px;border:1.5px solid var(--border2);border-radius:18px;background:var(--bg2)" oninput="this.value=this.value.toUpperCase()">
         <div style="display:flex;align-items:center;gap:8px;width:230px;margin:2px 0">
           <div style="flex:1;height:1px;background:var(--border2)"></div>
           <span style="font-size:10px;color:var(--text3);font-weight:700">O</span>
@@ -8365,10 +8365,21 @@ async function saveUser(){
   const pin2=document.getElementById('fuPin2').value;
   const twoFA=document.getElementById('fu2FA')?.checked||false;
   if(!nom){toast('Nombre obligatorio','var(--red)');return;}
-  if(!username){toast('Nombre de usuario obligatorio','var(--red)');return;}
-  // Check username unique
-  const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
-  if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
+  const _esNuevo=!editUserId;
+  // Si el usuario tiene email (entrará con Google), el username lo creará él
+  // mismo tras autenticarse. Si NO tiene email, el username es obligatorio.
+  if(!email&&!username){toast('Indica un email (Gmail) o un nombre de usuario','var(--red)');return;}
+  if(_esNuevo&&!email){toast('Recomendado: indica el email Gmail del usuario para que entre con Google','var(--amber)');}
+  // Check username unique (solo si se escribió uno)
+  if(username){
+    const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
+    if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
+  }
+  // Check email unique
+  if(email){
+    const existingE=DB.usuarios.find(x=>(x.email||'').toLowerCase()===email.toLowerCase()&&x.id!==editUserId);
+    if(existingE){toast('Ese email ya está asignado a otro usuario','var(--red)');return;}
+  }
   if(pass&&pass!==pass2){toast(tr('passNoMatch'),'var(--red)');return;}
   if(pin&&(pin.length<6||pin.length>8||!/^\d+$/.test(pin))){toast('PIN: mínimo 6 dígitos numéricos','var(--red)');return;}
   if(pin&&pin!==pin2){toast('Los PINs no coinciden','var(--red)');return;}
@@ -8391,6 +8402,10 @@ async function saveUser(){
     permisos,tabs,
     loginAttempts:oldUser?.loginAttempts||0,
     lockedUntil:oldUser?.lockedUntil||null,
+    googleAuth:oldUser?.googleAuth||false,
+    // Si es nuevo y tiene email, podrá entrar directo con Google (sin código)
+    // y al entrar se le pedirá crear su usuario/clave de respaldo.
+    credencialesPendientes:isNew?!!email:(oldUser?.credencialesPendientes||false),
     mustChangePassword:isNew?true:(oldUser?.mustChangePassword||false)
   };
   if(editUserId)DB.usuarios=DB.usuarios.map(x=>x.id===editUserId?u:x);else DB.usuarios.push(u);
@@ -9720,7 +9735,21 @@ function _connectFirebaseWhenReady(_tries){
       fbApp=firebase.initializeApp(_FB_CONFIG,'cu1_auto_'+Date.now());
       fbDb=firebase.database(fbApp);
       fbRef=fbDb.ref('cu1/'+_FB_KEY);
-      try{ fbAuth=firebase.auth(fbApp); }catch(e){console.warn('Auth:',e);}
+      try{
+        fbAuth=firebase.auth(fbApp);
+        // Cuando Firebase Auth detecta sesión (login con Google o email/clave),
+        // la conexión a la base de datos pasa a estar AUTENTICADA. Re-disparamos
+        // la sincronización para que las reglas auth!=null la acepten.
+        fbAuth.onAuthStateChanged(function(usr){
+          if(usr){
+            window._fbAuthUser=usr;
+            // Reconectar la sincronización ya autenticada
+            try{startFirebaseSync();}catch(e){console.warn('resync:',e);}
+          }else{
+            window._fbAuthUser=null;
+          }
+        });
+      }catch(e){console.warn('Auth:',e);}
       startFirebaseSync();
     }catch(e){console.warn('Firebase:',e);}
     return;
