@@ -1796,13 +1796,7 @@ function applyLang(){
   });
   // Placeholder búsqueda global
   var _gs=document.getElementById('globalSearchPh');if(_gs)_gs.placeholder="'+'Buscar posición, matrícula, nombre, empresa, referencia...'+'";
-  // Primera configuración — actualizar si está visible
-  var _frTitle=document.querySelector('#firstRunWrap [style*="font-size:20px"]');
-  if(_frTitle)_frTitle.textContent='Primera configuración';
-  var _frSub=document.querySelector('#firstRunWrap [style*="font-size:12px"]');
-  if(_frSub)_frSub.textContent='Crea el usuario SuperAdmin inicial';
-  var _frBtn=document.querySelector('#firstRunWrap .btn-p');
-  if(_frBtn)_frBtn.textContent='✓ Crear SuperAdmin y continuar';
+  // (Pantalla de primera configuración eliminada por seguridad)
   // Labels primera config
   var _frLabels={'fr_nom':'frNomLbl','fr_user':'frUserLbl','fr_email':'frEmailLbl','fr_pin':'frPinLbl'};
   Object.keys(_frLabels).forEach(function(id){
@@ -9746,71 +9740,42 @@ if(loadSession()){loginSuccess(CU);}
 // pudiera crear un nuevo SuperAdmin borrando el sistema. SOLUCIONADO.
 let _fbFirstCheckDone=false;
 function checkFirstRun(){
-  // Con Firebase configurado (fbRef existe), NUNCA mostrar setup en carga inicial.
-  // El check real lo hace _checkFirstRunAfterFirebase() desde el callback de Firebase.
-  if(fbRef) return;
-  if(DB.usuarios.length===0) showFirstRunSetup();
+  // El SuperAdmin se crea ÚNICAMENTE cuando _SA_EMAIL entra con Google.
+  // Nunca se muestra un formulario abierto de creación de SuperAdmin.
+  return;
 }
 function _checkFirstRunAfterFirebase(){
-  // Solo se llama desde startFirebaseSync cuando Firebase confirma que no hay datos remotos
+  // Sin datos remotos: NO se abre formulario de SuperAdmin (era una brecha).
+  // Simplemente se muestra el login; el SA se autocrea al entrar con Google.
   if(_fbFirstCheckDone) return;
   _fbFirstCheckDone=true;
-  if(DB.usuarios.length===0) showFirstRunSetup();
-}
-function showFirstRunSetup(){
-  document.getElementById('loginWrap').style.display='none';
-  document.getElementById('setupWrap').style.display='none';
-  // Crear overlay de primer setup
-  if(document.getElementById('firstRunWrap'))return;
-  const wrap=document.createElement('div');
-  wrap.id='firstRunWrap';
-  wrap.className='setup-wrap';
-  wrap.innerHTML=`<div class="login-card" style="max-width:420px">
-    <div style="text-align:center;margin-bottom:18px">
-      <div style="font-size:36px">🔐</div>
-      <div style="font-weight:900;font-size:20px">${tr('firstRun')}</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:4px">${tr('firstRunSub')}</div>
-    </div>
-    <div class="fg" style="margin-bottom:8px"><span class="flbl" data-i18n="frNomLbl">Nombre completo <span class="freq">*</span></span><input id="fr_nom" data-i18n-ph="phAdminName" placeholder="Nombre del administrador"></div>
-    <div class="fg" style="margin-bottom:8px"><span class="flbl">Usuario <span class="freq">*</span></span><input id="fr_user" data-i18n-ph="phUsername" placeholder="nombre_usuario (sin espacios)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')"></div>
-    <div class="fg" style="margin-bottom:8px"><span class="flbl" data-i18n="frEmailLbl">Email (para 2FA)</span><input id="fr_email" type="email" data-i18n-ph="phAdminEmail" placeholder="admin@empresa.com"></div>
-    <div class="fg" style="margin-bottom:8px"><span class="flbl">Contraseña <span class="freq">*</span></span><input id="fr_pass" type="password" data-i18n-ph="phMinPass" placeholder="Mínimo 8 caracteres"></div>
-    <div class="fg" style="margin-bottom:8px"><span class="flbl">Confirmar contraseña <span class="freq">*</span></span><input id="fr_pass2" type="password" data-i18n-ph="phRepeatPass" placeholder="Repetir contraseña"></div>
-    <div class="fg" style="margin-bottom:14px"><span class="flbl">PIN (mínimo 6 dígitos)</span><input id="fr_pin" type="password" inputmode="numeric" maxlength="8" data-i18n-ph="phQuickPin" placeholder="Acceso rápido por PIN"></div>
-    <div id="fr_err" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
-    <button class="btn btn-p" style="width:100%;padding:10px;font-size:14px" onclick="doFirstRunSetup()">✓ Crear SuperAdmin y continuar</button>
-  </div>`;
-  document.body.appendChild(wrap);
-}
-async function doFirstRunSetup(){
-  const nom=(document.getElementById('fr_nom').value||'').trim();
-  const username=(document.getElementById('fr_user').value||'').trim();
-  const email=(document.getElementById('fr_email').value||'').trim();
-  const pass=document.getElementById('fr_pass').value;
-  const pass2=document.getElementById('fr_pass2').value;
-  const pin=document.getElementById('fr_pin').value;
-  const errEl=document.getElementById('fr_err');
-  errEl.style.display='none';
-  if(!nom){errEl.textContent=tr('nameRequired');errEl.style.display='block';return;}
-  if(!username){errEl.textContent='Usuario obligatorio';errEl.style.display='block';return;}
-  if(pass.length<8){errEl.textContent=tr('passMin8');errEl.style.display='block';return;}
-  if(pass!==pass2){errEl.textContent=tr('passNoMatch');errEl.style.display='block';return;}
-  if(pin&&(pin.length<6||!/^\d+$/.test(pin))){errEl.textContent=tr('pinMin6');errEl.style.display='block';return;}
-  // ⚠️ SEGURIDAD: Solo el email autorizado puede crear el SuperAdmin
-  const SA_EMAIL='carlosreyesrivera12@gmail.com';
-  if(email!==SA_EMAIL){errEl.textContent='⛔ Email no autorizado para SuperAdmin. Usa el email de administración correcto.';errEl.style.display='block';return;}
-  // Verificar que no existe ya un SuperAdmin en el sistema (protección anti-reset)
-  if(DB.usuarios.some(u=>u.rol==='superadmin')){errEl.textContent='⛔ Ya existe un SuperAdmin en el sistema. Contacta al administrador.';errEl.style.display='block';return;}
-  const{hash,salt}=await hashPassword(pass,null);
-  const u={id:'u_sa_'+uid(),nombre:nom,username,email,passwordHash:hash,passwordSalt:salt,pin:pin||'',twoFA:!!(email&&pin),rol:'superadmin',permisos:{canAdd:true,canEdit:true,canDel:true,canStatus:true,canExport:true,canSpecial:true,canPrint:true,canImport:true,canClean:true,canSaveTpl:true,canDelTpl:true,canEditEvento:true,canActivarEvento:true,canMensajes:true},lang:'es',mustChangePassword:false,loginAttempts:0,lockedUntil:null};
-  DB.usuarios=[u];
-  saveDB();
-  const w=document.getElementById('firstRunWrap');
-  if(w)w.remove();
-  toast('✅ SuperAdmin creado. Inicia sesión.','var(--text2)');
   showLogin();
 }
+function showFirstRunSetup(){
+  // Pantalla de "Primera configuración" DESACTIVADA por seguridad.
+  // Permitía a cualquiera crearse como SuperAdmin si la base estaba vacía.
+  // El acceso SuperAdmin se obtiene solo iniciando sesión con el Gmail _SA_EMAIL.
+  const fr=document.getElementById('firstRunWrap');
+  if(fr)fr.remove();
+  showLogin();
+}
+// _showFirstRunSetup_DISABLED y doFirstRunSetup ELIMINADOS por seguridad.
+// Permitían crear un SuperAdmin desde un formulario abierto si la base
+// estaba vacía — brecha crítica. El SuperAdmin se crea únicamente cuando
+// el Gmail _SA_EMAIL inicia sesión con Google (ver doGoogleLogin, Caso 1).
+function doFirstRunSetup(){
+  // Función neutralizada: ya no crea SuperAdmin.
+  showLogin();
+}
+// Eliminar cualquier overlay de primera configuración que pudiera existir.
+(function _purgeFirstRun(){
+  try{
+    const fr=document.getElementById('firstRunWrap');
+    if(fr)fr.remove();
+  }catch(e){}
+})();
 checkFirstRun();
+
 
 // ═══ QR TRACKING SYSTEM ═══
 (function(){
