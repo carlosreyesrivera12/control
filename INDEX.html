@@ -586,6 +586,7 @@ a:hover{color:#3a4558;}
           <button id="fiMatTagSave" onclick="saveMatAsChofer()" title="Guardar como conductor frecuente" style="display:none;background:#4a5568;color:#fff;border:none;border-radius:20px;padding:2px 7px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap">+ Conductor</button>
           <button onclick="clearMatField()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0;line-height:1">✕</button>
         </div>
+        <div id="fiMatAlert" style="display:none;margin-top:6px;padding:8px 10px;border-radius:8px;font-size:12px;font-weight:700"></div>
       </div>
     </div>
     <div class="fg" id="fg-remolque"><span class="flbl" id="lbl-remolque">Remolque</span><input id="fiRem" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
@@ -593,7 +594,7 @@ a:hover{color:#3a4558;}
     <div class="fg" id="fg-descarga"><span class="flbl">Servicio Descarga/Carga</span><div style="display:flex;gap:4px"><button type="button" class="btn btn-sm btn-gh" id="dcHand" onclick="setToggle('fiDescarga','mano')" style="flex:1">🤾 Handball</button><button type="button" class="btn btn-sm btn-gh" id="dcFork" onclick="setToggle('fiDescarga','maquinaria')" style="flex:1">🏗 Forklift</button></div><input type="hidden" id="fiDescarga"></div>
     <input type="hidden" id="fiChoferSearch">
     <div class="fg" id="fg-llamador"><span class="flbl" id="lbl-llamador">Llamador</span><input id="fiLlamador" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
-    <div class="fg" id="fg-ref"><span class="flbl" id="lbl-ref" style="font-size:14px">REFERENCIA / BOOKING</span><div style="display:flex;gap:6px;align-items:center"><div style="position:relative;flex:1"><input id="fiRef" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;height:52px" oninput="this.value=this.value.toUpperCase();searchRefAutoComplete(this.value)" onfocus="if(this.value.length>=2)searchRefAutoComplete(this.value)" onblur="setTimeout(()=>{const r=document.getElementById('fiRefResults');if(r)r.classList.remove('open');},200)" autocomplete="off"><div class="dr" id="fiRefResults"></div></div><button type="button" id="btnHandball" onclick="(function(){const f=document.getElementById('fiRef');const on=f.value==='HANDBALL';f.value=on?'':'HANDBALL';f.oninput&&f.oninput.call(f);document.getElementById('btnHandball').style.background=on?'#fff':'#1f2733';document.getElementById('btnHandball').style.color=on?'#111':'#fff';})()" style="background:#fff;color:#111;border:1.5px solid #111;border-radius:10px;height:52px;padding:0 14px;font-size:12px;font-weight:800;letter-spacing:.5px;white-space:nowrap;cursor:pointer;flex-shrink:0">HANDBALL</button></div></div>
+    <div class="fg" id="fg-ref"><span class="flbl" id="lbl-ref" style="font-size:14px">REFERENCIA / BOOKING</span><div style="display:flex;gap:6px;align-items:center"><div style="position:relative;flex:1"><input id="fiRef" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;height:52px" oninput="this.value=this.value.toUpperCase();searchRefAutoComplete(this.value)" onfocus="if(this.value.length>=2)searchRefAutoComplete(this.value)" onblur="setTimeout(()=>{const r=document.getElementById('fiRefResults');if(r)r.classList.remove('open');},200)" autocomplete="off"><div class="dr" id="fiRefResults"></div></div><button type="button" id="btnHandball" onclick="(function(){const f=document.getElementById('fiRef');const on=f.value==='HANDBALL';f.value=on?'':'HANDBALL';f.oninput&&f.oninput.call(f);document.getElementById('btnHandball').style.background=on?'#fff':'#1f2733';document.getElementById('btnHandball').style.color=on?'#111':'#fff';})()" style="background:#fff;color:#111;border:1.5px solid #111;border-radius:10px;height:52px;padding:0 14px;font-size:12px;font-weight:800;letter-spacing:.5px;white-space:nowrap;cursor:pointer;flex-shrink:0">HANDBALL</button></div></div>
     <div id="fiAgendaMatch" style="display:none;grid-column:1/-1;background:#eaecf0;border:1.5px solid #c4b5fd;border-radius:var(--r2);padding:10px 12px;margin-top:-4px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <span style="font-size:11px;font-weight:800;color:#4a5568">📅 Cita encontrada en Agenda</span>
@@ -2155,6 +2156,33 @@ function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'
 
 function toast(msg,bg='#1e293b',dur=3000){const w=document.getElementById('toastWrap');if(!w)return;const t=document.createElement('div');t.className='toast';t.textContent=msg;t.style.background=bg;w.appendChild(t);requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},dur);}
 function closeOv(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
+
+// ═══ CERRAR MODALES CON ESC Y CLIC EN OVERLAY ═══
+(function(){
+  // Lista de modales que NO deben cerrarse con ESC/clic-fuera (críticos)
+  var _modalNoAutoClose=['mLogin','mPin','m2FA','mFirstRun','mChangePass','mBA'];
+  function _topOpenModal(){
+    var open=Array.from(document.querySelectorAll('.ov.open'));
+    if(!open.length)return null;
+    return open[open.length-1]; // el último abierto = el de encima
+  }
+  // ESC cierra el modal superior
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape')return;
+    var m=_topOpenModal();
+    if(!m)return;
+    if(_modalNoAutoClose.indexOf(m.id)>=0)return;
+    m.classList.remove('open');
+  });
+  // Clic en overlay (fuera del .modal interior) cierra
+  document.addEventListener('mousedown',function(e){
+    var ov=e.target;
+    if(!ov||!ov.classList||!ov.classList.contains('ov'))return;
+    if(!ov.classList.contains('open'))return;
+    if(_modalNoAutoClose.indexOf(ov.id)>=0)return;
+    ov.classList.remove('open');
+  });
+})();
 function logAudit(a,e,d){if(!DB.auditLog)DB.auditLog=[];DB.auditLog.unshift({id:uid(),ts:nowL(),user:CU?.nombre||'?',action:a,entity:e,detail:d});if(DB.auditLog.length>300)DB.auditLog=DB.auditLog.slice(0,300);}
 function getTabEvent(tab){
   const te=DB.tabEvents||{};
@@ -2236,8 +2264,11 @@ function renderCamposSubtab(col){if(!canCampos())return '<div style="padding:16p
   if(!DB.camposCfg[ck].saved)DB.camposCfg[ck]={saved:DB.camposCfg[ck]||[],current:{}};
   if(!DB.camposCfg[ck].current)DB.camposCfg[ck].current={};
   const campos=DB.camposCfg[ck].current;
-  const ALL_CAMPOS=['posicion','llamador','ref','empresa','hall','stand','puertaHall','acceso','montador','expositor','remolque','tipoVehiculo','descargaTipo','nombre','apellido','pasaporte','fechaNacimiento','fechaExpiracion','pais','telefono','email','comentario','horario'];
-  const LABELS={posicion:'Nº Posición',llamador:'Llamador',ref:'Referencia',empresa:'Empresa',hall:'Hall',stand:'Stand',puertaHall:'Puerta Hall',acceso:'Acceso',montador:'Montador',expositor:'Expositor',remolque:'Remolque',tipoVehiculo:'Tipo Vehículo',descargaTipo:tr('descarga'),nombre:'Nombre',apellido:'Apellido',pasaporte:'Pasaporte/DNI',fechaNacimiento:'F. Nacimiento',fechaExpiracion:'F. Expiración',pais:tr('phCountryName'),telefono:'Teléfono',email:'Email',comentario:'Comentario',horario:'Hora'};
+  // Usar las mismas definiciones que COLUMNAS para igualar orden y nombres
+  const _defs=(_COL_DEFS[col]||[]).filter(c=>!c.always);
+  const ALL_CAMPOS=_defs.map(c=>c.k);
+  const LABELS={};
+  _defs.forEach(c=>{LABELS[c.k]=c.l;});
   const colors={off:['var(--border)','var(--bg2)','var(--text4)','✕ Oculto'],show:['#4a5568','#4a5568','#fff','✓ Visible'],required:['var(--red)','var(--red)','#fff','★ Oblig.']};
   const tabLabel={ingresos:'Referencia',ingresos2:'Ingresos',agenda:'Agenda'}[col]||col;
   const savedCfgs=(DB.camposCfg&&DB.camposCfg[ck]?.saved)||[];
@@ -6208,6 +6239,8 @@ function openIngModal(i){
   }
   document.getElementById('fiHistorial').style.display='none';
   document.getElementById('fiBlkWarn').style.display='none';
+  var _fmA=document.getElementById('fiMatAlert');if(_fmA)_fmA.style.display='none';
+  window._lastAlertMat=null;
   document.getElementById('fiEspMatch').style.display='none';
   const _am=document.getElementById('fiAgendaMatch');if(_am)_am.style.display='none';
   window._fiAgendaMatchId=null;
@@ -6331,14 +6364,25 @@ function checkMatOnInput(mat){
   }
 
   // ── 3. Especial ──
-  const ln=checkBL(matU),wEl=document.getElementById('fiBlkWarn');
+  const ln=checkBL(matU),wEl=document.getElementById('fiBlkWarn'),mEl=document.getElementById('fiMatAlert');
   if(ln){
-    wEl.style.display='block';
-    wEl.style.borderColor=ln.nivel==='bloqueo'?'var(--red)':'var(--amber)';
-    wEl.style.background=ln.nivel==='bloqueo'?'var(--rll)':'var(--all)';
-    document.getElementById('fiBlkMsg').textContent=ln.nivel==='bloqueo'?'🚫 MATRÍCULA BLOQUEADA':'⚠️ MATRÍCULA CON ALERTA';
-    document.getElementById('fiBlkDet').textContent='Motivo: '+ln.motivo+' | '+ln.nivel.toUpperCase();
-  } else wEl.style.display='none';
+    wEl.style.display='none';
+    const isBlock=ln.nivel==='bloqueo';
+    mEl.style.display='block';
+    mEl.style.background=isBlock?'var(--rll)':'var(--all)';
+    mEl.style.border='1.5px solid '+(isBlock?'var(--red)':'var(--amber)');
+    mEl.style.color=isBlock?'var(--red)':'#854F0B';
+    mEl.innerHTML=(isBlock?'🚫 BLOQUEADA':'⚠️ ALERTA')+' <span style="font-weight:500;opacity:.85">— '+ln.motivo+'</span>';
+    // Toast flotante (solo si cambia o es nueva matrícula)
+    if(window._lastAlertMat!==matU){
+      window._lastAlertMat=matU;
+      toast((isBlock?'🚫 ':'⚠️ ')+matU+' — '+ln.motivo,isBlock?'var(--red)':'var(--amber)',4500);
+    }
+  } else {
+    wEl.style.display='none';
+    mEl.style.display='none';
+    window._lastAlertMat=null;
+  }
 
   // ── 4. En espera ──
   const ee=checkEE(matU),eEl=document.getElementById('fiEspMatch');
@@ -6389,6 +6433,8 @@ function autoFillFromVeh(mat){if(!_autoFillOn)return;
 function autoFillFromHist(id){if(!_autoFillOn)return;
   const i=DB.ingresos.find(x=>x.id===id)||(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;
   const set=(eid,v)=>{const el=document.getElementById(eid);if(el&&v!=null&&v!=='')el.value=v;};
+  // POSICIÓN absorbe si existe
+  set('fiPos',i.pos);
   set('fiNom',i.nombre);set('fiApe',i.apellido);set('fiEmp',i.empresa);
   set('fiMontador',i.montador);set('fiExpositor',i.expositor);
   set('fiStand',i.stand);set('fiPuertaHall',i.puertaHall);
@@ -6396,14 +6442,26 @@ function autoFillFromHist(id){if(!_autoFillOn)return;
   set('fiPais',i.pais);set('fiFechaNac',i.fechaNacimiento);set('fiFechaExp',i.fechaExpiracion);
   set('fiTelP',i.telPais||'+34');set('fiTel',i.telefono);
   set('fiEmail',i.email);set('fiLlamador',i.llamador);
+  // REFERENCIA — absorbe solo si tiene contenido
+  if(i.referencia&&String(i.referencia).trim()){
+    set('fiRef',i.referencia);
+    // Si referencia incluye HANDBALL → activa toggle
+    if(/handball/i.test(String(i.referencia))){
+      const hb=document.getElementById('fiHandball');
+      if(hb){hb.checked=true;if(typeof syncHandballBtn==='function')syncHandballBtn();}
+      const hbBtn=document.getElementById('btnHandball');
+      if(hbBtn){hbBtn.classList.add('active');hbBtn.style.background='#1f2733';hbBtn.style.color='#fff';}
+    }
+  }
   if(i.tipoVehiculo){document.getElementById('fiTipoVeh').value=i.tipoVehiculo;syncToggleButtons();}
   if(i.descargaTipo)document.getElementById('fiDescarga').value=i.descargaTipo;
+  // IDIOMA FICHA — absorbe
   if(i.lang&&document.getElementById('fiLang'))document.getElementById('fiLang').value=i.lang;
   if(i.halls&&i.halls.length){_fiHalls=[...i.halls];renderHallTags();}
   else if(i.hall){_fiHalls=[i.hall];renderHallTags();}
   updatePhrasePreview();
   document.getElementById('fiHistorial').style.display='none';
-  toast('📋 Historial autocompletado','#4a5568');
+  toast('📋 Datos absorbidos','#4a5568');
 }
 function searchChoferIng(q){const res=document.getElementById('fiChoferResults');if(!res)return;if(!q||q.length<2){res.classList.remove('open');return;}const ql=q.toLowerCase();const found=DB.conductores.filter(c=>`${c.nombre} ${c.apellido} ${c.matricula||''} ${c.empresa||''}`.toLowerCase().includes(ql)).slice(0,8);if(!found.length){res.classList.remove('open');return;}res.innerHTML=found.map(c=>`<div class="dr-item" onmousedown="fillChoferIng('${c.id}')">${c.nombre} ${c.apellido}${c.matricula?' · <b>'+c.matricula+'</b>':''} <span style="color:var(--text3)">${c.empresa||''}</span></div>`).join('');res.classList.add('open');}
 // ── Búsqueda unificada: matrícula + nombre + empresa (conductores + historial) ──
@@ -6712,16 +6770,19 @@ function searchRefAutoComplete(q){
   const evObj=id=>id?DB.eventos.find(e=>e.id===id):null;
   res.innerHTML=found.map(a=>{
     const ev=evObj(a.eventoId);
-    const evPill=ev?`<span style="background:#fdf4ff;border:1px solid #f0abfc;border-radius:12px;padding:1px 7px;font-size:9px;font-weight:800;color:#86198f">${ev.ico||'📋'} ${ev.nombre}</span>`:'';
-    return`<div class="dr-item" onmousedown="fillFromAgenda('${a.id}')">
-      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-        <b style="font-family:'JetBrains Mono',monospace">${esc(a.referencia||a.matricula||'')}</b>
+    const evPill=ev?`<span style="background:#fdf4ff;border:1px solid #f0abfc;border-radius:12px;padding:2px 9px;font-size:10px;font-weight:800;color:#86198f">${ev.ico||'📋'} ${ev.nombre}</span>`:'';
+    return`<div class="dr-item" onmousedown="fillFromAgenda('${a.id}')" style="padding:10px 12px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+        <b style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:#111">${esc(a.referencia||a.matricula||'')}</b>
         ${evPill}
-        <span style="font-size:10px;color:var(--text3)">${a.fecha||''} ${a.hora||''}</span>
       </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px">
-        🚛 ${a.matricula||'–'} · ${a.conductor||a.empresa||''} ${a.hall?'· Hall <b>'+a.hall+'</b>':''}
-        ${a.montador?'· Montador: '+a.montador:''}
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:#4a5568;font-weight:600">
+        ${a.fecha?`<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:6px;font-weight:700">📅 ${a.fecha}${a.hora?' '+a.hora:''}</span>`:''}
+        ${a.expositor?`<span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:6px;font-weight:700">🎪 ${esc(a.expositor)}</span>`:''}
+        ${a.hall?`<span style="background:#e0e7ff;color:#3730a3;padding:2px 8px;border-radius:6px;font-weight:700">🏭 Hall ${a.hall}</span>`:''}
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">
+        ${a.matricula?'🚛 <b>'+esc(a.matricula)+'</b>':''} ${a.conductor?'· '+esc(a.conductor):''} ${a.empresa?'· '+esc(a.empresa):''}
       </div>
     </div>`;
   }).join('');
