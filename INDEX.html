@@ -6672,12 +6672,35 @@ function autoFillFromHist(id){if(!_autoFillOn)return;
   set('fiPais',i.pais);set('fiFechaNac',i.fechaNacimiento);set('fiFechaExp',i.fechaExpiracion);
   set('fiTelP',i.telPais||'+34');set('fiTel',i.telefono);
   set('fiEmail',i.email);
-  if(i.tipoVehiculo){document.getElementById('fiTipoVeh').value=i.tipoVehiculo;syncToggleButtons();}
   // IDIOMA FICHA — absorbe
   if(i.lang&&document.getElementById('fiLang'))document.getElementById('fiLang').value=i.lang;
+  // TIPO VEHÍCULO: buscar el último registro con tipoVehiculo definido para esa matrícula
+  // (puede estar en ingresos o ingresos2; el registro encontrado puede no tenerlo)
+  let tipoVeh=i.tipoVehiculo;
+  if(!tipoVeh && i.matricula){
+    const matU=String(i.matricula).toUpperCase();
+    const allHist=[...(DB.ingresos||[]),...(DB.ingresos2||[])]
+      .filter(x=>String(x.matricula||'').toUpperCase()===matU && x.tipoVehiculo)
+      .sort((a,b)=>String(b.entrada||b.id||'').localeCompare(String(a.entrada||a.id||'')));
+    if(allHist.length) tipoVeh=allHist[0].tipoVehiculo;
+  }
+  if(tipoVeh){
+    document.getElementById('fiTipoVeh').value=tipoVeh;
+    if(typeof syncToggleButtons==='function')syncToggleButtons();
+  }
+  // SI estamos en REFERENCIA: traer la última posición desde Ingresos2 (rampa) de esa matrícula
+  if(_ingSource==='ingresos' && i.matricula){
+    const matU=String(i.matricula).toUpperCase();
+    const ult=(DB.ingresos2||[])
+      .filter(x=>String(x.matricula||'').toUpperCase()===matU && x.pos)
+      .sort((a,b)=>String(b.entrada||b.id||'').localeCompare(String(a.entrada||a.id||'')))[0];
+    if(ult && ult.pos){
+      set('fiPos',ult.pos);
+    }
+  }
   updatePhrasePreview();
   document.getElementById('fiHistorial').style.display='none';
-  toast('📋 Matrícula y conductor absorbidos','#4a5568');
+  toast('📋 Matrícula, tipo vehículo, posición y teléfono absorbidos','#4a5568');
 }
 function searchChoferIng(q){const res=document.getElementById('fiChoferResults');if(!res)return;if(!q||q.length<2){res.classList.remove('open');return;}const ql=q.toLowerCase();const found=DB.conductores.filter(c=>`${c.nombre} ${c.apellido} ${c.matricula||''} ${c.empresa||''}`.toLowerCase().includes(ql)).slice(0,8);if(!found.length){res.classList.remove('open');return;}res.innerHTML=found.map(c=>`<div class="dr-item" onmousedown="fillChoferIng('${c.id}')">${c.nombre} ${c.apellido}${c.matricula?' · <b>'+c.matricula+'</b>':''} <span style="color:var(--text3)">${c.empresa||''}</span></div>`).join('');res.classList.add('open');}
 // ── Búsqueda unificada: matrícula + nombre + empresa (conductores + historial) ──
