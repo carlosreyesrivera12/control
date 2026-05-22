@@ -3371,8 +3371,8 @@ function loginSuccess(u){
   // Marcar permisos por rol. NO se usa style.display inline:
   // las pestañas arrancan ocultas por CSS y solo tgEnsureFilter (clase tg-visible)
   // muestra las permitidas. Así un usuario nunca ve módulos que no le corresponden.
-  // btnstats (uso de botones) es visible si el rol accede al grupo Datos.
-  const _verDatos=allowed.includes('dash')||allowed.includes('analytics')||allowed.includes('vehiculos');
+  // btnstats (uso de botones) — solo visible para SuperAdmin, independiente de otros permisos
+  const _verDatos=isSA();
   document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>{
     if(b.dataset.tab){
       b.style.display='';  // limpiar cualquier inline previo
