@@ -13919,6 +13919,342 @@ function _saveColW(tab,key,w){
     });
   }
 })();
+// ═══════════════════════════════════════════════════
+// MARIPOSA MOTIVADORA — pestaña Ingresos
+// ═══════════════════════════════════════════════════
+(function(){
+  var FRASES_BASE=[
+    "Cada matrícula registrada es un paso hacia el éxito del día.",
+    "Tu trabajo mantiene todo en movimiento. Gracias.",
+    "Hoy es un buen día para hacer las cosas bien.",
+    "Cada camión que pasa por tu rampa es una historia que ayudaste a cerrar.",
+    "La precisión que pones hoy se nota mañana.",
+    "Un café, una sonrisa, y a por el siguiente.",
+    "Eres el filtro entre el caos y el orden. Bien hecho.",
+    "Pequeños gestos, grandes resultados.",
+    "Respira. Lo estás haciendo genial.",
+    "El evento funciona porque tú estás aquí.",
+    "Que tu mejor versión llegue hoy a la rampa.",
+    "Cada día es una oportunidad nueva.",
+    "Lo difícil de hoy será fácil mañana.",
+    "Tu paciencia es tu superpoder.",
+    "Sigue, vas mejor de lo que crees.",
+    "Las cosas grandes empiezan por pequeños registros.",
+    "Eres más capaz de lo que imaginas.",
+    "Un paso a la vez. Sin prisa, sin pausa.",
+    "Hoy es tu día. Aprovéchalo.",
+    "Tu sonrisa cambia el ambiente.",
+    "Detrás de cada camión hay personas. Tú las cuidas.",
+    "Los días buenos se construyen, no se esperan.",
+    "Confía en tu criterio.",
+    "La constancia vence al talento.",
+    "Hoy haces que mañana sea más fácil.",
+    "Un buen registro vale por mil correcciones.",
+    "Tu atención es tu firma.",
+    "Cuidar los detalles es cuidar a las personas.",
+    "Las pequeñas victorias también cuentan.",
+    "Estás haciendo historia, aunque no se note.",
+    "Levanta la cabeza, mira lo conseguido.",
+    "Cada día sumas algo único al equipo.",
+    "Eres irremplazable.",
+    "Quien sostiene la puerta, sostiene el evento.",
+    "Tu energía es contagiosa.",
+    "Hoy alguien va a notar lo bien que haces tu trabajo.",
+    "El tiempo bien usado nunca es perdido.",
+    "Pon música mental y dale.",
+    "Cada llegada es una bienvenida que tú das.",
+    "Eres el primer rostro amable del día para muchos.",
+    "Tu trabajo es esencial. De verdad.",
+    "Los errores enseñan. Los aciertos animan.",
+    "Hoy también vas a brillar.",
+    "El cansancio se va, lo bien hecho queda.",
+    "Mira lo lejos que has llegado.",
+    "Eres la pieza que hace girar la rampa.",
+    "Cada día llegas, eso ya es valentía.",
+    "Tu paciencia hoy es la sonrisa de alguien mañana.",
+    "Trabajar bien también es un arte.",
+    "Tu firma queda en cada ficha. Hazla bonita.",
+    "La calma resuelve más que la prisa.",
+    "Tú eliges la actitud. Elige bien.",
+    "Tu equipo confía en ti. Con razón.",
+    "Sigue adelante, hasta el café del descanso.",
+    "Los buenos profesionales se notan en los días grises.",
+    "La rutina también puede tener magia.",
+    "Cuidar de los detalles es cuidar de ti mismo.",
+    "Hoy alguien aprenderá algo gracias a ti.",
+    "Tu esfuerzo no pasa desapercibido.",
+    "Trabajar con cariño cambia el resultado.",
+    "Eres parte de algo más grande.",
+    "Tu calma es tu mejor herramienta.",
+    "Cada día es un capítulo nuevo.",
+    "El humor también es eficiencia.",
+    "Lo estás haciendo bien. Punto.",
+    "Tu mirada atenta evita muchos líos.",
+    "Tu trabajo importa, hoy y siempre.",
+    "Atrévete a sonreír al próximo conductor.",
+    "Tu actitud es tu currículum más fuerte.",
+    "Date las gracias al final del día.",
+    "Lo cotidiano también es extraordinario.",
+    "Eres más fuerte de lo que crees.",
+    "La amabilidad no cuesta nada y vale oro.",
+    "Que tu día sea tan ordenado como tu lista.",
+    "Cada matrícula, una pequeña victoria.",
+    "El trabajo bien hecho siempre vuelve a ti.",
+    "Sigue tu ritmo, no el de los demás.",
+    "El silencio entre camiones también es trabajo.",
+    "Tu profesionalidad se nota a metros.",
+    "Cuidar el orden es cuidar la cordura.",
+    "Estás más cerca del descanso de lo que parece.",
+    "Tu día empieza cuando tú decides.",
+    "Hoy puedes hacer una diferencia pequeña.",
+    "Tu nombre cuenta cuando todo va bien.",
+    "Cada turno superado es una medalla invisible.",
+    "Confía: el equipo te respalda.",
+    "Eres más valioso de lo que reconocen.",
+    "La constancia se nota en los detalles.",
+    "Hoy es un buen día para enseñar a alguien.",
+    "Aprender en el trabajo también es ganar.",
+    "Hazlo simple, hazlo bien.",
+    "Si dudas, respira tres veces.",
+    "Lo urgente pasa, lo importante se queda.",
+    "Tus manos sostienen el evento.",
+    "La paciencia se entrena, como un músculo.",
+    "Hoy alguien necesita tu calma. Dásela.",
+    "El orden empieza por uno mismo.",
+    "Tu trabajo deja huella, aunque no se vea.",
+    "Sé el orden en medio del ruido.",
+    "Hoy también merece la pena.",
+    "Tu día vale. Y mucho.",
+    "Gracias por estar aquí."
+  ];
+  var STORAGE_KEY='cu1_mariposa_v1';
+  var DISMISS_KEY='cu1_mariposa_dismiss';
+  function _loadCustom(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch(e){return [];}}
+  function _saveCustom(arr){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}catch(e){}}
+  function _pool(){return FRASES_BASE.concat(_loadCustom());}
+  var _used=new Set();
+  function _pickFrase(){
+    var all=_pool();
+    if(_used.size>=all.length)_used.clear();
+    var idx;do{idx=Math.floor(Math.random()*all.length);}while(_used.has(idx)&&_used.size<all.length);
+    _used.add(idx);
+    return all[idx];
+  }
+  function _injectStyles(){
+    if(document.getElementById('mp-style'))return;
+    var s=document.createElement('style');
+    s.id='mp-style';
+    s.textContent=
+      '@keyframes mp-flap{0%,100%{transform:rotateY(0)}50%{transform:rotateY(70deg)}}'+
+      '.mp-flapping #mp-wL,.mp-flapping #mp-wR{animation:mp-flap .22s ease-in-out 6}'+
+      '#mp-wrap{position:fixed;top:120px;left:50%;z-index:9000;pointer-events:none;will-change:transform;transition:top .04s linear,left .04s linear}'+
+      '#mp-ico{pointer-events:auto;cursor:pointer;display:inline-block;transform-origin:center;filter:drop-shadow(0 2px 4px rgba(60,52,137,.25))}'+
+      '#mp-ico:hover{filter:drop-shadow(0 3px 8px rgba(60,52,137,.5))}'+
+      '@keyframes mp-pop{0%{opacity:0;transform:translateY(-8px) scale(.92)}100%{opacity:1;transform:translateY(0) scale(1)}}'+
+      '.mp-card{animation:mp-pop .35s cubic-bezier(.34,1.56,.64,1)}';
+    document.head.appendChild(s);
+  }
+  function _butterflySVG(){
+    return '<svg id="mp-svg" width="42" height="42" viewBox="0 0 36 36" style="cursor:pointer;display:block">'+
+      '<ellipse cx="18" cy="18" rx="1.4" ry="6.5" fill="#3C3489"/>'+
+      '<circle cx="18" cy="11" r="1.6" fill="#3C3489"/>'+
+      '<line x1="17.4" y1="9.6" x2="15.5" y2="6.5" stroke="#3C3489" stroke-width="0.8" stroke-linecap="round"/>'+
+      '<line x1="18.6" y1="9.6" x2="20.5" y2="6.5" stroke="#3C3489" stroke-width="0.8" stroke-linecap="round"/>'+
+      '<g id="mp-wL" style="transform-origin:18px 18px">'+
+        '<path d="M18 18 Q7 7 3 14 Q1 20 10 22 Q14 22 18 18 Z" fill="#7F77DD" stroke="#3C3489" stroke-width="0.6"/>'+
+        '<path d="M18 18 Q10 22 5 27 Q3 31 13 29 Q16 27 18 18 Z" fill="#AFA9EC" stroke="#3C3489" stroke-width="0.6"/>'+
+        '<circle cx="9" cy="14" r="1.3" fill="#FAC775"/>'+
+        '<circle cx="10" cy="26" r="1" fill="#F09595"/>'+
+      '</g>'+
+      '<g id="mp-wR" style="transform-origin:18px 18px">'+
+        '<path d="M18 18 Q29 7 33 14 Q35 20 26 22 Q22 22 18 18 Z" fill="#7F77DD" stroke="#3C3489" stroke-width="0.6"/>'+
+        '<path d="M18 18 Q26 22 31 27 Q33 31 23 29 Q20 27 18 18 Z" fill="#AFA9EC" stroke="#3C3489" stroke-width="0.6"/>'+
+        '<circle cx="27" cy="14" r="1.3" fill="#FAC775"/>'+
+        '<circle cx="26" cy="26" r="1" fill="#F09595"/>'+
+      '</g>'+
+    '</svg>';
+  }
+  function _aletear(){
+    var svg=document.getElementById('mp-svg');
+    if(!svg)return;
+    svg.classList.add('mp-flapping');
+    setTimeout(function(){svg.classList.remove('mp-flapping');},1100);
+  }
+  function _showFrase(text){
+    var box=document.getElementById('mp-card');
+    var ico=document.getElementById('mp-ico');
+    if(!box||!ico)return;
+    var t=document.getElementById('mp-text');
+    if(t){t.textContent=text;}
+    // Posicionar fixed debajo del icono
+    var r=ico.getBoundingClientRect();
+    box.style.top=(r.bottom+8)+'px';
+    box.style.left=Math.max(8,r.right-300)+'px';
+    box.style.display='block';
+    box.classList.remove('mp-card');void box.offsetWidth;box.classList.add('mp-card');
+    // Auto-dismiss después de 12 segundos
+    clearTimeout(window._mpAutoTimer);
+    window._mpAutoTimer=setTimeout(function(){_hideFrase();},12000);
+  }
+  function _hideFrase(){
+    var box=document.getElementById('mp-card');
+    if(box)box.style.display='none';
+    clearTimeout(window._mpAutoTimer);
+  }
+  function _addFrase(){
+    // Modal HTML propio (prompt() falla en algunos navegadores móviles/Chrome)
+    var existing=document.getElementById('mp-add-modal');
+    if(existing)existing.remove();
+    var m=document.createElement('div');
+    m.id='mp-add-modal';
+    m.style.cssText='position:fixed;inset:0;background:rgba(60,52,137,.45);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';
+    m.innerHTML=
+      '<div style="background:linear-gradient(135deg,#FBEAF0 0%,#EEEDFE 50%,#E1F5EE 100%);border:2px solid #AFA9EC;border-radius:16px;padding:22px;width:100%;max-width:380px;box-shadow:0 12px 40px rgba(60,52,137,.4)">'+
+        '<div style="font-size:11px;font-weight:800;color:#3C3489;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px">🦋 <span>Añadir frase a tu colección</span></div>'+
+        '<textarea id="mp-new-input" placeholder="Escribe tu frase motivadora aquí..." style="width:100%;min-height:80px;padding:12px;border:1.5px solid #AFA9EC;border-radius:10px;font-family:Georgia,serif;font-style:italic;font-size:14px;color:#26215C;background:#fff;resize:vertical;box-sizing:border-box;outline:none"></textarea>'+
+        '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">'+
+          '<button onclick="document.getElementById(\'mp-add-modal\').remove()" style="background:#fff;color:#3C3489;border:1.5px solid #AFA9EC;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer">CANCELAR</button>'+
+          '<button onclick="_mpDoAdd()" style="background:#3C3489;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer">✓ GUARDAR</button>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(m);
+    setTimeout(function(){var i=document.getElementById('mp-new-input');if(i)i.focus();},50);
+  }
+  window._mpDoAdd=function(){
+    var input=document.getElementById('mp-new-input');
+    if(!input)return;
+    var t=(input.value||'').trim();
+    if(!t){input.style.borderColor='#E24B4A';return;}
+    var arr=_loadCustom();
+    arr.push(t);
+    _saveCustom(arr);
+    var modal=document.getElementById('mp-add-modal');
+    if(modal)modal.remove();
+    _showFrase(t);
+    if(typeof toast==='function')toast('✅ Frase añadida ('+arr.length+' personalizadas)','#1D9E75');
+  };
+  window._mpAddFrase=_addFrase;
+  window._mpHide=_hideFrase;
+  window._mpClickCount=0;
+  window._mpClickTimer=null;
+  window._mpNueva=function(){
+    window._mpClickCount++;
+    clearTimeout(window._mpClickTimer);
+    if(window._mpClickCount>=3){
+      window._mpClickCount=0;
+      _showFrase("Hoy no me quiero enojar con NADIE");
+      _aletear();
+      return;
+    }
+    window._mpClickTimer=setTimeout(function(){window._mpClickCount=0;},600);
+    _showFrase(_pickFrase());
+    _aletear();
+  };
+  var _mpFly={x:0,y:0,tx:0,ty:0,paused:false,pauseUntil:0,nextTarget:0};
+  function _mpAnimate(){
+    var now=Date.now();
+    var wrap=document.getElementById('mp-wrap');
+    if(!wrap){requestAnimationFrame(_mpAnimate);return;}
+    // Nuevo destino cada 2-4 segundos, o pausa breve
+    if(now>=_mpFly.nextTarget && !_mpFly.paused){
+      // Decidir: 25% probabilidad de pausa en sitio (1.5s) para que la atrapen
+      if(Math.random()<0.25){
+        _mpFly.paused=true;
+        _mpFly.pauseUntil=now+1500;
+      } else {
+        // Nuevo destino aleatorio: zona central amplia (evitar headers/bordes)
+        var vw=window.innerWidth, vh=window.innerHeight;
+        var marginX=80, marginY=140; // margen para no salir
+        _mpFly.tx=marginX+Math.random()*(vw-marginX*2);
+        _mpFly.ty=marginY+Math.random()*(vh-marginY*2-100);
+        _mpFly.nextTarget=now+2000+Math.random()*2500;
+      }
+    }
+    if(_mpFly.paused && now>=_mpFly.pauseUntil){
+      _mpFly.paused=false;
+      _mpFly.nextTarget=now;
+    }
+    // Easing: moverse 4% del camino restante por frame (suave)
+    _mpFly.x+=(_mpFly.tx-_mpFly.x)*0.025;
+    _mpFly.y+=(_mpFly.ty-_mpFly.y)*0.025;
+    // Rotación según dirección del movimiento
+    var dx=_mpFly.tx-_mpFly.x;
+    var rot=Math.max(-25,Math.min(25,dx*0.5));
+    wrap.style.left=_mpFly.x+'px';
+    wrap.style.top=_mpFly.y+'px';
+    wrap.style.transform='rotate('+rot+'deg)';
+    requestAnimationFrame(_mpAnimate);
+  }
+  function _mountMariposa(){
+    _injectStyles();
+    // Solo mostrar si estamos en tab ingresos2
+    var tab=document.getElementById('tab-ingresos2');
+    if(!tab||tab.style.display==='none'){
+      var w=document.getElementById('mp-wrap');
+      if(w)w.style.display='none';
+      return;
+    }
+    var wrap=document.getElementById('mp-wrap');
+    if(wrap){wrap.style.display='';return;}
+    // Crear wrap en BODY (fixed por toda pantalla)
+    wrap=document.createElement('div');
+    wrap.id='mp-wrap';
+    wrap.innerHTML='<div id="mp-ico" onclick="_mpNueva()" title="Click para nueva frase motivadora">'+_butterflySVG()+'</div>';
+    document.body.appendChild(wrap);
+    // Pausar al pasar el dedo/mouse
+    var ico=document.getElementById('mp-ico');
+    ico.addEventListener('mouseenter',function(){_mpFly.paused=true;_mpFly.pauseUntil=Date.now()+3000;});
+    ico.addEventListener('touchstart',function(){_mpFly.paused=true;_mpFly.pauseUntil=Date.now()+3000;},{passive:true});
+    // Inicializar posición: centro horizontal, cerca de tabs
+    _mpFly.x=window.innerWidth/2-21;
+    _mpFly.y=130;
+    _mpFly.tx=_mpFly.x;
+    _mpFly.ty=_mpFly.y;
+    _mpFly.nextTarget=Date.now()+1500;
+    // Card en body
+    if(!document.getElementById('mp-card')){
+      var card=document.createElement('div');
+      card.id='mp-card';
+      card.style.cssText='display:none;position:fixed;width:300px;background:linear-gradient(135deg,#FBEAF0 0%,#EEEDFE 50%,#E1F5EE 100%);border:2px solid #AFA9EC;border-radius:14px;padding:14px 32px 14px 16px;box-shadow:0 8px 28px rgba(60,52,137,.25);z-index:99999';
+      card.innerHTML=
+        '<button onclick="_mpHide()" title="Cerrar" style="position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(255,255,255,.85);border:1.5px solid #AFA9EC;border-radius:50%;color:#3C3489;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0">✕</button>'+
+        '<div style="font-size:9px;font-weight:800;color:#3C3489;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px">🦋 <span>Mensaje del día</span></div>'+
+        '<div id="mp-text" style="font-size:13.5px;font-weight:600;color:#26215C;line-height:1.5;font-family:Georgia,serif;font-style:italic"></div>'+
+        '<div style="margin-top:12px;display:flex;gap:6px;justify-content:flex-end">'+
+          '<button onclick="_mpNueva()" title="Otra frase" style="background:#fff;color:#3C3489;border:1.5px solid #AFA9EC;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer">↻ OTRA</button>'+
+          '<button onclick="_mpAddFrase()" title="Añadir frase nueva" style="background:#3C3489;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer">+ AÑADIR</button>'+
+        '</div>';
+      document.body.appendChild(card);
+    }
+    // Aletear cada 4-6s y arrancar animación
+    if(!window._mpInterval){
+      window._mpInterval=setInterval(_aletear,5000);
+      setTimeout(_aletear,800);
+      requestAnimationFrame(_mpAnimate);
+    }
+  }
+  function _mpHideWrap(){var w=document.getElementById('mp-wrap');if(w)w.style.display='none';}
+  // Hook: render de ingresos2 muestra, otros tabs ocultan
+  var _origRender=window.renderIngresos2;
+  if(typeof _origRender==='function'){
+    window.renderIngresos2=function(){
+      _origRender.apply(this,arguments);
+      setTimeout(_mountMariposa,50);
+    };
+  }
+  // Hook goTab para ocultar fuera de ingresos2
+  var _origGoTab=window.goTab;
+  if(typeof _origGoTab==='function'){
+    window.goTab=function(tab,btn){
+      _origGoTab.apply(this,arguments);
+      setTimeout(function(){
+        if(tab==='ingresos2')_mountMariposa();
+        else _mpHideWrap();
+      },80);
+    };
+  }
+  setTimeout(function(){if(document.querySelector('#tab-ingresos2'))_mountMariposa();},500);
+})();
 </script>
 <div class="cr-copy">BeUnifyT · Copyright © 2026</div>
 </body>
