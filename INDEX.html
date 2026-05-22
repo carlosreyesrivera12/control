@@ -2257,7 +2257,7 @@ function closeOv(id){const el=document.getElementById(id);if(el)el.classList.rem
 // ═══ CERRAR MODALES CON ESC Y CLIC EN OVERLAY ═══
 (function(){
   // Lista de modales que NO deben cerrarse con ESC/clic-fuera (críticos)
-  var _modalNoAutoClose=['mLogin','mPin','m2FA','mFirstRun','mChangePass','mBA'];
+  var _modalNoAutoClose=['mLogin','mPin','m2FA','mFirstRun','mChangePass','mBA','mIng'];
   function _topOpenModal(){
     var open=Array.from(document.querySelectorAll('.ov.open'));
     if(!open.length)return null;
@@ -6661,35 +6661,20 @@ function autoFillFromVeh(mat){if(!_autoFillOn)return;
 function autoFillFromHist(id){if(!_autoFillOn)return;
   const i=DB.ingresos.find(x=>x.id===id)||(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;
   const set=(eid,v)=>{const el=document.getElementById(eid);if(el&&v!=null&&v!=='')el.value=v;};
-  // POSICIÓN absorbe si existe
-  set('fiPos',i.pos);
-  set('fiNom',i.nombre);set('fiApe',i.apellido);set('fiEmp',i.empresa);
-  set('fiMontador',i.montador);set('fiExpositor',i.expositor);
-  set('fiStand',i.stand);set('fiPuertaHall',i.puertaHall);
+  // Solo absorbe MATRÍCULA + TELÉFONO + datos personales del chofer (no del expositor/posición)
+  // Posición → siempre nueva, no absorber
+  // Hall, stand, expositor, montador, llamador, referencia → se absorben con nueva referencia
+  set('fiNom',i.nombre);set('fiApe',i.apellido);
   set('fiRem',i.remolque);set('fiPas',i.pasaporte);
   set('fiPais',i.pais);set('fiFechaNac',i.fechaNacimiento);set('fiFechaExp',i.fechaExpiracion);
   set('fiTelP',i.telPais||'+34');set('fiTel',i.telefono);
-  set('fiEmail',i.email);set('fiLlamador',i.llamador);
-  // REFERENCIA — absorbe solo si tiene contenido
-  if(i.referencia&&String(i.referencia).trim()){
-    set('fiRef',i.referencia);
-    // Si referencia incluye HANDBALL → activa toggle
-    if(/handball/i.test(String(i.referencia))){
-      const hb=document.getElementById('fiHandball');
-      if(hb){hb.checked=true;if(typeof syncHandballBtn==='function')syncHandballBtn();}
-      const hbBtn=document.getElementById('btnHandball');
-      if(hbBtn){hbBtn.classList.add('active');hbBtn.style.background='#1f2733';hbBtn.style.color='#fff';}
-    }
-  }
+  set('fiEmail',i.email);
   if(i.tipoVehiculo){document.getElementById('fiTipoVeh').value=i.tipoVehiculo;syncToggleButtons();}
-  if(i.descargaTipo)document.getElementById('fiDescarga').value=i.descargaTipo;
   // IDIOMA FICHA — absorbe
   if(i.lang&&document.getElementById('fiLang'))document.getElementById('fiLang').value=i.lang;
-  if(i.halls&&i.halls.length){_fiHalls=[...i.halls];renderHallTags();}
-  else if(i.hall){_fiHalls=[i.hall];renderHallTags();}
   updatePhrasePreview();
   document.getElementById('fiHistorial').style.display='none';
-  toast('📋 Datos absorbidos','#4a5568');
+  toast('📋 Matrícula y conductor absorbidos','#4a5568');
 }
 function searchChoferIng(q){const res=document.getElementById('fiChoferResults');if(!res)return;if(!q||q.length<2){res.classList.remove('open');return;}const ql=q.toLowerCase();const found=DB.conductores.filter(c=>`${c.nombre} ${c.apellido} ${c.matricula||''} ${c.empresa||''}`.toLowerCase().includes(ql)).slice(0,8);if(!found.length){res.classList.remove('open');return;}res.innerHTML=found.map(c=>`<div class="dr-item" onmousedown="fillChoferIng('${c.id}')">${c.nombre} ${c.apellido}${c.matricula?' · <b>'+c.matricula+'</b>':''} <span style="color:var(--text3)">${c.empresa||''}</span></div>`).join('');res.classList.add('open');}
 // ── Búsqueda unificada: matrícula + nombre + empresa (conductores + historial) ──
