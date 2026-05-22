@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200;400;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDAgMTQwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+CiAgPHJlY3Qgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxNDAiIHJ4PSIzMiIgZmlsbD0iIzAzMDgxMiIvPgogIDxwb2x5Z29uIHBvaW50cz0iNzAsMTAgMTIyLDQwIDEyMiwxMDAgNzAsMTMwIDE4LDEwMCAxOCw0MCIgc3Ryb2tlPSIjMDBmZmM4IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9IiMwMGZmYzgwOCIvPgogIDxwb2x5Z29uIHBvaW50cz0iNzAsMjggMTA2LDQ5IDEwNiw5MSA3MCwxMTIgMzQsOTEgMzQsNDkiIHN0cm9rZT0iIzAwZmZjOCIgc3Ryb2tlLXdpZHRoPSIxLjIiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuNCIvPgogIDxwb2x5Z29uIHBvaW50cz0iNzAsNDYgOTAsNTcgOTAsODMgNzAsOTQgNTAsODMgNTAsNTciIHN0cm9rZT0iIzAwZmZjOCIgc3Ryb2tlLXdpZHRoPSIwLjgiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuMiIvPgogIDxsaW5lIHgxPSI3MCIgeTE9IjEwIiB4Mj0iNzAiIHkyPSIxMzAiIHN0cm9rZT0iIzAwZmZjOCIgc3Ryb2tlLXdpZHRoPSIwLjYiIG9wYWNpdHk9IjAuMSIvPgogIDxsaW5lIHgxPSIxOCIgeTE9IjQwIiB4Mj0iMTIyIiB5Mj0iMTAwIiBzdHJva2U9IiMwMGZmYzgiIHN0cm9rZS13aWR0aD0iMC42IiBvcGFjaXR5PSIwLjEiLz4KICA8bGluZSB4MT0iMTIyIiB5MT0iNDAiIHgyPSIxOCIgeTI9IjEwMCIgc3Ryb2tlPSIjMDBmZmM4IiBzdHJva2Utd2lkdGg9IjAuNiIgb3BhY2l0eT0iMC4xIi8+CiAgPGNpcmNsZSBjeD0iNzAiIGN5PSI3MCIgcj0iMTYiIGZpbGw9IiMwMGZmYzgiIG9wYWNpdHk9IjAuMSIvPgogIDxjaXJjbGUgY3g9IjcwIiBjeT0iNzAiIHI9IjkiIGZpbGw9IiMwMGZmYzgiLz4KICA8Y2lyY2xlIGN4PSI3MCIgY3k9IjcwIiByPSIzLjUiIGZpbGw9IiMwMzA4MTIiLz4KPC9zdmc+">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>BeUnifyT · Unified Control Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -44,7 +44,7 @@
 #appHdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 10px;height:58px;display:flex;align-items:center;position:sticky;top:0;z-index:200;overflow:visible;min-width:0}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:17.5px;letter-spacing:.15px;height:100vh;margin:0;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:17.5px;letter-spacing:.15px;height:100vh;height:100dvh;margin:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 #appMain{flex:1 1 auto;overflow:auto;min-height:0;display:block;width:100%}
 #appMain > .app-main{display:block;width:100%;box-sizing:border-box;max-width:100%}
 #appMain > .app-main > div[id^="tab-"]{display:none;width:100%;box-sizing:border-box;max-width:100%}
@@ -359,7 +359,7 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
 .toast-w{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:5px;pointer-events:none;min-width:180px;max-width:340px;width:90%}
 .toast{background:#1e293b;color:#fff;padding:10px 16px;border-radius:var(--r2);font-size:13px;font-weight:700;box-shadow:var(--sh2);opacity:0;transform:translateY(8px);transition:all .25s;text-align:center}
 .toast.show{opacity:1;transform:translateY(0)}
-@media(max-width:640px){.app-hdr{padding:0 6px;height:52px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.app-hdr::-webkit-scrollbar{display:none}.hdr-cnt-wrap{font-size:11px}.app-main{padding:8px}.modal{padding:14px}.ov{padding:0;align-items:flex-end}.modal{border-bottom-left-radius:0;border-bottom-right-radius:0;margin:0 0 auto 0}}
+@media(max-width:1024px){.app-hdr{padding:0 6px;height:52px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.app-hdr::-webkit-scrollbar{display:none}.hdr-cnt-wrap{font-size:11px}#btnSalirWrap{position:sticky;right:6px;background:var(--bg2);padding-left:4px;z-index:101;box-shadow:-6px 0 8px -2px var(--bg2)}}@media(max-width:640px){.app-main{padding:8px}.modal{padding:14px}.ov{padding:0;align-items:flex-end}.modal{border-bottom-left-radius:0;border-bottom-right-radius:0;margin:0 0 auto 0}}
 @media(min-width:641px){.ov{align-items:center}}
 .cr-copy{position:fixed;bottom:6px;right:12px;font-size:10px;color:var(--text4);font-family:'Inter',system-ui,sans-serif;letter-spacing:0.3px;pointer-events:none;z-index:50;opacity:.6}
 /* ── Standard btn-sm 3D subtle ── */
@@ -4005,10 +4005,13 @@ window._kmToggle=function(id,e){
   var open=m.style.display==='block';
   document.querySelectorAll('.km-popup').forEach(function(x){x.style.display='none';});
   if(!open){
+    // Mover al body para escapar de containers con overflow/transform (fix iPad)
+    if(m.parentNode!==document.body) document.body.appendChild(m);
     var r=btn.getBoundingClientRect();
     m.style.display='block';
     m.style.top=(r.bottom+6)+'px';
     m.style.left=r.left+'px';
+    m.style.zIndex='999999';
     setTimeout(function(){
       document.addEventListener('click',function _kc(){
         m.style.display='none';
@@ -9094,14 +9097,31 @@ function _buildPrintHtml(ing,isLib,forceMode){
 // Usa srcdoc (no document.write) para funcionar también con file:// local,
 // donde document.open() en el iframe lanza error de "unique security origin".
 function _printViaIframe(html){
-  var old=document.getElementById('_printFrame');
-  if(old)old.remove();
-  
   // Detectar iPad/iOS (iPadOS 13+ se identifica como Mac, por eso el chequeo de touch)
   var ua=navigator.userAgent;
   var isIPad=/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints>1);
-  var imgTimeout=isIPad?5000:3000;
-  var onloadDelay=isIPad?800:0;
+  var isChromeIOS=/CriOS/.test(ua);
+  
+  // iPad: usar window.open (con fallback a nueva pestaña directa si falla)
+  if(isIPad){
+    // Intentar abrir inmediatamente sincronamente (user gesture aún vivo)
+    var w=window.open('','_blank');
+    if(!w){
+      // Bloqueador activo: usar Blob URL en location (siempre funciona)
+      var blob=new Blob([html],{type:'text/html'});
+      var url=URL.createObjectURL(blob);
+      window.location.href=url;
+      return;
+    }
+    w.document.open();
+    w.document.write(html+'<script>setTimeout(function(){window.print();},'+(isChromeIOS?2000:1200)+');</'+'script>');
+    w.document.close();
+    return;
+  }
+  
+  // Desktop/otros: iframe oculto (más rápido, sin popup)
+  var old=document.getElementById('_printFrame');
+  if(old)old.remove();
   
   var f=document.createElement('iframe');
   f.id='_printFrame';
@@ -9131,9 +9151,9 @@ function _printViaIframe(html){
       if(imgs[i].complete)tick();
       else{imgs[i].addEventListener('load',tick);imgs[i].addEventListener('error',tick);}
     }
-    setTimeout(ready,imgTimeout);
+    setTimeout(ready,3000);
   }
-  f.onload=function(){setTimeout(whenReady, onloadDelay);};
+  f.onload=function(){whenReady();};
   f.srcdoc=html;
   document.body.appendChild(f);
 }
