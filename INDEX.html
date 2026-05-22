@@ -9111,6 +9111,13 @@ function _buildPrintHtml(ing,isLib,forceMode){
 function _printViaIframe(html){
   var old=document.getElementById('_printFrame');
   if(old)old.remove();
+  
+  // Detectar iPad/iOS (iPadOS 13+ se identifica como Mac, por eso el chequeo de touch)
+  var ua=navigator.userAgent;
+  var isIPad=/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints>1);
+  var imgTimeout=isIPad?5000:3000;
+  var onloadDelay=isIPad?800:0;
+  
   var f=document.createElement('iframe');
   f.id='_printFrame';
   f.style.cssText='position:fixed;width:0;height:0;border:0;left:-9999px;top:-9999px';
@@ -9139,10 +9146,9 @@ function _printViaIframe(html){
       if(imgs[i].complete)tick();
       else{imgs[i].addEventListener('load',tick);imgs[i].addEventListener('error',tick);}
     }
-    setTimeout(ready,3000); // failsafe: si algún QR nunca carga
+    setTimeout(ready,imgTimeout);
   }
-  // srcdoc: el iframe carga el HTML sin document.write → sin error de origen.
-  f.onload=function(){whenReady();};
+  f.onload=function(){setTimeout(whenReady, onloadDelay);};
   f.srcdoc=html;
   document.body.appendChild(f);
 }
