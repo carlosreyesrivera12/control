@@ -48,7 +48,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple
 #appMain{flex:1 1 auto;overflow:auto;min-height:0;display:block;width:100%}
 #appMain > .app-main{display:block;width:100%;box-sizing:border-box;max-width:100%}
 #appMain > .app-main > div[id^="tab-"]{display:none;width:100%;box-sizing:border-box;max-width:100%}
-#appMain>.app-main{padding:6px 12px;max-width:2200px;margin:0 auto}
+#appMain>.app-main{padding:12px 12px;max-width:2200px;margin:0 auto}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg3)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 input,select,textarea{font-family:inherit;font-size:16px;outline:none;width:100%;padding:8px 12px;border:1.5px solid #888;border-radius:var(--r);background:var(--bg2);color:var(--text);transition:border-color .15s;-webkit-appearance:none;appearance:none}
 input:focus,select:focus,textarea:focus{border-color:#333}
@@ -79,7 +79,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .sd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sd-g{background:#22c55e;animation:blink 2s infinite}.sd-y{background:#4a5568}.sd-r{background:var(--red)}.sd-o{background:var(--text4)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.tabs-bar{display:flex;align-items:center;gap:3px;padding:4px 12px;background:var(--bg3);border-top:2px solid var(--border);border-bottom:2px solid var(--border);overflow-x:auto;overflow-y:hidden;flex-shrink:0;z-index:99;scrollbar-width:none;justify-content:flex-start;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+.tabs-bar{display:flex;align-items:center;gap:3px;padding:8px 12px;background:var(--bg3);border-top:2px solid var(--border);border-bottom:2px solid var(--border);overflow-x:auto;overflow-y:hidden;flex-shrink:0;z-index:99;scrollbar-width:none;justify-content:flex-start;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;margin-top:4px}
 .tabs-bar::-webkit-scrollbar{display:none}
 .tabs-bar::-webkit-scrollbar{display:none}
 .tg-grp-btn{display:none;align-items:center;gap:6px;padding:0 14px;height:36px;border-radius:10px;border:1px solid #c8c8c8;background:#fff;color:#111;font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:color .1s;outline:none;-webkit-tap-highlight-color:transparent;box-sizing:border-box}
@@ -105,7 +105,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .dtbl th.col-drag-over{background:var(--bll)!important;border-left:2px solid #3a4558}
 .dtbl th[draggable]{cursor:grab}
 .dtbl th[draggable]:hover{background:var(--bg4)}
-.app-main{padding:6px 12px;max-width:2200px;margin:0 auto}.app-main>div>*+*{margin-top:0}
+.app-main{padding:12px 12px;max-width:2200px;margin:0 auto}.app-main>div>*+*{margin-top:0}
 .card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh);padding:14px}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:4px}
 .sec-ttl{font-size:15px;font-weight:800;display:flex;align-items:center;gap:5px;letter-spacing:-.01em}
@@ -440,9 +440,9 @@ code{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;pad
 .pc-sec-hdr:active{cursor:grabbing;}
 @media print{.pc-cut-guide{display:none!important}}
 /* Drag subtab bars */
-.subtab-bar{display:flex;align-items:center;gap:3px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;background:var(--bg);padding:4px 0;position:sticky;top:0;z-index:90;width:100%;box-sizing:border-box}
+.subtab-bar{display:flex;align-items:center;gap:3px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;background:var(--bg);padding:10px 0 12px 0;position:sticky;top:0;z-index:90;width:100%;box-sizing:border-box;margin-bottom:6px}
 .subtab-bar::-webkit-scrollbar{display:none}
-.filter-bar{background:var(--bg);padding:4px 0;position:sticky;z-index:88;width:100%;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;white-space:nowrap}
+.filter-bar{background:var(--bg);padding:6px 0 12px 0;margin-bottom:8px;position:sticky;z-index:88;width:100%;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;white-space:nowrap}
 .filter-bar::-webkit-scrollbar{display:none}
 .subtab-bar::-webkit-scrollbar{display:none}
 .subtab-bar .btn-sm{padding:4px 12px;font-size:12px;font-weight:500;border-radius:20px;white-space:nowrap;flex-shrink:0}
@@ -629,6 +629,7 @@ a:hover{color:#3a4558;}
     <div class="fg" id="fg-pasaporte"><span class="flbl" id="lbl-pasaporte">Pasaporte / DNI</span><input id="fiPas"></div>
     <div class="fg" id="fg-fechaNac"><span class="flbl">Fecha Nacimiento</span><input id="fiFechaNac" type="date"></div>
     <div class="fg" id="fg-fechaExp"><span class="flbl">Fecha Expiración Doc.</span><input id="fiFechaExp" type="date"></div>
+    <div class="fg" id="fg-entrada"><span class="flbl">Fecha Entrada</span><input id="fiEntrada" type="date"></div>
     <div class="fg" id="fg-pais"><span class="flbl">País</span><input id="fiPais" data-i18n-ph="phCountry" placeholder="España, Polonia, Italia..."></div>
     <div class="fg" id="fg-telefono"><span class="flbl" id="lbl-tel">Teléfono</span><div style="display:flex;gap:4px"><input id="fiTelP" list="dlTelP" style="width:auto;flex-shrink:0;min-width:90px;max-width:110px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;height:52px" placeholder="+34 ✏"><datalist id="dlTelP"></datalist><input id="fiTel" type="tel" style="font-size:16px;font-weight:700;height:52px"></div></div>
     <div class="fg" id="fg-email"><span class="flbl" id="lbl-email">Email</span><input id="fiEmail" type="email"></div>
@@ -1641,7 +1642,7 @@ function renderTipoVehButtons(ev){
 const GP={tarjeta:'💳 Tarjeta',efectivo:'💵 Efectivo',ambos:'💳💵 Mixto'};
 const PP={temporal:'🎫 Temporal',evento:'📋 Evento',vip:'⭐ VIP',staff:'🔧 Staff'};
 const EV_CAMPOS=['posicion','llamador','ref','empresa','hall','stand','puertaHall','montador','expositor','nombre','apellido','pasaporte','telefono','email','comentario','horario','fechaNacimiento','pais','remolque','tipoVehiculo','descargaTipo'];
-const PRINT_DEF=['posicion','matricula','telefono','empresa','hall','stand','puertaHall','llamador','ref','montador','expositor','remolque','tipoVehiculo','descargaTipo','nombre','apellido','pasaporte','fechaNacimiento','pais','email','comentario','horario'];
+const PRINT_DEF=['posicion','matricula','telefono','empresa','hall','stand','puertaHall','llamador','ref','montador','expositor','remolque','tipoVehiculo','descargaTipo','nombre','apellido','pasaporte','fechaNacimiento','fechaExpiracion','pais','email','entrada','comentario','horario'];
 const TRACKING_STEPS=[
   {id:'rampa',ico:'🅿️',name:'Rampa',fixed:true},
   {id:'cabina',ico:'🏢',name:'Cabina',fixed:true},
@@ -1654,7 +1655,7 @@ const TRACKING_STEPS=[
   {id:'retorno',ico:'🔙',name:'Retorno Parking'},
   {id:'terminado',ico:'✅',name:'Servicio Terminado',end:true}
 ];
-const PRINT_LABELS={posicion:'🔢 Posición',matricula:'🚛 Matrícula',telefono:'📱 Teléfono',nombre:'👤 Nombre',apellido:'👤 Apellido',empresa:'🏢 Empresa',hall:'🏭 Hall',stand:'📍 Stand',puertaHall:'🚪 Puerta Hall',llamador:'📞 Llamador',ref:'🔖 Ref/Booking',montador:'🔧 Montador',expositor:'🎪 Expositor',remolque:'🚚 Remolque',tipoVehiculo:'🚗 Tipo Vehículo',descargaTipo:'📦 Serv. Descarga/Carga',pasaporte:'🪪 Pasaporte/DNI',fechaNacimiento:'🎂 F. Nacimiento',pais:'🌍 País',email:'✉️ Email',comentario:'📝 Comentario',horario:'🕐 Horario Ingreso'};
+const PRINT_LABELS={posicion:'🔢 Posición',matricula:'🚛 Matrícula',telefono:'📱 Teléfono',nombre:'👤 Nombre',apellido:'👤 Apellido',empresa:'🏢 Empresa',hall:'🏭 Hall',stand:'📍 Stand',puertaHall:'🚪 Puerta Hall',llamador:'📞 Llamador',ref:'🔖 Ref/Booking',montador:'🔧 Montador',expositor:'🎪 Expositor',remolque:'🚚 Remolque',tipoVehiculo:'🚗 Tipo Vehículo',descargaTipo:'📦 Serv. Descarga/Carga',pasaporte:'🪪 Pasaporte/DNI',fechaNacimiento:'🎂 F. Nacimiento',fechaExpiracion:'📅 F. Expiración Doc.',pais:'🌍 País',email:'✉️ Email',entrada:'📅 Fecha Entrada',comentario:'📝 Comentario',horario:'🕐 Horario Ingreso'};
 const PAISES=[{code:'+34',flag:'🇪🇸'},{code:'+33',flag:'🇫🇷'},{code:'+49',flag:'🇩🇪'},{code:'+39',flag:'🇮🇹'},{code:'+351',flag:'🇵🇹'},{code:'+44',flag:'🇬🇧'},{code:'+31',flag:'🇳🇱'},{code:'+32',flag:'🇧🇪'},{code:'+41',flag:'🇨🇭'},{code:'+43',flag:'🇦🇹'},{code:'+45',flag:'🇩🇰'},{code:'+46',flag:'🇸🇪'},{code:'+47',flag:'🇳🇴'},{code:'+48',flag:'🇵🇱'},{code:'+40',flag:'🇷🇴'},{code:'+36',flag:'🇭🇺'},{code:'+420',flag:'🇨🇿'},{code:'+421',flag:'🇸🇰'},{code:'+385',flag:'🇭🇷'},{code:'+386',flag:'🇸🇮'},{code:'+359',flag:'🇧🇬'},{code:'+30',flag:'🇬🇷'},{code:'+353',flag:'🇮🇪'},{code:'+358',flag:'🇫🇮'},{code:'+370',flag:'🇱🇹'},{code:'+371',flag:'🇱🇻'},{code:'+372',flag:'🇪🇪'},{code:'+380',flag:'🇺🇦'},{code:'+7',flag:'🇷🇺'},{code:'+90',flag:'🇹🇷'},{code:'+212',flag:'🇲🇦'},{code:'+213',flag:'🇩🇿'},{code:'+216',flag:'🇹🇳'},{code:'+966',flag:'🇸🇦'},{code:'+971',flag:'🇦🇪'},{code:'+86',flag:'🇨🇳'},{code:'+91',flag:'🇮🇳'},{code:'+81',flag:'🇯🇵'},{code:'+82',flag:'🇰🇷'},{code:'+1',flag:'🇺🇸'},{code:'+52',flag:'🇲🇽'},{code:'+55',flag:'🇧🇷'},{code:'+54',flag:'🇦🇷'},{code:'+57',flag:'🇨🇴'},{code:'+56',flag:'🇨🇱'},{code:'+51',flag:'🇵🇪'},{code:'+593',flag:'🇪🇨'},{code:'+598',flag:'🇺🇾'},{code:'+61',flag:'🇦🇺'},{code:'+27',flag:'🇿🇦'},{code:'+355',flag:'🇦🇱'},{code:'+376',flag:'🇦🇩'},{code:'+374',flag:'🇦🇲'},{code:'+994',flag:'🇦🇿'},{code:'+375',flag:'🇧🇾'},{code:'+387',flag:'🇧🇦'},{code:'+357',flag:'🇨🇾'},{code:'+995',flag:'🇬🇪'},{code:'+354',flag:'🇮🇸'},{code:'+383',flag:'🇽🇰'},{code:'+352',flag:'🇱🇺'},{code:'+356',flag:'🇲🇹'},{code:'+373',flag:'🇲🇩'},{code:'+377',flag:'🇲🇨'},{code:'+382',flag:'🇲🇪'},{code:'+389',flag:'🇲🇰'},{code:'+381',flag:'🇷🇸'},{code:'+378',flag:'🇸🇲'},{code:'+20',flag:'🇪🇬'},{code:'+234',flag:'🇳🇬'},{code:'+254',flag:'🇰🇪'},{code:'+233',flag:'🇬🇭'},{code:'+225',flag:'🇨🇮'},{code:'+221',flag:'🇸🇳'},{code:'+237',flag:'🇨🇲'},{code:'+255',flag:'🇹🇿'},{code:'+256',flag:'🇺🇬'},{code:'+251',flag:'🇪🇹'},{code:'+258',flag:'🇲🇿'},{code:'+60',flag:'🇲🇾'},{code:'+62',flag:'🇮🇩'},{code:'+63',flag:'🇵🇭'},{code:'+65',flag:'🇸🇬'},{code:'+66',flag:'🇹🇭'},{code:'+84',flag:'🇻🇳'},{code:'+880',flag:'🇧🇩'},{code:'+92',flag:'🇵🇰'},{code:'+94',flag:'🇱🇰'},{code:'+961',flag:'🇱🇧'},{code:'+962',flag:'🇯🇴'},{code:'+964',flag:'🇮🇶'},{code:'+965',flag:'🇰🇼'},{code:'+968',flag:'🇴🇲'},{code:'+970',flag:'🇵🇸'},{code:'+972',flag:'🇮🇱'},{code:'+973',flag:'🇧🇭'},{code:'+974',flag:'🇶🇦'},{code:'+58',flag:'🇻🇪'},{code:'+53',flag:'🇨🇺'},{code:'+507',flag:'🇵🇦'},{code:'+506',flag:'🇨🇷'},{code:'+502',flag:'🇬🇹'},{code:'+503',flag:'🇸🇻'},{code:'+504',flag:'🇭🇳'},{code:'+505',flag:'🇳🇮'},{code:'+591',flag:'🇧🇴'},{code:'+595',flag:'🇵🇾'},{code:'+592',flag:'🇬🇾'},{code:'+64',flag:'🇳🇿'}];
 // ═══ USUARIOS POR DEFECTO ═══
 // SEGURIDAD: No se incluyen usuarios con contraseñas hardcodeadas.
@@ -2409,15 +2410,15 @@ function renderCamposSubtab(col){if(!canCampos())return '<div style="padding:16p
     .concat(_evOpts.map(en=>`<option value="${en.replace(/"/g,'&quot;')}"${en===_selEv?' selected':''}>${en}</option>`)).join('');
   // Grupos para layout colapsable
   var CAMPO_GROUPS=[
-    {id:'vehiculo',  label:'🚛 Vehículo',  keys:['posicion','matricula','remolque','tipoVehiculo','descargaTipo']},
-    {id:'conductor', label:'👤 Conductor', keys:['nombre','apellido','pasaporte','fechaNacimiento','pais','telefono','email']},
-    {id:'expositor', label:'🏢 Expositor', keys:['empresa','expositor','montador','llamador','ref','hall','stand','puertaHall']},
-    {id:'extras',    label:'📝 Extras',    keys:['comentario','horario']},
+    {id:'vehiculo',  label:'Vehículo',  keys:['posicion','matricula','remolque','tipoVehiculo','descargaTipo','llamador']},
+    {id:'conductor', label:'Conductor', keys:['nombre','apellido','pasaporte','fechaNacimiento','fechaExpiracion','pais','telefono','email']},
+    {id:'expositor', label:'Expositor', keys:['empresa','expositor','montador','ref','hall','stand','puertaHall']},
+    {id:'traza',     label:'Trazabilidad', keys:['entrada','horario','comentario']},
   ];
   var _allGroupKeys=[];
   CAMPO_GROUPS.forEach(function(g){g.keys.forEach(function(k){if(ALL_CAMPOS.includes(k)&&!_allGroupKeys.includes(k))_allGroupKeys.push(k);});});
   var _extraKeys=ALL_CAMPOS.filter(k=>!_allGroupKeys.includes(k));
-  if(_extraKeys.length) CAMPO_GROUPS=[...CAMPO_GROUPS,{id:'otros',label:'⚙ Otros',keys:_extraKeys}];
+  if(_extraKeys.length) CAMPO_GROUPS=[...CAMPO_GROUPS,{id:'otros',label:'Otros',keys:_extraKeys}];
   var activeGroups=CAMPO_GROUPS.map(function(g){return {id:g.id,label:g.label,keys:g.keys.filter(k=>ALL_CAMPOS.includes(k))};}).filter(g=>g.keys.length);
 
   // ─── Columna IZQUIERDA: gestor de plantillas ───
@@ -2438,14 +2439,45 @@ function renderCamposSubtab(col){if(!canCampos())return '<div style="padding:16p
   }
   leftCol+='</div>';
 
+  // Storage de orden y ancho personalizados por col (solo SA puede modificar)
+  var _campoOrderKey='cu1_campoOrder_'+col;
+  var _campoWidthKey='cu1_campoWidth_'+col;
+  function _getCampoOrder(){try{return JSON.parse(localStorage.getItem(_campoOrderKey)||'{}');}catch(e){return {};}}
+  function _setCampoOrder(o){try{localStorage.setItem(_campoOrderKey,JSON.stringify(o));}catch(e){}}
+  function _getCampoWidth(){try{return JSON.parse(localStorage.getItem(_campoWidthKey)||'{}');}catch(e){return {};}}
+  function _setCampoWidth(w){try{localStorage.setItem(_campoWidthKey,JSON.stringify(w));}catch(e){}}
+  var _campoOrder=_getCampoOrder();
+  var _campoWidth=_getCampoWidth();
+  var _isSA=(typeof isSA==='function')?isSA():false;
+  // Aplicar orden personalizado a cada grupo
+  CAMPO_GROUPS.forEach(function(g){
+    if(_campoOrder[g.id]){
+      var ord=_campoOrder[g.id];
+      g.keys=g.keys.slice().sort(function(a,b){
+        var ia=ord.indexOf(a),ib=ord.indexOf(b);
+        if(ia<0)ia=999;if(ib<0)ib=999;
+        return ia-ib;
+      });
+    }
+  });
+
   // ─── Columna DERECHA: cada grupo es una columna (mismo layout que COLUMNAS) ───
   var rightCol='<div style="display:grid;grid-template-columns:repeat('+activeGroups.length+',260px);gap:12px;align-items:start">'
     +activeGroups.map(function(g){
       var rowsBody=g.keys.map(function(k){
         var v=campos[k]||'show'; var isVis=v!=='off';
-        var lbl=LABELS[k]||k;
-        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px">'
+        var lbl=(LABELS[k]||k).replace(/^[^\w\s]*\s*/,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'').trim();
+        var w=_campoWidth[k]||1;
+        var dragAttrs=_isSA?' draggable="true" ondragstart="_campoDragStart(event,\''+g.id+'\',\''+k+'\')" ondragover="_campoDragOver(event)" ondrop="_campoDrop(event,\''+col+'\',\''+g.id+'\',\''+k+'\')" ondragend="_campoDragEnd(event)"':'';
+        var saControls=_isSA?
+          '<div style="display:flex;gap:2px;flex-shrink:0;margin-right:4px">'
+          +'<button title="Ancho campo en formulario" onclick="_campoCycleWidth(event,\''+col+'\',\''+k+'\')" style="background:#EEEDFE;border:1px solid #AFA9EC;color:#3C3489;border-radius:4px;padding:2px 5px;font-size:9px;font-weight:800;cursor:pointer;line-height:1;min-width:24px">↔'+w+'</button>'
+          +'</div>':'';
+        var dragHandle=_isSA?'<span style="color:#9ca3af;font-size:11px;flex-shrink:0;cursor:grab;margin-right:2px" title="Arrastrar para reordenar">⋮⋮</span>':'';
+        return '<div'+dragAttrs+' data-fk="'+k+'" style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px;cursor:'+(_isSA?'grab':'default')+'">'
+          +dragHandle
           +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;color:#374151;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+lbl+'</div>'
+          +saControls
           +'<span data-campo-ev="'+ev.id+'" data-campo-k="'+k+'" data-campo-ck="'+ck+'" data-campo-col="'+col+'" onclick="cycleCampoSubtab(this)" style="cursor:pointer;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:800;white-space:nowrap;border:1.5px solid;'+(isVis?'border-color:#1D9E75;background:#E3F4E8;color:#0F6E56':'border-color:#d1d5db;background:#fff;color:#9ca3af')+'">'+(isVis?'✓ Visible':'✕ Oculta')+'</span>'
           +'</div>';
       }).join('');
@@ -2544,6 +2576,55 @@ function renameCamposCfg(ck,idx){
   _goToCamposTab(col);setTimeout(fillName,80);
   toast('✏️ Cargado para editar — modifica y pulsa Guardar','#4a5568');
 }
+window._campoDragStart=function(e,gid,k){
+  if(!isSA())return;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',k);
+  e.currentTarget.style.opacity='0.4';
+  window._campoDragSrc={gid,k};
+};
+window._campoDragOver=function(e){if(!isSA())return;e.preventDefault();e.dataTransfer.dropEffect='move';};
+window._campoDragEnd=function(e){if(!isSA())return;e.currentTarget.style.opacity='';};
+window._campoDrop=function(e,col,gid,targetK){
+  if(!isSA())return;
+  e.preventDefault();
+  var src=window._campoDragSrc;
+  if(!src||src.gid!==gid||src.k===targetK)return;
+  var key='cu1_campoOrder_'+col;
+  var ord={};try{ord=JSON.parse(localStorage.getItem(key)||'{}');}catch(_){}
+  // Toma lista actual del grupo: si no existe, derivar del DOM
+  var groupKeys=ord[gid]||[];
+  // Reconstruir lista actual leyendo del DOM si está vacía
+  if(!groupKeys.length){
+    var els=document.querySelectorAll('[data-fk]');
+    groupKeys=[];
+    els.forEach(function(el){var k=el.getAttribute('data-fk');if(k&&!groupKeys.includes(k))groupKeys.push(k);});
+  }
+  if(!groupKeys.includes(src.k))groupKeys.push(src.k);
+  if(!groupKeys.includes(targetK))groupKeys.push(targetK);
+  var si=groupKeys.indexOf(src.k);
+  groupKeys.splice(si,1);
+  var ti=groupKeys.indexOf(targetK);
+  groupKeys.splice(ti,0,src.k);
+  ord[gid]=groupKeys;
+  try{localStorage.setItem(key,JSON.stringify(ord));}catch(_){}
+  // Re-render
+  var renders={ingresos:function(){iF._sub='campos';renderIngresos();},ingresos2:function(){iF._sub2='campos';renderIngresos2();},agenda:function(){window._agSubTab='campos';renderAgenda();}};
+  if(renders[col])renders[col]();
+};
+window._campoCycleWidth=function(ev,col,k){
+  ev.stopPropagation();
+  if(!isSA())return;
+  var key='cu1_campoWidth_'+col;
+  var w={};try{w=JSON.parse(localStorage.getItem(key)||'{}');}catch(_){}
+  var cur=w[k]||1;
+  var next=cur>=4?1:cur+1;
+  w[k]=next;
+  try{localStorage.setItem(key,JSON.stringify(w));}catch(_){}
+  var renders={ingresos:function(){iF._sub='campos';renderIngresos();},ingresos2:function(){iF._sub2='campos';renderIngresos2();},agenda:function(){window._agSubTab='campos';renderAgenda();}};
+  if(renders[col])renders[col]();
+};
+
 function cycleCampoSubtab(el){if(!canCampos()){toast('Sin permiso para configurar campos','var(--red)');return;};
   const k=el.dataset.campoK,ck=el.dataset.campoCk,col=el.dataset.campoCol;
   if(!DB.camposCfg)DB.camposCfg={};
@@ -3685,36 +3766,63 @@ const _COL_DEFS={
   ingresos:[
     {k:'pos',l:'#',always:true},
     {k:'matricula',l:'MATRÍCULA',always:true},
+    {k:'remolque',l:'REMOLQUE'},
+    {k:'tipoVehiculo',l:'TIPO VEH.'},
+    {k:'descargaTipo',l:'TIPO SERVICIO'},
     {k:'llamador',l:'PAGERS'},
     {k:'referencia',l:'REF.'},
-    {k:'nombre',l:'EMPRESA'},
+    {k:'empresa',l:'EMPRESA'},
+    {k:'expositor',l:'EXPOSITOR'},
+    {k:'montador',l:'MONTADOR'},
+    {k:'nombre',l:'NOMBRE'},
+    {k:'apellido',l:'APELLIDO'},
     {k:'conductor',l:'CONDUCTOR'},
+    {k:'pasaporte',l:'PASAPORTE'},
+    {k:'pais',l:'PAÍS'},
     {k:'telefono',l:'TEL.'},
+    {k:'email',l:'EMAIL'},
     {k:'hall',l:'HALL'},
     {k:'stand',l:'STAND'},
+    {k:'puertaHall',l:'PUERTA HALL'},
     {k:'evento',l:'EVENTO'},
     {k:'salida',l:'ESTADO'},
     {k:'rampaHora',l:'RAMPA'},
     {k:'oficinaHora',l:'REGISTRADO'},
     {k:'salidaHora',l:'ENVIADO'},
+    {k:'salidaRealParking',l:'SAL. PARKING'},
     {k:'entrada',l:'Entrada'},
+    {k:'comentario',l:'COMENTARIO'},
+    {k:'horario',l:'HORARIO'},
   ],
   ingresos2:[
     {k:'pos',l:'#',always:true},
     {k:'matricula',l:'MATRÍCULA',always:true},
+    {k:'remolque',l:'REMOLQUE'},
+    {k:'tipoVehiculo',l:'TIPO VEH.'},
+    {k:'descargaTipo',l:'TIPO SERVICIO'},
     {k:'llamador',l:'PAGERS'},
     {k:'referencia',l:'REF.'},
-    {k:'nombre',l:'EMPRESA'},
+    {k:'empresa',l:'EMPRESA'},
+    {k:'expositor',l:'EXPOSITOR'},
+    {k:'montador',l:'MONTADOR'},
+    {k:'nombre',l:'NOMBRE'},
+    {k:'apellido',l:'APELLIDO'},
     {k:'conductor',l:'CONDUCTOR'},
+    {k:'pasaporte',l:'PASAPORTE'},
+    {k:'pais',l:'PAÍS'},
     {k:'telefono',l:'TEL.'},
+    {k:'email',l:'EMAIL'},
     {k:'hall',l:'HALL'},
     {k:'stand',l:'STAND'},
+    {k:'puertaHall',l:'PUERTA HALL'},
     {k:'evento',l:'EVENTO'},
     {k:'salida',l:'ESTADO'},
     {k:'rampaHora',l:'RAMPA'},
     {k:'oficinaHora',l:'REGISTRADO'},
     {k:'salidaHora',l:'ENVIADO'},
     {k:'entrada',l:'FECHA'},
+    {k:'comentario',l:'COMENTARIO'},
+    {k:'horario',l:'HORARIO'},
   ],
   agenda:[
     {k:'estado',l:'Estado',always:true},
@@ -3724,8 +3832,16 @@ const _COL_DEFS={
     {k:'dif',l:'Dif.'},
     {k:'matricula',l:'Matrícula',always:true},
     {k:'referencia',l:'Ref.'},
+    {k:'expositor',l:'Expositor'},
+    {k:'montador',l:'Montador'},
+    {k:'llamador',l:'Pagers'},
+    {k:'nombre',l:'Nombre'},
+    {k:'apellido',l:'Apellido'},
     {k:'conductor',l:'Conductor'},
     {k:'empresa',l:'Empresa'},
+    {k:'pasaporte',l:'Pasaporte'},
+    {k:'pais',l:'País'},
+    {k:'email',l:'Email'},
     {k:'hall',l:'Hall'},
     {k:'stand',l:'Stand'},
     {k:'puertaHall',l:'Puerta Hall'},
@@ -3737,6 +3853,8 @@ const _COL_DEFS={
     {k:'pase',l:'Pase'},
     {k:'notas',l:'Notas'},
     {k:'extras',l:'Extras'},
+    {k:'comentario',l:'Comentario'},
+    {k:'horario',l:'Horario'},
   ],
   flota:[
     {k:'posicion',l:'#',always:true},
@@ -3762,6 +3880,7 @@ const _COL_DEFS={
 };
 
 function _getColVisKey(tab){return (SK||'cu1')+'_colvis_'+tab+'_'+(CU?.id||'anon');}
+function _getColOrderKey(tab){return (SK||'cu1')+'_colord_'+tab+'_'+(CU?.id||'anon');}
 
 function _getColVis(tab){
   try{
@@ -3775,6 +3894,65 @@ function _getColVis(tab){
 
 function _setColVis(tab,vis){
   try{localStorage.setItem(_getColVisKey(tab),JSON.stringify(vis));}catch(e){}
+}
+
+function _getColOrder(tab){
+  try{
+    const raw=localStorage.getItem(_getColOrderKey(tab));
+    if(raw)return JSON.parse(raw);
+  }catch(e){}
+  return (_COL_DEFS[tab]||[]).map(d=>d.k);
+}
+function _setColOrder(tab,order){
+  try{localStorage.setItem(_getColOrderKey(tab),JSON.stringify(order));}catch(e){}
+}
+function _moveColUp(tab,k){/* deprecated */}
+function _moveColDown(tab,k){/* deprecated */}
+window._colDragStart=function(e,tab,k){
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',k);
+  e.currentTarget.style.opacity='0.4';
+  window._colDragSrc={tab,k};
+};
+window._colDragOver=function(e){e.preventDefault();e.dataTransfer.dropEffect='move';};
+window._colDragEnd=function(e){e.currentTarget.style.opacity='';};
+window._colDrop=function(e,tab,targetK){
+  e.preventDefault();
+  var src=window._colDragSrc;
+  if(!src||src.tab!==tab||src.k===targetK)return;
+  var ord=_getColOrder(tab);
+  // si target no estaba en ord, lo añadimos al final del ord original
+  if(ord.indexOf(targetK)<0)ord.push(targetK);
+  if(ord.indexOf(src.k)<0)ord.push(src.k);
+  var si=ord.indexOf(src.k);
+  ord.splice(si,1);
+  var ti=ord.indexOf(targetK);
+  ord.splice(ti,0,src.k);
+  _setColOrder(tab,ord);
+  var r={ingresos:function(){iF._sub='columnas';renderIngresos();},ingresos2:function(){iF._sub2='columnas';renderIngresos2();},agenda:function(){window._agSubTab='columnas';renderAgenda();},flota:function(){window._flotaSub='columnas';renderFlota();},conductores:function(){window._condSub='columnas';renderConductores();}};
+  if(r[tab])r[tab]();
+};
+function _getFavTpls(tab){
+  try{
+    const raw=localStorage.getItem((SK||'cu1')+'_colfav_'+tab+'_'+(CU?.id||'anon'));
+    if(raw)return JSON.parse(raw);
+  }catch(e){}
+  return [];
+}
+function _setFavTpls(tab,arr){
+  try{localStorage.setItem((SK||'cu1')+'_colfav_'+tab+'_'+(CU?.id||'anon'),JSON.stringify(arr));}catch(e){}
+}
+function _toggleFav(tab,name){
+  let favs=_getFavTpls(tab);
+  if(favs.includes(name)){
+    favs=favs.filter(x=>x!==name);
+  } else {
+    if(favs.length>=4){toast('Máximo 4 favoritas','var(--amber)');return;}
+    favs.push(name);
+  }
+  _setFavTpls(tab,favs);
+  const r={ingresos:function(){iF._sub='columnas';renderIngresos();},ingresos2:function(){iF._sub2='columnas';renderIngresos2();},agenda:function(){window._agSubTab='columnas';renderAgenda();},flota:function(){window._flotaSub='columnas';renderFlota();},conductores:function(){window._condSub='columnas';renderConductores();}};
+  if(r[tab])r[tab]();
 }
 
 function _isColVisible(tab,k){
@@ -3823,33 +4001,41 @@ function renderColVisSub(tab){
   // Grupos para layout colapsable
   var COL_GROUPS_DEF={
     ingresos:[
-      {id:'vehiculo', label:'🚛 Vehículo',    keys:['pos','matricula','rampaHora','salida']},
-      {id:'conductor',label:'👤 Conductor',   keys:['nombre','conductor','telefono']},
-      {id:'expositor',label:'🏢 Expositor',   keys:['referencia','llamador','hall','stand','evento']},
-      {id:'traza',    label:'📊 Trazabilidad',keys:['oficinaHora','salidaHora','entrada']},
+      {id:'vehiculo', label:'Vehículo',    keys:['pos','matricula','remolque','tipoVehiculo','descargaTipo','llamador']},
+      {id:'conductor',label:'Conductor',   keys:['nombre','conductor','apellido','pasaporte','fechaNacimiento','pais','telefono','email']},
+      {id:'expositor',label:'Expositor',   keys:['empresa','expositor','montador','referencia','ref','hall','stand','puertaHall','evento']},
+      {id:'traza',    label:'Trazabilidad',keys:['salida','rampaHora','oficinaHora','salidaHora','salidaRealParking','entrada','comentario','horario']},
     ],
     ingresos2:[
-      {id:'vehiculo', label:'🚛 Vehículo',    keys:['pos','matricula','rampaHora','salida']},
-      {id:'conductor',label:'👤 Conductor',   keys:['nombre','conductor','telefono']},
-      {id:'expositor',label:'🏢 Expositor',   keys:['referencia','llamador','hall','stand','evento']},
-      {id:'traza',    label:'📊 Trazabilidad',keys:['oficinaHora','salidaHora','entrada']},
+      {id:'vehiculo', label:'Vehículo',    keys:['pos','matricula','remolque','tipoVehiculo','descargaTipo','llamador']},
+      {id:'conductor',label:'Conductor',   keys:['nombre','conductor','apellido','pasaporte','fechaNacimiento','pais','telefono','email']},
+      {id:'expositor',label:'Expositor',   keys:['empresa','expositor','montador','referencia','ref','hall','stand','puertaHall','evento']},
+      {id:'traza',    label:'Trazabilidad',keys:['salida','rampaHora','oficinaHora','salidaHora','salidaRealParking','entrada','comentario','horario']},
     ],
     agenda:[
-      {id:'vehiculo', label:'🚛 Vehículo',    keys:['matricula','remolque','tipoVehiculo','descargaTipo','tipoCarga']},
-      {id:'conductor',label:'👤 Conductor',   keys:['conductor','empresa','telefono','pase']},
-      {id:'expositor',label:'🏢 Expositor',   keys:['referencia','hall','stand','puertaHall']},
-      {id:'traza',    label:'📊 Trazabilidad',keys:['estado','fecha','hora','horaReal','dif','notas','extras']},
+      {id:'vehiculo', label:'Vehículo',    keys:['matricula','remolque','tipoVehiculo','descargaTipo','tipoCarga','llamador']},
+      {id:'conductor',label:'Conductor',   keys:['conductor','nombre','apellido','pasaporte','pais','telefono','email','pase']},
+      {id:'expositor',label:'Expositor',   keys:['empresa','expositor','montador','referencia','ref','hall','stand','puertaHall','evento']},
+      {id:'traza',    label:'Trazabilidad',keys:['estado','fecha','hora','horaReal','dif','notas','extras','comentario','horario']},
     ],
   };
   var rawGroups=COL_GROUPS_DEF[tab];
+  var savedOrder=_getColOrder(tab);
+  function _sortByOrder(keys){
+    return keys.slice().sort(function(a,b){
+      var ia=savedOrder.indexOf(a), ib=savedOrder.indexOf(b);
+      if(ia<0)ia=999; if(ib<0)ib=999;
+      return ia-ib;
+    });
+  }
   var activeGroups;
   if(rawGroups){
-    activeGroups=rawGroups.map(function(g){return {id:g.id,label:g.label,keys:g.keys.filter(k=>defs.find(d=>d.k===k))};}).filter(g=>g.keys.length);
+    activeGroups=rawGroups.map(function(g){return {id:g.id,label:g.label,keys:_sortByOrder(g.keys.filter(k=>defs.find(d=>d.k===k)))};}).filter(g=>g.keys.length);
     var coveredKeys=new Set(activeGroups.flatMap(g=>g.keys));
     var remainKeys=defs.filter(d=>!coveredKeys.has(d.k)).map(d=>d.k);
-    if(remainKeys.length) activeGroups=[...activeGroups,{id:'otros',label:'⚙ Otros',keys:remainKeys}];
+    if(remainKeys.length) activeGroups=[...activeGroups,{id:'otros',label:'Otros',keys:_sortByOrder(remainKeys)}];
   } else {
-    activeGroups=[{id:'all',label:'📋 Columnas',keys:defs.map(d=>d.k)}];
+    activeGroups=[{id:'all',label:'Columnas',keys:_sortByOrder(defs.map(d=>d.k))}];
   }
 
   // ─── Columna IZQUIERDA: gestor de plantillas ───
@@ -3865,7 +4051,15 @@ function renderColVisSub(tab){
     leftCol+='<div style="border-top:1px solid #e5e7eb;padding-top:10px;display:flex;flex-direction:column;gap:7px">'
       +'<div style="font-size:10px;font-weight:800;color:#5a6473;letter-spacing:.6px;text-transform:uppercase;margin-bottom:2px">Guardadas</div>'
       +(filtered.length
-        ?filtered.map(({c,i})=>'<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:7px;background:#f4f5f7;border:1px solid #e5e7eb"><div style="font-size:11px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.2px;color:#374151">⚙ '+c.name+'</div><button class="btn tt" data-tip="CARGAR" onclick="_loadColCfg(\''+tab+'\','+i+')" style="background:#185FA5;color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">↓</button><button class="btn tt" data-tip="EDITAR" onclick="_renameColCfg(\''+tab+'\','+i+')" style="background:#fff;color:#111;border:1px solid #c8c8c8;border-radius:6px;padding:5px 7px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">✏️</button><button class="btn tt" data-tip="ELIMINAR" onclick="_delColCfg(\''+tab+'\','+i+')" style="background:#E24B4A;color:#fff;border:none;border-radius:6px;padding:5px 7px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">✕</button></div>').join('')
+        ?filtered.map(({c,i})=>{
+          var favs=_getFavTpls(tab);
+          var isFav=favs.includes(c.name);
+          return '<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:7px;background:#f4f5f7;border:1px solid #e5e7eb"><div style="font-size:11px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.2px;color:#374151">⚙ '+c.name+'</div>'
+            +'<button class="btn tt" data-tip="FAVORITA (MÁX 4)" onclick="_toggleFav(\''+tab+'\',\''+c.name.replace(/'/g,"\\'")+'\')" style="background:'+(isFav?'#FCD34D':'#fff')+';color:#92400E;border:1px solid #FCD34D;border-radius:6px;padding:5px 7px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">⭐</button>'
+            +'<button class="btn tt" data-tip="CARGAR" onclick="_loadColCfg(\''+tab+'\','+i+')" style="background:#185FA5;color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">↓</button>'
+            +'<button class="btn tt" data-tip="EDITAR" onclick="_renameColCfg(\''+tab+'\','+i+')" style="background:#fff;color:#111;border:1px solid #c8c8c8;border-radius:6px;padding:5px 7px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">✏️</button>'
+            +'<button class="btn tt" data-tip="ELIMINAR" onclick="_delColCfg(\''+tab+'\','+i+')" style="background:#E24B4A;color:#fff;border:none;border-radius:6px;padding:5px 7px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">✕</button></div>';
+        }).join('')
         :'<div style="font-size:10px;color:#9ca3af;padding:6px 2px">Sin plantillas para este evento.</div>')
       +'</div>';
   }
@@ -3879,7 +4073,10 @@ function renderColVisSub(tab){
       var on=def.always||vis[k]!==false;
       var lbl=def.l+(def.always?' <span style="font-size:9px;color:#9ca3af">(✦)</span>':'');
       var oc=def.always?'':'onclick="_toggleColVis(\''+tab+'\',\''+k+'\',this)"';
-      return '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px">'
+      var dragAttrs=def.always?'':'draggable="true" ondragstart="_colDragStart(event,\''+tab+'\',\''+k+'\')" ondragover="_colDragOver(event)" ondrop="_colDrop(event,\''+tab+'\',\''+k+'\')" ondragend="_colDragEnd(event)"';
+      var cursor=def.always?'default':'grab';
+      return '<div '+dragAttrs+' data-colk="'+k+'" style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px;cursor:'+cursor+'">'
+        +(def.always?'':'<span style="color:#9ca3af;font-size:11px;flex-shrink:0;cursor:grab">⋮⋮</span>')
         +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;color:#374151;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+lbl+'</div>'
         +'<span '+oc+' style="cursor:'+(def.always?'default':'pointer')+';padding:3px 8px;border-radius:5px;font-size:10px;font-weight:800;white-space:nowrap;border:1.5px solid;'+(on?'border-color:#1D9E75;background:#E3F4E8;color:#0F6E56':'border-color:#d1d5db;background:#fff;color:#9ca3af')+'">'+(on?'✓ Visible':'✕ Oculta')+'</span>'
         +'</div>';
@@ -3893,7 +4090,17 @@ function renderColVisSub(tab){
       +'</div>';
   }).join('');
 
+  // Barra de favoritas arriba
+  var favs=_getFavTpls(tab);
+  var favBar='';
+  if(favs.length){
+    favBar='<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;padding:8px 10px;background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:8px"><span style="font-size:10px;font-weight:800;color:#92400E;letter-spacing:.6px;text-transform:uppercase;margin-right:4px">⭐ Favoritas:</span>'
+      +favs.map(n=>'<button onclick="_loadColCfgByName(\''+tab+'\',\''+n.replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')" style="background:#fff;border:1.5px solid #FCD34D;color:#92400E;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.3px">'+n+'</button>').join('')
+      +'</div>';
+  }
+
   return '<div style="padding:6px 0">'
+    +favBar
     +'<div style="display:grid;grid-template-columns:320px repeat('+activeGroups.length+',260px);gap:12px;align-items:start">'
     +leftCol+groupCols
     +'</div>'
@@ -3920,17 +4127,17 @@ function _saveColCfg(tab){
   const name=(inp?.value||'').trim();
   if(!name){toast('Escribe un nombre','var(--amber)');return;}
   const vis=_getColVis(tab);
+  const order=_getColOrder(tab);
   let saved=[];
   const sKey=(SK||'cu1')+'_colcfg_'+tab+'_'+(CU?.id||'anon');
   try{const r=localStorage.getItem(sKey);if(r)saved=JSON.parse(r);}catch(e){}
   const _evNow=getActiveEvent();
   const _evNombre=(_evNow&&_evNow.nombre)||'Sin evento';
   const ei=saved.findIndex(x=>x.name===name);
-  if(ei>=0)saved[ei]={name,vis,evNombre:_evNombre};else saved.push({name,vis,evNombre:_evNombre});
+  if(ei>=0)saved[ei]={name,vis,order,evNombre:_evNombre};else saved.push({name,vis,order,evNombre:_evNombre});
   try{localStorage.setItem(sKey,JSON.stringify(saved));}catch(e){}
   window['_colEditing_'+tab]='';
-  toast('💾 Configuración guardada: '+name,'var(--text2)');
-  // Re-render para que aparezca en su grupo de evento
+  toast('💾 Plantilla guardada: '+name,'var(--text2)');
   const renders={ingresos:function(){iF._sub='columnas';renderIngresos();},ingresos2:function(){iF._sub2='columnas';renderIngresos2();},agenda:function(){window._agSubTab='columnas';renderAgenda();},flota:function(){window._flotaSub='columnas';renderFlota();},conductores:function(){window._condSub='columnas';renderConductores();}};
   const fn=renders[tab];if(fn)fn();
 }
@@ -3941,10 +4148,17 @@ function _loadColCfg(tab,idx){
   try{const r=localStorage.getItem(sKey);if(r)saved=JSON.parse(r);}catch(e){}
   if(!saved[idx])return;
   _setColVis(tab,saved[idx].vis);
-  toast('📋 Columnas cargadas: '+saved[idx].name,'#4a5568');
-  // Re-render manteniendo subtab columnas para que el usuario vea los cambios
+  if(saved[idx].order)_setColOrder(tab,saved[idx].order);
+  toast('📋 Plantilla cargada: '+saved[idx].name,'#4a5568');
   const renders={ingresos:function(){iF._sub='columnas';renderIngresos();},ingresos2:function(){iF._sub2='columnas';renderIngresos2();},agenda:function(){window._agSubTab='columnas';renderAgenda();},flota:function(){window._flotaSub='columnas';renderFlota();},conductores:function(){window._condSub='columnas';renderConductores();}};
   const fn=renders[tab];if(fn)fn();
+}
+function _loadColCfgByName(tab,name){
+  const sKey=(SK||'cu1')+'_colcfg_'+tab+'_'+(CU?.id||'anon');
+  let saved=[];
+  try{const r=localStorage.getItem(sKey);if(r)saved=JSON.parse(r);}catch(e){}
+  const idx=saved.findIndex(x=>x.name===name);
+  if(idx>=0)_loadColCfg(tab,idx);
 }
 
 
@@ -4136,71 +4350,127 @@ function _ingLista(items){
   const _cols=[];
   _cols.push(_w('pos','62px'));
   _cols.push(_w('matricula','125px'));
+  if(_isColVisible('ingresos','remolque'))_cols.push(_w('remolque','100px'));
+  if(_isColVisible('ingresos','tipoVehiculo'))_cols.push(_w('tipoVehiculo','85px'));
+  if(_isColVisible('ingresos','descargaTipo'))_cols.push(_w('descargaTipo','110px'));
   if(_isColVisible('ingresos','llamador'))_cols.push(_w('llamador','75px'));
   if(_isColVisible('ingresos','referencia'))_cols.push(_w('referencia','95px'));
-  if(_isColVisible('ingresos','nombre'))_cols.push(_w('nombre','170px'));
+  if(_isColVisible('ingresos','empresa'))_cols.push(_w('empresa','150px'));
+  if(_isColVisible('ingresos','expositor'))_cols.push(_w('expositor','130px'));
+  if(_isColVisible('ingresos','montador'))_cols.push(_w('montador','120px'));
+  if(_isColVisible('ingresos','nombre'))_cols.push(_w('nombre','110px'));
+  if(_isColVisible('ingresos','apellido'))_cols.push(_w('apellido','110px'));
   if(_isColVisible('ingresos','conductor'))_cols.push(_w('conductor','110px'));
+  if(_isColVisible('ingresos','pasaporte'))_cols.push(_w('pasaporte','100px'));
+  if(_isColVisible('ingresos','pais'))_cols.push(_w('pais','85px'));
   if(_isColVisible('ingresos','telefono'))_cols.push(_w('telefono','95px'));
+  if(_isColVisible('ingresos','email'))_cols.push(_w('email','150px'));
   if(_isColVisible('ingresos','hall'))_cols.push(_w('hall','65px'));
   if(_isColVisible('ingresos','stand'))_cols.push(_w('stand','60px'));
+  if(_isColVisible('ingresos','puertaHall'))_cols.push(_w('puertaHall','85px'));
   if(_isColVisible('ingresos','evento'))_cols.push(_w('evento','75px'));
   _cols.push(_w('estado','100px'));
   if(_isColVisible('ingresos','rampaHora'))_cols.push(_w('rampaHora','75px'));
   if(_isColVisible('ingresos','oficinaHora'))_cols.push(_w('oficinaHora','85px'));
   if(_isColVisible('ingresos','salidaHora'))_cols.push(_w('salidaHora','75px'));
+  if(_isColVisible('ingresos','salidaRealParking'))_cols.push(_w('salidaRealParking','85px'));
   if(_isColVisible('ingresos','entrada'))_cols.push(_w('entrada','90px'));
+  if(_isColVisible('ingresos','comentario'))_cols.push(_w('comentario','140px'));
+  if(_isColVisible('ingresos','horario'))_cols.push(_w('horario','85px'));
   _cols.push(_w('acciones','185px'));
   const _colgroup='<colgroup>'+_cols.map(w=>`<col${w?` style="width:${w}"`:''}>`).join('')+'</colgroup>';
   const _colKeys=['pos','matricula'];
+  if(_isColVisible('ingresos','remolque'))_colKeys.push('remolque');
+  if(_isColVisible('ingresos','tipoVehiculo'))_colKeys.push('tipoVehiculo');
+  if(_isColVisible('ingresos','descargaTipo'))_colKeys.push('descargaTipo');
   if(_isColVisible('ingresos','llamador'))_colKeys.push('llamador');
   if(_isColVisible('ingresos','referencia'))_colKeys.push('referencia');
+  if(_isColVisible('ingresos','empresa'))_colKeys.push('empresa');
+  if(_isColVisible('ingresos','expositor'))_colKeys.push('expositor');
+  if(_isColVisible('ingresos','montador'))_colKeys.push('montador');
   if(_isColVisible('ingresos','nombre'))_colKeys.push('nombre');
+  if(_isColVisible('ingresos','apellido'))_colKeys.push('apellido');
   if(_isColVisible('ingresos','conductor'))_colKeys.push('conductor');
+  if(_isColVisible('ingresos','pasaporte'))_colKeys.push('pasaporte');
+  if(_isColVisible('ingresos','pais'))_colKeys.push('pais');
   if(_isColVisible('ingresos','telefono'))_colKeys.push('telefono');
+  if(_isColVisible('ingresos','email'))_colKeys.push('email');
   if(_isColVisible('ingresos','hall'))_colKeys.push('hall');
   if(_isColVisible('ingresos','stand'))_colKeys.push('stand');
+  if(_isColVisible('ingresos','puertaHall'))_colKeys.push('puertaHall');
   if(_isColVisible('ingresos','evento'))_colKeys.push('evento');
   _colKeys.push('estado');
   if(_isColVisible('ingresos','rampaHora'))_colKeys.push('rampaHora');
   if(_isColVisible('ingresos','oficinaHora'))_colKeys.push('oficinaHora');
   if(_isColVisible('ingresos','salidaHora'))_colKeys.push('salidaHora');
+  if(_isColVisible('ingresos','salidaRealParking'))_colKeys.push('salidaRealParking');
   if(_isColVisible('ingresos','entrada'))_colKeys.push('entrada');
+  if(_isColVisible('ingresos','comentario'))_colKeys.push('comentario');
+  if(_isColVisible('ingresos','horario'))_colKeys.push('horario');
   _colKeys.push('acciones');
   return`
   ${pageItems.length?`<div class="tbl-wrap"><table class="dtbl dtbl-ing" data-coltab="ingresos" data-colkeys="${_colKeys.join(',')}">${_colgroup}<thead><tr>
     ${thSort('ingresos','pos','#')}
     ${thSort('ingresos','matricula','MATRÍCULA')}
+    ${_isColVisible('ingresos','remolque')?'<th>REMOLQUE</th>':''}
+    ${_isColVisible('ingresos','tipoVehiculo')?'<th>TIPO VEH.</th>':''}
+    ${_isColVisible('ingresos','descargaTipo')?'<th>TIPO SERVICIO</th>':''}
     ${_isColVisible('ingresos','llamador')?thSort('ingresos','llamador','PAGERS'):''}
     ${_isColVisible('ingresos','referencia')?thSort('ingresos','referencia','REF'):''}
-    ${_isColVisible('ingresos','nombre')?thSort('ingresos','nombre','EMPRESA'):''}
+    ${_isColVisible('ingresos','empresa')?thSort('ingresos','nombre','EMPRESA'):''}
+    ${_isColVisible('ingresos','expositor')?'<th>EXPOSITOR</th>':''}
+    ${_isColVisible('ingresos','montador')?'<th>MONTADOR</th>':''}
+    ${_isColVisible('ingresos','nombre')?'<th>NOMBRE</th>':''}
+    ${_isColVisible('ingresos','apellido')?'<th>APELLIDO</th>':''}
     ${_isColVisible('ingresos','conductor')?thSort('ingresos','conductor','CONDUCTOR'):''}
+    ${_isColVisible('ingresos','pasaporte')?'<th>PASAPORTE</th>':''}
+    ${_isColVisible('ingresos','pais')?'<th>PAÍS</th>':''}
     ${_isColVisible('ingresos','telefono')?thSort('ingresos','telefono','TEL'):''}
+    ${_isColVisible('ingresos','email')?'<th>EMAIL</th>':''}
     ${_isColVisible('ingresos','hall')?'<th>HALL</th>':''}
     ${_isColVisible('ingresos','stand')?'<th>STAND</th>':''}
+    ${_isColVisible('ingresos','puertaHall')?'<th>PUERTA HALL</th>':''}
     ${_isColVisible('ingresos','evento')?'<th style="font-size:10px">EVENTO</th>':''}
     ${thSort('ingresos','salida','ESTADO')}
     ${_isColVisible('ingresos','rampaHora')?thSort('ingresos','rampaHora','RAMPA'):''}
     ${_isColVisible('ingresos','oficinaHora')?thSort('ingresos','oficinaHora','REGISTRADO'):''}
     ${_isColVisible('ingresos','salidaHora')?thSort('ingresos','salidaHora','ENVIADO'):''}
+    ${_isColVisible('ingresos','salidaRealParking')?thSort('ingresos','salidaRealParking','SAL. PARKING'):''}
     ${_isColVisible('ingresos','entrada')?thSort('ingresos','entrada','FECHA'):''}
+    ${_isColVisible('ingresos','comentario')?'<th>COMENT.</th>':''}
+    ${_isColVisible('ingresos','horario')?'<th>HORARIO</th>':''}
     <th>ACCIONES</th>
   </tr></thead><tbody>
     ${pageItems.map(i=>{const _evN=i.eventoNombre||'';const _tev=getTabEvent('ingresos');const _isAlt=_evN&&_tev&&_evN!==_tev.nombre;return`<tr style="${_isAlt?'background:#f0f7ff':''}">
       <td style="font-weight:800;font-size:18px;color:#111">${i.pos||''}</td>
-      <td><span class="mchip" style="cursor:pointer;font-size:13px" onclick="showIngDetalle('${i.id}')">${i.matricula}</span>${i.remolque?`<br><span class="mchip-sm">${i.remolque}</span>`:''}</td>
+      <td><span class="mchip" style="cursor:pointer;font-size:13px" onclick="showIngDetalle('${i.id}')">${i.matricula}</span>${i.remolque&&!_isColVisible('ingresos','remolque')?`<br><span class="mchip-sm">${i.remolque}</span>`:''}</td>
+      ${_isColVisible('ingresos','remolque')?`<td style="font-size:11px">${i.remolque||'–'}</td>`:''}
+      ${_isColVisible('ingresos','tipoVehiculo')?`<td style="font-size:11px">${i.tipoVehiculo||'–'}</td>`:''}
+      ${_isColVisible('ingresos','descargaTipo')?`<td style="font-size:11px">${i.descargaTipo||'–'}</td>`:''}
       ${_isColVisible('ingresos','llamador')?`<td style="font-size:11px">${i.llamador||'–'}</td>`:''}
       ${_isColVisible('ingresos','referencia')?`<td style="font-size:14px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#111">${i.referencia||'–'}</td>`:''}
-      ${_isColVisible('ingresos','nombre')?`<td style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.empresa||'–'}</td>`:''}
+      ${_isColVisible('ingresos','empresa')?`<td style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.empresa||'–'}</td>`:''}
+      ${_isColVisible('ingresos','expositor')?`<td style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.expositor||'–'}</td>`:''}
+      ${_isColVisible('ingresos','montador')?`<td style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.montador||'–'}</td>`:''}
+      ${_isColVisible('ingresos','nombre')?`<td style="font-size:11px">${i.nombre||'–'}</td>`:''}
+      ${_isColVisible('ingresos','apellido')?`<td style="font-size:11px">${i.apellido||'–'}</td>`:''}
       ${_isColVisible('ingresos','conductor')?`<td style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${[i.nombre||'',i.apellido||''].filter(Boolean).join(' ')||'–'}</td>`:''}
+      ${_isColVisible('ingresos','pasaporte')?`<td style="font-size:11px;font-family:'JetBrains Mono',monospace">${i.pasaporte||'–'}</td>`:''}
+      ${_isColVisible('ingresos','pais')?`<td style="font-size:11px">${i.pais||'–'}</td>`:''}
       ${_isColVisible('ingresos','telefono')?`<td style="font-size:11px">${telLink(i.telPais||'',i.telefono||'')}</td>`:''}
+      ${_isColVisible('ingresos','email')?`<td style="font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.email||'–'}</td>`:''}
       ${_isColVisible('ingresos','hall')?`<td>${(i.halls||[i.hall||'']).filter(Boolean).map(h=>hBadge(h)).join(' ')||'–'}</td>`:''}
       ${_isColVisible('ingresos','stand')?`<td style="font-size:11px">${i.stand||'–'}</td>`:''}
+      ${_isColVisible('ingresos','puertaHall')?`<td style="font-size:11px">${i.puertaHall||'–'}</td>`:''}
       ${_isColVisible('ingresos','evento')?`<td style="font-size:9px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${i.eventoNombre||''}">${i.eventoNombre?i.eventoNombre.slice(0,10):'–'}</td>`:''}
       <td>${!i.salida?'<span style="background:#E6F1FB;color:#185FA5;border-radius:8px;padding:4px 8px;font-weight:700;white-space:nowrap;font-size:12px">↪ RECINTO</span>':`<span style="background:#E6F1FB;color:#185FA5;border-radius:8px;padding:4px 8px;font-weight:700;white-space:nowrap;font-size:12px"><span style="font-size:14px">↩</span> ${fmt(i.salida,'t')}</span>`}</td>
       ${_isColVisible('ingresos','rampaHora')?`<td style="font-size:11px;white-space:nowrap;font-family:'JetBrains Mono',monospace">${i.rampaHora?(i._rampaHoraEstimada?'~':'')+fmt(i.rampaHora,'t'):'–'}</td>`:''}
       ${_isColVisible('ingresos','oficinaHora')?`<td style="font-size:11px;white-space:nowrap;font-family:'JetBrains Mono',monospace">${i.oficinaHora?fmt(i.oficinaHora,'t'):'–'}</td>`:''}
       ${_isColVisible('ingresos','salidaHora')?`<td style="font-size:11px;white-space:nowrap;font-family:'JetBrains Mono',monospace">${i.salida?fmt(i.salida,'t'):'–'}</td>`:''}
+      ${_isColVisible('ingresos','salidaRealParking')?`<td style="font-size:11px;white-space:nowrap;font-family:'JetBrains Mono',monospace;color:#1D9E75;font-weight:700">${i.salidaRealParking?fmt(i.salidaRealParking,'t'):'–'}</td>`:''}
       ${_isColVisible('ingresos','entrada')?`<td style="white-space:nowrap">${i._entradaDesdeAgenda&&i.entrada?`<span style="background:#FAEEDA;color:#854F0B;border-radius:8px;padding:4px 8px;font-weight:700;font-size:12px;white-space:nowrap">${fmt(i.entrada)}</span>`:'<span style="color:#111">–</span>'}</td>`:''}
+      ${_isColVisible('ingresos','comentario')?`<td style="font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(i.comentario||'').replace(/"/g,'&quot;')}">${i.comentario||'–'}</td>`:''}
+      ${_isColVisible('ingresos','horario')?`<td style="font-size:11px">${i.horario||'–'}</td>`:''}
       <td><div style="display:flex;gap:5px;flex-wrap:nowrap">
         <button class="btn tt" data-tip="IMPRIMIR" style="background:#3a4250;color:#fff;border:none;height:38px;min-width:44px;border-radius:8px;padding:0 8px;font-size:16px;display:inline-flex;align-items:center;justify-content:center" onclick="printIngreso('${i.id}')">🖨</button>
         <button class="btn tt" data-tip="RAMPA" style="background:#1D9E75;color:#fff;border:none;height:38px;min-width:44px;border-radius:8px;padding:0 8px;font-size:16px;display:inline-flex;align-items:center;justify-content:center" onclick="printTrqRef('${i.id}')">R</button>
@@ -5231,7 +5501,30 @@ function printIngreso2(id){
   saveTabPhrases('ing2');
   _printWithActiveTpl('ing2',i,true,'ing2','normal');
 }
-function marcarSalidaIng2(id){const i=(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;i.salida=nowL();saveDBNow();renderIngresos2();renderHdr();}
+function marcarSalidaIng2(id){
+  const i=(DB.ingresos2||[]).find(x=>x.id===id);
+  if(!i)return;
+  const _ahora=nowL();
+  i.salida=_ahora;
+  i.salidaPor=CU?.nombre||'?';
+  // ── PROPAGAR SALIDA REAL DEL PARKING al registro espejo en DB.ingresos ──
+  // Misma matrícula + mismo día. La salida de parking es la 4ª trazabilidad.
+  if(i.matricula && i.entrada){
+    const matU=String(i.matricula).toUpperCase();
+    const dia=String(i.entrada).slice(0,10);
+    const espejo=(DB.ingresos||[]).find(x=>
+      String(x.matricula||'').toUpperCase()===matU
+      && String(x.entrada||'').slice(0,10)===dia
+    );
+    if(espejo){
+      espejo.salidaRealParking=_ahora;
+      espejo.salidaRealParkingPor=CU?.nombre||'?';
+      const ix=DB.ingresos.findIndex(x=>x.id===espejo.id);
+      if(ix>=0)DB.ingresos[ix]=espejo;
+    }
+  }
+  saveDBNow();renderIngresos2();renderHdr();
+}
 function reactivarIngreso2(id){const i=(DB.ingresos2||[]).find(x=>x.id===id);if(!i)return;i.salida=null;saveDBNow();renderIngresos2();renderHdr();toast('↺ Salida anulada','var(--amber)');}
 function showIngDetalle(id,source){
   const col=source||'ingresos';
@@ -6446,6 +6739,15 @@ function openIngModal(i){
   set('fiEmp',i?.empresa);set('fiMontador',i?.montador);set('fiExpositor',i?.expositor);
   set('fiStand',i?.stand);set('fiPuertaHall',i?.puertaHall);set('fiRem',i?.remolque);set('fiNom',i?.nombre);set('fiApe',i?.apellido);
   set('fiPas',i?.pasaporte);set('fiFechaNac',i?.fechaNacimiento);set('fiFechaExp',i?.fechaExpiracion);set('fiPais',i?.pais);
+  // Fecha entrada — si tiene entrada, formatear a YYYY-MM-DD; si no, usar hoy
+  if(document.getElementById('fiEntrada')){
+    if(i?.entrada){
+      const d=new Date(i.entrada);
+      if(!isNaN(d.getTime()))document.getElementById('fiEntrada').value=d.toISOString().slice(0,10);
+    } else {
+      document.getElementById('fiEntrada').value=new Date().toISOString().slice(0,10);
+    }
+  }
   set('fiTelP',i?.telPais||'+34');set('fiTel',i?.telefono);set('fiEmail',i?.email);
   set('fiComent',i?.comentario);set('fiCarga',i?.tipoCarga||'');set('fiRegRXL',i?.regRXL||'');set('fiSOT',i?.oficinaSot||'');set('fiTipoVeh',i?.tipoVehiculo||'');set('fiDescarga',i?.descargaTipo||'');
   // Posición
@@ -6492,6 +6794,20 @@ function openIngModal(i){
     renderHallTags();
   }
   document.getElementById('mIng').classList.add('open');
+  // ── SUPERADMIN: aplicar anchos personalizados a los campos del formulario ──
+  try{
+    var _col=_ingSource==='ingresos2'?'ingresos2':'ingresos';
+    var _w={};try{_w=JSON.parse(localStorage.getItem('cu1_campoWidth_'+_col)||'{}');}catch(_){}
+    // Mapeo de keys a id del .fg
+    var _fgMap={posicion:'fg-pos',matricula:'fg-mat',telefono:'fg-telefono',empresa:'fg-empresa',hall:'fg-hall',stand:'fg-stand',puertaHall:'fg-puertaHall',llamador:'fg-llamador',ref:'fg-ref',montador:'fg-montador',expositor:'fg-expositor',remolque:'fg-remolque',tipoVehiculo:'fg-tipoVeh',descargaTipo:'fg-descarga',nombre:'fg-nombre',apellido:'fg-apellido',pasaporte:'fg-pasaporte',fechaNacimiento:'fg-fechaNac',fechaExpiracion:'fg-fechaExp',pais:'fg-pais',email:'fg-email',entrada:'fg-entrada',comentario:'fg-comentario',horario:'fg-horario'};
+    Object.keys(_w).forEach(function(k){
+      var fgId=_fgMap[k];if(!fgId)return;
+      var el=document.getElementById(fgId);if(!el)return;
+      // 1=normal, 2=2cols, 3=3cols, 4=4cols (ancho completo)
+      var span=_w[k]||1;
+      el.style.gridColumn='span '+span;
+    });
+  }catch(_){}
   // Mostrar/ocultar botón OCR según permiso
   const _ocrBtn=document.getElementById('btnOcrCam');if(_ocrBtn)_ocrBtn.style.display=canOcr()?'inline-flex':'none';
   // Disparar buscador de referencia tras abrir el modal (el campo ya tiene valor)
@@ -6697,10 +7013,34 @@ function autoFillFromHist(id){if(!_autoFillOn)return;
     if(ult && ult.pos){
       set('fiPos',ult.pos);
     }
+    // FECHA: usar la fecha del ingreso de rampa más reciente (mismo día generalmente),
+    // o usar la fecha del registro encontrado, o usar HOY como último recurso
+    const fechaEnt=(ult&&ult.entrada)||i.entrada||new Date().toISOString();
+    if(fechaEnt && document.getElementById('fiEntrada')){
+      const d=new Date(fechaEnt);
+      if(!isNaN(d.getTime()))document.getElementById('fiEntrada').value=d.toISOString().slice(0,10);
+    }
+    // ── MATCH AGENDA: traer referencia REAL desde agenda (gana sobre la rampa) ──
+    const _hoy=new Date().toISOString().slice(0,10);
+    const _ag=(DB.agenda||[]).find(a=>
+      String(a.matricula||'').toUpperCase()===matU &&
+      a.estado!=='SALIDA' &&
+      (!a.fecha||a.fecha>=_hoy.slice(0,7))
+    );
+    if(_ag && _ag.referencia){
+      set('fiRef',_ag.referencia);
+      // Otros campos que solo agenda conoce con certeza
+      if(_ag.expositor)set('fiExpositor',_ag.expositor);
+      if(_ag.montador)set('fiMontador',_ag.montador);
+      if(_ag.empresa)set('fiEmp',_ag.empresa);
+      if(_ag.hall&&!document.getElementById('fiHall')?.value)set('fiHall',_ag.hall);
+      if(_ag.stand)set('fiStand',_ag.stand);
+      if(_ag.puertaHall)set('fiPuertaHall',_ag.puertaHall);
+    }
   }
   updatePhrasePreview();
   document.getElementById('fiHistorial').style.display='none';
-  toast('📋 Matrícula, tipo vehículo, posición y teléfono absorbidos','#4a5568');
+  toast('📋 Matrícula, posición, fecha, referencia y datos absorbidos','#4a5568');
 }
 function searchChoferIng(q){const res=document.getElementById('fiChoferResults');if(!res)return;if(!q||q.length<2){res.classList.remove('open');return;}const ql=q.toLowerCase();const found=DB.conductores.filter(c=>`${c.nombre} ${c.apellido} ${c.matricula||''} ${c.empresa||''}`.toLowerCase().includes(ql)).slice(0,8);if(!found.length){res.classList.remove('open');return;}res.innerHTML=found.map(c=>`<div class="dr-item" onmousedown="fillChoferIng('${c.id}')">${c.nombre} ${c.apellido}${c.matricula?' · <b>'+c.matricula+'</b>':''} <span style="color:var(--text3)">${c.empresa||''}</span></div>`).join('');res.classList.add('open');}
 // ── Búsqueda unificada: matrícula + nombre + empresa (conductores + historial) ──
@@ -7004,25 +7344,71 @@ function searchRefAutoComplete(q){
   }
   const ql=q.toLowerCase();
   const _workEvId=getUserWorkEventId();
-  const agendaActiva=_workEvId?(DB.agenda||[]).filter(a=>a.eventoId===_workEvId):(DB.agenda||[]);
-  if(!agendaActiva.length){res.classList.remove('open');if(panel)panel.style.display='none';return;}
-  const found=agendaActiva.filter(a=>
-    (a.referencia&&a.referencia.toLowerCase().includes(ql))||
-    (a.matricula&&a.matricula.toLowerCase().includes(ql))||
-    (a.conductor&&a.conductor.toLowerCase().includes(ql))
-  ).slice(0,8);
-  const exact=agendaActiva.find(a=>a.referencia&&a.referencia.toUpperCase()===q.toUpperCase());
-  if(exact&&panel){window._fiAgendaMatchId=exact.id;_renderAgendaMatchPanel(exact);panel.style.display='block';}
+  // 1) AGENDA: priorizar evento de trabajo, pero también buscar en todos los eventos
+  const agendaTodos=DB.agenda||[];
+  const agendaPrior=_workEvId?agendaTodos.filter(a=>a.eventoId===_workEvId):[];
+  const agendaResto=_workEvId?agendaTodos.filter(a=>a.eventoId!==_workEvId):agendaTodos;
+  const matchAg=a=>(a.referencia&&a.referencia.toLowerCase().includes(ql))||
+                   (a.matricula&&a.matricula.toLowerCase().includes(ql))||
+                   (a.conductor&&a.conductor.toLowerCase().includes(ql))||
+                   (a.empresa&&a.empresa.toLowerCase().includes(ql))||
+                   (a.expositor&&a.expositor.toLowerCase().includes(ql))||
+                   (a.montador&&a.montador.toLowerCase().includes(ql));
+  let found=[
+    ...agendaPrior.filter(matchAg),
+    ...agendaResto.filter(matchAg)
+  ];
+
+  // 2) HISTORIAL: buscar referencia también en ingresos e ingresos2 (con todos los datos)
+  const histAll=[...(DB.ingresos||[]),...(DB.ingresos2||[])];
+  const matchHist=i=>(i.referencia&&i.referencia.toLowerCase().includes(ql))||
+                     (i.matricula&&i.matricula.toLowerCase().includes(ql));
+  const histMatches=histAll.filter(matchHist);
+  // Dedup por referencia (último primero)
+  const seenRefs=new Set(found.map(a=>(a.referencia||'').toUpperCase()).filter(Boolean));
+  histMatches
+    .sort((a,b)=>String(b.entrada||'').localeCompare(String(a.entrada||'')))
+    .forEach(i=>{
+      const r=(i.referencia||'').toUpperCase();
+      if(!r)return;
+      if(!seenRefs.has(r)){
+        seenRefs.add(r);
+        // Convertir a estructura tipo agenda
+        found.push({
+          id:'_hist_'+i.id,
+          _esHist:true,
+          referencia:i.referencia,
+          matricula:i.matricula,
+          conductor:[i.nombre||'',i.apellido||''].filter(Boolean).join(' '),
+          empresa:i.empresa,
+          expositor:i.expositor,
+          montador:i.montador,
+          hall:i.hall,
+          stand:i.stand,
+          puertaHall:i.puertaHall,
+          eventoId:i.eventoId,
+          fecha:(i.entrada||'').slice(0,10)
+        });
+      }
+    });
+  found=found.slice(0,12);
+
+  // Match exacto para panel
+  const exact=found.find(a=>a.referencia&&a.referencia.toUpperCase()===q.toUpperCase());
+  if(exact&&!exact._esHist&&panel){window._fiAgendaMatchId=exact.id;_renderAgendaMatchPanel(exact);panel.style.display='block';}
   else if(panel){panel.style.display='none';}
+
   if(!found.length){res.classList.remove('open');return;}
   const evObj=id=>id?DB.eventos.find(e=>e.id===id):null;
   res.innerHTML=found.map(a=>{
     const ev=evObj(a.eventoId);
     const evPill=ev?`<span style="background:#fdf4ff;border:1px solid #f0abfc;border-radius:12px;padding:2px 9px;font-size:10px;font-weight:800;color:#86198f">${ev.ico||'📋'} ${ev.nombre}</span>`:'';
-    return`<div class="dr-item" onmousedown="fillFromAgenda('${a.id}')" style="padding:10px 12px;border-bottom:1px solid var(--border)">
+    const histPill=a._esHist?`<span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:800">HISTORIAL</span>`:'';
+    const onClickFn=a._esHist?`fillFromHistRef('${a.referencia}')`:`fillFromAgenda('${a.id}')`;
+    return`<div class="dr-item" onmousedown="${onClickFn}" style="padding:10px 12px;border-bottom:1px solid var(--border)">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
         <b style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:#111">${esc(a.referencia||a.matricula||'')}</b>
-        ${evPill}
+        ${histPill}${evPill}
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:#4a5568;font-weight:600">
         ${a.fecha?`<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:6px;font-weight:700">📅 ${a.fecha}${a.hora?' '+a.hora:''}</span>`:''}
@@ -7036,6 +7422,25 @@ function searchRefAutoComplete(q){
   }).join('');
   res.classList.add('open');
 }
+
+// Rellenar formulario desde una referencia encontrada en historial
+window.fillFromHistRef=function(ref){
+  const refU=String(ref||'').toUpperCase();
+  const histAll=[...(DB.ingresos||[]),...(DB.ingresos2||[])];
+  const i=histAll.find(x=>(x.referencia||'').toUpperCase()===refU);
+  if(!i)return;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null&&v!=='')el.value=v;};
+  set('fiRef',i.referencia);
+  if(i.expositor)set('fiExpositor',i.expositor);
+  if(i.montador)set('fiMontador',i.montador);
+  if(i.empresa)set('fiEmp',i.empresa);
+  if(i.hall&&!document.getElementById('fiHall')?.value)set('fiHall',i.hall);
+  if(i.stand)set('fiStand',i.stand);
+  if(i.puertaHall)set('fiPuertaHall',i.puertaHall);
+  if(i.llamador)set('fiLlamador',i.llamador);
+  const res=document.getElementById('fiRefResults');if(res)res.classList.remove('open');
+  toast('📋 Datos absorbidos desde historial · '+refU,'#4a5568');
+};
 
 function _renderAgendaMatchPanel(a){
   const body=document.getElementById('fiAgendaMatchBody');
@@ -7578,7 +7983,17 @@ function _doSaveIngWithPos(mat,emp,hall,ev,atomicPos,now,today,_col,old2,posInpu
     lang:(document.getElementById('fiLang')?.value)||'es',
     eventoNombre:ev?.nombre||'',
     eventoId:ev?.id||null,
-    entrada:editIngId?(old2?.entrada||null):now,
+    entrada:(function(){
+      const _entInput=document.getElementById('fiEntrada')?.value;
+      if(_entInput){
+        // Si se cambió la fecha, usar la fecha del input + hora actual
+        const oldDate=(editIngId?old2?.entrada:'')?.slice(0,10);
+        if(_entInput!==oldDate){
+          return _entInput+'T'+now.slice(11);
+        }
+      }
+      return editIngId?(old2?.entrada||null):now;
+    })(),
     salida:old2?.salida||null,
     rampaHora:old2?.rampaHora||null,
     oficinaHora:old2?.oficinaHora||null,
@@ -7617,6 +8032,45 @@ function _doSaveIngWithPos(mat,emp,hall,ev,atomicPos,now,today,_col,old2,posInpu
       Object.keys(_flds).forEach(k=>{const a=(old2[k]==null?'':String(old2[k]));const b=(ing[k]==null?'':String(ing[k]));if(a!==b)_changes.push({campo:_flds[k],antes:a,ahora:b});});
       const _ha=(old2.halls||[old2.hall||'']).filter(Boolean).join(', ');const _hb=(ing.halls||[ing.hall||'']).filter(Boolean).join(', ');if(_ha!==_hb)_changes.push({campo:'Hall',antes:_ha,ahora:_hb});
     }
+    // ── SINCRONIZACIÓN BIDIRECCIONAL ──
+    // Si se editó un registro, propagar cambios al "espejo" en el otro lado (ingresos↔ingresos2)
+    // misma matrícula + misma fecha de entrada (mismo día)
+    if(old2 && ing.matricula && ing.entrada){
+      const otroCol=_col==='ingresos'?'ingresos2':'ingresos';
+      const matU=String(ing.matricula).toUpperCase();
+      const fechaDia=ing.entrada.slice(0,10);
+      const espejo=(DB[otroCol]||[]).find(x=>String(x.matricula||'').toUpperCase()===matU && String(x.entrada||'').slice(0,10)===fechaDia);
+      if(espejo){
+        // Campos editables a sincronizar (last-write-wins): se propaga el último valor escrito
+        const camposSync=['referencia','nombre','apellido','empresa','telefono','telPais','email','pasaporte','pais','fechaNacimiento','fechaExpiracion','remolque','tipoVehiculo','descargaTipo','tipoCarga','expositor','montador','llamador','stand','puertaHall','hall','halls','comentario','lang'];
+        let _hayCambios=false;
+        camposSync.forEach(k=>{
+          if(ing[k]!==undefined && JSON.stringify(ing[k])!==JSON.stringify(espejo[k])){
+            espejo[k]=ing[k];
+            _hayCambios=true;
+          }
+        });
+        // Horarios REALES: solo propagar si el espejo no los tiene (nunca sobrescribir hora real)
+        // rampaHora: si el espejo tiene rampaHora real (no estimada), prevalece
+        if(ing.rampaHora && !ing._rampaHoraEstimada && !espejo.rampaHora){
+          espejo.rampaHora=ing.rampaHora;_hayCambios=true;
+        }
+        if(ing.oficinaHora && !espejo.oficinaHora){
+          espejo.oficinaHora=ing.oficinaHora;_hayCambios=true;
+        }
+        if(ing.salidaHora && !espejo.salidaHora){
+          espejo.salidaHora=ing.salidaHora;_hayCambios=true;
+        }
+        if(ing.salidaRealParking && !espejo.salidaRealParking){
+          espejo.salidaRealParking=ing.salidaRealParking;_hayCambios=true;
+        }
+        if(_hayCambios){
+          espejo.editadoPor=CU?.nombre||'?';
+          espejo.editadoTs=now;
+          DB[otroCol]=DB[otroCol].map(x=>x.id===espejo.id?espejo:x);
+        }
+      }
+    }
     DB.editHistory.unshift({id:ing.id,ts:now,user:CU?.nombre||'?',mat:mat,pos:ing.pos||'',action:_isTempToReal?'new':('edit'+(_col==='ingresos2'?'_ing2':'')),collection:_col,changes:_changes});
     if(DB.editHistory.length>50)DB.editHistory=DB.editHistory.slice(0,50);
   }else{
@@ -7645,11 +8099,29 @@ function _doSaveIngWithPos(mat,emp,hall,ev,atomicPos,now,today,_col,old2,posInpu
     if(_matReal && _ix>=0){
       // Oficina Hora: si no la tiene (no vino de absorción), es ahora.
       if(!ing.oficinaHora)ing.oficinaHora=now;
-      // Rampa Hora: si NO pasó por Rampa (no hay registro absorbido) y falta,
-      // se estima 5 min antes. Si vino de absorción ya tiene la hora REAL.
+      // Rampa Hora: buscar en DB.ingresos2 (RAMPA REAL) el último registro de esa
+      // matrícula del mismo día y traer su rampaHora/entrada como hora REAL.
+      // Solo si no se encuentra match real, se estima 5 min antes.
       if(!ing.rampaHora){
-        ing.rampaHora=addMin(ing.oficinaHora,-5);
-        ing._rampaHoraEstimada=true;
+        const _matU=String(mat).toUpperCase();
+        const _diaActual=ing.entrada?ing.entrada.slice(0,10):today;
+        const _registroRampa=(DB.ingresos2||[])
+          .filter(x=>String(x.matricula||'').toUpperCase()===_matU
+                  && String(x.entrada||'').slice(0,10)===_diaActual)
+          .sort((a,b)=>String(b.entrada||'').localeCompare(String(a.entrada||'')))[0];
+        if(_registroRampa && (_registroRampa.rampaHora||_registroRampa.entrada)){
+          // HORA REAL — la que dio la rampa al registrar
+          ing.rampaHora=_registroRampa.rampaHora||_registroRampa.entrada;
+          ing._rampaHoraEstimada=false;
+          // Aprovechar: si hay salida REAL del parking, copiarla
+          if(_registroRampa.salida){
+            ing.salidaRealParking=_registroRampa.salida;
+          }
+        } else {
+          // No hay registro de rampa: estimación de seguridad
+          ing.rampaHora=addMin(ing.oficinaHora,-5);
+          ing._rampaHoraEstimada=true;
+        }
       }
       DB.ingresos[_ix]=ing;
     }
