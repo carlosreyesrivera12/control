@@ -4348,7 +4348,7 @@ function _ingLista(items){
   const _cw=_loadColW('ingresos');
   const _w=(k,def)=>_cw[k]?_cw[k]+'px':def;
   const _cols=[];
-  _cols.push(_w('pos','62px'));
+  _cols.push(_w('pos','80px'));
   _cols.push(_w('matricula','125px'));
   if(_isColVisible('ingresos','remolque'))_cols.push(_w('remolque','100px'));
   if(_isColVisible('ingresos','tipoVehiculo'))_cols.push(_w('tipoVehiculo','85px'));
@@ -5467,10 +5467,10 @@ function renderIngresos2(){
     </div>`:''}
     ${sub2==='lista'?(()=>{const{sorted,total,pg}=_ing2PagerInfo(items);const pageItems=sorted.slice(pg*ING_PAGE,pg*ING_PAGE+ING_PAGE);return`
     ${pageItems.length?`<div class="tbl-wrap"><table class="dtbl dtbl-ing" style="table-layout:fixed"><thead><tr>
-      ${thSort('ingresos2','pos','#','44px')}${thSort('ingresos2','matricula','MATRÍCULA','120px')}${_isColVisible('ingresos2','llamador')?thSort('ingresos2','llamador','PAGERS','90px'):''}${_isColVisible('ingresos2','referencia')?thSort('ingresos2','referencia','REF','130px'):''}${_isColVisible('ingresos2','nombre')?thSort('ingresos2','nombre','EMPRESA','130px'):''}${_isColVisible('ingresos2','conductor')?thSort('ingresos2','conductor','CONDUCTOR','120px'):''}${_isColVisible('ingresos2','telefono')?thSort('ingresos2','telefono','TEL','100px'):''}${_isColVisible('ingresos2','hall')?'<th style="width:70px">HALL</th>':''}${_isColVisible('ingresos2','stand')?'<th style="width:70px">STAND</th>':''}${_isColVisible('ingresos2','evento')?'<th style="width:80px">EVENTO</th>':''}${thSort('ingresos2','salida','ESTADO','110px')}${_isColVisible('ingresos2','entrada')?thSort('ingresos2','entrada','FECHA','95px'):''}<th style="width:200px">ACCIONES</th>
+      ${thSort('ingresos2','pos','#','80px')}${thSort('ingresos2','matricula','MATRÍCULA','120px')}${_isColVisible('ingresos2','llamador')?thSort('ingresos2','llamador','PAGERS','90px'):''}${_isColVisible('ingresos2','referencia')?thSort('ingresos2','referencia','REF','130px'):''}${_isColVisible('ingresos2','nombre')?thSort('ingresos2','nombre','EMPRESA','130px'):''}${_isColVisible('ingresos2','conductor')?thSort('ingresos2','conductor','CONDUCTOR','120px'):''}${_isColVisible('ingresos2','telefono')?thSort('ingresos2','telefono','TEL','100px'):''}${_isColVisible('ingresos2','hall')?'<th style="width:70px">HALL</th>':''}${_isColVisible('ingresos2','stand')?'<th style="width:70px">STAND</th>':''}${_isColVisible('ingresos2','evento')?'<th style="width:80px">EVENTO</th>':''}${thSort('ingresos2','salida','ESTADO','110px')}${_isColVisible('ingresos2','entrada')?thSort('ingresos2','entrada','FECHA','95px'):''}<th style="width:200px">ACCIONES</th>
     </tr></thead><tbody>
       ${pageItems.map(i=>`<tr>
-        <td style="font-weight:800;font-size:18px;color:#111;width:44px">${i.pos||''}</td>
+        <td style="font-weight:800;font-size:18px;color:#111;width:80px;min-width:80px">${i.pos||''}</td>
         <td class="col-key" style="width:120px"><span class="mchip" style="cursor:pointer;font-size:13px" onclick="showIngDetalle('${i.id}','ingresos2')">${i.matricula}</span>${i.remolque?`<br><span class="mchip-sm">${i.remolque}</span>`:''}</td>
         ${_isColVisible('ingresos2','llamador')?`<td class="col-sub" style="width:90px;font-size:11px">${i.llamador||'–'}</td>`:''}
         ${_isColVisible('ingresos2','referencia')?`<td class="col-sub" style="width:130px;font-size:14px;font-family:'JetBrains Mono',monospace;font-weight:700">${i.referencia||'–'}</td>`:''}
