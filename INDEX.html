@@ -12,6 +12,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#f7f8fc;--bg2:#fff;--bg3:#f0f2f8;--bg4:#e4e7f1;--text:#0f172a;--text2:#1a1a1a;--text3:#333333;--text4:#555555;--border:#e4e7f1;--border2:#c8cdd9;--blue:#1a56db;--bll:#eef2ff;--green:#0d9f6e;--gll:#ecfdf5;--red:#e02424;--rll:#fff1f1;--amber:#c47b10;--all:#fffbeb;--purple:#6d28d9;--pll:#f5f3ff;--teal:#0e7490;--almacen:#7a6a4a;--sot:#3a4558;--fira:#3a5a3a;--r:6px;--r2:10px;--r3:16px;--sh:0 1px 3px rgba(0,0,0,.06);--sh2:0 4px 16px rgba(0,0,0,.1)}
 
@@ -491,7 +492,13 @@ a:hover{color:#3a4558;}
     </div>
     <!-- PASO 0: Elegir tipo de acceso -->
     <div id="loginStep0" style="display:flex;flex-direction:column;gap:10px">
-      <div style="margin-top:28px">
+      <div id="gLoginBox" style="margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:14px">
+        <div style="font-size:15px;font-weight:600;color:var(--text);letter-spacing:.1px">Inicia sesión</div>
+        <button type="button" class="g-btn" id="gBtn" onclick="gLogin()"><span class="g-ico"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="g-txt" id="gBtnTxt">Continuar con Google</span></button>
+        <div id="gErr" style="display:none;color:#b3261e;font-size:12px;font-weight:600;text-align:center;max-width:260px"></div>
+        <button type="button" class="g-link" onclick="gTogglePin()" id="gPinLink">Acceder con usuario y PIN</button>
+      </div>
+      <div id="gPinBox" style="display:none;margin-top:8px">
         <div class="fg" style="margin-bottom:10px">
           <span class="flbl" id="lbl_loginIdent0">Usuario o email</span>
           <input id="loginIdent" type="text" placeholder="" autocomplete="username" style="font-size:14px" oninput="loginIdentChange()" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
@@ -507,7 +514,7 @@ a:hover{color:#3a4558;}
         <div id="loginErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:4px">
-        <button class="btn" style="width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="doLogin()">
+        <button class="btn" id="gAccederBtn" style="display:none;width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="doLogin()">
           <span id="lbl_operadorBtn">ACCEDER</span>
         </button>
         <button class="btn" style="width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="loginChoose('empresa')">
@@ -870,7 +877,7 @@ a:hover{color:#3a4558;}
   <div class="fgrid">
     <div class="fg s2"><span class="flbl" data-i18n="frNomLbl">Nombre completo <span class="freq">*</span></span><input id="fuNom"></div>
     <div class="fg"><span class="flbl" data-i18n="frUserLbl">Nombre de usuario <span class="freq">*</span></span><input id="fuUsername" data-i18n-ph="phNoSpaces" placeholder="sin espacios" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')"></div>
-    <div class="fg" style="display:none"><span class="flbl" data-i18n="frEmailLbl">Email (para 2FA)</span><input id="fuEmail" type="email" data-i18n-ph="phAdminEmail" placeholder="usuario@empresa.com"></div>
+    <div class="fg"><span class="flbl">Gmail (acceso con Google)</span><input id="fuEmail" type="email" autocomplete="off" autocapitalize="none" placeholder="nombre@gmail.com"></div>
     <div class="fg" style="display:none"><span class="flbl" data-i18n="passLabel">Contraseña</span><input id="fuPass" type="password" data-i18n-ph="phLeaveEmpty" placeholder="Dejar vacío = no cambia" oninput="checkPassStrength(this.value)"></div>
     <div class="fg" style="display:none"><span class="flbl" data-i18n="confirmPassLbl">${tr('confirmPassLbl')}</span><input id="fuPass2" type="password" data-i18n-ph="phRepeatPass" placeholder="Repetir contraseña"></div>
     <div class="fg"><span class="flbl">PIN de acceso <span class="freq">*</span></span><input id="fuPin" type="password" maxlength="8" inputmode="numeric" placeholder="4 a 8 dígitos"></div>
@@ -2889,6 +2896,120 @@ function canEditEvento(){return isSA()||hasPerm('canEditEvento');}
 // ═══ LOGIN — nuevo sistema ═══
 let _loginUser=null,_otpCode='',_otpExpiry=0,_otpAttempts=0,_otpResendCount=0,_resendTimer=null;
 
+
+// ═══ LOGIN CON GOOGLE ═══
+const _G_CFG={apiKey:'AIzaSyCqMF19ayrIUWtvORlqf1YXZ9JLxPxhf0Y',authDomain:'devolucioncontrol-v5.firebaseapp.com',projectId:'devolucioncontrol-v5',databaseURL:'https://devolucioncontrol-v5-default-rtdb.firebaseio.com/',appId:'1:877514210087:web:84790afc6d5625e8a80702'};
+const _G_AREAS=[['ingresos','Referencia'],['ingresos2','Rampa / Ingresos'],['agenda','Agenda'],['flota','Flota'],['conductores','Conductores'],['impresion','Impresión'],['analytics','Análisis'],['otra','Otra / No lo sé']];
+let _gUser=null,_gSel=[];
+function _gApp(){if(typeof firebase==='undefined'||!firebase.auth)return null;if(!window._gAppObj){try{window._gAppObj=firebase.app('cu1_gauth');}catch(e){window._gAppObj=firebase.initializeApp(_G_CFG,'cu1_gauth');}window._gAuthObj=firebase.auth(window._gAppObj);}return window._gAppObj;}
+function _gKey(em){return String(em||'').trim().toLowerCase().replace(/\./g,',');}
+function _gErr(m){const e=document.getElementById('gErr');if(!e)return;e.textContent=m||'';e.style.display=m?'block':'none';}
+function _gBusy(b){const btn=document.getElementById('gBtn'),t=document.getElementById('gBtnTxt');if(btn)btn.disabled=!!b;if(t)t.textContent=b?'Conectando…':'Continuar con Google';}
+function gTogglePin(){const b=document.getElementById('gPinBox'),a=document.getElementById('gAccederBtn'),l=document.getElementById('gPinLink');const show=b.style.display==='none';b.style.display=show?'block':'none';if(a)a.style.display=show?'':'none';if(l)l.textContent=show?'Ocultar acceso con PIN':'Acceder con usuario y PIN';if(show)setTimeout(()=>{const i=document.getElementById('loginIdent');if(i)i.focus();},100);}
+async function gLogin(){
+  _gErr('');
+  if(!_gApp()){_gErr('Cargando… inténtalo de nuevo en un segundo.');return;}
+  const auth=window._gAuthObj;const prov=new firebase.auth.GoogleAuthProvider();prov.setCustomParameters({prompt:'select_account'});
+  _gBusy(true);
+  try{const r=await auth.signInWithPopup(prov);await _gAfterSignIn(r.user);}
+  catch(e){
+    if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){try{await auth.signInWithRedirect(prov);return;}catch(e2){e=e2;}}
+    if(e&&(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request')){_gErr('');}
+    else if(e&&e.code==='auth/network-request-failed'){_gErr('Sin conexión. Revisa la red e inténtalo de nuevo.');}
+    else{_gErr('No se pudo iniciar sesión con Google.');console.warn('gLogin',e);}
+  }finally{_gBusy(false);}
+}
+async function _gFindUser(email){
+  const em=String(email||'').toLowerCase();
+  let u=(DB.usuarios||[]).find(x=>(x.email||'').toLowerCase()===em);
+  if(u)return u;
+  try{const db=firebase.database(_gApp());const snap=await db.ref('cu1/controlunificado/usuarios').once('value');let arr=snap.val()||[];arr=Array.isArray(arr)?arr:Object.values(arr);arr=arr.filter(Boolean);
+    if(arr.length&&(!DB.usuarios||!DB.usuarios.length))DB.usuarios=arr;
+    u=arr.find(x=>(x.email||'').toLowerCase()===em);
+    if(u){const loc=(DB.usuarios||[]).find(x=>x.id===u.id);if(loc)return loc;DB.usuarios.push(u);return u;}
+  }catch(e){console.warn('gFind',e);}
+  return null;
+}
+async function _gAfterSignIn(gu){
+  if(!gu||!gu.email)return;
+  _gUser={email:gu.email.toLowerCase(),nombre:gu.displayName||'',foto:gu.photoURL||'',uid:gu.uid};
+  const u=await _gFindUser(_gUser.email);
+  if(u){
+    if(u.rol==='empresa'){_gErr('Esta cuenta es de empresa. Usa el acceso EMPRESA.');return;}
+    _loginUser=u;
+    const _l=window._step0LangChosen?CUR_LANG:(u.lang||CUR_LANG||'es');
+    if(window._step0LangChosen&&CUR_LANG&&CUR_LANG!==u.lang){u.lang=CUR_LANG;DB.usuarios=DB.usuarios.map(x=>x.id===u.id?{...x,lang:CUR_LANG}:x);}
+    window._step0LangChosen=false;setLang(_l);applyLang();
+    u.loginAttempts=0;u.lockedUntil=null;u.lastGoogleLogin=nowL();saveDB();
+    completeLogin(u);
+    return;
+  }
+  gShowReq();
+}
+function _gAccHTML(){const g=_gUser||{};const ini=(g.nombre||g.email||'?').trim().charAt(0).toUpperCase();return (g.foto?'<img src="'+esc(g.foto)+'" referrerpolicy="no-referrer" alt="">':'<div class="gr-av">'+esc(ini)+'</div>')+'<div style="min-width:0"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(g.nombre||g.email)+'</div><div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(g.email)+'</div></div>';}
+async function gShowReq(){
+  document.getElementById('loginWrap').style.display='none';
+  const w=document.getElementById('gReqWrap');w.style.display='flex';
+  document.getElementById('grAcc').innerHTML=_gAccHTML();
+  const f=document.getElementById('grForm'),st=document.getElementById('grState');f.style.display='none';st.style.display='none';
+  let prev=null;try{const snap=await firebase.database(_gApp()).ref('cu1/solicitudes/'+_gKey(_gUser.email)).once('value');prev=snap.val();}catch(e){}
+  if(prev&&prev.status==='pendiente'){_gState('pend',prev);return;}
+  if(prev&&prev.status==='rechazada'){_gState('rech',prev);return;}
+  _gSel=[];
+  document.getElementById('grAreas').innerHTML=_G_AREAS.map(a=>'<button type="button" class="gr-chip" data-a="'+a[0]+'" onclick="gToggleArea(this)">'+a[1]+'</button>').join('');
+  document.getElementById('grMsg').value='';
+  const b=document.getElementById('grSend');b.disabled=false;b.textContent='Enviar solicitud';
+  f.style.display='block';
+}
+function gToggleArea(el){const a=el.getAttribute('data-a');const i=_gSel.indexOf(a);if(i>=0)_gSel.splice(i,1);else _gSel.push(a);el.classList.toggle('on',i<0);}
+function _gState(kind,req){
+  const st=document.getElementById('grState');document.getElementById('grForm').style.display='none';
+  if(kind==='pend'){st.innerHTML='<div class="gr-ico" style="background:#e8f0fe;color:#1a73e8">✓</div><h2 class="gr-h">Solicitud enviada</h2><p class="gr-p" style="margin-bottom:6px">El administrador revisará tu solicitud. Cuando te dé acceso, entra de nuevo con esta cuenta de Google.</p>'+(req&&req.ts?'<div style="font-size:12px;color:#9ca3af">Enviada: '+esc(req.ts)+'</div>':'');}
+  else{st.innerHTML='<div class="gr-ico" style="background:#fce8e6;color:#b3261e">✕</div><h2 class="gr-h">Acceso no concedido</h2><p class="gr-p" style="margin-bottom:6px">Tu solicitud no fue aprobada. Si crees que es un error, contacta con el administrador.</p>';}
+  st.style.display='block';
+}
+async function gSendReq(){
+  if(!_gUser)return;const b=document.getElementById('grSend');b.disabled=true;b.textContent='Enviando…';
+  const req={email:_gUser.email,nombre:(_gUser.nombre||'').slice(0,80),foto:(_gUser.foto||'').slice(0,500),areas:_gSel.slice(0,10),msg:(document.getElementById('grMsg').value||'').trim().slice(0,300),ts:nowL(),status:'pendiente'};
+  try{await firebase.database(_gApp()).ref('cu1/solicitudes/'+_gKey(_gUser.email)).set(req);_gState('pend',req);}
+  catch(e){console.warn('gSendReq',e);b.disabled=false;b.textContent='Enviar solicitud';toast('No se pudo enviar. Inténtalo de nuevo.','var(--red)');}
+}
+async function gSwitchAccount(){try{if(window._gAuthObj)await window._gAuthObj.signOut();}catch(e){}_gUser=null;document.getElementById('gReqWrap').style.display='none';showLogin();}
+// ── Panel admin: solicitudes ──
+window._gReqs=window._gReqs||{};
+function _gWatchReqs(){if(window._gReqWatching||typeof firebase==='undefined'||!fbDb)return;window._gReqWatching=true;fbDb.ref('cu1/solicitudes').on('value',s=>{window._gReqs=s.val()||{};const p=document.getElementById('gReqPanel');if(p)p.innerHTML=gReqPanelHTML();},()=>{window._gReqWatching=false;});}
+function gReqPanelHTML(){
+  _gWatchReqs();
+  const list=Object.entries(window._gReqs||{}).filter(([k,r])=>r&&r.status==='pendiente');
+  if(!list.length)return '';
+  const AN=Object.fromEntries(_G_AREAS);
+  let h='<div style="margin:8px 0 12px;border:1px solid #c6dafc;background:#f5f8ff;border-radius:12px;padding:12px 14px"><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#1a73e8">Solicitudes de acceso ('+list.length+')</div>';
+  list.forEach(([k,r])=>{
+    const ini=(r.nombre||r.email||'?').charAt(0).toUpperCase();
+    h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #e3ebfb;flex-wrap:wrap">'
+     +(r.foto?'<img src="'+esc(r.foto)+'" referrerpolicy="no-referrer" style="width:30px;height:30px;border-radius:50%">':'<div style="width:30px;height:30px;border-radius:50%;background:#e0e7ff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">'+esc(ini)+'</div>')
+     +'<div style="flex:1;min-width:160px"><div style="font-weight:600;font-size:13px">'+esc(r.nombre||'—')+' <span style="font-weight:400;color:#6b7280">'+esc(r.email)+'</span></div>'
+     +'<div style="font-size:11px;color:#6b7280">'+((r.areas||[]).map(a=>esc(AN[a]||a)).join(' · ')||'Sin área indicada')+(r.msg?' — “'+esc(r.msg)+'”':'')+(r.ts?' · '+esc(r.ts):'')+'</div></div>'
+     +'<button class="btn btn-p btn-sm" onclick="gReqApprove(\''+k+'\')">Dar acceso</button>'
+     +'<button class="btn btn-gh btn-sm" onclick="gReqResolve(\''+k+'\',\'rechazada\')">Rechazar</button></div>';
+  });
+  return h+'</div>';
+}
+function gReqApprove(k){
+  const r=(window._gReqs||{})[k];if(!r)return;
+  openUserModal();window._gApproveKey=k;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+  set('fuNom',r.nombre||r.email.split('@')[0]);set('fuEmail',r.email);
+  let un=r.email.split('@')[0].toLowerCase().replace(/[^a-z0-9._-]/g,'');let base=un,n=2;while(DB.usuarios.some(x=>x.username===un))un=base+(n++);set('fuUsername',un);
+  const tm={ingresos:'ftIng',ingresos2:'ftIng2',agenda:'ftAg',flota:'ftFlota',conductores:'ftCond',impresion:'ftImp',analytics:'ftAn'};
+  const ar=(r.areas||[]).filter(a=>tm[a]);
+  if(ar.length){Object.values(tm).forEach(id=>{const el=document.getElementById(id);if(el){el.checked=false;updTgl(el);}});ar.forEach(a=>{const el=document.getElementById(tm[a]);if(el){el.checked=true;updTgl(el);}});}
+}
+function gReqResolve(k,status){try{if(fbDb)fbDb.ref('cu1/solicitudes/'+k).update({status:status,resolvedAt:nowL(),resolvedBy:CU?CU.nombre:''});}catch(e){}if(status==='rechazada')toast('Solicitud rechazada');}
+// Resultado de signInWithRedirect (fallback iPad)
+(function _gRedirectCheck(t){if(typeof firebase==='undefined'||!firebase.auth){if(t>0)setTimeout(()=>_gRedirectCheck(t-1),150);return;}try{_gApp();window._gAuthObj.getRedirectResult().then(r=>{if(r&&r.user&&!CU)_gAfterSignIn(r.user);}).catch(e=>{console.warn('gRedirect',e&&e.code);});}catch(e){}})(40);
+window.gLogin=gLogin;window.gTogglePin=gTogglePin;window.gToggleArea=gToggleArea;window.gSendReq=gSendReq;window.gSwitchAccount=gSwitchAccount;window.gReqApprove=gReqApprove;window.gReqResolve=gReqResolve;
+
 function showLogin(){
   const dot=document.getElementById('devApprovalDot');
   if(dot)dot.style.display=DB._devRequireApproval?'block':'none';
@@ -2904,6 +3025,7 @@ function showLogin(){
   const le=document.getElementById('loginErr');if(le)le.style.display='none';
   const ls=document.getElementById('loginStrip');if(ls)ls.style.display='none';
   window._step0LangChosen=false;
+  {const _gb=document.getElementById('gPinBox');if(_gb&&!(document.getElementById('loginIdent')||{}).value){_gb.style.display='none';const _ga=document.getElementById('gAccederBtn');if(_ga)_ga.style.display='none';const _gl=document.getElementById('gPinLink');if(_gl)_gl.textContent='Acceder con usuario y PIN';}const _gw=document.getElementById('gReqWrap');if(_gw)_gw.style.display='none';_gErr('');}
   pendingLangCode=CUR_LANG;
   buildLoginLangGrid();
   // also build step0 lang grid
@@ -3519,7 +3641,7 @@ function loginSuccess(u){
   // Header y barra de grupos ya listos: el fallback de 'window load' no debe repetir.
   window._tgGroupBarReady=true;
 }
-function doLogout(){if(CU)logSessionEvent(CU,'logout','Cierre de sesión');CU=null;saveSession();try{localStorage.removeItem(SK+'_tab');}catch(e){};if(window._portalLiveInterval)clearInterval(window._portalLiveInterval);var pw=document.getElementById('portalWrap');if(pw)pw.style.display='none';var rw=document.getElementById('regEmpWrap');if(rw)rw.style.display='none';var elw=document.getElementById('empLoginWrap');if(elw)elw.style.display='none';['loginWrap'].forEach(id=>document.getElementById(id).style.display='flex');['appHdr','mainTabs','appMain'].forEach(id=>document.getElementById(id).style.display='none');showLogin();}
+function doLogout(){try{if(window._gAuthObj)window._gAuthObj.signOut();}catch(e){}if(CU)logSessionEvent(CU,'logout','Cierre de sesión');CU=null;saveSession();try{localStorage.removeItem(SK+'_tab');}catch(e){};if(window._portalLiveInterval)clearInterval(window._portalLiveInterval);var pw=document.getElementById('portalWrap');if(pw)pw.style.display='none';var rw=document.getElementById('regEmpWrap');if(rw)rw.style.display='none';var elw=document.getElementById('empLoginWrap');if(elw)elw.style.display='none';['loginWrap'].forEach(id=>document.getElementById(id).style.display='flex');['appHdr','mainTabs','appMain'].forEach(id=>document.getElementById(id).style.display='none');showLogin();}
 
 // ═══ HEADER ═══
 function renderHdr(){
@@ -6647,6 +6769,7 @@ function renderUsuarios(){
   if(isSA())h+='<label class="btn btn-s btn-sm" style="cursor:pointer" title="Importar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><input type="file" accept=".xlsx,.xls" style="display:none" onchange="importUsuarios(this)"></label>';
   if(isSA())h+='<button class="btn btn-gh btn-sm" onclick="dlTemplateUsuarios()">📋 Plantilla</button>';
   h+='</div></div>';
+  if(isSA())h+='<div id="gReqPanel">'+gReqPanelHTML()+'</div>';
   // ── Subtabs ──
   h+='<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:20px;overflow:hidden;width:fit-content;margin-bottom:10px">';
   var _stOp=_usub==='operadores';h+='<div style="padding:5px 16px;font-size:11px;font-weight:700;cursor:pointer;background:'+(_stOp?'#4a5568':'var(--bg2)')+';color:'+(_stOp?'#fff':'var(--text3)')+';border-right:1px solid var(--border)" onclick="window._uSub=&quot;operadores&quot;;renderUsuarios()">👤 '+tr('operadores')+'  ('+operadoresU.length+')</div>';
@@ -9242,7 +9365,9 @@ async function saveUser(){
   const existingU=DB.usuarios.find(x=>x.username===username&&x.id!==editUserId);
   if(existingU){toast('Nombre de usuario ya existe','var(--red)');return;}
   // Solo usuario + PIN. El PIN es obligatorio para usuarios nuevos.
-  if(!editUserId&&!pin){toast('El PIN es obligatorio','var(--red)');return;}
+  if(!editUserId&&!pin&&!email){toast('Indica un Gmail o un PIN','var(--red)');return;}
+  if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Email no válido','var(--red)');return;}
+  if(email&&DB.usuarios.some(x=>x.id!==editUserId&&(x.email||'').toLowerCase()===email.toLowerCase())){toast('Ese Gmail ya está asignado a otro usuario','var(--red)');return;}
   if(pin&&(pin.length<4||pin.length>8||!/^\d+$/.test(pin))){toast('PIN: 4 a 8 dígitos numéricos','var(--red)');return;}
   if(pin&&pin2&&pin!==pin2){toast('Los PINs no coinciden','var(--red)');return;}
   const _gp=id=>!!(document.getElementById(id)?.checked);const permisos={canAdd:_gp('fpAdd'),canEdit:_gp('fpEdit'),canDel:_gp('fpDel'),canStatus:_gp('fpStat'),canExport:_gp('fpExp'),canSpecial:_gp('fpBL'),canEditEvento:_gp('fpEvEdit'),canPrint:_gp('fpPrint'),canImport:_gp('fpImport'),canClean:_gp('fpClean'),canSaveTpl:_gp('fpSaveTpl'),canDelTpl:_gp('fpDelTpl'),canActivarEvento:_gp('fpActivarEv'),canSaveDay:_gp('fpSave'),canMensajes:_gp('fpMsg'),canCampos:_gp('fpCampos'),canOcr:_gp('fpOcr')};
@@ -9255,7 +9380,7 @@ async function saveUser(){
   if(pass){const result=await hashPassword(pass,null);passwordHash=result.hash;passwordSalt=result.salt;}
   const isNew=!editUserId;
   const u={
-    id:editUserId||uid(),nombre:nom,username,email:'',
+    id:editUserId||uid(),nombre:nom,username,email:email.toLowerCase(),
     passwordHash,passwordSalt,twoFA:false,
     rol:document.getElementById('fuRol').value,
     lang:document.getElementById('fuLang').value||'es',
@@ -9275,7 +9400,7 @@ async function saveUser(){
   }
   window._step0LangChosen=false;
   setLang(_dLoginLang);applyLang();}
-  saveDB();closeOv('mUser');renderUsuarios();toast('✅ Usuario guardado');
+  saveDB();if(window._gApproveKey&&u.email){gReqResolve(window._gApproveKey,'aprobada');}window._gApproveKey=null;closeOv('mUser');renderUsuarios();toast('✅ Usuario guardado');
 }
 function askDelUser(id){const u=DB.usuarios.find(x=>x.id===id);if(!u)return;askDel('Eliminar usuario','<b>'+u.nombre+'</b>',()=>{DB.usuarios=DB.usuarios.filter(x=>x.id!==id);saveDB();renderUsuarios();});}
 function askDel(title,detail,fn,btnLabel,btnColor){
@@ -15259,5 +15384,41 @@ function _saveColW(tab,key,w){
 })();
 </script>
 <div class="cr-copy">BeUnifyT · Copyright © 2026</div>
+<style>
+.g-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:44px;min-width:240px;padding:0 20px;background:#fff;color:#1f1f1f;border:1px solid #747775;border-radius:22px;font:500 14px/1 'Roboto','Google Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;letter-spacing:.25px;cursor:pointer;touch-action:manipulation;transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.g-btn:hover{background:#f8fafd;box-shadow:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15)}
+.g-btn:active{background:#eef2f8}
+.g-btn:disabled{opacity:.6;cursor:default;box-shadow:none}
+.g-ico{display:flex;width:18px;height:18px}
+.g-link{background:none;border:none;color:var(--text3,#6b7280);font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px;touch-action:manipulation}
+#gReqWrap{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:#f3f4f6;padding:20px;overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
+.gr-card{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.08);width:100%;max-width:420px;padding:32px 28px;color:#1f2937}
+.gr-acc{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:22px}
+.gr-acc img,.gr-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:cover;background:#e0e7ff;color:#3730a3;display:flex;align-items:center;justify-content:center;font-weight:700}
+.gr-h{font-size:20px;font-weight:700;margin:0 0 6px}
+.gr-p{font-size:14px;color:#6b7280;line-height:1.5;margin:0 0 18px}
+.gr-areas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.gr-chip{border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .12s}
+.gr-chip.on{background:#1a73e8;border-color:#1a73e8;color:#fff}
+.gr-ta{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:10px;padding:10px 12px;font-size:14px;resize:vertical;min-height:64px;font-family:inherit;margin-bottom:18px}
+.gr-ta:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,.15)}
+.gr-btn{width:100%;height:44px;border:none;border-radius:22px;background:#1a73e8;color:#fff;font-size:14px;font-weight:600;cursor:pointer;touch-action:manipulation}
+.gr-btn:hover{background:#1765cc}.gr-btn:disabled{opacity:.6}
+.gr-st{text-align:center;padding:8px 0 4px}
+.gr-ico{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+.gr-foot{text-align:center;margin-top:16px}
+</style>
+<div id="gReqWrap"><div class="gr-card">
+  <div class="gr-acc" id="grAcc"></div>
+  <div id="grForm" style="display:none">
+    <h2 class="gr-h">Solicitar acceso</h2>
+    <p class="gr-p">Tu cuenta todavía no tiene acceso. Indica en qué áreas trabajas y el administrador revisará tu solicitud.</p>
+    <div class="gr-areas" id="grAreas"></div>
+    <textarea class="gr-ta" id="grMsg" maxlength="300" placeholder="Mensaje para el administrador (opcional)"></textarea>
+    <button type="button" class="gr-btn" id="grSend" onclick="gSendReq()">Enviar solicitud</button>
+  </div>
+  <div id="grState" style="display:none" class="gr-st"></div>
+  <div class="gr-foot"><button type="button" class="g-link" onclick="gSwitchAccount()">Usar otra cuenta</button></div>
+</div></div>
 </body>
 </html>
