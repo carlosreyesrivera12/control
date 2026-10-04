@@ -482,18 +482,14 @@ a:hover{color:#3a4558;}
   <div class="login-card" id="loginCard0" style="max-width:320px;width:100%;overflow:visible;display:flex;flex-direction:column;justify-content:space-between;min-height:500px">
     <div style="text-align:center;margin-bottom:20px">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" width="72" height="72" style="filter:drop-shadow(0 0 12px #00ffc855)"><rect width="140" height="140" rx="32" fill="#030812"/><polygon points="70,10 122,40 122,100 70,130 18,100 18,40" stroke="#00ffc8" stroke-width="2" fill="#00ffc808"><animateTransform attributeName="transform" type="rotate" from="0 70 70" to="360 70 70" dur="18s" repeatCount="indefinite"/></polygon><polygon points="70,28 106,49 106,91 70,112 34,91 34,49" stroke="#00ffc8" stroke-width="1.5" fill="none" opacity="0.5"><animateTransform attributeName="transform" type="rotate" from="360 70 70" to="0 70 70" dur="12s" repeatCount="indefinite"/></polygon><circle cx="70" cy="70" r="18" fill="#00ffc8" opacity="0.08"><animate attributeName="r" values="14;20;14" dur="3s" repeatCount="indefinite"/></circle><circle cx="70" cy="70" r="9" fill="#00ffc8"><animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="70" cy="70" r="3.5" fill="#030812"/></svg>
-      <div id="logoEmergency" onclick="_emergencyCount=((_emergencyCount||0)+1);if(_emergencyCount>=3){_emergencyCount=0;document.getElementById('emergencyPanel').style.display='block';}"><span id="v5SecretBtn" onclick="event.stopPropagation();_v5Count=((_v5Count||0)+1);if(_v5Count>=3){_v5Count=0;if(DB._devRequireApproval){DB._devRequireApproval=false;saveDB();const dot=document.getElementById('devApprovalDot');if(dot)dot.style.display='none';toast('🔓 Aprobación desactivada','var(--text2)');}}" style="cursor:pointer;font-family:Oxanium,monospace,sans-serif;font-size:24px;font-weight:700;color:#0f172a;letter-spacing:-.02em"><span style="color:#00b89a">Be</span>Unify<span style="color:#00b89a">T</span><span id="devApprovalDot" style="display:none;position:absolute;top:-3px;right:-5px;width:7px;height:7px;background:#4a5568;border-radius:50%;border:1.5px solid #fff"></span></span></div>
-      <div id="emergencyPanel" style="display:none;margin-top:8px;padding:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:11px">
-        <div style="font-weight:700;color:#8b3a3a;margin-bottom:6px">🔧 Recuperación de cuenta</div>
-        <div style="color:#6b7280;margin-bottom:8px">Solo para emergencias. Introduce el PIN actual:</div>
-        <input id="emergencyPin" type="password" data-i18n-ph="phPinActual" placeholder="PIN actual" style="width:100%;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;margin-bottom:6px;font-size:13px">
-        <button onclick="_doEmergencyReset()" style="width:100%;padding:7px;background:#8b3a3a;color:#fff;border:none;border-radius:20px;font-weight:700;cursor:pointer;font-size:12px">🔧 Resetear mi cuenta</button>
-      </div>
+      <div id="logoEmergency"><span id="v5SecretBtn" style="font-family:Oxanium,monospace,sans-serif;font-size:24px;font-weight:700;color:#0f172a;letter-spacing:-.02em"><span style="color:#00b89a">Be</span>Unify<span style="color:#00b89a">T</span><span id="devApprovalDot" style="display:none;position:absolute;top:-3px;right:-5px;width:7px;height:7px;background:#4a5568;border-radius:50%;border:1.5px solid #fff"></span></span></div>
+      
     </div>
     <!-- PASO 0: Elegir tipo de acceso -->
     <div id="loginStep0" style="display:flex;flex-direction:column;gap:10px">
-      <div id="gLoginBox" style="margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:14px">
-        <div style="font-size:15px;font-weight:600;color:var(--text);letter-spacing:.1px">Inicia sesión</div>
+      <div id="gLoginBox" style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px;width:100%">
+        <div style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.1px">Inicia sesión</div>
+        <div class="g-sub">Accede con tu cuenta de Google</div>
         <button type="button" class="g-btn" id="gBtn" onclick="gLogin()"><span class="g-ico"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="g-txt" id="gBtnTxt">Continuar con Google</span></button>
         <div id="gErr" style="display:none;color:#b3261e;font-size:12px;font-weight:600;text-align:center;max-width:260px"></div>
       </div>
@@ -1573,16 +1569,12 @@ a:hover{color:#3a4558;}
       <div style="font-size:28px;margin-bottom:5px;color:#000">🏢</div>
       <div style="font-size:20px;font-weight:800;letter-spacing:-.02em;color:#000" id="empLoginTitle">Sitio Empresa</div>
     </div>
-    <div style="margin-bottom:10px"><div style="font-size:16px;font-weight:600;margin-bottom:4px;color:#000" id="empLblEmail">Email empresa</div>
-      <input id="empLoginEmail" type="email" id="empLoginEmailPh" data-i18n-ph="emailEmpPh" placeholder="empresa@ejemplo.com" style="font-size:16px" onkeydown="if(event.key==='Enter')document.getElementById('empLoginPass').focus()">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <div class="g-sub" style="margin:0 0 4px">Accede con la cuenta de Google de tu empresa</div>
+      <button type="button" class="g-btn" id="gEmpBtn" onclick="gEmpLogin()"><span class="g-ico"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="g-txt">Continuar con Google</span></button>
+      <div id="empLoginErr" style="display:none;color:#b3261e;font-size:12px;font-weight:600;text-align:center"></div>
     </div>
-    <div style="margin-bottom:14px"><div style="font-size:16px;font-weight:600;margin-bottom:4px;color:#000" id="empLblPass">Contraseña</div>
-      <input id="empLoginPass" type="password" style="font-size:16px" onkeydown="if(event.key==='Enter')doEmpLogin()">
-    </div>
-    <div id="empLoginErr" style="display:none;color:var(--red);font-size:11px;font-weight:700;margin-bottom:10px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:30px;width:fit-content;margin-left:auto;margin-right:auto">
-    <button class="btn btn-g" style="width:100%;padding:10px 16px;font-size:14px;font-weight:700;color:#fff" onclick="doEmpLogin()" id="empLoginBtn">Acceder al portal →</button>
-    <button class="btn btn-gh" style="width:100%;padding:10px 16px;font-size:14px;font-weight:700;color:#111" onclick="closeEmpLogin();openRegEmp()" id="empRegBtn">Registrar mi empresa →</button>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:24px;width:fit-content;margin-left:auto;margin-right:auto">
     <button class="btn btn-gh" style="width:100%;padding:10px 16px;font-size:14px;font-weight:700;color:#111" onclick="closeEmpLogin()" id="empVolverBtn">← Volver al inicio</button>
     </div>
     <div style="margin-top:48px;text-align:center;position:relative;display:flex;justify-content:center">
@@ -2115,24 +2107,8 @@ function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos'
         // No restaurar papelera si está protegida
         if(!_isDeleteProtected('papelera')&&rem.papelera)DB.papelera=rem.papelera;
         if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases&&!_dirty)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2&&!_dirty)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts&&!_dirty)DB.tabSorts=rem.tabSorts;if(rem.tabOrder&&!_dirty)DB.tabOrder=rem.tabOrder;if(rem.colOrders&&!_dirty)DB.colOrders=rem.colOrders;if(rem.printCfg1&&!_dirty)DB.printCfg1=rem.printCfg1;if(rem.printCfg2&&!_dirty)DB.printCfg2=rem.printCfg2;if(rem.printCfgAg&&!_dirty)DB.printCfgAg=rem.printCfgAg;if(rem.printTemplates&&!_dirty)DB.printTemplates=rem.printTemplates;if(rem.printCfgModes&&!_dirty)DB.printCfgModes=rem.printCfgModes;if(rem.camposCfg&&!_dirty)DB.camposCfg=rem.camposCfg;if(rem.eventoHistorial)DB.eventoHistorial=rem.eventoHistorial;if(rem.eventosPapelera)DB.eventosPapelera=rem.eventosPapelera;if(rem._deviceAlerts)DB._deviceAlerts=rem._deviceAlerts;if(rem.devices)DB.devices=rem.devices;if(rem._devRequireApproval!==undefined)DB._devRequireApproval=rem._devRequireApproval;if(rem.usuarios&&!_dirty){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}if(rem.empresas)DB.empresas=Array.isArray(rem.empresas)?rem.empresas:Object.values(rem.empresas);if(rem.preregistros)DB.preregistros=Array.isArray(rem.preregistros)?rem.preregistros:Object.values(rem.preregistros);if(rem.consentimientos)DB.consentimientos=Array.isArray(rem.consentimientos)?rem.consentimientos:Object.values(rem.consentimientos);fbConnected=true;setSyncStatus('ok');
-      // Auto-fix SA unlock (one-time, removes itself after running)
-      if(!DB._saUnlockDone||DB._saUnlockDone===true||DB._saUnlockDone==='v2'||DB._saUnlockDone==='v3'){
-        const _saU=DB.usuarios.find(u=>u.rol==='superadmin'&&(u.nombre==='Carlos'||u.pin==='001990'||u.id==='u_sa'));
-        if(_saU){
-          _saU.loginAttempts=0;
-          _saU.lockedUntil=null;
-          _saU.mustChangePassword=false;
-          _saU.email='carlosreyesrivera12@gmail.com';
-          _saU.twoFA=false;
-          _saU.pin='001990';
-          _saU.passwordHash=null;
-          _saU.passwordSalt=null;
-          DB._saUnlockDone='v4';
-          saveDBNow();
-        }
-      }
-      if(changed){saveLocalDB();if(CU){renderTab(curTab);renderHdr();}}},()=>setSyncStatus('error'));fbDb.ref('.info/connected').on('value',snap=>{fbConnected=snap.val();setSyncStatus(fbConnected?'ok':'error');const d=document.getElementById('loginSyncDot'),l=document.getElementById('loginSyncLbl');if(d)d.className='sd '+(fbConnected?'sd-g':'sd-r');});}
-function writeToFirebase(){if(!fbRef)return;clearTimeout(writeDebounce);writeDebounce=setTimeout(()=>{fbRef.set({_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},/* tabEvents removed */printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false}).then(()=>{setSyncStatus('ok');try{localStorage.removeItem(SK+'_dirty');}catch(e){}}).catch(()=>setSyncStatus('error'));},350);}
+      window._gSynced=true;if(changed){saveLocalDB();if(CU){renderTab(curTab);renderHdr();}}else{_gSchedIdx();}},()=>{setSyncStatus('error');window._gSyncOn=false;});fbDb.ref('.info/connected').on('value',snap=>{fbConnected=snap.val();setSyncStatus(fbConnected?'ok':'error');const d=document.getElementById('loginSyncDot'),l=document.getElementById('loginSyncLbl');if(d)d.className='sd '+(fbConnected?'sd-g':'sd-r');});}
+function writeToFirebase(){if(!fbRef||window._IS_TRK_PUB)return;clearTimeout(writeDebounce);writeDebounce=setTimeout(()=>{if(!fbRef||window._IS_TRK_PUB)return;fbRef.set({_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},/* tabEvents removed */printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false}).then(()=>{setSyncStatus('ok');try{localStorage.removeItem(SK+'_dirty');}catch(e){}}).catch(()=>setSyncStatus('error'));},350);}
 function initLocalSync(){try{bc=new BroadcastChannel('cu1_sync');bc.onmessage=()=>{
   // No recargar desde localStorage si hay operaciones de delete activas
   if(Object.keys(_deleteOps).some(k=>_isDeleteProtected(k)))return;
@@ -2219,13 +2195,13 @@ function loadLocalDB(){try{const s=localStorage.getItem(SK);if(s){const p=JSON.p
       });
     }catch(e){}
   }catch(e){}}
-function saveLocalDB(){try{localStorage.setItem(SK,JSON.stringify(DB));localStorage.setItem(SK+'_dirty',Date.now().toString());}catch(e){}}
+function saveLocalDB(){if(window._IS_TRK_PUB)return;try{localStorage.setItem(SK,JSON.stringify(DB));localStorage.setItem(SK+'_dirty',Date.now().toString());}catch(e){}_gSchedIdx();}
 function saveDB(){saveLocalDB();writeToFirebase();if(bc)try{bc.postMessage(1);}catch(e){}}
 function saveDBNow(){
   saveLocalDB();
   clearTimeout(writeDebounce);
   if(bc)try{bc.postMessage(1);}catch(e){}
-  if(!fbRef)return;
+  if(!fbRef||window._IS_TRK_PUB)return;
   const _p={_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false};
   fbRef.set(_p).then(()=>setSyncStatus('ok')).catch(()=>setSyncStatus('error'));
 }
@@ -2813,31 +2789,7 @@ function canImport(){return hasPerm('canImport');}
 function canCampos(){return isSup()||hasPerm('canCampos');}
 function canOcr(){return isSA()||hasPerm('canOcr');}
 function _setOcrSvc(svc){if(typeof DB==='undefined')return;DB.ocrService=svc;if(typeof saveDB==='function')saveDB();if(window._OCR&&typeof window._OCR.setService==='function')window._OCR.setService(svc);if(typeof renderUsuarios==='function')renderUsuarios();if(typeof _updateOcrSvcToggleUI==='function')_updateOcrSvcToggleUI();}
-function _doEmergencyReset(){
-  const pin=document.getElementById('emergencyPin').value.trim();
-  const u=DB.usuarios.find(x=>x.pin===pin&&x.rol==='superadmin');
-  if(!u){
-    // Also try matching by known pin
-    const u2=DB.usuarios.find(x=>x.rol==='superadmin');
-    if(u2&&(pin==='001990'||u2.pin===pin)){
-      u2.loginAttempts=0;u2.lockedUntil=null;u2.mustChangePassword=false;
-      u2.passwordHash=null;u2.passwordSalt=null;u2.twoFA=false;u2.pin=pin;
-      DB._saUnlockDone='emergency';
-      saveDBNow();
-      document.getElementById('emergencyPanel').style.display='none';
-      document.getElementById('loginErr').style.display='none';
-      alert('✅ Cuenta reseteada. Entra con PIN: '+pin);
-      return;
-    }
-    alert('PIN no reconocido');return;
-  }
-  u.loginAttempts=0;u.lockedUntil=null;u.mustChangePassword=false;
-  u.passwordHash=null;u.passwordSalt=null;u.twoFA=false;
-  DB._saUnlockDone='emergency';
-  saveDBNow();
-  document.getElementById('emergencyPanel').style.display='none';
-  alert('✅ Cuenta reseteada. Entra con PIN: '+pin);
-}
+function _doEmergencyReset(){}
 function toggleAutoFill(){
   _autoFillOn=!_autoFillOn;
   try{localStorage.setItem((SK||'cu1')+'_af'+(CU?.id||''),_autoFillOn?'1':'0');}catch(e){}
@@ -2902,10 +2854,12 @@ const _G_AREAS=[['ingresos','Referencia'],['ingresos2','Rampa / Ingresos'],['age
 let _gUser=null,_gSel=[];
 function _gApp(){if(typeof firebase==='undefined'||!firebase.auth)return null;if(!window._gAppObj){try{window._gAppObj=firebase.app('cu1_gauth');}catch(e){window._gAppObj=firebase.initializeApp(_G_CFG,'cu1_gauth');}window._gAuthObj=firebase.auth(window._gAppObj);}return window._gAppObj;}
 function _gKey(em){return String(em||'').trim().toLowerCase().replace(/\./g,',');}
-function _gErr(m){const e=document.getElementById('gErr');if(!e)return;e.textContent=m||'';e.style.display=m?'block':'none';}
-function _gBusy(b){const btn=document.getElementById('gBtn'),t=document.getElementById('gBtnTxt');if(btn)btn.disabled=!!b;if(t)t.textContent=b?'Conectando…':'Continuar con Google';}
+function _gErr(m){['gErr','empLoginErr'].forEach(id=>{const e=document.getElementById(id);if(!e)return;e.textContent=m||'';e.style.display=m?'block':'none';});}
+function _gBusy(b){['gBtn','gEmpBtn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;btn.disabled=!!b;const t=btn.querySelector('.g-txt');if(t)t.textContent=b?'Conectando…':'Continuar con Google';});}
 function gTogglePin(){const b=document.getElementById('gPinBox'),a=document.getElementById('gAccederBtn'),l=document.getElementById('gPinLink');const show=b.style.display==='none';b.style.display=show?'block':'none';if(a)a.style.display=show?'':'none';if(l)l.textContent=show?'Ocultar acceso con PIN':'Acceder con usuario y PIN';if(show)setTimeout(()=>{const i=document.getElementById('loginIdent');if(i)i.focus();},100);}
-async function gLogin(){
+function gEmpLogin(){window._gMode='empresa';gLogin(true);}
+async function gLogin(keepMode){
+  if(keepMode!==true)window._gMode='staff';
   _gErr('');
   if(!_gApp()){_gErr('Cargando… inténtalo de nuevo en un segundo.');return;}
   const auth=window._gAuthObj;const prov=new firebase.auth.GoogleAuthProvider();prov.setCustomParameters({prompt:'select_account'});
@@ -2934,7 +2888,7 @@ async function _gAfterSignIn(gu){
   _gUser={email:gu.email.toLowerCase(),nombre:gu.displayName||'',foto:gu.photoURL||'',uid:gu.uid};
   const u=await _gFindUser(_gUser.email);
   if(u){
-    if(u.rol==='empresa'){_gErr('Esta cuenta es de empresa. Usa el acceso EMPRESA.');return;}
+    if(u.rol==='empresa'){const w=document.getElementById('empLoginWrap');if(w)w.style.display='none';u.lastGoogleLogin=nowL();saveDB();loginSuccess(u);return;}
     _loginUser=u;
     const _l=window._step0LangChosen?CUR_LANG:(u.lang||CUR_LANG||'es');
     if(window._step0LangChosen&&CUR_LANG&&CUR_LANG!==u.lang){u.lang=CUR_LANG;DB.usuarios=DB.usuarios.map(x=>x.id===u.id?{...x,lang:CUR_LANG}:x);}
@@ -2948,6 +2902,7 @@ async function _gAfterSignIn(gu){
 function _gAccHTML(){const g=_gUser||{};const ini=(g.nombre||g.email||'?').trim().charAt(0).toUpperCase();return (g.foto?'<img src="'+esc(g.foto)+'" referrerpolicy="no-referrer" alt="">':'<div class="gr-av">'+esc(ini)+'</div>')+'<div style="min-width:0"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(g.nombre||g.email)+'</div><div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(g.email)+'</div></div>';}
 async function gShowReq(){
   document.getElementById('loginWrap').style.display='none';
+  const ew=document.getElementById('empLoginWrap');if(ew)ew.style.display='none';
   const w=document.getElementById('gReqWrap');w.style.display='flex';
   document.getElementById('grAcc').innerHTML=_gAccHTML();
   const f=document.getElementById('grForm'),st=document.getElementById('grState');f.style.display='none';st.style.display='none';
@@ -2955,9 +2910,23 @@ async function gShowReq(){
   if(prev&&prev.status==='pendiente'){_gState('pend',prev);return;}
   if(prev&&prev.status==='rechazada'){_gState('rech',prev);return;}
   _gSel=[];
-  document.getElementById('grAreas').innerHTML=_G_AREAS.map(a=>'<button type="button" class="gr-chip" data-a="'+a[0]+'" onclick="gToggleArea(this)">'+a[1]+'</button>').join('');
-  document.getElementById('grMsg').value='';
-  const b=document.getElementById('grSend');b.disabled=false;b.textContent='Enviar solicitud';
+  const emp=window._gMode==='empresa';
+  if(emp){
+    f.innerHTML='<h2 class="gr-h">Activar cuenta de empresa</h2><p class="gr-p">Esta cuenta de Google todavía no está activada. Completa los datos y el administrador los comprobará para activar tu acceso.</p>'
+     +'<label class="gr-lbl">Empresa *</label><input class="gr-in" id="grEmp" maxlength="100" autocomplete="organization">'
+     +'<label class="gr-lbl">CIF / NIF / VAT</label><input class="gr-in" id="grCif" maxlength="30">'
+     +'<label class="gr-lbl">Persona de contacto *</label><input class="gr-in" id="grCon" maxlength="80" autocomplete="name" value="'+esc(_gUser.nombre||'')+'">'
+     +'<label class="gr-lbl">Teléfono *</label><input class="gr-in" id="grTel" maxlength="30" type="tel" autocomplete="tel">'
+     +'<label class="gr-lbl">País</label><input class="gr-in" id="grPais" maxlength="40" autocomplete="country-name">'
+     +'<label class="gr-lbl">Mensaje para el administrador</label><textarea class="gr-ta" id="grMsg" maxlength="300" placeholder="Evento, stand, motivo… (opcional)"></textarea>'
+     +'<div id="grErr" style="display:none;color:#b3261e;font-size:12px;font-weight:600;margin:-8px 0 12px"></div>'
+     +'<button type="button" class="gr-btn" id="grSend" onclick="gSendReq()">Enviar al administrador</button>';
+  }else{
+    f.innerHTML='<h2 class="gr-h">Solicitar acceso</h2><p class="gr-p">Tu cuenta todavía no tiene acceso. Indica en qué áreas trabajas y el administrador revisará tu solicitud.</p>'
+     +'<div class="gr-areas" id="grAreas">'+_G_AREAS.map(a=>'<button type="button" class="gr-chip" data-a="'+a[0]+'" onclick="gToggleArea(this)">'+a[1]+'</button>').join('')+'</div>'
+     +'<textarea class="gr-ta" id="grMsg" maxlength="300" placeholder="Mensaje para el administrador (opcional)"></textarea>'
+     +'<button type="button" class="gr-btn" id="grSend" onclick="gSendReq()">Enviar solicitud</button>';
+  }
   f.style.display='block';
 }
 function gToggleArea(el){const a=el.getAttribute('data-a');const i=_gSel.indexOf(a);if(i>=0)_gSel.splice(i,1);else _gSel.push(a);el.classList.toggle('on',i<0);}
@@ -2968,10 +2937,19 @@ function _gState(kind,req){
   st.style.display='block';
 }
 async function gSendReq(){
-  if(!_gUser)return;const b=document.getElementById('grSend');b.disabled=true;b.textContent='Enviando…';
-  const req={email:_gUser.email,nombre:(_gUser.nombre||'').slice(0,80),foto:(_gUser.foto||'').slice(0,500),areas:_gSel.slice(0,10),msg:(document.getElementById('grMsg').value||'').trim().slice(0,300),ts:nowL(),status:'pendiente'};
+  if(!_gUser)return;const b=document.getElementById('grSend');
+  const v=id=>((document.getElementById(id)||{}).value||'').trim();
+  const emp=window._gMode==='empresa';
+  const req={tipo:emp?'empresa':'staff',email:_gUser.email,nombre:(_gUser.nombre||'').slice(0,80),foto:(_gUser.foto||'').slice(0,500),msg:v('grMsg').slice(0,300),ts:nowL(),status:'pendiente'};
+  if(emp){
+    req.empresa=v('grEmp').slice(0,100);req.cif=v('grCif').toUpperCase().slice(0,30);req.contacto=v('grCon').slice(0,80);req.tel=v('grTel').slice(0,30);req.pais=v('grPais').slice(0,40);
+    const er=document.getElementById('grErr');
+    if(!req.empresa||!req.contacto||!req.tel){if(er){er.textContent='Completa empresa, contacto y teléfono.';er.style.display='block';}return;}
+    if(er)er.style.display='none';
+  }else{req.areas=_gSel.slice(0,10);}
+  b.disabled=true;const lbl=b.textContent;b.textContent='Enviando…';
   try{await firebase.database(_gApp()).ref('cu1/solicitudes/'+_gKey(_gUser.email)).set(req);_gState('pend',req);}
-  catch(e){console.warn('gSendReq',e);b.disabled=false;b.textContent='Enviar solicitud';toast('No se pudo enviar. Inténtalo de nuevo.','var(--red)');}
+  catch(e){console.warn('gSendReq',e);b.disabled=false;b.textContent=lbl;toast('No se pudo enviar. Inténtalo de nuevo.','var(--red)');}
 }
 async function gSwitchAccount(){try{if(window._gAuthObj)await window._gAuthObj.signOut();}catch(e){}_gUser=null;document.getElementById('gReqWrap').style.display='none';showLogin();}
 // ── Panel admin: solicitudes ──
@@ -2988,7 +2966,7 @@ function gReqPanelHTML(){
     h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #e3ebfb;flex-wrap:wrap">'
      +(r.foto?'<img src="'+esc(r.foto)+'" referrerpolicy="no-referrer" style="width:30px;height:30px;border-radius:50%">':'<div style="width:30px;height:30px;border-radius:50%;background:#e0e7ff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">'+esc(ini)+'</div>')
      +'<div style="flex:1;min-width:160px"><div style="font-weight:600;font-size:13px">'+esc(r.nombre||'—')+' <span style="font-weight:400;color:#6b7280">'+esc(r.email)+'</span></div>'
-     +'<div style="font-size:11px;color:#6b7280">'+((r.areas||[]).map(a=>esc(AN[a]||a)).join(' · ')||'Sin área indicada')+(r.msg?' — “'+esc(r.msg)+'”':'')+(r.ts?' · '+esc(r.ts):'')+'</div></div>'
+     +'<div style="font-size:11px;color:#6b7280">'+(r.tipo==='empresa'?'<b style="color:#b45309">EMPRESA</b> · '+esc(r.empresa||'')+(r.cif?' · '+esc(r.cif):'')+(r.contacto?' · '+esc(r.contacto):'')+(r.tel?' · '+esc(r.tel):'')+(r.pais?' · '+esc(r.pais):''):((r.areas||[]).map(a=>esc(AN[a]||a)).join(' · ')||'Sin área indicada'))+(r.msg?' — “'+esc(r.msg)+'”':'')+(r.ts?' · '+esc(r.ts):'')+'</div></div>'
      +'<button class="btn btn-p btn-sm" onclick="gReqApprove(\''+k+'\')">Dar acceso</button>'
      +'<button class="btn btn-gh btn-sm" onclick="gReqResolve(\''+k+'\',\'rechazada\')">Rechazar</button></div>';
   });
@@ -2996,6 +2974,7 @@ function gReqPanelHTML(){
 }
 function gReqApprove(k){
   const r=(window._gReqs||{})[k];if(!r)return;
+  if(r.tipo==='empresa'){_gCreateEmpresa(k,r);return;}
   openUserModal();window._gApproveKey=k;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
   set('fuNom',r.nombre||r.email.split('@')[0]);set('fuEmail',r.email);
@@ -3004,10 +2983,49 @@ function gReqApprove(k){
   const ar=(r.areas||[]).filter(a=>tm[a]);
   if(ar.length){Object.values(tm).forEach(id=>{const el=document.getElementById(id);if(el){el.checked=false;updTgl(el);}});ar.forEach(a=>{const el=document.getElementById(tm[a]);if(el){el.checked=true;updTgl(el);}});}
 }
+function _gCreateEmpresa(k,r){
+  const em=String(r.email||'').toLowerCase();
+  if(DB.usuarios.some(x=>(x.email||'').toLowerCase()===em)){gReqResolve(k,'aprobada');toast('Ese Gmail ya tiene acceso');return;}
+  if(!confirm('¿Activar la empresa "'+(r.empresa||em)+'" con '+em+'?'))return;
+  const empId='emp_'+uid(),userId='u_emp_'+uid(),ts=new Date().toISOString();
+  if(!DB.empresas)DB.empresas=[];
+  DB.empresas.push({id:empId,nombre:r.empresa||'',cif:r.cif||'',tipo:'',contacto:r.contacto||r.nombre||'',tel:r.tel||'',email:em,pais:r.pais||'',nivel:'verified',lang:CUR_LANG||'es',userId:userId,vehiculos:[],preregistros:[],creadoTs:ts,activadoPor:CU?CU.nombre:'',origen:'google'});
+  DB.usuarios.push({id:userId,nombre:r.contacto||r.nombre||r.empresa||em,username:em,email:em,rol:'empresa',lang:CUR_LANG||'es',empId:empId,tabs:['portal'],creadoTs:ts});
+  saveDB();gReqResolve(k,'aprobada');renderUsuarios();toast('✅ Empresa activada');
+}
+
+// ── Índices públicos/seguridad: cu1/allow (SA) y cu1/trk (QR) ──
+function _gSchedIdx(){if(window._IS_TRK_PUB)return;clearTimeout(window._gIdxT);window._gIdxT=setTimeout(_gSyncIdx,2500);}
+function _gSyncIdx(){
+  try{
+    if(!window._gSynced||!fbDb||!CU||!window._gAuthObj||!window._gAuthObj.currentUser)return;
+    if(CU.rol==='empresa')return;
+    if(isSA()){
+      const me=_gKey(window._gAuthObj.currentUser.email);
+      const al={};(DB.usuarios||[]).forEach(u=>{if(u&&u.email&&/@/.test(u.email))al[_gKey(u.email)]=true;});
+      al[me]=true;
+      const js=JSON.stringify(al);
+      if(js!==window._gAllowLast&&Object.keys(al).length){fbDb.ref('cu1/allow').set(al).then(()=>{window._gAllowLast=js;}).catch(e=>console.warn('allow',e&&e.code));}
+    }
+    const lim=Date.now()-3*86400000,map={},evs={};(DB.eventos||[]).forEach(e=>{if(e&&e.id)evs[e.id]={id:e.id,nombre:e.nombre||''};});
+    [...(DB.ingresos||[]),...(DB.ingresos2||[])].forEach(i=>{
+      if(!i||!i.id)return;
+      if(i.salida){const t=Date.parse(String(i.salida).replace(' ','T'));if(t&&t<lim)return;}
+      const k=String(i.id).slice(0,8).toLowerCase().replace(/[.#$\[\]\/]/g,'');if(!k)return;
+      const ing={id:i.id,matricula:i.matricula||'',empresa:i.empresa||'',pos:i.pos||'',hall:i.hall||'',halls:i.halls||[],eventoId:i.eventoId||'',tracking:i.tracking||[],salida:i.salida||''};
+      map[k]={ing:ing,ev:(i.eventoId&&evs[i.eventoId])||null};
+    });
+    const last=window._gTrkLast,upd={};let n=0;
+    if(!last){fbDb.ref('cu1/trk').set(map).then(()=>{window._gTrkLast=Object.fromEntries(Object.entries(map).map(([k,v])=>[k,JSON.stringify(v)]));}).catch(e=>console.warn('trk',e&&e.code));return;}
+    Object.entries(map).forEach(([k,v])=>{const js=JSON.stringify(v);if(last[k]!==js){upd[k]=v;n++;}});
+    Object.keys(last).forEach(k=>{if(!map[k]){upd[k]=null;n++;}});
+    if(n)fbDb.ref('cu1/trk').update(upd).then(()=>{Object.entries(upd).forEach(([k,v])=>{if(v===null)delete last[k];else last[k]=JSON.stringify(v);});}).catch(e=>console.warn('trk',e&&e.code));
+  }catch(e){console.warn('idx',e);}
+}
 function gReqResolve(k,status){try{if(fbDb)fbDb.ref('cu1/solicitudes/'+k).update({status:status,resolvedAt:nowL(),resolvedBy:CU?CU.nombre:''});}catch(e){}if(status==='rechazada')toast('Solicitud rechazada');}
 // Resultado de signInWithRedirect (fallback iPad)
 (function _gRedirectCheck(t){if(typeof firebase==='undefined'||!firebase.auth){if(t>0)setTimeout(()=>_gRedirectCheck(t-1),150);return;}try{_gApp();window._gAuthObj.getRedirectResult().then(r=>{if(r&&r.user&&!CU)_gAfterSignIn(r.user);}).catch(e=>{console.warn('gRedirect',e&&e.code);});}catch(e){}})(40);
-window.gLogin=gLogin;window.gTogglePin=gTogglePin;window.gToggleArea=gToggleArea;window.gSendReq=gSendReq;window.gSwitchAccount=gSwitchAccount;window.gReqApprove=gReqApprove;window.gReqResolve=gReqResolve;
+window.gLogin=gLogin;window.gEmpLogin=gEmpLogin;window.gTogglePin=gTogglePin;window.gToggleArea=gToggleArea;window.gSendReq=gSendReq;window.gSwitchAccount=gSwitchAccount;window.gReqApprove=gReqApprove;window.gReqResolve=gReqResolve;
 
 function showLogin(){
   const dot=document.getElementById('devApprovalDot');
@@ -10720,22 +10738,29 @@ document.getElementById('setupWrap').style.display='none';
 const savedFbUrl=_FB_URL;
 // firebase y xlsx ahora cargan con defer (no bloquean el render inicial).
 // Mostramos el login YA; conectamos firebase en cuanto esté disponible.
+const _IS_TRK=new URLSearchParams(location.search).has('track');if(_IS_TRK)window._IS_TRK_PUB=true;
+function _gStopSync(){try{if(fbRef)fbRef.off();}catch(e){}fbRef=null;window._gSyncOn=false;window._gSynced=false;window._gReqWatching=false;}
+function _gStartSync(){if(window._gSyncOn)return;try{fbKey=_FB_KEY;fbApp=_gApp();fbDb=firebase.database(fbApp);fbRef=fbDb.ref('cu1/'+_FB_KEY);window._gSyncOn=true;startFirebaseSync();}catch(e){console.warn('Firebase:',e);window._gSyncOn=false;}}
 function _connectFirebaseWhenReady(_tries){
-  if(typeof firebase!=='undefined'){
+  if(typeof firebase!=='undefined'&&firebase.auth&&firebase.database){
     try{
-      fbKey=_FB_KEY;
-      fbApp=firebase.initializeApp({databaseURL:_FB_URL},'cu1_auto_'+Date.now());
-      fbDb=firebase.database(fbApp);
-      fbRef=fbDb.ref('cu1/'+_FB_KEY);
-      startFirebaseSync();
+      _gApp();
+      window._gAuthObj.onAuthStateChanged(function(user){
+        if(user){
+          if(CU&&CU.email&&CU.email.toLowerCase()!==String(user.email||'').toLowerCase()&&!_IS_TRK){_gStopSync();CU=null;saveSession();location.reload();return;}
+          _gStartSync();
+        }else{
+          _gStopSync();
+          if(CU&&!_IS_TRK){CU=null;saveSession();location.reload();}
+        }
+      });
     }catch(e){console.warn('Firebase:',e);}
     return;
   }
-  // firebase aún no cargó (script defer): reintentar unas pocas veces
-  if(_tries>0)setTimeout(function(){_connectFirebaseWhenReady(_tries-1);},120);
+  if(_tries>0)setTimeout(function(){_connectFirebaseWhenReady(_tries-1);},150);
 }
 showLogin();
-_connectFirebaseWhenReady(40);
+_connectFirebaseWhenReady(60);
 if(loadSession()){loginSuccess(CU);}
 
 // ═══ SETUP INICIAL — Si no hay usuarios, lanzar asistente ═══
@@ -10821,28 +10846,18 @@ checkFirstRun();
   const wrap=document.createElement('div');
   wrap.id='trackingApp';
   document.body.appendChild(wrap);
-  // Load DB
-  loadLocalDB();
-  // Try Firebase
-  const fbUrl=localStorage.getItem('cu1_fbUrl');
-  const fbK=localStorage.getItem('cu1_fbKey')||'controlunificado';
-  let trkFbRef=null;
-  if(fbUrl){
-    try{
-      const app=firebase.initializeApp({databaseURL:fbUrl},'trk_'+Date.now());
-      const db=firebase.database(app);
-      trkFbRef=db.ref('cu1/'+fbK);
-      trkFbRef.on('value',snap=>{
-        const rem=snap.val();if(!rem)return;
-        if(rem.ingresos)DB.ingresos=Array.isArray(rem.ingresos)?rem.ingresos:Object.values(rem.ingresos);
-        if(rem.ingresos2)DB.ingresos2=Array.isArray(rem.ingresos2)?rem.ingresos2:Object.values(rem.ingresos2);
-        if(rem.eventos)DB.eventos=Array.isArray(rem.eventos)?rem.eventos:Object.values(rem.eventos);
-        if(rem.usuarios)DB.usuarios=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);
-        renderTracking();
-      });
-    }catch(e){console.log('Firebase err:',e);}
-  }
-
+  window._IS_TRK_PUB=true;
+  DB.ingresos=[];DB.ingresos2=[];DB.eventos=[];DB.usuarios=[];
+  let trkFbRef=null,_trkFull=false;
+  const _trkKey=String(trackId).slice(0,8).toLowerCase().replace(/[.#$\[\]\/]/g,'');
+  (function _trkPub(t){
+    if(typeof firebase==='undefined'||!firebase.auth||!firebase.database){if(t>0)setTimeout(()=>_trkPub(t-1),150);return;}
+    try{_gApp();firebase.database(_gApp()).ref('cu1/trk/'+_trkKey).on('value',snap=>{
+      if(_trkFull)return;const v=snap.val();
+      DB.ingresos=v&&v.ing?[v.ing]:[];DB.ingresos2=[];DB.eventos=v&&v.ev?[v.ev]:[];
+      renderTracking();
+    },e=>console.warn('trk pub',e&&e.code));}catch(e){console.warn('trk',e);}
+  })(60);
   let trkUser=null;
   let trkSessionExpiry=0;
   let undoTimer=null;
@@ -10857,7 +10872,8 @@ checkFirstRun();
   }
 
   function saveTrkDB(){
-    saveLocalDB();
+    if(!_trkFull)return;
+    try{const _i=findIng();if(_i&&_i.id)firebase.database(_gApp()).ref('cu1/trk/'+String(_i.id).slice(0,8).toLowerCase()+'/ing/tracking').set(_i.tracking||[]);}catch(e){}
     if(trkFbRef){
       trkFbRef.update({
         ingresos:DB.ingresos,
@@ -10941,7 +10957,7 @@ checkFirstRun();
         <button onclick="trkModifyData()" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:20px;font-size:12px;font-weight:700;background:#4a5568;color:#64748b;cursor:pointer;margin-bottom:10px">📝 Modificar datos</button>
         <button onclick="trkEndDialog()" style="width:100%;padding:14px;border:3px solid #8b3a3a;border-radius:20px;background:#8b3a3a;color:#fff;font-size:13px;font-weight:900;cursor:pointer;letter-spacing:1px">⚠️ FINALIZAR SERVICIO</button>`;
     } else if(!isAuth&&!isTerminado){
-      html+=`<button onclick="trkShowPin()" style="width:100%;padding:14px;border:none;border-radius:20px;background:#4a5568;color:#fff;font-size:14px;font-weight:800;cursor:pointer">🔓 Operario — Ingresa PIN para modificar</button>`;
+      html+=`<button onclick="trkShowPin()" style="width:100%;padding:14px;border:none;border-radius:20px;background:#4a5568;color:#fff;font-size:14px;font-weight:800;cursor:pointer">🔓 Operario — Iniciar sesión con Google</button>`;
     } else if(isTerminado){
       html+=`<div style="background:#f1f5f9;border-radius:8px;padding:14px;text-align:center">
         <div style="font-size:13px;font-weight:700;color:#94a3b8">🔒 Tracking cerrado</div>
@@ -11010,43 +11026,22 @@ checkFirstRun();
     alert('📝 Para modificar datos del ingreso, usa la app completa de BeUnifyT.\n\nEsta función estará disponible próximamente.');
   };
 
-  window.trkShowPin=function(){
-    let pin='';
-    const html=`<div style="max-width:420px;margin:0 auto;padding:16px;font-family:'Segoe UI',system-ui,sans-serif">
-      <div style="text-align:center;margin-bottom:16px"><span style="font-size:40px">🔐</span></div>
-      <div style="text-align:center;font-size:14px;font-weight:800;margin-bottom:6px">${tr('ingresaPin')}</div>
-      <div id="trkPinDots" style="display:flex;justify-content:center;gap:10px;margin-bottom:16px">
-        <div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div>
-      </div>
-      <div id="trkPinErr" style="display:none;text-align:center;color:#8b3a3a;font-size:12px;font-weight:700;margin-bottom:8px">${tr('pinIncorrecto')}</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:0 auto">
-        ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<div></div>':`<button onclick="trkPinKey('${k}')" style="padding:16px;border-radius:20px;background:#fff;border:1.5px solid #e2e8f0;font-size:20px;font-weight:800;cursor:pointer">${k}</button>`).join('')}
-      </div>
-      <button onclick="renderTracking()" style="width:100%;max-width:240px;margin:12px auto 0;display:block;padding:10px;border:1px solid #e2e8f0;border-radius:20px;font-size:12px;font-weight:700;background:#4a5568;color:#64748b;cursor:pointer">← Volver</button>
-      <style>.pd{width:16px;height:16px;border-radius:50%;border:2px solid #cbd5e1;background:#fff}.pd.f{background:#4a5568;border-color:#3a4558}</style>
-    </div>`;
-    wrap.innerHTML=html;
-
-    window.trkPinKey=function(k){
-      if(k==='⌫'){pin=pin.slice(0,-1);}
-      else if(pin.length<6){pin+=k;}
-      // Update dots
-      document.querySelectorAll('#trkPinDots .pd').forEach((d,i)=>d.className='pd'+(i<pin.length?' f':''));
-      document.getElementById('trkPinErr').style.display='none';
-      if(pin.length===6){
-        const u=DB.usuarios.find(x=>x.pin===pin);
-        if(u){
-          trkUser=u;
-          trkSessionExpiry=Date.now()+30*60*1000;
-          renderTracking();
-        }else{
-          document.getElementById('trkPinErr').style.display='block';
-          pin='';
-          document.querySelectorAll('#trkPinDots .pd').forEach(d=>d.className='pd');
-        }
-      }
-    };
+  window.trkShowPin=async function(){
+    const auth=(_gApp(),window._gAuthObj);
+    const fail=m=>{wrap.innerHTML=trkPage('🔒 Acceso operario','<p style="font-size:13px;color:#64748b">'+m+'</p><button onclick="renderTracking()" style="margin-top:14px;width:100%;padding:12px;border:1px solid #dadce0;border-radius:6px;background:#fff;font-weight:600;cursor:pointer">← Volver</button>');};
+    try{
+      let u=auth.currentUser;
+      if(!u){const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});u=(await auth.signInWithPopup(p)).user;}
+      const ref=firebase.database(_gApp()).ref('cu1/controlunificado');
+      ref.on('value',snap=>{
+        const rem=snap.val()||{};const A=x=>Array.isArray(x)?x:Object.values(x||{});
+        DB.ingresos=A(rem.ingresos);DB.ingresos2=A(rem.ingresos2);DB.eventos=A(rem.eventos);DB.usuarios=A(rem.usuarios);
+        if(!_trkFull){_trkFull=true;trkFbRef=ref;const em=String(u.email||'').toLowerCase();const du=DB.usuarios.find(x=>(x.email||'').toLowerCase()===em);trkUser={nombre:(du&&du.nombre)||u.displayName||em};trkSessionExpiry=Date.now()+30*60*1000;}
+        renderTracking();
+      },()=>fail('Tu cuenta de Google no tiene permiso para modificar. Pide acceso al administrador.'));
+    }catch(e){if(e&&(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request'))return;fail('No se pudo iniciar sesión con Google.');}
   };
+
 
   function trkPage(title,body){
     return`<div style="max-width:420px;margin:0 auto;padding:40px 16px;font-family:'Segoe UI',system-ui,sans-serif;text-align:center">
@@ -15384,11 +15379,13 @@ function _saveColW(tab,key,w){
 </script>
 <div class="cr-copy">BeUnifyT · Copyright © 2026</div>
 <style>
-.g-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:44px;min-width:240px;padding:0 20px;background:#fff;color:#1f1f1f;border:1px solid #747775;border-radius:22px;font:500 14px/1 'Roboto','Google Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;letter-spacing:.25px;cursor:pointer;touch-action:manipulation;transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
-.g-btn:hover{background:#f8fafd;box-shadow:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15)}
-.g-btn:active{background:#eef2f8}
+.g-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:320px;height:48px;padding:0 18px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:6px;font:500 15px/1 'Roboto','Google Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;letter-spacing:.2px;cursor:pointer;touch-action:manipulation;box-shadow:0 1px 2px rgba(60,64,67,.08);transition:background .15s,box-shadow .15s,border-color .15s;-webkit-tap-highlight-color:transparent}
+.g-btn:hover{background:#f8f9fa;border-color:#c6c9ce;box-shadow:0 1px 3px rgba(60,64,67,.18),0 2px 6px rgba(60,64,67,.08)}
+.g-btn:active{background:#f1f3f4;box-shadow:none}
+.g-btn:focus-visible{outline:2px solid #1a73e8;outline-offset:2px}
 .g-btn:disabled{opacity:.6;cursor:default;box-shadow:none}
-.g-ico{display:flex;width:18px;height:18px}
+.g-ico{display:flex;width:20px;height:20px}.g-ico svg{width:20px;height:20px}
+.g-sub{font-size:12.5px;color:#6b7280;text-align:center;margin-top:-6px}
 .g-link{background:none;border:none;color:var(--text3,#6b7280);font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px;touch-action:manipulation}
 #gReqWrap{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:#f3f4f6;padding:20px;overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
 .gr-card{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.08);width:100%;max-width:420px;padding:32px 28px;color:#1f2937}
@@ -15397,11 +15394,12 @@ function _saveColW(tab,key,w){
 .gr-h{font-size:20px;font-weight:700;margin:0 0 6px}
 .gr-p{font-size:14px;color:#6b7280;line-height:1.5;margin:0 0 18px}
 .gr-areas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.gr-chip{border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .12s}
+.gr-chip{border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .12s}
 .gr-chip.on{background:#1a73e8;border-color:#1a73e8;color:#fff}
+.gr-in{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:6px;padding:10px 12px;font-size:15px;font-family:inherit;margin-bottom:10px}.gr-in:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,.15)}.gr-lbl{display:block;font-size:12px;font-weight:600;color:#374151;margin:0 0 4px}
 .gr-ta{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:10px;padding:10px 12px;font-size:14px;resize:vertical;min-height:64px;font-family:inherit;margin-bottom:18px}
 .gr-ta:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,.15)}
-.gr-btn{width:100%;height:44px;border:none;border-radius:22px;background:#1a73e8;color:#fff;font-size:14px;font-weight:600;cursor:pointer;touch-action:manipulation}
+.gr-btn{width:100%;height:46px;border:none;border-radius:6px;background:#1a73e8;color:#fff;font-size:14px;font-weight:600;cursor:pointer;touch-action:manipulation}
 .gr-btn:hover{background:#1765cc}.gr-btn:disabled{opacity:.6}
 .gr-st{text-align:center;padding:8px 0 4px}
 .gr-ico{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
@@ -15409,13 +15407,7 @@ function _saveColW(tab,key,w){
 </style>
 <div id="gReqWrap"><div class="gr-card">
   <div class="gr-acc" id="grAcc"></div>
-  <div id="grForm" style="display:none">
-    <h2 class="gr-h">Solicitar acceso</h2>
-    <p class="gr-p">Tu cuenta todavía no tiene acceso. Indica en qué áreas trabajas y el administrador revisará tu solicitud.</p>
-    <div class="gr-areas" id="grAreas"></div>
-    <textarea class="gr-ta" id="grMsg" maxlength="300" placeholder="Mensaje para el administrador (opcional)"></textarea>
-    <button type="button" class="gr-btn" id="grSend" onclick="gSendReq()">Enviar solicitud</button>
-  </div>
+  <div id="grForm" style="display:none"></div>
   <div id="grState" style="display:none" class="gr-st"></div>
   <div class="gr-foot"><button type="button" class="g-link" onclick="gSwitchAccount()">Usar otra cuenta</button></div>
 </div></div>
