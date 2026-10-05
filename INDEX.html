@@ -2106,9 +2106,9 @@ function startFirebaseSync(){setSyncStatus('connecting');const FK=['movimientos'
         if(rem[k]){const arr=Array.isArray(rem[k])?rem[k]:Object.values(rem[k]);if(JSON.stringify(arr)!==JSON.stringify(DB[k])){DB[k]=arr;changed=true;}}});if(rem.activeEventId!==undefined&&rem.activeEventId!==DB.activeEventId){DB.activeEventId=rem.activeEventId;if(rem.activeEventId&&(!DB.activeEventIds||!DB.activeEventIds.length))DB.activeEventIds=[rem.activeEventId];changed=true;}if(rem.printFieldOrder){DB.printFieldOrder=rem.printFieldOrder;}if(rem.hiddenPrintFields){DB.hiddenPrintFields=rem.hiddenPrintFields;}if(rem.activeEventIds)DB.activeEventIds=rem.activeEventIds;if(rem.defaultEventId!==undefined)DB.defaultEventId=rem.defaultEventId;if(rem.editHistory)DB.editHistory=rem.editHistory;if(rem.ingresos2)DB.ingresos2=rem.ingresos2;
         // No restaurar papelera si está protegida
         if(!_isDeleteProtected('papelera')&&rem.papelera)DB.papelera=rem.papelera;
-        if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases&&!_dirty)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2&&!_dirty)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts&&!_dirty)DB.tabSorts=rem.tabSorts;if(rem.tabOrder&&!_dirty)DB.tabOrder=rem.tabOrder;if(rem.colOrders&&!_dirty)DB.colOrders=rem.colOrders;if(rem.printCfg1&&!_dirty)DB.printCfg1=rem.printCfg1;if(rem.printCfg2&&!_dirty)DB.printCfg2=rem.printCfg2;if(rem.printCfgAg&&!_dirty)DB.printCfgAg=rem.printCfgAg;if(rem.printTemplates&&!_dirty)DB.printTemplates=rem.printTemplates;if(rem.printCfgModes&&!_dirty)DB.printCfgModes=rem.printCfgModes;if(rem.camposCfg&&!_dirty)DB.camposCfg=rem.camposCfg;if(rem.eventoHistorial)DB.eventoHistorial=rem.eventoHistorial;if(rem.eventosPapelera)DB.eventosPapelera=rem.eventosPapelera;if(rem._deviceAlerts)DB._deviceAlerts=rem._deviceAlerts;if(rem.devices)DB.devices=rem.devices;if(rem._devRequireApproval!==undefined)DB._devRequireApproval=rem._devRequireApproval;if(rem.usuarios&&!_dirty){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}if(rem.empresas)DB.empresas=Array.isArray(rem.empresas)?rem.empresas:Object.values(rem.empresas);if(rem.preregistros)DB.preregistros=Array.isArray(rem.preregistros)?rem.preregistros:Object.values(rem.preregistros);if(rem.consentimientos)DB.consentimientos=Array.isArray(rem.consentimientos)?rem.consentimientos:Object.values(rem.consentimientos);fbConnected=true;setSyncStatus('ok');
+        if(rem.vehiculos)DB.vehiculos=rem.vehiculos;if(rem.exportLog)DB.exportLog=rem.exportLog;if(rem.printPhrases&&!_dirty)DB.printPhrases=rem.printPhrases;if(rem.printPhrases2&&!_dirty)DB.printPhrases2=rem.printPhrases2;if(rem.tabSorts&&!_dirty)DB.tabSorts=rem.tabSorts;if(rem.tabOrder&&!_dirty)DB.tabOrder=rem.tabOrder;if(rem.colOrders&&!_dirty)DB.colOrders=rem.colOrders;if(rem.printCfg1&&!_dirty)DB.printCfg1=rem.printCfg1;if(rem.printCfg2&&!_dirty)DB.printCfg2=rem.printCfg2;if(rem.printCfgAg&&!_dirty)DB.printCfgAg=rem.printCfgAg;if(rem.printTemplates&&!_dirty)DB.printTemplates=rem.printTemplates;if(rem.printCfgModes&&!_dirty)DB.printCfgModes=rem.printCfgModes;if(rem.camposCfg&&!_dirty)DB.camposCfg=rem.camposCfg;if(rem.eventoHistorial)DB.eventoHistorial=rem.eventoHistorial;if(rem.eventosPapelera)DB.eventosPapelera=rem.eventosPapelera;if(rem._deviceAlerts)DB._deviceAlerts=rem._deviceAlerts;if(rem.devices)DB.devices=rem.devices;if(rem._devRequireApproval!==undefined)DB._devRequireApproval=rem._devRequireApproval;if(rem.usuarios&&!_dirty){const ru=Array.isArray(rem.usuarios)?rem.usuarios:Object.values(rem.usuarios);DEF_USERS.forEach(du=>{if(!ru.find(u=>u.id===du.id))ru.push(du);});if(JSON.stringify(ru)!==JSON.stringify(DB.usuarios)){DB.usuarios=ru;changed=true;}}_recvEmp(rem);fbConnected=true;setSyncStatus('ok');
       window._gSynced=true;if(changed){saveLocalDB();if(CU){renderTab(curTab);renderHdr();}}else{_gSchedIdx();}},()=>{setSyncStatus('error');window._gSyncOn=false;});fbDb.ref('.info/connected').on('value',snap=>{fbConnected=snap.val();setSyncStatus(fbConnected?'ok':'error');const d=document.getElementById('loginSyncDot'),l=document.getElementById('loginSyncLbl');if(d)d.className='sd '+(fbConnected?'sd-g':'sd-r');});}
-function writeToFirebase(){if(!fbRef||window._IS_TRK_PUB)return;clearTimeout(writeDebounce);writeDebounce=setTimeout(()=>{if(!fbRef||window._IS_TRK_PUB)return;fbRef.set({_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},/* tabEvents removed */printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false}).then(()=>{setSyncStatus('ok');try{localStorage.removeItem(SK+'_dirty');}catch(e){}}).catch(()=>setSyncStatus('error'));},350);}
+function writeToFirebase(){if(!fbRef||window._IS_TRK_PUB)return;clearTimeout(writeDebounce);writeDebounce=setTimeout(()=>{if(!fbRef||window._IS_TRK_PUB)return;fbRef.set(_fbPayload()).then(()=>{setSyncStatus('ok');try{localStorage.removeItem(SK+'_dirty');}catch(e){}}).catch(()=>setSyncStatus('error'));},350);}
 function initLocalSync(){try{bc=new BroadcastChannel('cu1_sync');bc.onmessage=()=>{
   // No recargar desde localStorage si hay operaciones de delete activas
   if(Object.keys(_deleteOps).some(k=>_isDeleteProtected(k)))return;
@@ -2195,6 +2195,26 @@ function loadLocalDB(){try{const s=localStorage.getItem(SK);if(s){const p=JSON.p
       });
     }catch(e){}
   }catch(e){}}
+function _recvEmp(rem){
+  const A=x=>Array.isArray(x)?x:Object.values(x||{});
+  let once=false;try{once=!localStorage.getItem('cu1_empMergeV1');}catch(e){}
+  let up=false;
+  ['empresas','preregistros','consentimientos'].forEach(k=>{
+    const loc=(Array.isArray(DB[k])?DB[k]:[]).filter(Boolean);
+    if(rem[k]===undefined||rem[k]===null){if(loc.length)up=true;return;}
+    const r=A(rem[k]).filter(Boolean);
+    if(!once){DB[k]=r;return;}
+    const m=new Map();r.forEach(x=>m.set(x.id||JSON.stringify(x),x));
+    loc.forEach(x=>{const id=x.id||JSON.stringify(x);const rx=m.get(id);
+      if(!rx){m.set(id,x);up=true;return;}
+      if(k==='empresas'){['vehiculos','preregistros'].forEach(sub=>{const ra=A(rx[sub]).filter(Boolean);const kf=v=>v.id||v.matricula||JSON.stringify(v);const ids=new Set(ra.map(kf));A(x[sub]).forEach(v=>{if(v&&!ids.has(kf(v))){ra.push(v);up=true;}});rx[sub]=ra;});}
+    });
+    DB[k]=[...m.values()];
+  });
+  if(once&&(rem.empresas||rem.preregistros||rem.consentimientos)){try{localStorage.setItem('cu1_empMergeV1','1');}catch(e){}}
+  if(up&&!window._IS_TRK_PUB){clearTimeout(window._empUpT);window._empUpT=setTimeout(()=>{try{saveDB();}catch(e){}},800);}
+}
+function _fbPayload(){return {_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},/* tabEvents removed */printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false,empresas:DB.empresas||[],preregistros:DB.preregistros||[],consentimientos:(DB.consentimientos||[]).slice(0,500)};}
 function saveLocalDB(){if(window._IS_TRK_PUB)return;try{localStorage.setItem(SK,JSON.stringify(DB));localStorage.setItem(SK+'_dirty',Date.now().toString());}catch(e){}_gSchedIdx();}
 function saveDB(){saveLocalDB();writeToFirebase();if(bc)try{bc.postMessage(1);}catch(e){}}
 function saveDBNow(){
@@ -2202,7 +2222,7 @@ function saveDBNow(){
   clearTimeout(writeDebounce);
   if(bc)try{bc.postMessage(1);}catch(e){}
   if(!fbRef||window._IS_TRK_PUB)return;
-  const _p={_session:SID,_ts:Date.now(),movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),eventos:DB.eventos||[],agenda:DB.agenda||[],activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],defaultEventId:DB.defaultEventId||null,printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),exportLog:(DB.exportLog||[]).slice(0,500),printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),_deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false};
+  const _p=_fbPayload();
   fbRef.set(_p).then(()=>setSyncStatus('ok')).catch(()=>setSyncStatus('error'));
 }
 const SESSION_TTL=24*60*60*1000; // 24 horas — persiste al refrescar
@@ -12355,34 +12375,11 @@ saveDB=function(){
 // Solo extendemos el payload de Firebase, sin redefinir la función entera
 var _origWTF=writeToFirebase;
 writeToFirebase=function(){
-  if(!fbRef)return;
+  if(!fbRef||window._IS_TRK_PUB)return;
   clearTimeout(writeDebounce);
   writeDebounce=setTimeout(function(){
-    fbRef.set({
-      _session:SID,_ts:Date.now(),
-      movimientos:DB.movimientos,ingresos:DB.ingresos,listaNegra:DB.listaNegra,
-      enEspera:DB.enEspera,mensajesRampa:DB.mensajesRampa,conductores:DB.conductores,
-      usuarios:DB.usuarios,auditLog:(DB.auditLog||[]).slice(0,200),
-      eventos:DB.eventos||[],agenda:DB.agenda||[],
-      activeEventId:DB.activeEventId||null,activeEventIds:DB.activeEventIds||[],
-      defaultEventId:DB.defaultEventId||null,
-      printFieldOrder:DB.printFieldOrder||PRINT_DEF,hiddenPrintFields:DB.hiddenPrintFields||[],
-      editHistory:(DB.editHistory||[]).slice(0,20),ingresos2:DB.ingresos2||[],
-      vehiculos:DB.vehiculos||[],papelera:(DB.papelera||[]).slice(0,200),
-      exportLog:(DB.exportLog||[]).slice(0,500),
-      printPhrases:DB.printPhrases||{},printPhrases2:DB.printPhrases2||{},
-      tabSorts:DB.tabSorts||{},tabOrder:DB.tabOrder||[],colOrders:DB.colOrders||{},
-      printCfg1:DB.printCfg1||{},printCfg2:DB.printCfg2||{},printCfgAg:DB.printCfgAg||{},printCfgCond:DB.printCfgCond||{},printCfgFlota:DB.printCfgFlota||{},
-      recintos:DB.recintos||[],printTemplates:DB.printTemplates||[],
-      printCfgModes:DB.printCfgModes||{},camposCfg:DB.camposCfg||{},
-      eventoHistorial:(DB.eventoHistorial||[]).slice(0,50),
-      eventosPapelera:(DB.eventosPapelera||[]).slice(0,50),
-      _deviceAlerts:(DB._deviceAlerts||[]).slice(0,50),
-      devices:(DB.devices||[]),_devRequireApproval:DB._devRequireApproval||false,
-      empresas:DB.empresas||[],
-      preregistros:DB.preregistros||[],
-      consentimientos:(DB.consentimientos||[]).slice(0,500)
-    }).catch(function(){setSyncStatus('error');});
+    if(!fbRef||window._IS_TRK_PUB)return;
+    fbRef.set(_fbPayload()).catch(function(){setSyncStatus('error');});
   },350);
 };
 
@@ -12392,9 +12389,7 @@ function startFirebaseSyncV6(){
   fbRef.on('value',function(snap){
     var rem=snap.val();
     if(!rem||rem._session===SID)return;
-    if(rem.empresas)DB.empresas=Array.isArray(rem.empresas)?rem.empresas:Object.values(rem.empresas);
-    if(rem.preregistros)DB.preregistros=Array.isArray(rem.preregistros)?rem.preregistros:Object.values(rem.preregistros);
-    if(rem.consentimientos)DB.consentimientos=Array.isArray(rem.consentimientos)?rem.consentimientos:Object.values(rem.consentimientos);
+    _recvEmp(rem);
     if(CU&&CU.rol==='empresa')pRenderAll();
   });
 }
