@@ -18,9 +18,9 @@ Para volver atrás, ver `RESTAURAR.md`.
 | `CAMBIOS.md`, `RESTAURAR.md`, `backups/` | **Nuevos.** Documentación y copia de seguridad. |
 
 ### Qué hace `MAPA_FIRA.html`
-- **Plano**
-  - Esquema de los 8 pabellones de Gran Via según el plano oficial: franjas paralelas cruzadas por la pasarela, con 5 y 7 al otro lado y 8.0 / 8.1 al norte.
-  - Ramblas entre pabellones: 1-2, 2-3, 2-5, 3-4, 5-7, 4-6, lateral este 6, muelles 8.0 y 8.1, y vial norte.
+- **Plano oficial**
+  - Fondo: «Loading Bays – Gran Via» de Fira Barcelona (nov 2025), incrustado en el HTML. Fuente: guestevents.firabarcelona.com, centro de descargas.
+  - Ramblas con su letra oficial: A (X1), B (1-2), C (2-3), D (3-4), E (3-5), F (4-6), G (5-7), H (7-8 / 6-8), I (X2.2 y X3.2), J (X5 y X7), K (X2.1, X3.1, X4, X6) y L (X8).
 - **Slots en cada puerta**
   - Cada puerta (2.1, 3.10, 3.17…) tiene un hueco dibujado junto al pabellón, dentro de su rambla.
   - El color del slot indica su estado: libre, llega en 30 min, descargando, excedido o libre antes de hora.
@@ -55,11 +55,11 @@ Para volver atrás, ver `RESTAURAR.md`.
 - **Simulación**: los botones +5′ y +15′ adelantan el reloj para probar retrasos y adelantos.
 
 ### Datos
-- Plano: `localStorage['bu_mapa_layout_v1']`
+- Plano: `localStorage['bu_mapa_layout_v2']`
 - Reservas: `localStorage['bu_mapa_plan_v1']`
 - **No usa Firebase todavía.** Cada dispositivo guarda su propio plan.
   - Siguiente paso propuesto: sincronizar con el RTDB, en `cu1/controlunificado/mapa`.
 
 ### Pendiente / a validar
-- Las posiciones de puertas, accesos y triángulos son una **aproximación**. Hay que calibrarlas con el plano oficial de montaje desde *Configurar plano*. Basta hacerlo una vez y exportar el JSON.
-- Numeración de puertas por defecto: lado oeste de arriba abajo y continúa por el lado este. Ejemplo en el pabellón 3: 3.1–3.9 en la rambla 2-3 y 3.10–3.18 en la rambla 3-4.
+- Plano y ramblas: reales. **Por confirmar**: numeración y número exacto de puertas por pabellón, posición de los accesos 1–5 y del triángulo 3.17. Se ajustan arrastrando en *Configurar plano*, y basta con hacerlo una vez y exportar el JSON.
+- Numeración de puertas por defecto en el pabellón 3: 3.1–3.6 en la C, 3.7–3.10 en la I, 3.11–3.14 en la E y 3.15–3.20 en la D.
