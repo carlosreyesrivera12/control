@@ -76,6 +76,10 @@ Solo cambia `MAPA_FIRA.html`. `INDEX.html` y los datos de BeUnifyT no se tocan.
   - Solo cambia el plan del mapa.
 - La pantalla de inicio muestra la ocupación de cada zona con camiones hoy.
 
+## 5b. Dentro de la web
+- Botón **🗺️ MAPA** en la cabecera de INDEX: abre el mapa a pantalla completa sin salir de la web (✕ / Esc para cerrar, ↗ en otra pestaña).
+- Dentro de la web el mapa lee `DB` en directo (`buMapaDB()`, solo lectura), incluidos ingresos e ingresos2: cada 10 s y al abrir.
+
 ## 6. Datos
 - Plano: `bu_mapa_layout_v8`, sin cambios. Las zonas se añaden solas sin perder tus ajustes.
 - Reservas: `bu_mapa_plan_v3`, nueva. El plan v2 queda guardado en el navegador por si se quiere volver.

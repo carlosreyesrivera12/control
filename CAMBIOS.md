@@ -5,6 +5,22 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-09 · Mapa integrado en la web
+
+**Punto de restauración:** tag `restore-2026-10-09-antes-mapa-integrado` (commit `d6f24f1`)
+
+- **INDEX.html**:
+  - El botón 🗺️ pasa a llamarse **🗺️ MAPA** y abre el mapa dentro de la web, a pantalla completa. Se cierra con ✕ o Esc.
+  - El botón ↗ abre el mapa en otra pestaña.
+  - Se añadió un bloque al final del archivo, marcado `MAPA_FIRA integrado`, que solo expone `buMapaDB()` para **leer** `DB`.
+  - No se cambió ninguna función existente.
+- **MAPA_FIRA.html**:
+  - Dentro de la web lee `DB` en vivo, incluidos ingresos e ingresos2, cada 10 s y al abrirse.
+  - Fuera de la web sigue leyendo `cu1_local`.
+- **Quitar**: borra en INDEX el bloque `MAPA_FIRA integrado` y el botón `#btnMapa`, o restaura con el tag.
+
+---
+
 ## 2026-10-09 · Estados por color, zoom por rambla, sincronización con la web y capacidad
 
 **Punto de restauración:** tag `restore-2026-10-09-antes-capacidad` (commit `7227031`)

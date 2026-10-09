@@ -733,11 +733,13 @@ function webDoor(raw,hall){let s=String(raw||'').trim().replace(',','.');if(!s)r
   m=s.match(/(\d{1,2})/);const h=String(hall||'').match(/\d+/);if(m&&h&&doorById(h[0]+'.'+(+m[1])))return h[0]+'.'+(+m[1]);return null}
 function pickDoor(hall,start,dur){const ds=L.doors.filter(d=>d.hall===hall&&!d.off);if(!ds.length)return null;let best=ds[0],bt=Infinity;ds.forEach(d=>{const t=nextFree(d.id,start,dur);if(t<bt){bt=t;best=d}});return best.id}
 let WS={n:0,t:0,ok:false};
-function syncWeb(manual){let db;try{db=JSON.parse(localStorage.getItem(SRC))}catch(e){}
+const EMB=window.parent!==window;
+function syncWeb(manual){let db=null,live=false;try{if(EMB&&typeof parent.buMapaDB==='function'){db=parent.buMapaDB();live=!!db}}catch(e){}
+  if(!db)try{db=JSON.parse(localStorage.getItem(SRC))}catch(e){}
   if(!db){WS={n:0,t:now(),ok:false};if(manual)toast('No hay datos de BeUnifyT en este navegador. Abre primero la app principal en este mismo navegador.');showWS();return 0}
   const today=dayKey(now()),rows={};
   arr(db.agenda).forEach(a=>{if(!a||!a.matricula||String(a.fecha||'').slice(0,10)!==today)return;const k=normP(a.matricula);rows[k]=Object.assign(rows[k]||{},{ag:a})});
-  arr(db.ingresos).forEach(g=>{if(!g||!g.matricula)return;const e=g.entrada?dayKey(new Date(g.entrada).getTime()):'';const k=normP(g.matricula);if(e!==today&&!rows[k])return;rows[k]=Object.assign(rows[k]||{},{ing:g})});
+  [...arr(db.ingresos),...arr(db.ingresos2)].forEach(g=>{if(!g||!g.matricula)return;const e=g.entrada?dayKey(new Date(g.entrada).getTime()):'';const k=normP(g.matricula);if(e!==today&&!rows[k])return;rows[k]=Object.assign(rows[k]||{},{ing:g})});
   let nw=0,up=0;
   Object.keys(rows).forEach(k=>{const a=rows[k].ag||{},g=rows[k].ing,id='web_'+k;
     const tr=g?arr(g.tracking).filter(x=>x&&x.stepId).sort((x,y)=>new Date(x.ts)-new Date(y.ts)):[];const last=tr[tr.length-1];
@@ -758,11 +760,12 @@ function syncWeb(manual){let db;try{db=JSON.parse(localStorage.getItem(SRC))}cat
       if(RANK[wst]>=4)b.tStart=b.tStart||ts('descarga')||ts('carga')||now();
       if(wst==='fin'){b.tEnd=b.tEnd||ts('terminado')||ts('retorno')||(g.salida?new Date(g.salida).getTime():now());b.early=0}
       log(b.mat+' (web) '+STN[p]+' → '+STN[wst])}});
-  WS={n:Object.keys(rows).length,t:now(),ok:true};
+  WS={n:Object.keys(rows).length,t:now(),ok:true,live};
   if(nw||up)saveP();showWS();
   if(manual)toast('BeUnifyT: '+WS.n+' camiones hoy · '+nw+' nuevos · '+up+' cambios');
   return nw+up}
-function showWS(){const e=$('#wsync');if(e)e.textContent=WS.ok?'Web: '+WS.n+' camiones · '+hhmm(WS.t):'Web: sin datos'}
+function showWS(){const e=$('#wsync');if(e)e.textContent=WS.ok?'Web'+(WS.live?' en vivo':'')+': '+WS.n+' camiones · '+hhmm(WS.t):'Web: sin datos'}
+window.buMapaRefresh=()=>{syncWeb(false);renderAll()};
 $('#imp').onclick=()=>{syncWeb(true);renderAll()};
 $('#capb').onclick=()=>{MODE='op';const d=sel&&sel.k==='door'?doorById(sel.id):null,z=zoneOfDoor(d)||(sel&&sel.k==='ram'?zoneOfDoor(doorsOfR(ramById(sel.id))[0]):null);sel={k:'cap',id:(z||L.zones[0]).id};renderAll()};
 window.addEventListener('storage',e=>{if(e.key===SRC&&syncWeb(false))renderAll()});
@@ -775,7 +778,7 @@ function renderAll(){$('#clock').textContent=hhmm(now());$('#sim').textContent=O
 function commit(){saveP();renderAll()}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(TOOL!=='move'){TOOL='move';draft=[];hint()}else sel=null;renderAll()}});
 syncWeb(false);renderAll();
-setInterval(()=>{const a=document.activeElement;syncWeb(false);if(drag||a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;renderAll()},20000);
+setInterval(()=>{const a=document.activeElement;syncWeb(false);if(drag||a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;renderAll()},EMB?10000:20000);
 </script>
 </body>
 </html>

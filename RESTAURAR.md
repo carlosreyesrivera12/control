@@ -8,6 +8,7 @@ La lista completa está en `CAMBIOS.md`.
 | Tag | Commit | Estado |
 |---|---|---|
 | `restore-2026-10-09-antes-mapa` | `12a7962` | INDEX antes del botón 🗺️ y sin `MAPA_FIRA.html` |
+| `restore-2026-10-09-antes-mapa-integrado` | `d6f24f1` | Capacidad hecha, mapa aún en ventana aparte (sin panel dentro de INDEX) |
 | `restore-2026-10-09-antes-capacidad` | `7227031` | Mapa con plano RESA y rutas, antes de los estados por color, el zoom por rambla, la sincronización con la web y la capacidad |
 
 ## Opción A — Sin terminal (desde GitHub web)
@@ -32,6 +33,12 @@ git checkout restore-2026-10-09-antes-capacidad -- MAPA_FIRA.html
 git commit -m "Restaurar MAPA_FIRA a antes-capacidad" && git push
 ```
 Sin terminal: en GitHub abre *Tags* → `restore-2026-10-09-antes-capacidad` → `MAPA_FIRA.html` → **Raw**, copia y pega en `MAPA_FIRA.html` → **Commit**.
+
+## Quitar el mapa integrado de INDEX
+```bash
+git checkout restore-2026-10-09-antes-mapa-integrado -- INDEX.html MAPA_FIRA.html
+```
+O a mano: en `INDEX.html` borra el bloque `MAPA_FIRA integrado` (antes de `</body>`) y el botón `id="btnMapa"`.
 
 ## Quitar solo el botón del mapa (sin restaurar nada más)
 En `INDEX.html`, busca `MAPA_FIRA 2026-10-09` y borra esa línea de comentario y el `<button>` que va justo debajo.

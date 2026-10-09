@@ -1045,8 +1045,8 @@ a:hover{color:#3a4558;}
     <div class="hdr-right" style="display:flex;align-items:center;gap:6px;flex-shrink:0">
       <!-- BÚSQUEDA — primer elemento del hdr-right, no desplaza logo -->
       <button class="btn hbtn tt-down" data-tip="BÚSQUEDA GLOBAL" onclick="openGlobalSearch()">🔍</button>
-      <!-- MAPA_FIRA 2026-10-09: acceso al planificador de puertas/rampas (archivo aparte, no toca DB) -->
-      <button class="btn hbtn tt-down" data-tip="MAPA PUERTAS GRAN VIA" onclick="window.open('MAPA_FIRA.html','bu_mapa')">🗺️</button>
+      <!-- MAPA_FIRA 2026-10-09: botón del mapa de puertas integrado (panel a pantalla completa; solo lee DB) -->
+      <button class="btn hbtn-txt tt-down" id="btnMapa" data-tip="MAPA PUERTAS · SLOTS, ESTADOS Y CAPACIDAD" onclick="buOpenMapa()">🗺️ MAPA</button>
       <div class="sync-pill" id="syncPill" onclick="showSyncInfo()"><div class="sd sd-y" id="syncDot"></div></div>
       <span class="hdr-hide-mobile" style="width:1px;height:24px;background:var(--border);display:inline-block;margin:0 3px"></span>
       <span id="hdrUser" class="hdr-hide-mobile" style="font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#111;padding:0 4px;white-space:nowrap"></span>
@@ -15414,5 +15414,20 @@ function _saveColW(tab,key,w){
   <div id="grState" style="display:none" class="gr-st"></div>
   <div class="gr-foot"><button type="button" class="g-link" onclick="gSwitchAccount()">Usar otra cuenta</button></div>
 </div></div>
+<!-- MAPA_FIRA integrado 2026-10-09 · panel a pantalla completa con el mapa de puertas. Solo LEE DB (buMapaDB); no escribe nada. Quitar: borrar este bloque y el botón #btnMapa -->
+<div id="buMapaOv" style="display:none;position:fixed;inset:0;z-index:99990;background:#0f2233;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;padding-top:max(6px,env(safe-area-inset-top));color:#fff;font:700 13px system-ui,sans-serif;letter-spacing:.4px">
+    <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🗺️ MAPA PUERTAS · GRAN VIA</span>
+    <button type="button" onclick="window.open('MAPA_FIRA.html','bu_mapa')" style="min-height:36px;padding:0 12px;border-radius:8px;border:1px solid #4b6278;background:transparent;color:#fff;font-weight:700;cursor:pointer">↗ Pestaña</button>
+    <button type="button" onclick="buCloseMapa()" style="min-height:36px;padding:0 14px;border-radius:8px;border:0;background:#ffb703;color:#1b1203;font-weight:800;cursor:pointer">✕ Cerrar</button>
+  </div>
+  <iframe id="buMapaFr" title="Mapa de puertas Gran Via" style="flex:1;width:100%;border:0;background:#e9eef3"></iframe>
+</div>
+<script>
+window.buMapaDB=function(){try{return DB}catch(e){return null}};
+function buOpenMapa(){var o=document.getElementById('buMapaOv'),f=document.getElementById('buMapaFr');if(!f.getAttribute('src'))f.setAttribute('src','MAPA_FIRA.html');else{try{f.contentWindow.buMapaRefresh&&f.contentWindow.buMapaRefresh()}catch(e){}}o.style.display='flex';document.body.style.overflow='hidden'}
+function buCloseMapa(){document.getElementById('buMapaOv').style.display='none';document.body.style.overflow=''}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buMapaOv');if(o&&o.style.display==='flex')buCloseMapa()}});
+</script>
 </body>
 </html>
