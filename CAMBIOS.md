@@ -55,11 +55,16 @@ Para volver atrás, ver `RESTAURAR.md`.
 - **Simulación**: los botones +5′ y +15′ adelantan el reloj para probar retrasos y adelantos.
 
 ### Datos
-- Plano: `localStorage['bu_mapa_layout_v2']`
+- Plano: `localStorage['bu_mapa_layout_v3']`
 - Reservas: `localStorage['bu_mapa_plan_v1']`
 - **No usa Firebase todavía.** Cada dispositivo guarda su propio plan.
   - Siguiente paso propuesto: sincronizar con el RTDB, en `cu1/controlunificado/mapa`.
 
 ### Pendiente / a validar
 - Plano y ramblas: reales. **Por confirmar**: numeración y número exacto de puertas por pabellón, posición de los accesos 1–5 y del triángulo 3.17. Se ajustan arrastrando en *Configurar plano*, y basta con hacerlo una vez y exportar el JSON.
-- Numeración de puertas por defecto en el pabellón 3: 3.1–3.6 en la C, 3.7–3.10 en la I, 3.11–3.14 en la E y 3.15–3.20 en la D.
+- Numeración de puertas real (plano RESA Expo):
+  - X.1 arriba en el centro; pares a la izquierda, impares a la derecha, de arriba abajo.
+  - Hall 2: fila de arriba 2.2 · 2.1 · 2.3, luego 2.4/2.5 … 2.18/2.19.
+  - Hall 3: 3.1 arriba, 3.2–3.14 a la izquierda (rambla C) y 3.3–3.17 a la derecha (E y D).
+  - Hall 1: 1.1–1.4 en la rambla B y 1.5 abajo.
+- Gate 1 (entrada) en C/ Ciències, arriba de la rambla B, según el plano RESA.
