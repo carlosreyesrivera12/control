@@ -55,8 +55,8 @@ Para volver atrás, ver `RESTAURAR.md`.
 - **Simulación**: los botones +5′ y +15′ adelantan el reloj para probar retrasos y adelantos.
 
 ### Datos
-- Plano: `localStorage['bu_mapa_layout_v3']`
-- Reservas: `localStorage['bu_mapa_plan_v1']`
+- Plano: `localStorage['bu_mapa_layout_v6']`
+- Reservas: `localStorage['bu_mapa_plan_v2']`
 - **No usa Firebase todavía.** Cada dispositivo guarda su propio plan.
   - Siguiente paso propuesto: sincronizar con el RTDB, en `cu1/controlunificado/mapa`.
 
@@ -68,3 +68,8 @@ Para volver atrás, ver `RESTAURAR.md`.
   - Hall 3: 3.1 arriba, 3.2–3.14 a la izquierda (rambla C) y 3.3–3.17 a la derecha (E y D).
   - Hall 1: 1.1–1.4 en la rambla B y 1.5 abajo.
 - Gate 1 (entrada) en C/ Ciències, arriba de la rambla B, según el plano RESA.
+
+### Actualización · plano RESA
+- Fondo: plano operativo de RESA Expo Logistics con las puertas reales, los gates 1–5 y los sentidos de circulación.
+- Slots colocados sobre cada puerta del plano: 1.01–1.05, 2.01–2.19, 3.01–3.17, 4.02–4.09, 5.01–5.09, 6.02–6.09, 7.01–7.09 y 8.01 / 8.03 / 8.05.
+- **Puertas no utilizables:** 1.5, 2.1, 2.2, 3.9 y 3.11. Se ven en gris y no se pueden reservar ni asignar. Se cambia en *Configurar plano* → puerta → «No utilizable».
