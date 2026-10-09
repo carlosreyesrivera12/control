@@ -28,6 +28,25 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:60
 .mute{color:var(--mute)}
 .chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 7px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
 .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.k-prog{color:#475569}.k-prog::before{background:#fff!important;box-shadow:0 0 0 1.5px #475569}
+.k-sot{color:#b91c1c}.k-sot::before{background:#dc2626!important}
+.k-ruta{color:#8a5a2b}.k-ruta::before{background:#d6a77a!important}
+.k-parking{color:#6b3f17}.k-parking::before{background:#7c4a1e!important;box-shadow:0 0 0 2px #16a34a}
+.k-puerta{color:#15803d}.k-puerta::before{background:#16a34a!important}
+.k-fin{color:#111}.k-fin::before{background:#111!important}
+.k-cancel{color:#6b7280}
+.stbar{display:flex;height:14px;border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.stbar i{display:block;height:100%}
+.cnt{display:flex;flex-wrap:wrap;gap:6px}
+.hbars{display:grid;gap:3px}
+.hb{display:grid;grid-template-columns:44px minmax(0,1fr) 92px;gap:6px;align-items:center;font-size:12px}
+.hb .bar{height:12px;position:relative}
+.hb .bar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink)}
+.zc{border:1px solid var(--line);border-radius:var(--r);padding:10px;display:grid;gap:8px;background:var(--panel)}
+.zc h3{margin:0;font-size:15px;display:flex;gap:8px;align-items:center}
+.verd{font-weight:700;font-size:13px;padding:6px 8px;border-radius:3px}
+.v-ok{background:#dcfce7;color:#14532d}.v-mid{background:#fef3c7;color:#78350f}.v-bad{background:#fee2e2;color:#7f1d1d}
+.wsync{font-size:12px;font-weight:600;opacity:.85}
 .c-prog{color:var(--prog)}.c-park{color:var(--park)}.c-door{color:var(--door)}.c-fin{color:var(--fin)}.c-warn{color:var(--warn)}.c-early{color:var(--early)}
 .tag{font-size:12px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap}
 .t-ok{background:#dcfce7;color:#14532d}.t-early{background:#ccfbf1;color:#134e4a}.t-late{background:#fee2e2;color:#7f1d1d}.t-wait{background:#fef3c7;color:#78350f}
@@ -101,6 +120,9 @@ dl.d dt{color:var(--mute)}dl.d dd{margin:0;font-weight:600}
 .slot{cursor:pointer}
 .slot rect{stroke-width:1.2}
 .s-free rect{fill:#fff;stroke:#9aa9b8}
+.slot .bdg{fill:#0f2233;stroke:#fff;stroke-width:1.5}
+.slot .bdt{font-family:var(--fm);font-size:10px;font-weight:700;fill:#fff;pointer-events:none}
+.slot .satr{fill:none;stroke:#f97316;stroke-width:4;stroke-dasharray:5 3}
 .s-soon rect{fill:#fff;stroke:var(--park);stroke-width:2}
 .s-busy rect{fill:var(--door);stroke:var(--door)}
 .s-over rect{fill:var(--warn);stroke:var(--warn)}
@@ -111,7 +133,7 @@ dl.d dt{color:var(--mute)}dl.d dd{margin:0;font-weight:600}
 .did{font-family:var(--fm);font-size:9.5px;font-weight:600;letter-spacing:-.3px;fill:var(--ink);pointer-events:none}
 .s-busy .did,.s-over .did{fill:#fff}
 svg[data-z="lo"] .did{display:none}
-.route{fill:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 7;opacity:.9}
+.route{pointer-events:none;fill:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 7;opacity:.9}
 .route.in{stroke:#16a34a}.route.alt{stroke:#f59e0b;stroke-width:5;opacity:.85}.route.out{stroke:#dc2626}
 .park polygon{fill:rgba(161,74,6,.12);stroke:var(--park);stroke-width:2;stroke-dasharray:6 4;cursor:pointer}
 .park.full polygon{fill:rgba(180,35,24,.18);stroke:var(--warn)}
@@ -140,12 +162,12 @@ svg[data-z="lo"] .did{display:none}
   <span class="seg" role="group" aria-label="Simular tiempo"><button class="btn sm" data-sim="5">+5′</button><button class="btn sm" data-sim="15">+15′</button><button class="btn sm" data-sim="0">Ahora</button></span>
   <span class="sp"></span>
   <span class="seg" role="group" aria-label="Modo"><button class="btn sm" data-mode="op" aria-pressed="true">Operar</button><button class="btn sm" data-mode="cfg" aria-pressed="false">Configurar plano</button></span>
-  <button class="btn sm" id="imp">Importar de BeUnifyT</button>
+  <span class="wsync" id="wsync"></span><button class="btn sm" id="imp">Sincronizar BeUnifyT</button><button class="btn sm" id="capb">Capacidad</button>
   <button class="btn sm p" id="newb">+ Reserva</button>
 </header>
 <section class="map" id="map"><svg id="svg" viewBox="0 0 2576 1783" aria-label="Plano Fira Gran Via"></svg>
   <div class="zoom"><button class="btn" data-z="in" aria-label="Acercar">+</button><button class="btn" data-z="out" aria-label="Alejar">−</button><button class="btn" data-z="fit" aria-label="Ver todo">⤢</button></div>
-  <div class="legend"><span class="lg"><i style="background:#fff;border-color:#9aa9b8"></i>Libre</span><span class="lg"><i style="background:#fff;border-color:var(--park)"></i>Llega en 30′</span><span class="lg"><i style="background:var(--door);border-color:var(--door)"></i>Descargando</span><span class="lg"><i style="background:var(--warn);border-color:var(--warn)"></i>Excedido</span><span class="lg"><i style="background:#ccfbf1;border-color:var(--early)"></i>Libre antes de hora</span><span class="lg"><i style="background:#d1d5db;border-color:#6b7280;border-style:dashed"></i>No utilizable</span><span class="lg"><i style="background:none;border:0;border-top:3px dashed #16a34a;border-radius:0;height:0"></i>Entrada</span><span class="lg"><i style="background:none;border:0;border-top:3px dashed #dc2626;border-radius:0;height:0"></i>Salida</span></div>
+  <div class="legend"><span class="lg"><i style="background:#fff;border-color:#475569"></i>Pendiente</span><span class="lg"><i style="background:#dc2626;border-color:#dc2626"></i>En el SOT</span><span class="lg"><i style="background:#d6a77a;border-color:#d6a77a"></i>Al venue</span><span class="lg"><i style="background:#7c4a1e;border-color:#16a34a;border-width:2px"></i>En el venue</span><span class="lg"><i style="background:#16a34a;border-color:#16a34a"></i>En puerta</span><span class="lg"><i style="background:#111;border-color:#111"></i>Terminado</span><span class="lg"><i style="background:#16a34a;border-color:#b42318;border-width:2.5px"></i>Excedido</span><span class="lg"><i style="background:none;border-color:#f97316;border-style:dashed;border-width:2px"></i>Satura ventana</span><span class="lg"><i style="background:#d1d5db;border-color:#6b7280;border-style:dashed"></i>No utilizable</span><span class="lg"><i style="background:none;border:0;border-top:3px dashed #16a34a;border-radius:0;height:0"></i>Entrada</span><span class="lg"><i style="background:none;border:0;border-top:3px dashed #dc2626;border-radius:0;height:0"></i>Salida</span></div>
   <div class="hint" id="hint" hidden></div>
 </section>
 <aside id="side"></aside>
@@ -159,10 +181,10 @@ svg[data-z="lo"] .did{display:none}
 /* =========================================================
    MAPA FIRA GRAN VIA · BeUnifyT
    Planificador de puertas/rampas con slots de tiempo.
-   Datos propios en localStorage (bu_mapa_layout_v1, bu_mapa_plan_v1).
+   Datos propios en localStorage (bu_mapa_layout_v8, bu_mapa_plan_v3).
    Lee (sin modificar) los datos de BeUnifyT en localStorage 'cu1_local'.
    ========================================================= */
-const KL='bu_mapa_layout_v8',KP='bu_mapa_plan_v2',SRC='cu1_local',M=60000;
+const KL='bu_mapa_layout_v8',KP='bu_mapa_plan_v3',SRC='cu1_local',M=60000;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -232,6 +254,14 @@ const PLAN='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGB
 let L,PL;
 try{L=JSON.parse(localStorage.getItem(KL))}catch(e){}
 if(!L||!L.doors)L=defLayout();
+/* Zonas de trabajo: personal (forklift + operario) por grupo de halls y ventana horaria */
+function defZones(){return[
+  {id:'Z23',name:'Halls 2 y 3',halls:['2','3'],staff:20,crew:2,from:'08:00',to:'14:00'},
+  {id:'Z46',name:'Halls 4 y 6',halls:['4','6'],staff:10,crew:2,from:'08:00',to:'14:00'},
+  {id:'Z57',name:'Halls 5 y 7',halls:['5','7'],staff:10,crew:2,from:'08:00',to:'14:00'},
+  {id:'Z1',name:'Hall 1',halls:['1'],staff:6,crew:2,from:'08:00',to:'14:00'},
+  {id:'Z8',name:'Hall 8',halls:['8'],staff:4,crew:2,from:'08:00',to:'14:00'}]}
+if(!L.zones)L.zones=defZones();
 const saveL=()=>{try{localStorage.setItem(KL,JSON.stringify(L))}catch(e){toast('No se pudo guardar el plano (imagen demasiado grande)')}};
 
 /* ---------------- geometría ---------------- */
@@ -274,6 +304,15 @@ function seedPlan(){
   add('1187KPR','Cartelería Norte','7.2',20,45,'prog');
   add('MAB4417','Rheinpress GmbH','6.3',-40,60,'puerta',{tArr:n-45*M,tStart:n-38*M});
   add('7310LZD','Atlas Display','8.3',35,30,'prog');
+  // En el SOT y en ruta al venue
+  add('SOT1101','Gráficas Delta','2.15',20,45,'sot',{tSot:n-30*M});
+  add('SOT1102','Plotter Lab','3.12',35,30,'sot',{tSot:n-12*M});
+  add('SOT1103','Expo Print','4.4',50,60,'sot',{tSot:n-5*M});
+  add('RUT2201','Sign Factory','3.13',10,30,'ruta',{tSot:n-40*M,tRuta:n-8*M});
+  add('RUT2202','Banner Pro','2.17',15,45,'ruta',{tSot:n-35*M,tRuta:n-4*M});
+  // Carga de la mañana en halls 2 y 3 (para ver saturación)
+  const D23=['2.4','2.5','2.6','2.7','2.8','2.10','2.12','2.14','2.16','2.18','2.19','3.2','3.6','3.8','3.10','3.14','3.15','3.16','3.17'];
+  for(let i=0;i<46;i++)add('PND'+(3000+i),'Expositor P'+(i+1),D23[(i*7)%D23.length],60+Math.floor(i/3)*20,[30,45,60][i%3],i%9===0?'sot':'prog',i%9===0?{tSot:n-10*M}:null);
   return {bk:b,log:[]};
 }
 try{PL=JSON.parse(localStorage.getItem(KP))}catch(e){}
@@ -309,14 +348,19 @@ function doorState(d){
 }
 function arrTag(b){const tol=L.tol;
   if(b.tArr){const d=mm(b.tArr-b.start);return d<-tol?['t-early','Llegó '+(-d)+'′ antes']:d>tol?['t-late','Llegó '+d+'′ tarde']:['t-ok','Puntual']}
-  const late=mm(now()-b.start);if(b.st==='prog'&&late>tol)return['t-late','Sin llegar +'+late+'′'];return null}
+  const late=mm(now()-b.start);if((b.st==='prog'||b.st==='sot'||b.st==='ruta')&&late>tol)return['t-late','Sin llegar +'+late+'′'];return null}
 function doorTag(b){
   if(b.st==='puerta'){const r=mm(b.tStart+b.dur*M-now());return r>=0?['t-ok','Quedan '+r+'′']:['t-late','Excede '+(-r)+'′']}
   if(b.st==='fin'&&b.tStart){const d=mm(b.tEnd-(b.tStart+b.dur*M));return d<-1?['t-early','Terminó '+(-d)+'′ antes']:d>1?['t-late','Terminó '+d+'′ tarde']:['t-ok','En tiempo']}
   return null}
 const T=t=>t?'<span class="tag '+t[0]+'">'+t[1]+'</span>':'';
-const STN={prog:'Programado',parking:'En parking',puerta:'En puerta',fin:'Finalizado',cancel:'Cancelado'};
-const STC={prog:'c-prog',parking:'c-park',puerta:'c-door',fin:'c-fin',cancel:'c-prog'};
+/* 6 estados (colores de la web): Pendiente blanco · SOT rojo · Al venue marrón claro · En el venue marrón con verde · En puerta verde · Terminado negro */
+const STN={prog:'Pendiente',sot:'En el SOT',ruta:'Al venue',parking:'En el venue',puerta:'En puerta',fin:'Terminado',cancel:'Cancelado'};
+const STC={prog:'k-prog',sot:'k-sot',ruta:'k-ruta',parking:'k-parking',puerta:'k-puerta',fin:'k-fin',cancel:'k-cancel'};
+const STF={prog:'#ffffff',sot:'#dc2626',ruta:'#d6a77a',parking:'#7c4a1e',puerta:'#16a34a',fin:'#111111',cancel:'#d1d5db'};
+const RANK={prog:0,sot:1,ruta:2,parking:3,puerta:4,fin:5,cancel:-1};
+const ORD=['prog','sot','ruta','parking','puerta','fin'];
+const chip=st=>'<span class="chip '+STC[st]+'">'+STN[st]+'</span>';
 
 /* ---------------- acciones ---------------- */
 function rOfBk(b){const d=doorById(b.door);return d?ramblaOf(d):null}
@@ -330,18 +374,58 @@ function toDoor(id,doorId){const b=PL.bk.find(x=>x.id===id);if(!b)return;const d
 function finish(id){const b=PL.bk.find(x=>x.id===id);if(!b)return;b.st='fin';b.tEnd=now();const gap=mm(b.tStart+b.dur*M-b.tEnd);b.early=gap>1?gap:0;
   log(b.mat+' termina en '+b.door+(gap>1?' · '+gap+'′ antes':gap<-1?' · '+(-gap)+'′ tarde':''));commit();
   if(gap>1){sel={k:'door',id:b.door};renderSide();toast('Puerta '+b.door+' libre '+gap+'′ antes: elige qué adelantar')}}
+function toSot(id){const b=PL.bk.find(x=>x.id===id);if(!b)return;b.st='sot';b.tSot=now();log(b.mat+' llega al SOT');commit()}
+function toRuta(id){const b=PL.bk.find(x=>x.id===id);if(!b)return;if(!b.tSot)b.tSot=now();b.st='ruta';b.tRuta=now();log(b.mat+' sale del SOT al venue');commit()}
 function extend(id,m){const b=PL.bk.find(x=>x.id===id);if(!b)return;b.dur+=m;log(b.mat+' amplía +'+m+'′');commit()}
 function cancel(id){const b=PL.bk.find(x=>x.id===id);if(!b||!confirm('¿Cancelar la reserva de '+b.mat+'?'))return;b.st='cancel';log(b.mat+' cancelado');commit()}
 /* candidatos para ocupar el hueco de una puerta que se libera antes */
 function candidates(doorId){const d=doorById(doorId),r=ramblaOf(d);const n=now();
-  const same=bkOfDoor(doorId).filter(b=>b.st==='parking'||b.st==='prog'&&b.start>n);
-  const rm=r?PL.bk.filter(b=>b.st==='parking'&&b.door!==doorId&&(()=>{const x=rOfBk(b);return x&&x.id===r.id})()):[];
-  const list=[...same.filter(b=>b.st==='parking'),...rm,...same.filter(b=>b.st==='prog')];
+  const same=bkOfDoor(doorId).filter(b=>b.st==='parking'||b.st==='prog'&&b.start>n);if(!r)return same.slice(0,6);
+  const inR2=b=>{const x=rOfBk(b);return x&&x.id===r.id};
+  const rm=r?PL.bk.filter(b=>b.st==='parking'&&b.door!==doorId&&inR2(b)):[];
+  const way=PL.bk.filter(b=>(b.st==='ruta'||b.st==='sot')&&(b.door===doorId||r&&inR2(b))).sort((a,b)=>RANK[b.st]-RANK[a.st]||a.start-b.start);
+  const list=[...same.filter(b=>b.st==='parking'),...rm,...way,...same.filter(b=>b.st==='prog')];
   const seen={};return list.filter(b=>!seen[b.id]&&(seen[b.id]=1)).slice(0,6)}
 function nextFree(doorId,from,dur){let t=from;const pr=project(doorId);
   const bl=bkOfDoor(doorId).filter(active).map(b=>[pr[b.id].ps,pr[b.id].pe]).sort((a,b)=>a[0]-b[0]);
   for(const [s,e] of bl){if(t+dur*M<=s)return t;if(e>t)t=e}return t}
 function addBk(o){if((doorById(o.door)||{}).off){toast('Puerta '+o.door+' no utilizable');return null}const b=Object.assign({id:uid(),st:'prog',tArr:null,tStart:null,tEnd:null,park:null,src:'manual'},o);b.mat=normP(b.mat);PL.bk.push(b);log(b.mat+' reservado '+b.door+' '+hhmm(b.start)+' · '+b.dur+'′');commit();return b}
+
+/* ---------------- capacidad y saturación ---------------- */
+const dayKey=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const atHM=(hm,ref)=>{const p=String(hm||'08:00').split(':'),d=new Date(ref||now());d.setHours(+p[0]||0,+p[1]||0,0,0);return d.getTime()};
+const isToday=b=>dayKey(b.start)===dayKey(now());
+const zoneOfHall=h=>L.zones.find(z=>z.halls.includes(String(h)));
+const zoneOfDoor=d=>d?zoneOfHall(d.hall):null;
+const zDoors=z=>L.doors.filter(d=>z.halls.includes(d.hall)&&!d.off);
+const zBk=z=>PL.bk.filter(b=>b.st!=='cancel'&&isToday(b)&&(()=>{const d=doorById(b.door);return d&&z.halls.includes(d.hall)})());
+const remMin=b=>b.st==='fin'?0:b.st==='puerta'?Math.max(0,mm(b.tStart+b.dur*M-now())):b.dur;
+/* resumen de una puerta: estado dominante, nº camiones, fin previsto y si se pasa de la ventana */
+function doorLoad(d){const n=now(),list=bkOfDoor(d.id).filter(isToday),act=list.filter(active),pr=project(d.id);
+  let top=null;act.forEach(b=>{if(!top||RANK[b.st]>RANK[top])top=b.st});
+  const end=act.reduce((m,b)=>Math.max(m,pr[b.id]?pr[b.id].pe:0),0);
+  const z=zoneOfDoor(d),we=z?atHM(z.to):0,ws=z?atHM(z.from):0;
+  const work=act.reduce((m,b)=>m+remMin(b),0);
+  return{list,act,top,fin:list.filter(b=>b.st==='fin').length,end,work,z,ws,we,sat:!!(z&&end>we),slack:z&&act.length?mm(we-end):z?mm(we-Math.max(n,ws)):0}}
+/* zona: capacidad simultánea = min(personal/cuadrilla, puertas útiles) */
+function zoneCalc(z){const n=now(),ws=atHM(z.from),we=atHM(z.to),ds=zDoors(z),bk=zBk(z),act=bk.filter(active);
+  const crews=Math.max(1,Math.floor(z.staff/Math.max(1,z.crew))),cap=Math.max(1,Math.min(crews,ds.length));
+  const t0=Math.max(n,ws),win=Math.max(0,mm(we-t0)),work=act.reduce((m,b)=>m+remMin(b),0);
+  const util=win?work/(win*cap):(work?9:0),endT=t0+work/cap*M;
+  const closed=!win&&work>0,needSim=win?Math.ceil(work/win):0,needStaff=needSim*z.crew;
+  const cnt={};ORD.forEach(k=>cnt[k]=0);bk.forEach(b=>cnt[b.st]=(cnt[b.st]||0)+1);
+  // carga horaria: camiones simultáneos medios por hora según la proyección de cada puerta
+  const h0=new Date(Math.min(ws,n));h0.setMinutes(0,0,0);const h1=Math.max(we,endT,atHM('20:00'));const hours=[];
+  const iv=[];ds.forEach(d=>{const pr=project(d.id);bkOfDoor(d.id).filter(b=>isToday(b)&&b.st!=='cancel').forEach(b=>{const p=pr[b.id];if(!p)return;iv.push([b.st==='fin'?(b.tStart||b.start):p.ps,b.st==='fin'?(b.tEnd||p.pe):p.pe])})});
+  for(let t=h0.getTime();t<h1;t+=3600000){let m=0;iv.forEach(v=>{m+=Math.max(0,Math.min(v[1],t+3600000)-Math.max(v[0],t))});hours.push({t,load:m/3600000})}
+  return{ws,we,ds,bk,act,crews,cap,win,work,util,endT,needSim,needStaff,cnt,hours,closed,doorsShort:needSim>ds.length}}
+/* reparte los pendientes (aún no llegados al SOT) entre las puertas útiles menos cargadas de la zona, sin cambiar la hora */
+function rebalance(z){const n=now(),ds=zDoors(z);if(!ds.length)return 0;const free={};
+  ds.forEach(d=>{const pr=project(d.id);free[d.id]=bkOfDoor(d.id).filter(b=>active(b)&&b.st!=='prog').reduce((m,b)=>Math.max(m,pr[b.id].pe),n)});
+  const mv=zBk(z).filter(b=>b.st==='prog').sort((a,b)=>a.start-b.start);let c=0;
+  mv.forEach(b=>{let best=null,bt=Infinity;ds.forEach(d=>{const t=Math.max(b.start,free[d.id])+(d.id===b.door?-1:0);if(t<bt){bt=t;best=d}});
+    if(best.id!==b.door){log(b.mat+' repartido '+b.door+' → '+best.id);b.door=best.id;c++}free[best.id]=Math.max(b.start,free[best.id])+b.dur*M});
+  return c}
 
 /* ---------------- estado de UI ---------------- */
 let sel=null;       // {k:'door'|'park'|'bk'|'ram'|'acc'|'new'|'cfg'...,id}
@@ -378,8 +462,14 @@ function rMap(){
   L.parks.forEach(p=>{const n=parkCount(p.id),c=centroid(p.pts);s.push('<g class="park'+(n>=p.cap?' full':'')+'"><polygon data-k="park" data-id="'+p.id+'" points="'+p.pts.map(q=>q.join(',')).join(' ')+'"/><text x="'+c[0]+'" y="'+(c[1]-4)+'" text-anchor="middle">'+n+'/'+p.cap+'</text><text x="'+c[0]+'" y="'+(c[1]+12)+'" text-anchor="middle" style="font-size:13px;font-weight:500">'+esc(p.name)+'</text></g>');
     if(ed&&sel&&sel.k==='park'&&sel.id===p.id)p.pts.forEach((q,i)=>s.push('<circle class="handle" data-k="ppt" data-id="'+p.id+'" data-i="'+i+'" cx="'+q[0]+'" cy="'+q[1]+'" r="10"/>'))});
   // puertas
-  L.doors.forEach(d=>{const r=slotRect(d),st=doorState(d),c=cur(d.id);const isSel=sel&&((sel.k==='door'&&sel.id===d.id)||(sel.k==='bk'&&(PL.bk.find(b=>b.id===sel.id)||{}).door===d.id));
-    s.push('<g class="slot s-'+st+(isSel?' sel':'')+'" data-k="door" data-id="'+esc(d.id)+'"><rect x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'" rx="2"/><title>Puerta '+esc(d.id)+(c?' · '+esc(c.mat):'')+'</title><text class="did" x="'+(r.x+r.w/2)+'" y="'+(r.y+r.h/2+3)+'" text-anchor="middle">'+esc(d.id)+'</text></g>')});
+  L.doors.forEach(d=>{const r=slotRect(d),c=cur(d.id);const isSel=sel&&((sel.k==='door'&&sel.id===d.id)||(sel.k==='bk'&&(PL.bk.find(b=>b.id===sel.id)||{}).door===d.id));
+    if(d.off){s.push('<g class="slot s-off'+(isSel?' sel':'')+'" data-k="door" data-id="'+esc(d.id)+'"><rect x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'" rx="2"/><title>Puerta '+esc(d.id)+' · no utilizable</title><text class="did" x="'+(r.x+r.w/2)+'" y="'+(r.y+r.h/2+3)+'" text-anchor="middle">'+esc(d.id)+'</text></g>');return}
+    const dl=doorLoad(d),top=dl.top||(dl.fin?'fin':null),fill=top?STF[top]:'#fff',st=doorState(d),over=st==='over';
+    const stroke=over?'#b42318':top==='parking'?'#16a34a':st==='early'?'#0f766e':top==='prog'||!top?'#64748b':fill,sw=over?3.5:top==='parking'||st==='early'?3:1.4;
+    const dark=top&&top!=='prog'&&top!=='ruta';
+    const tip='Puerta '+d.id+' · '+(dl.act.length?dl.act.length+' camión(es) pendientes · fin previsto '+hhmm(dl.end):'sin camiones pendientes')+(dl.sat?' · SATURA (ventana hasta '+hhmm(dl.we)+')':'')+(c?' · en puerta '+c.mat:'');
+    s.push('<g class="slot'+(isSel?' sel':'')+'" data-k="door" data-id="'+esc(d.id)+'">'+(dl.sat?'<rect class="satr" x="'+(r.x-4)+'" y="'+(r.y-4)+'" width="'+(r.w+8)+'" height="'+(r.h+8)+'" rx="4"/>':'')+'<rect x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'" rx="2" style="fill:'+fill+';stroke:'+(isSel?'#ffb703':stroke)+';stroke-width:'+(isSel?3:sw)+'"/><title>'+esc(tip)+'</title><text class="did" x="'+(r.x+r.w/2)+'" y="'+(r.y+r.h/2+3)+'" text-anchor="middle"'+(dark?' style="fill:#fff"':'')+'>'+esc(d.id)+'</text>'+
+      (dl.act.length?'<circle class="bdg" cx="'+(r.x+r.w)+'" cy="'+r.y+'" r="8"/><text class="bdt" x="'+(r.x+r.w)+'" y="'+(r.y+3.5)+'" text-anchor="middle">'+dl.act.length+'</text>':'')+'</g>')});
   // accesos
   L.acc.forEach(a=>{const col=a.inn&&a.out?'#6d28d9':a.inn?'#16a34a':'#dc2626';const lb=(a.inn?'Entrada':'')+(a.inn&&a.out?' / ':'')+(a.out?'Salida':'');
     s.push('<g class="acc" data-k="acc" data-id="'+a.id+'"><circle cx="'+a.x+'" cy="'+a.y+'" r="22" fill="'+col+'"/><text x="'+a.x+'" y="'+(a.y+7)+'" text-anchor="middle">'+esc(a.id)+'</text><text class="lb" x="'+(a.x+28)+'" y="'+(a.y+6)+'" text-anchor="start">Acceso '+esc(a.id)+' · '+lb+'</text></g>')});
@@ -398,16 +488,23 @@ function panelNow(){
   L.doors.forEach(d=>{if(doorState(d)==='early'){const f=bkOfDoor(d.id).filter(b=>b.st==='fin'&&b.early>0).pop();const left=mm(f.tStart+f.dur*M-n);const cs=candidates(d.id);
     al.push('<div class="al early"><span class="t">Puerta '+esc(d.id)+' libre · '+left+'′ de tiempo extra</span>'+(cs.length?'<div class="acts">'+cs.slice(0,3).map(b=>'<button class="btn sm p" data-adv="'+b.id+'" data-to="'+esc(d.id)+'">Adelantar '+esc(b.mat)+'</button>').join('')+'</div>':'<span class="mute">Nadie esperando en esta rambla</span>')+'</div>')}});
   L.parks.forEach(p=>{const c=parkCount(p.id);if(c>=p.cap)al.push('<div class="al park"><span class="t">'+esc(p.name)+' lleno '+c+'/'+p.cap+'</span><span class="mute">Las nuevas llegadas se desvían al siguiente parking libre</span></div>')});
-  act.filter(b=>b.st==='prog'&&mm(n-b.start)>L.tol).forEach(b=>al.push('<div class="al park"><span class="t">'+esc(b.mat)+' sin llegar · +'+mm(n-b.start)+'′</span><div class="acts"><button class="btn sm" data-arr="'+b.id+'">Ha llegado</button><button class="btn sm" data-bk="'+b.id+'">Ficha</button></div></div>'));
+  act.filter(b=>(b.st==='prog'||b.st==='sot'||b.st==='ruta')&&mm(n-b.start)>L.tol).forEach(b=>al.push('<div class="al park"><span class="t">'+esc(b.mat)+' sin llegar · +'+mm(n-b.start)+'′</span><div class="acts"><button class="btn sm" data-arr="'+b.id+'">Ha llegado</button><button class="btn sm" data-bk="'+b.id+'">Ficha</button></div></div>'));
   const next=act.filter(b=>b.st!=='puerta').sort((a,b)=>a.start-b.start).slice(0,8);
-  return ['Ahora en el recinto','<div class="kp"><div class="k"><b class="c-prog">'+k('prog')+'</b><span>Programados</span></div><div class="k"><b class="c-park">'+k('parking')+'</b><span>En parking</span></div><div class="k"><b class="c-door">'+k('puerta')+'</b><span>En puerta</span></div><div class="k"><b class="c-fin">'+k('fin')+'</b><span>Finalizados</span></div></div>'+
+  const zs=L.zones.map(z=>{const c=zoneCalc(z);return{z,c}}).filter(x=>x.c.bk.length);
+  return ['Ahora en el recinto','<div class="kp" style="grid-template-columns:repeat(3,minmax(0,1fr))">'+ORD.map(st=>'<div class="k"><b class="'+STC[st]+'" style="font-size:20px">'+k(st)+'</b><span>'+chip(st)+'</span></div>').join('')+'</div>'+
+   '<div class="sec">Saturación por zona</div>'+(zs.map(x=>{const u=x.c.util;return '<button class="row" data-cap="'+x.z.id+'"><span>'+esc(x.z.name)+' · '+x.c.act.length+' camiones</span><b class="mono '+(u>1?'c-warn':'')+'">'+(x.c.closed?'Cerrada':Math.round(u*100)+'%')+'</b><span class="s"><span class="bar'+(u>1?' over':'')+'" style="display:block"><i style="width:'+Math.min(100,u*100)+'%;background:'+(u>1?'var(--warn)':u>.85?'#d97706':'#16a34a')+'"></i></span>'+x.c.cap+' a la vez · fin previsto '+hhmm(x.c.endT)+' · ventana '+esc(x.z.from)+'–'+esc(x.z.to)+'</span></button>'}).join('')||'<p class="mute" style="margin:0">Sin camiones hoy</p>')+
    '<div class="sec">Parkings de espera</div>'+L.parks.map(p=>{const c=parkCount(p.id);return '<button class="row" data-park="'+p.id+'"><span>'+esc(p.name)+'</span><b class="mono '+(c>=p.cap?'c-warn':'')+'">'+c+'/'+p.cap+'</b><span class="s"><span class="bar'+(c>=p.cap?' over':'')+'" style="display:block"><i style="width:'+Math.min(100,c/p.cap*100)+'%;background:'+(c>=p.cap?'var(--warn)':'var(--park)')+'"></i></span></span></button>'}).join('')+
    '<div class="sec">Avisos · '+al.length+'</div>'+(al.join('')||'<p class="mute" style="margin:0">Todo en hora</p>')+
    '<div class="sec">Próximos</div>'+next.map(rowBk).join('')];
 }
 function panelDoor(id){
-  const d=doorById(id);if(!d)return panelNow();const r=ramblaOf(d),c=cur(id),pr=project(id),n=now(),list=bkOfDoor(id);
-  let h='<dl class="d"><dt>Pabellón</dt><dd>'+esc((L.halls.find(x=>x.id===d.hall)||{}).label||d.hall)+'</dd><dt>Rambla</dt><dd>'+(r?esc(r.name):'—')+'</dd>'+(r?'<dt>Entra / sale</dt><dd>Acceso '+esc(r.inAcc)+' → Acceso '+esc(r.outAcc)+'</dd><dt>Parking</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+'</dd>':'')+'</dl>';
+  const d=doorById(id);if(!d)return panelNow();const r=ramblaOf(d),c=cur(id),pr=project(id),n=now(),list=bkOfDoor(id).filter(isToday);
+  const dl=doorLoad(d),tot=dl.list.length||1;
+  let h='';
+  if(!d.off){h+='<div class="sec">Camiones de hoy · '+dl.list.length+'</div><div class="stbar">'+ORD.map(st=>{const q=dl.list.filter(b=>b.st===st).length;return q?'<i title="'+STN[st]+': '+q+'" style="width:'+q/tot*100+'%;background:'+STF[st]+(st==='prog'?';box-shadow:inset 0 0 0 1px #94a3b8':'')+'"></i>':''}).join('')+'</div><div class="cnt">'+ORD.map(st=>{const q=dl.list.filter(b=>b.st===st).length;return q?chip(st).replace('</span>',' '+q+'</span>'):''}).join('')+'</div>';
+    if(dl.z){const tx=dl.act.length?'Trabajo pendiente '+dl.work+'′ · fin previsto <b>'+hhmm(dl.end)+'</b> · ventana '+esc(dl.z.from)+'–'+esc(dl.z.to):'Sin camiones pendientes · ventana '+esc(dl.z.from)+'–'+esc(dl.z.to);
+      h+='<div class="verd '+(dl.sat?'v-bad':dl.slack>=30?'v-ok':'v-mid')+'">'+(dl.sat?'Satura: se pasa '+mm(dl.end-dl.we)+'′ de la ventana → retrasar o mover camiones a otra puerta':dl.slack>=30?'Holgada: '+dl.slack+'′ libres → se puede adelantar':'Justa: '+Math.max(0,dl.slack)+'′ de margen')+'</div><p class="mute" style="margin:0;font-size:12px">'+tx+'</p>'}}
+  h+='<dl class="d"><dt>Pabellón</dt><dd>'+esc((L.halls.find(x=>x.id===d.hall)||{}).label||d.hall)+'</dd><dt>Rambla</dt><dd>'+(r?esc(r.name):'—')+'</dd>'+(r?'<dt>Entra / sale</dt><dd>Acceso '+esc(r.inAcc)+' → Acceso '+esc(r.outAcc)+'</dd><dt>Parking</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+'</dd>':'')+'</dl>';
   if(c){const p=Math.min(1,(n-c.tStart)/(c.dur*M)),over=n>c.tStart+c.dur*M;
     h+='<div class="sec">Descargando</div><div class="al'+(over?'':' early')+'" style="border-left-color:'+(over?'var(--warn)':'var(--door)')+'"><span class="t mono" style="font-size:18px">'+esc(c.mat)+'</span><span>'+esc(c.emp)+' · desde '+hhmm(c.tStart)+' · '+c.dur+'′ '+T(doorTag(c))+'</span><span class="bar'+(over?' over':'')+'"><i style="width:'+p*100+'%"></i></span><div class="acts"><button class="btn sm p" data-fin="'+c.id+'">Finalizar descarga</button><button class="btn sm" data-ext="'+c.id+'">+15′</button><button class="btn sm" data-bk="'+c.id+'">Ficha</button></div></div>'}
   else{const st=doorState(d);if(st==='early'){const cs=candidates(id);h+='<div class="al early"><span class="t">Libre antes de hora</span>'+(cs.length?'<span class="mute">Adelanta un vehículo que ya espera:</span><div class="acts">'+cs.map(b=>'<button class="btn sm p" data-adv="'+b.id+'" data-to="'+esc(id)+'">'+esc(b.mat)+' · '+STN[b.st]+'</button>').join('')+'</div>':'<span class="mute">Nadie esperando en esta rambla</span>')+'</div>'}
@@ -422,10 +519,13 @@ function panelPark(id){const p=parkById(id);if(!p)return panelNow();const list=P
    (list.map(b=>{const free=!cur(b.door);return '<div class="row"><span class="mono">'+esc(b.mat)+'</span><span class="mute">'+mm(now()-b.tArr)+'′ esperando</span><span class="s">'+esc(b.emp)+' · Puerta '+esc(b.door)+' a las '+hhmm(b.start)+' '+T(arrTag(b))+'</span><span class="acts" style="grid-column:1/-1"><button class="btn sm p" data-call="'+b.id+'" '+(free?'':'disabled')+'>Llamar a '+esc(b.door)+(free?'':' (ocupada)')+'</button><button class="btn sm" data-bk="'+b.id+'">Ficha</button></span></div>'}).join('')||'<p class="mute" style="margin:0">Vacío</p>')];}
 function panelRam(id){const r=ramById(id);if(!r)return panelNow();const ds=doorsOfR(r);
   return [esc(r.name),'<dl class="d"><dt>Entrada</dt><dd>Acceso '+esc(r.inAcc)+'</dd><dt>Salida</dt><dd>'+(r.exits?r.exits.map((e,i)=>'<button class="btn sm'+((r.exitSel||0)===i?' p':'')+'" data-exsel="'+i+'" style="margin:2px 0;white-space:normal;text-align:left">'+esc(e.name)+'</button>').join('<br>'):'Acceso '+esc(r.outAcc))+'</dd><dt>Parking de espera</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+' · '+parkCount(r.park)+'/'+((parkById(r.park)||{}).cap||0)+'</dd><dt>Puertas</dt><dd>'+ds.length+'</dd></dl>'+
-   '<div class="sec">Puertas</div>'+ds.map(d=>{const c=cur(d.id),st=doorState(d);return '<button class="row" data-door="'+esc(d.id)+'"><span class="mono">'+esc(d.id)+'</span><span class="chip '+({free:'c-prog',soon:'c-park',busy:'c-door',over:'c-warn',early:'c-early',off:'c-prog'})[st]+'">'+({free:'Libre',soon:'Llega pronto',busy:'Descargando',over:'Excedido',early:'Libre antes',off:'No utilizable'})[st]+'</span><span class="s">'+(c?esc(c.mat)+' · '+esc(c.emp):'')+'</span></button>'}).join('')];}
+   '<div class="sec">Puertas · camiones y saturación</div>'+ds.map(d=>{const c=cur(d.id),st=doorState(d);if(d.off)return '<button class="row" data-door="'+esc(d.id)+'"><span class="mono">'+esc(d.id)+'</span><span class="chip k-cancel">No utilizable</span></button>';const dl=doorLoad(d);
+     return '<button class="row" data-door="'+esc(d.id)+'"><span class="mono">'+esc(d.id)+' <span class="mute" style="font-size:12px">'+dl.act.length+' pend.</span></span>'+(dl.top?chip(dl.top):'<span class="chip k-prog">Libre</span>')+'<span class="s">'+(st==='over'?'<span class="tag t-late">Excedido</span> ':'')+(c?esc(c.mat)+' · ':'')+(dl.act.length?'fin previsto '+hhmm(dl.end)+' ':'')+(dl.z?(dl.sat?'<span class="tag t-late">Satura +'+mm(dl.end-dl.we)+'′ → retrasar</span>':dl.slack>=30?'<span class="tag t-early">'+dl.slack+'′ libres → adelantar</span>':'<span class="tag t-wait">Justa</span>'):'')+'</span></button>'}).join('')];}
 function panelBk(id){const b=PL.bk.find(x=>x.id===id);if(!b)return panelNow();const d=doorById(b.door),r=d&&ramblaOf(d),pr=project(b.door)[b.id]||{};
   let a='';
-  if(b.st==='prog')a='<button class="btn p" data-arr="'+b.id+'">Ha llegado → parking</button><button class="btn" data-call="'+b.id+'" '+(cur(b.door)?'disabled':'')+'>Directo a puerta</button>';
+  if(b.st==='prog')a='<button class="btn p" data-sot="'+b.id+'">Llegó al SOT</button><button class="btn" data-arr="'+b.id+'">Entra al recinto</button>';
+  if(b.st==='sot')a='<button class="btn p" data-ruta="'+b.id+'">Sale al venue</button><button class="btn" data-arr="'+b.id+'">Entra al recinto</button>';
+  if(b.st==='ruta')a='<button class="btn p" data-arr="'+b.id+'">Entra al recinto → espera</button><button class="btn" data-call="'+b.id+'" '+(cur(b.door)?'disabled':'')+'>Directo a puerta</button>';
   if(b.st==='parking')a='<button class="btn p" data-call="'+b.id+'" '+(cur(b.door)?'disabled':'')+'>Llamar a puerta '+esc(b.door)+'</button>';
   if(b.st==='puerta')a='<button class="btn p" data-fin="'+b.id+'">Finalizar descarga</button><button class="btn" data-ext="'+b.id+'">+15′</button>';
   if(active(b))a+='<button class="btn d" data-cancel="'+b.id+'">Cancelar</button>';
@@ -434,9 +534,30 @@ function panelBk(id){const b=PL.bk.find(x=>x.id===id);if(!b)return panelNow();co
    '<dl class="d"><dt>Empresa</dt><dd>'+esc(b.emp)+'</dd><dt>Puerta</dt><dd>'+esc(b.door)+' · '+(r?esc(r.name):'')+'</dd><dt>Slot</dt><dd>'+hhmm(b.start)+' – '+hhmm(b.start+b.dur*M)+' ('+b.dur+'′)</dd>'+(pr.delay&&active(b)&&b.st!=='puerta'?'<dt>Previsión</dt><dd class="c-warn">'+hhmm(pr.ps)+' (+'+pr.delay+'′ por la puerta)</dd>':'')+
    (r&&r.exits?'<dt>Salida</dt><dd><select class="in" id="bexit">'+r.exits.map((e,i)=>'<option value="'+i+'"'+((b.exit!=null?b.exit:(r.exitSel||0))===i?' selected':'')+'>'+esc(e.name)+'</option>').join('')+'</select></dd>':'')+
    (r?'<dt>Recorrido</dt><dd>Acceso '+esc(r.inAcc)+' → '+esc((parkById(b.park||r.park)||{}).name||'')+' → '+esc(b.door)+' → Gate '+esc(r.exits?r.exits[b.exit!=null?b.exit:(r.exitSel||0)].out:r.outAcc)+'</dd>':'')+
-   '<dt>Llegada</dt><dd>'+hhmm(b.tArr)+' '+T(arrTag(b))+'</dd><dt>En puerta</dt><dd>'+hhmm(b.tStart)+(b.tEnd?' – '+hhmm(b.tEnd):'')+' '+T(doorTag(b))+'</dd></dl>'+
+   (b.src&&b.src.indexOf('web')===0?'<dt>Origen</dt><dd>BeUnifyT (web) · '+esc(b.hall?'Hall '+b.hall:'')+(b.wdoor?' · puerta web '+esc(b.wdoor):'')+'</dd>':'')+'<dt>SOT</dt><dd>'+hhmm(b.tSot)+(b.tRuta?' · sale '+hhmm(b.tRuta):'')+'</dd><dt>Llegada</dt><dd>'+hhmm(b.tArr)+' '+T(arrTag(b))+'</dd><dt>En puerta</dt><dd>'+hhmm(b.tStart)+(b.tEnd?' – '+hhmm(b.tEnd):'')+' '+T(doorTag(b))+'</dd></dl>'+
    '<div class="acts">'+a+'</div>'+
    (active(b)?'<div class="sec">Cambiar</div><div class="grid2"><label class="f">Puerta<select class="in" id="cdoor">'+doors.map(x=>'<option'+(x.id===b.door?' selected':'')+'>'+esc(x.id)+'</option>').join('')+'</select></label><label class="f">Hora<input class="in" type="time" id="ctime" value="'+hhmm(b.start)+'"></label></div><div class="durs">'+L.durs.map(v=>'<button data-cdur="'+v+'" aria-pressed="'+(b.dur===v)+'">'+v+'′</button>').join('')+'</div><div class="acts"><button class="btn" data-save="'+b.id+'">Guardar cambios</button></div>':'')];}
+function panelCap(id){const z=L.zones.find(x=>x.id===id)||L.zones[0];if(!z)return panelNow();const c=zoneCalc(z),n=now();
+  const u=c.util,vc=u>1?'v-bad':u>.85?'v-mid':'v-ok';
+  const excess=Math.max(0,c.work-c.win*c.cap),avgD=c.act.length?c.work/c.act.length:30;
+  let v=c.closed?'Ventana '+esc(z.from)+'–'+esc(z.to)+' terminada con '+c.act.length+' camiones por atender: con '+c.cap+' a la vez acaba a las '+hhmm(c.endT)+'.':u>1?'Satura: con '+c.cap+' descargas a la vez termina a las '+hhmm(c.endT)+' ('+mm(c.endT-c.we)+'′ tarde).':u>.85?'Justo: termina a las '+hhmm(c.endT)+', poco margen.':'Holgado: termina a las '+hhmm(c.endT)+'. Se pueden adelantar camiones.';
+  const opts=[];if(u>1){opts.push('Ampliar la faena hasta <b>'+hhmm(Math.ceil(c.endT/(30*M))*30*M)+'</b>');
+    if(c.closed);else if(!c.doorsShort)opts.push('Subir a <b>'+c.needStaff+'</b> trabajadores ('+c.needSim+' cuadrillas de '+z.crew+')');else opts.push('Faltan puertas: harían falta '+c.needSim+' a la vez y hay '+c.ds.length+' útiles');
+    opts.push('Mover ~<b>'+Math.ceil(excess/avgD)+'</b> camiones a otra franja o zona')}
+  const zsel='<div class="seg" style="flex-wrap:wrap">'+L.zones.map(x=>'<button class="btn sm" data-cap="'+x.id+'" aria-pressed="'+(x.id===z.id)+'">'+esc(x.name)+'</button>').join('')+'</div>';
+  const mx=Math.max(c.cap,...c.hours.map(h=>h.load),1);
+  const hb=c.hours.map(h=>{const inW=h.t>=c.ws-1&&h.t<c.we,ov=h.load>c.cap+.05,d=h.load-c.cap;
+    return '<div class="hb"><span class="mono">'+hhmm(h.t)+'</span><span class="bar'+(ov?' over':'')+'" style="opacity:'+(inW?1:.55)+'"><i style="width:'+Math.min(100,h.load/mx*100)+'%;background:'+(ov?'var(--warn)':h.load>c.cap*.85?'#d97706':'#16a34a')+'"></i><b style="left:'+(c.cap/mx*100)+'%"></b></span><span class="'+(ov?'c-warn':'mute')+'" style="font-weight:600">'+h.load.toFixed(1)+(ov?' · retrasar '+Math.ceil(d*60/avgD):h.t>=n-3600000&&inW&&d<-0.9?' · '+Math.floor(-d)+' libres':'')+'</span></div>'}).join('');
+  const dr=c.ds.map(d=>({d,l:doorLoad(d)})).sort((a,b)=>b.l.work-a.l.work);const winT=Math.max(1,mm(c.we-Math.max(n,c.ws)));
+  const drows=dr.map(x=>{const p=x.l.work/winT;return '<button class="row" data-door="'+esc(x.d.id)+'"><span class="mono">'+esc(x.d.id)+' <span class="mute" style="font-size:12px">'+x.l.act.length+' cam · '+x.l.work+'′</span></span>'+(x.l.sat?'<span class="tag t-late">Retrasar / mover</span>':x.l.slack>=30?'<span class="tag t-early">Adelantar</span>':'<span class="tag t-wait">Justa</span>')+'<span class="s"><span class="bar'+(p>1?' over':'')+'" style="display:block"><i style="width:'+Math.min(100,p*100)+'%;background:'+(p>1?'var(--warn)':p>.85?'#d97706':'#16a34a')+'"></i></span>'+(x.l.act.length?'fin previsto '+hhmm(x.l.end):'libre')+'</span></button>'}).join('');
+  return ['Capacidad · '+esc(z.name),zsel+
+   '<div class="zc"><div class="grid2"><label class="f">Trabajadores (forklift + operario)<input class="in" type="number" min="1" id="z-staff" value="'+z.staff+'"></label><label class="f">Por camión<input class="in" type="number" min="1" id="z-crew" value="'+z.crew+'"></label><label class="f">Desde<input class="in" type="time" id="z-from" value="'+esc(z.from)+'"></label><label class="f">Hasta<input class="in" type="time" id="z-to" value="'+esc(z.to)+'"></label></div>'+
+   '<div class="acts"><button class="btn sm" id="z-save">Aplicar</button><button class="btn sm" data-zto="14:00">Ventana 8–14</button><button class="btn sm" data-zto="20:00">Ampliar 8–20</button></div></div>'+
+   '<div class="kp"><div class="k"><b>'+c.act.length+'</b><span>Camiones por atender</span></div><div class="k"><b>'+c.cap+'</b><span>A la vez ('+c.crews+' cuadrillas · '+c.ds.length+' puertas)</span></div><div class="k"><b>'+Math.round(c.work/60*10)/10+' h</b><span>Trabajo pendiente</span></div><div class="k"><b class="'+(u>1?'c-warn':'')+'">'+(c.closed?'Cerrada':Math.round(u*100)+'%')+'</b><span>Ocupación de la ventana</span></div></div>'+
+   '<div class="verd '+vc+'">'+v+'</div>'+(opts.length?'<div class="al"><span class="t">Opciones</span>'+opts.map(o=>'<span>· '+o+'</span>').join('')+'</div>':'')+
+   '<div class="cnt">'+ORD.map(st=>c.cnt[st]?chip(st).replace('</span>',' '+c.cnt[st]+'</span>'):'').join('')+'</div>'+
+   '<div class="sec">Camiones a la vez por hora · línea = capacidad '+c.cap+'</div><div class="hbars">'+hb+'</div>'+
+   '<div class="sec">Carga por puerta</div><div class="acts"><button class="btn sm p" data-rebal="'+z.id+'">Repartir pendientes entre puertas</button></div><p class="mute" style="margin:0;font-size:12px">Reparte los camiones pendientes (aún no en el SOT) a la puerta útil que antes quede libre, sin cambiar su hora.</p>'+drows];}
 let NF={mat:'',emp:'',door:'',dur:30,time:''};
 function panelNew(){const ds=L.doors.filter(d=>!d.off).map(d=>d.id).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
   if(!NF.door)NF.door='3.10';
@@ -463,7 +584,7 @@ function renderSide(){
   let p;
   if(MODE==='cfg')p=panelCfg();
   else if(!sel)p=panelNow();
-  else p=({door:panelDoor,park:panelPark,ram:panelRam,bk:panelBk,new:panelNew})[sel.k](sel.id);
+  else p=({door:panelDoor,park:panelPark,ram:panelRam,bk:panelBk,new:panelNew,cap:panelCap})[sel.k](sel.id);
   $('#side').innerHTML='<div class="ph">'+(sel&&MODE==='op'?'<button class="btn q sm" data-back aria-label="Volver">←</button>':'')+'<h2>'+p[0]+'</h2></div><div class="pb">'+p[1]+'</div>';
   bindSide();
 }
@@ -480,9 +601,9 @@ function rGantt(){
     s+='<rect class="grow" data-gd="'+esc(d.id)+'" x="'+LW+'" y="'+y+'" width="'+(W-LW)+'" height="'+(RH-2)+'" fill="'+(i%2?'#f7f9fb':'#fff')+'"/><text x="4" y="'+(y+15)+'" font-size="12" font-weight="600" font-family="var(--fm)" fill="#0f2233" style="cursor:pointer" data-door="'+esc(d.id)+'">'+esc(d.id)+'</text>';
     bkOfDoor(d.id).forEach(b=>{const p=pr[b.id];if(!p)return;const ps=b.start,pe=b.start+b.dur*M;if(pe<t0&&(!p.pe||p.pe<t0))return;
       s+='<rect x="'+X(ps)+'" y="'+(y+2)+'" width="'+Math.max(2,X(pe)-X(ps))+'" height="'+(RH-6)+'" fill="none" stroke="#9aa9b8" stroke-dasharray="3 2" rx="2"/>';
-      const col=b.st==='fin'?(b.early?'#0f766e':'#047857'):b.st==='puerta'?(n>b.tStart+b.dur*M?'#b42318':'#1d4ed8'):b.st==='parking'?'#a14a06':'#7d90a3';
+      const col=b.st==='puerta'&&n>b.tStart+b.dur*M?'#b42318':b.st==='prog'?'#94a3b8':STF[b.st];
       const a=Math.max(p.ps,t0),e=b.st==='fin'?b.tEnd:p.pe;
-      s+='<g data-gbk="'+b.id+'" style="cursor:pointer"><rect x="'+X(a)+'" y="'+(y+4)+'" width="'+Math.max(3,X(e)-X(a))+'" height="'+(RH-10)+'" fill="'+col+'" rx="2" opacity="'+(b.st==='prog'?.75:1)+'"/><text x="'+(X(a)+4)+'" y="'+(y+15)+'" font-size="10" fill="#fff" font-family="var(--fm)" font-weight="600">'+esc(b.mat)+(p.delay&&active(b)&&b.st!=='puerta'?' +'+p.delay+'′':'')+'</text></g>'})});
+      s+='<g data-gbk="'+b.id+'" style="cursor:pointer"><rect x="'+X(a)+'" y="'+(y+4)+'" width="'+Math.max(3,X(e)-X(a))+'" height="'+(RH-10)+'" fill="'+col+'" rx="2"'+(b.st==='parking'?' stroke="#16a34a" stroke-width="2"':'')+'/><text x="'+(X(a)+4)+'" y="'+(y+15)+'" font-size="10" fill="'+(b.st==='ruta'?'#3b2410':'#fff')+'" font-family="var(--fm)" font-weight="600">'+esc(b.mat)+(p.delay&&active(b)&&b.st!=='puerta'?' +'+p.delay+'′':'')+'</text></g>'})});
   const xn=X(n);s+='<line x1="'+xn+'" y1="14" x2="'+xn+'" y2="'+H+'" stroke="#b42318" stroke-width="2"/></svg>';
   $('#gb').innerHTML=s;
   $('#gsvg').addEventListener('click',e=>{const g=e.target.closest('[data-gbk]');if(g){sel={k:'bk',id:g.dataset.gbk};MODE='op';renderAll();return}
@@ -490,7 +611,7 @@ function rGantt(){
     const row=e.target.closest('[data-gd]');if(row){const svg=$('#gsvg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());
       let t=t0+(q.x-LW)/(W-LW)*(t1-t0);t=Math.round(t/(5*M))*5*M;NF={mat:'',emp:'',door:row.dataset.gd,dur:L.durs[0],time:hhmm(Math.max(t,now()))};sel={k:'new'};renderAll()}});
 }
-$('#gsel').onchange=e=>{gR=e.target.value;sel={k:'ram',id:gR};renderAll()};
+$('#gsel').onchange=e=>{gR=e.target.value;sel={k:'ram',id:gR};zoomTo(ramById(gR));renderAll()};
 
 /* ---------------- eventos panel ---------------- */
 function bindSide(){
@@ -504,6 +625,12 @@ function bindSide(){
   on('[data-fin]',e=>finish(e.dataset.fin));
   on('[data-ext]',e=>extend(e.dataset.ext,15));
   on('[data-arr]',e=>arrive(e.dataset.arr));
+  on('[data-sot]',e=>toSot(e.dataset.sot));
+  on('[data-ruta]',e=>toRuta(e.dataset.ruta));
+  on('[data-cap]',e=>{sel={k:'cap',id:e.dataset.cap};renderAll()});
+  on('[data-zto]',e=>{const z=L.zones.find(x=>x.id===sel.id)||L.zones[0];z.to=e.dataset.zto;saveL();renderAll();toast(z.name+': ventana '+z.from+'–'+z.to)});
+  const zs=$('#z-save');if(zs)zs.onclick=()=>{const z=L.zones.find(x=>x.id===sel.id)||L.zones[0];z.staff=Math.max(1,+$('#z-staff').value||1);z.crew=Math.max(1,+$('#z-crew').value||1);z.from=$('#z-from').value||z.from;z.to=$('#z-to').value||z.to;saveL();renderAll();toast('Zona actualizada')};
+  on('[data-rebal]',e=>{const z=L.zones.find(x=>x.id===e.dataset.rebal);if(!z||!confirm('¿Repartir los camiones pendientes de '+z.name+' entre sus puertas útiles?'))return;const c=rebalance(z);commit();toast(c?c+' camión(es) cambiados de puerta':'Ya estaba repartido')});
   on('[data-call]',e=>toDoor(e.dataset.call));
   on('[data-cancel]',e=>cancel(e.dataset.cancel));
   on('[data-adv]',e=>{const b=PL.bk.find(x=>x.id===e.dataset.adv);if(!b)return;const to=e.dataset.to;
@@ -561,11 +688,11 @@ svg.addEventListener('pointerdown',e=>{
     if(t){const k=t.dataset.k,id=t.dataset.id;
       if(k==='rpt'||k==='ppt'){drag={k,id,i:+t.dataset.i,p0:p};svg.setPointerCapture(e.pointerId);return}
       sel={k,id};drag={k,id,p0:p,moved:false};svg.setPointerCapture(e.pointerId);renderSide();renderMap();return}
-  }else if(t){const k=t.dataset.k,id=t.dataset.id;sel={k:k==='acc'?'ram':k,id:k==='acc'?(L.ramblas.find(r=>r.inAcc===id)||{}).id:id};if(k==='ram')gR=id;if(k==='door'){const r=ramblaOf(doorById(id));if(r)gR=r.id}if(!sel.id)sel=null;renderAll();return}
-  drag={k:'pan',p0:[e.clientX,e.clientY],vb:Object.assign({},VB)};svg.setPointerCapture(e.pointerId);
+  }
+  drag={k:'pan',p0:[e.clientX,e.clientY],vb:Object.assign({},VB),moved:false,tap:MODE==='op'&&t?{k:t.dataset.k,id:t.dataset.id}:null};svg.setPointerCapture(e.pointerId);
 });
 svg.addEventListener('pointermove',e=>{if(!drag)return;
-  if(drag.k==='pan'){const r=svg.getBoundingClientRect(),s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);VB.x=drag.vb.x-(e.clientX-drag.p0[0])*s;VB.y=drag.vb.y-(e.clientY-drag.p0[1])*s;svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);return}
+  if(drag.k==='pan'){if(!drag.moved&&Math.hypot(e.clientX-drag.p0[0],e.clientY-drag.p0[1])<7)return;drag.moved=true;const r=svg.getBoundingClientRect(),s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);VB.x=drag.vb.x-(e.clientX-drag.p0[0])*s;VB.y=drag.vb.y-(e.clientY-drag.p0[1])*s;svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);return}
   const p=svgPt(e),dx=p[0]-drag.p0[0],dy=p[1]-drag.p0[1];if(!dx&&!dy)return;drag.p0=p;drag.moved=true;
   if(drag.k==='door'){const d=doorById(drag.id);if(d){if(d.side==='W'||d.side==='E')d.y+=dy;else d.x+=dx;if(e.shiftKey){d.x+=d.side==='W'||d.side==='E'?dx:0;d.y+=d.side==='N'||d.side==='S'?dy:0}}}
   if(drag.k==='park'){const q=parkById(drag.id);q.pts=q.pts.map(v=>[v[0]+dx,v[1]+dy])}
@@ -574,39 +701,81 @@ svg.addEventListener('pointermove',e=>{if(!drag)return;
   if(drag.k==='ppt'){const q=parkById(drag.id);q.pts[drag.i]=[q.pts[drag.i][0]+dx,q.pts[drag.i][1]+dy]}
   renderMap();
 });
-const endDrag=()=>{if(drag&&drag.k!=='pan'){saveL();if(drag.moved)renderSide()}drag=null};
+function tapSel(k,id){sel={k:k==='acc'?'ram':k,id:k==='acc'?(L.ramblas.find(r=>r.inAcc===id)||{}).id:id};
+  if(!sel.id){sel=null;renderAll();return}
+  if(sel.k==='ram'){gR=sel.id;zoomTo(ramById(sel.id))}
+  if(sel.k==='door'){const r=ramblaOf(doorById(id));if(r)gR=r.id}renderAll()}
+const endDrag=()=>{const d=drag;drag=null;if(!d)return;if(d.k==='pan'){if(!d.moved&&d.tap)tapSel(d.tap.k,d.tap.id);return}saveL();if(d.moved)renderSide()};
 svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);
 function dist(p,h){const cx=Math.max(h.x,Math.min(p[0],h.x+h.w)),cy=Math.max(h.y,Math.min(p[1],h.y+h.h));return Math.hypot(p[0]-cx,p[1]-cy)}
 function sideOf(p,h){const d={W:Math.abs(p[0]-h.x),E:Math.abs(p[0]-h.x-h.w),N:Math.abs(p[1]-h.y),S:Math.abs(p[1]-h.y-h.h)};return Object.keys(d).sort((a,b)=>d[a]-d[b])[0]}
 function zoom(f,cx,cy){const nw=Math.min(VW,Math.max(300,VB.w*f)),k=nw/VB.w;cx=cx==null?VB.x+VB.w/2:cx;cy=cy==null?VB.y+VB.h/2:cy;VB={x:cx-(cx-VB.x)*k,y:cy-(cy-VB.y)*k,w:nw,h:VB.h*k};renderMap()}
 svg.addEventListener('wheel',e=>{e.preventDefault();const p=svgPt(e);zoom(e.deltaY>0?1.15:1/1.15,p[0],p[1])},{passive:false});
 document.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{if(b.dataset.z==='fit'){VB={x:0,y:0,w:VW,h:VH};renderMap()}else zoom(b.dataset.z==='in'?1/1.4:1.4)});
+/* zoom animado a una rambla con todas sus puertas */
+function zoomTo(r){if(!r)return;const ps=(r.poly||[[r.x,r.y],[r.x+r.w,r.y+r.h]]).slice();doorsOfR(r).forEach(d=>{const q=slotRect(d);ps.push([q.x,q.y],[q.x+q.w,q.y+q.h])});
+  let x0=Math.min(...ps.map(p=>p[0])),x1=Math.max(...ps.map(p=>p[0])),y0=Math.min(...ps.map(p=>p[1])),y1=Math.max(...ps.map(p=>p[1]));const pad=70;x0-=pad;y0-=pad;x1+=pad;y1+=pad;
+  const box=svg.getBoundingClientRect(),ar=box.width&&box.height?box.height/box.width:VH/VW;let w=Math.max(360,x1-x0),h=Math.max(y1-y0,w*ar);w=Math.max(w,h/ar);
+  const T={x:(x0+x1)/2-w/2,y:(y0+y1)/2-h/2,w,h},F=Object.assign({},VB),t0=performance.now();
+  (function st(t){const k=Math.min(1,(t-t0)/280),e=k*(2-k);VB={x:F.x+(T.x-F.x)*e,y:F.y+(T.y-F.y)*e,w:F.w+(T.w-F.w)*e,h:F.h+(T.h-F.h)*e};svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);svg.dataset.z=VB.w>1500?'lo':'hi';if(k<1)requestAnimationFrame(st)})(t0)}
 function hint(t){const h=$('#hint');if(t){h.textContent=t;h.hidden=false}else h.hidden=true}
 
 /* ---------------- cabecera ---------------- */
 document.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>{const v=+b.dataset.sim;OFF=v?OFF+v*M:0;renderAll()});
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{MODE=b.dataset.mode;TOOL='move';draft=[];hint(MODE==='cfg'?'Modo configuración: arrastra puertas, accesos y parkings a su sitio real. Los cambios se guardan solos.':'');if(MODE==='op')sel=null;renderAll()});
 $('#newb').onclick=()=>{MODE='op';NF={mat:'',emp:'',door:sel&&sel.k==='door'?sel.id:(NF.door||'3.10'),dur:L.durs[0],time:''};sel={k:'new'};renderAll()};
-/* Importa la agenda de hoy de BeUnifyT (solo lectura de 'cu1_local'; no modifica nada de la app principal) */
-$('#imp').onclick=()=>{let db;try{db=JSON.parse(localStorage.getItem(SRC))}catch(e){}
-  if(!db){toast('No hay datos de BeUnifyT en este navegador. Abre primero la app principal.');return}
-  const today=new Date(now()).toISOString().slice(0,10),ag=(db.agenda||[]).filter(a=>a.fecha===today&&a.matricula);
-  let n=0,sk=0;ag.forEach(a=>{if(PL.bk.some(b=>b.src==='agenda:'+a.id)){sk++;return}
-    let door=a.puertaHall&&doorById(String(a.puertaHall).replace(',','.'))?String(a.puertaHall).replace(',','.'):null;
-    const h=String(a.hall||'').split(/[,\s]/)[0];if(!door){const ds=L.doors.filter(d=>d.hall===h&&!d.off);door=ds.length?ds[0].id:'3.10'}
-    const tm=String(a.hora||'08:00').split(':');const d=new Date(now());d.setHours(+tm[0]||8,+tm[1]||0,0,0);
-    PL.bk.push({id:uid(),mat:normP(a.matricula),emp:a.empresa||a.expositor||'',door,start:d.getTime(),dur:L.durs[0],st:'prog',tArr:null,tStart:null,tEnd:null,park:null,src:'agenda:'+a.id});n++});
-  log('Importadas '+n+' citas de agenda');commit();toast(n?'Importadas '+n+' citas de hoy'+(sk?' ('+sk+' ya estaban)':''):'Sin citas nuevas para hoy en la agenda'+(sk?' ('+sk+' ya importadas)':''))};
+/* Sincronización en vivo con BeUnifyT: SOLO LEE localStorage['cu1_local'] (agenda + ingresos de hoy).
+   Estado según el último paso de tracking de la web; nunca escribe en los datos de BeUnifyT. */
+const arr=x=>Array.isArray(x)?x:x&&typeof x==='object'?Object.values(x):[];
+const STEP2ST={rampa:'sot',cabina:'sot',salida_parking:'ruta',en_ruta:'ruta',entrada_recinto:'parking',en_espera:'parking',descarga:'puerta',carga:'puerta',retorno:'fin',terminado:'fin'};
+function webDoor(raw,hall){let s=String(raw||'').trim().replace(',','.');if(!s)return null;
+  let m=s.match(/(\d{1,2})\s*\.\s*0*(\d{1,2})/);if(m&&doorById(m[1]+'.'+(+m[2])))return m[1]+'.'+(+m[2]);
+  m=s.match(/(\d{1,2})/);const h=String(hall||'').match(/\d+/);if(m&&h&&doorById(h[0]+'.'+(+m[1])))return h[0]+'.'+(+m[1]);return null}
+function pickDoor(hall,start,dur){const ds=L.doors.filter(d=>d.hall===hall&&!d.off);if(!ds.length)return null;let best=ds[0],bt=Infinity;ds.forEach(d=>{const t=nextFree(d.id,start,dur);if(t<bt){bt=t;best=d}});return best.id}
+let WS={n:0,t:0,ok:false};
+function syncWeb(manual){let db;try{db=JSON.parse(localStorage.getItem(SRC))}catch(e){}
+  if(!db){WS={n:0,t:now(),ok:false};if(manual)toast('No hay datos de BeUnifyT en este navegador. Abre primero la app principal en este mismo navegador.');showWS();return 0}
+  const today=dayKey(now()),rows={};
+  arr(db.agenda).forEach(a=>{if(!a||!a.matricula||String(a.fecha||'').slice(0,10)!==today)return;const k=normP(a.matricula);rows[k]=Object.assign(rows[k]||{},{ag:a})});
+  arr(db.ingresos).forEach(g=>{if(!g||!g.matricula)return;const e=g.entrada?dayKey(new Date(g.entrada).getTime()):'';const k=normP(g.matricula);if(e!==today&&!rows[k])return;rows[k]=Object.assign(rows[k]||{},{ing:g})});
+  let nw=0,up=0;
+  Object.keys(rows).forEach(k=>{const a=rows[k].ag||{},g=rows[k].ing,id='web_'+k;
+    const tr=g?arr(g.tracking).filter(x=>x&&x.stepId).sort((x,y)=>new Date(x.ts)-new Date(y.ts)):[];const last=tr[tr.length-1];
+    const ts=sid=>{const x=tr.filter(q=>q.stepId===sid).pop();return x?new Date(x.ts).getTime():null};
+    let wst=!g?'prog':g.salida?'fin':last?(STEP2ST[last.stepId]||'sot'):'sot';
+    const hall=String((g&&g.hall)||a.hall||'').split(/[,\s/]/)[0].replace(/\D/g,'');
+    const raw=(g&&g.puertaHall)||a.puertaHall||'';
+    let start=a.hora?atHM(a.hora):g&&g.entrada?new Date(g.entrada).getTime():atHM('08:00');start=Math.round(start/(5*M))*5*M;
+    let b=PL.bk.find(x=>x.id===id);
+    if(!b){const door=webDoor(raw,hall)||pickDoor(hall,start,L.durs[0])||'';if(!door)return;
+      b={id,mat:k,emp:(g&&(g.empresa||g.expositor))||a.empresa||a.expositor||'',door,start,dur:L.durs[0],st:'prog',tArr:null,tStart:null,tEnd:null,park:null,src:'web',hall,wdoor:raw};PL.bk.push(b);nw++}
+    else{const wd=webDoor(raw,hall);if(raw!==(b.wdoor||'')&&wd&&wd!==b.door){log(b.mat+' puerta web '+b.door+' → '+wd);b.door=wd;up++}b.wdoor=raw;b.hall=hall||b.hall;
+      if(!b.emp)b.emp=(g&&(g.empresa||g.expositor))||a.empresa||''}
+    if(b.st!=='cancel'&&RANK[wst]>RANK[b.st]){const p=b.st;b.st=wst;up++;
+      b.tSot=b.tSot||ts('rampa')||ts('cabina')||(g&&g.entrada?new Date(g.entrada).getTime():now());
+      if(RANK[wst]>=2)b.tRuta=b.tRuta||ts('salida_parking')||ts('en_ruta')||now();
+      if(RANK[wst]>=3){b.tArr=b.tArr||ts('entrada_recinto')||ts('en_espera')||now();const r=rOfBk(b);b.park=wst==='parking'?(b.park||(r&&r.park)||'SOT'):null}
+      if(RANK[wst]>=4)b.tStart=b.tStart||ts('descarga')||ts('carga')||now();
+      if(wst==='fin'){b.tEnd=b.tEnd||ts('terminado')||ts('retorno')||(g.salida?new Date(g.salida).getTime():now());b.early=0}
+      log(b.mat+' (web) '+STN[p]+' → '+STN[wst])}});
+  WS={n:Object.keys(rows).length,t:now(),ok:true};
+  if(nw||up)saveP();showWS();
+  if(manual)toast('BeUnifyT: '+WS.n+' camiones hoy · '+nw+' nuevos · '+up+' cambios');
+  return nw+up}
+function showWS(){const e=$('#wsync');if(e)e.textContent=WS.ok?'Web: '+WS.n+' camiones · '+hhmm(WS.t):'Web: sin datos'}
+$('#imp').onclick=()=>{syncWeb(true);renderAll()};
+$('#capb').onclick=()=>{MODE='op';const d=sel&&sel.k==='door'?doorById(sel.id):null,z=zoneOfDoor(d)||(sel&&sel.k==='ram'?zoneOfDoor(doorsOfR(ramById(sel.id))[0]):null);sel={k:'cap',id:(z||L.zones[0]).id};renderAll()};
+window.addEventListener('storage',e=>{if(e.key===SRC&&syncWeb(false))renderAll()});
 
 /* ---------------- render ---------------- */
 function renderMap(){rMap()}
-function renderAll(){$('#clock').textContent=hhmm(now());$('#sim').textContent=OFF?'SIMULACIÓN +'+mm(OFF)+'′':'';
+function renderAll(){$('#clock').textContent=hhmm(now());$('#sim').textContent=OFF?'SIMULACIÓN '+(OFF>0?'+':'')+mm(OFF)+'′':'';
   document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===MODE)));
   rMap();renderSide();rGantt()}
 function commit(){saveP();renderAll()}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(TOOL!=='move'){TOOL='move';draft=[];hint()}else sel=null;renderAll()}});
-renderAll();
-setInterval(()=>{const a=document.activeElement;if(drag||a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;renderAll()},20000);
+syncWeb(false);renderAll();
+setInterval(()=>{const a=document.activeElement;syncWeb(false);if(drag||a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;renderAll()},20000);
 </script>
 </body>
 </html>

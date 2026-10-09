@@ -5,6 +5,28 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-09 · Estados por color, zoom por rambla, sincronización con la web y capacidad
+
+**Punto de restauración:** tag `restore-2026-10-09-antes-capacidad` (commit `7227031`)
+**Archivo:** solo `MAPA_FIRA.html`. Los detalles completos están en `MAPA_FIRA_DETALLES.md`.
+
+- **Zoom por rambla**: al tocar una rambla, el mapa se acerca a sus puertas. Arrastrar el mapa ya no selecciona nada.
+- **Seis estados con los colores de la web**:
+  - Pendiente blanco, SOT rojo, Al venue marrón claro.
+  - En el venue marrón con verde, En puerta verde, Terminado negro.
+- **Slots del plano**: cada slot toma el color del estado más avanzado de sus camiones y muestra un número con los que le quedan. Un marco naranja indica que la puerta satura su ventana.
+- **Ficha de puerta**: camiones de hoy con su estado y el veredicto Satura / Justa / Holgada (retrasar o adelantar).
+- **Sincronización en vivo con BeUnifyT** (solo lectura de `cu1_local`):
+  - Lee agenda e ingresos de hoy.
+  - Toma el estado del último paso de tracking y la puerta de `puertaHall`.
+- **Panel Capacidad** por zona:
+  - Datos de la zona: trabajadores, personas por camión, puertas útiles y ventana 8–14 / 8–20.
+  - Resultados: ocupación, fin previsto, opciones, barras por hora y carga por puerta.
+  - Botón *Repartir pendientes*.
+- Datos: las reservas pasan a `bu_mapa_plan_v3`. El plano sigue en `bu_mapa_layout_v8`, con las zonas añadidas.
+
+---
+
 ## 2026-10-09 · Mapa de puertas y rampas de Fira Gran Via
 
 **Punto de restauración:** tag `restore-2026-10-09-antes-mapa` (commit `12a7962`)

@@ -8,6 +8,7 @@ La lista completa está en `CAMBIOS.md`.
 | Tag | Commit | Estado |
 |---|---|---|
 | `restore-2026-10-09-antes-mapa` | `12a7962` | INDEX antes del botón 🗺️ y sin `MAPA_FIRA.html` |
+| `restore-2026-10-09-antes-capacidad` | `7227031` | Mapa con plano RESA y rutas, antes de los estados por color, el zoom por rambla, la sincronización con la web y la capacidad |
 
 ## Opción A — Sin terminal (desde GitHub web)
 1. Abre `backups/INDEX_2026-10-09_antes-mapa.html` en GitHub y pulsa **Raw**. Copia todo.
@@ -25,10 +26,17 @@ git push
 git rm MAPA_FIRA.html && git commit -m "Quitar MAPA_FIRA" && git push
 ```
 
+## Volver el mapa a antes de la capacidad
+```bash
+git checkout restore-2026-10-09-antes-capacidad -- MAPA_FIRA.html
+git commit -m "Restaurar MAPA_FIRA a antes-capacidad" && git push
+```
+Sin terminal: en GitHub abre *Tags* → `restore-2026-10-09-antes-capacidad` → `MAPA_FIRA.html` → **Raw**, copia y pega en `MAPA_FIRA.html` → **Commit**.
+
 ## Quitar solo el botón del mapa (sin restaurar nada más)
 En `INDEX.html`, busca `MAPA_FIRA 2026-10-09` y borra esa línea de comentario y el `<button>` que va justo debajo.
 
 ## Datos
 - Restaurar el HTML **no borra datos**. Firebase y `localStorage['cu1_local']` no se tocan.
-- El mapa guarda lo suyo aparte, en `bu_mapa_layout_v8` y `bu_mapa_plan_v2`.
+- El mapa guarda lo suyo aparte, en `bu_mapa_layout_v8` y `bu_mapa_plan_v3` (la versión anterior usaba `bu_mapa_plan_v2`, que sigue en el navegador).
 - Para limpiar el mapa: en *Configurar plano*, pulsa *Restablecer plano*.
