@@ -55,7 +55,7 @@ Para volver atrás, ver `RESTAURAR.md`.
 - **Simulación**: los botones +5′ y +15′ adelantan el reloj para probar retrasos y adelantos.
 
 ### Datos
-- Plano: `localStorage['bu_mapa_layout_v6']`
+- Plano: `localStorage['bu_mapa_layout_v7']`
 - Reservas: `localStorage['bu_mapa_plan_v2']`
 - **No usa Firebase todavía.** Cada dispositivo guarda su propio plan.
   - Siguiente paso propuesto: sincronizar con el RTDB, en `cu1/controlunificado/mapa`.
@@ -73,3 +73,4 @@ Para volver atrás, ver `RESTAURAR.md`.
 - Fondo: plano operativo de RESA Expo Logistics con las puertas reales, los gates 1–5 y los sentidos de circulación.
 - Slots colocados sobre cada puerta del plano: 1.01–1.05, 2.01–2.19, 3.01–3.17, 4.02–4.09, 5.01–5.09, 6.02–6.09, 7.01–7.09 y 8.01 / 8.03 / 8.05.
 - **Puertas no utilizables:** 1.5, 2.1, 2.2, 3.9 y 3.11. Se ven en gris y no se pueden reservar ni asignar. Se cambia en *Configurar plano* → puerta → «No utilizable».
+- Rambla C (2-3): no hay salida por abajo (prohibido junto a 2.19). Recorrido: entra por Gate 1 → baja por C hasta 2.19 → vuelve a subir hasta 2.1 → izquierda → baja por B hasta 1.4 → vial sur → sale por Gate 4.

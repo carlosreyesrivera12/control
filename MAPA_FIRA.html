@@ -162,7 +162,7 @@ svg[data-z="lo"] .did{display:none}
    Datos propios en localStorage (bu_mapa_layout_v1, bu_mapa_plan_v1).
    Lee (sin modificar) los datos de BeUnifyT en localStorage 'cu1_local'.
    ========================================================= */
-const KL='bu_mapa_layout_v6',KP='bu_mapa_plan_v2',SRC='cu1_local',M=60000;
+const KL='bu_mapa_layout_v7',KP='bu_mapa_plan_v2',SRC='cu1_local',M=60000;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -212,7 +212,7 @@ function defLayout(){
   const rr=(id,name,x0,y0,x1,y1,i,o,pk,pts,poly)=>{const a=V(x0,y0),b=V(x1,y1);return{id,name,x:a[0],y:a[1],w:b[0]-a[0],h:b[1]-a[1],poly:poly?poly.map(p=>V(p[0],p[1])):null,inAcc:i,outAcc:o,park:pk,pts:pts.map(p=>V(p[0],p[1]))}};
   const R=[
    rr('B','B · Rambla 1-2',430,270,466,1160,'1','4','P21',[[415,262],[447,265],[447,1138],[990,1138],[995,1178]]),
-   rr('C','C · Rambla 2-3',657,280,736,1100,'4','4','P21',[[995,1178],[990,1138],[697,1138],[697,310],[697,1138],[990,1138],[995,1178]]),
+   Object.assign(rr('C','C · Rambla 2-3',657,280,736,905,'1','4','P21',[[415,262],[447,270],[697,288],[697,890],[697,288],[447,280],[447,1030],[447,1138],[990,1138],[995,1178]]),{split:3}), // sin salida por abajo (prohibido junto a 2.19): vuelve por arriba, baja por B y sale por Gate 4
    rr('D','D · Rambla 3-4',953,672,1052,1115,'4','4','P317',[[995,1178],[1003,1138],[1003,680],[1003,1138],[995,1178]]),
    rr('E','E · Rambla 3-5',953,150,1052,597,'4','2','P317',[[995,1178],[1003,1138],[1003,170],[1000,150],[930,90]]),
    rr('F','F · Rambla 4-6',1242,672,1300,1115,'4','4','SOT',[[995,1178],[1003,1138],[1271,1138],[1271,680],[1271,1138],[1003,1138],[995,1178]]),
@@ -362,10 +362,10 @@ function rMap(){
   const R=sel&&sel.k==='ram'?ramById(sel.id):sel&&sel.k==='bk'?rOfBk(PL.bk.find(b=>b.id===sel.id)||{}):sel&&sel.k==='door'?ramblaOf(doorById(sel.id)||{x:-9,y:-9,side:'W'}):ramById(gR);
   if(R&&R.pts&&R.pts.length>1){const pts=R.pts;let k=0,best=-1;const docks=doorsOfR(R).map(slotC);
     for(let i=0;i<pts.length;i++){if(docks.some(c=>Math.hypot(c[0]-pts[i][0],c[1]-pts[i][1])<400)&&inR(pts[i],{x:R.x-5,y:R.y-5,w:R.w+10,h:R.h+10})){best=i}}
-    k=best<0?Math.floor(pts.length/2):best;
+    k=R.split!=null&&R.split<pts.length?R.split:best<0?Math.floor(pts.length/2):best;
     const pin=pts.slice(0,k+1),pout=pts.slice(k);
-    s.push('<polyline class="route in" points="'+pin.map(p=>p.join(',')).join(' ')+'"/>');
     if(pout.length>1)s.push('<polyline class="route out" points="'+pout.map(p=>p.join(',')).join(' ')+'"/>');
+    s.push('<polyline class="route in" points="'+pin.map(p=>p.join(',')).join(' ')+'" style="transform:translate(-6px,0)"/>');
     if(ed)pts.forEach((p,i)=>s.push('<circle class="handle" data-k="rpt" data-id="'+R.id+'" data-i="'+i+'" cx="'+p[0]+'" cy="'+p[1]+'" r="10"/>'));
   }
   // parkings

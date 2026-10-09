@@ -30,5 +30,5 @@ En `INDEX.html`, busca `MAPA_FIRA 2026-10-09` y borra esa línea de comentario y
 
 ## Datos
 - Restaurar el HTML **no borra datos**. Firebase y `localStorage['cu1_local']` no se tocan.
-- El mapa guarda lo suyo aparte, en `bu_mapa_layout_v6` y `bu_mapa_plan_v2`.
+- El mapa guarda lo suyo aparte, en `bu_mapa_layout_v7` y `bu_mapa_plan_v2`.
 - Para limpiar el mapa: en *Configurar plano*, pulsa *Restablecer plano*.
