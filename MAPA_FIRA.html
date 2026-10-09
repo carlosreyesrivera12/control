@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BeUnifyT · Mapa Gran Via</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--f:'IBM Plex Sans',system-ui,sans-serif;--fm:'IBM Plex Mono',ui-monospace,monospace;--bg:#e9eef3;--panel:#fff;--panel2:#f4f7fa;--line:#cfd9e3;--line2:#7d90a3;--ink:#0f2233;--mute:#4a5e72;--acc:#0b6e8a;--on:#fff;
+ --prog:#56677a;--park:#a14a06;--door:#1d4ed8;--fin:#047857;--warn:#b42318;--early:#0f766e;--road:#dfe5ec;--hall:#fbfcfd;--r:4px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--f);background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 12px;border-radius:var(--r);border:1px solid var(--line2);background:var(--panel);font-weight:600;white-space:nowrap;line-height:1}
+.btn.p{background:var(--acc);border-color:var(--acc);color:var(--on)}
+.btn.d{color:var(--warn);border-color:var(--warn)}
+.btn.q{border-color:transparent;background:transparent}
+.btn.sm{min-height:30px;padding:0 9px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.in{min-height:36px;padding:0 10px;border:1px solid var(--line2);border-radius:var(--r);background:var(--panel);width:100%}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--mute);min-width:0}
+.mono{font-family:var(--fm)}
+.mute{color:var(--mute)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 7px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.c-prog{color:var(--prog)}.c-park{color:var(--park)}.c-door{color:var(--door)}.c-fin{color:var(--fin)}.c-warn{color:var(--warn)}.c-early{color:var(--early)}
+.tag{font-size:12px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap}
+.t-ok{background:#dcfce7;color:#14532d}.t-early{background:#ccfbf1;color:#134e4a}.t-late{background:#fee2e2;color:#7f1d1d}.t-wait{background:#fef3c7;color:#78350f}
+
+/* layout */
+.app{display:grid;grid-template-columns:minmax(0,1fr) 400px;grid-template-rows:auto minmax(0,1fr) auto;height:100dvh}
+header{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 14px;padding-top:max(8px,env(safe-area-inset-top));background:var(--ink);color:#fff}
+header .brand{font-weight:700;letter-spacing:-.01em;font-size:16px;margin-right:6px}
+header .brand span{font-weight:500;opacity:.75}
+header .btn{background:transparent;color:#fff;border-color:#4b6278}
+header .btn.p{background:#ffb703;color:#1b1203;border-color:#ffb703}
+header .btn[aria-pressed="true"]{background:#fff;color:var(--ink);border-color:#fff}
+.clock{font-family:var(--fm);font-size:20px;font-weight:600}
+.sim{font-size:12px;font-weight:700;color:#ffb703}
+.sp{flex:1}
+.seg{display:inline-flex;gap:3px}
+.map{position:relative;min-width:0;min-height:0;overflow:hidden;background:var(--bg);touch-action:none}
+.map svg{width:100%;height:100%;display:block;user-select:none;-webkit-user-select:none}
+.zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:4px}
+.zoom .btn{width:38px;padding:0;background:var(--panel)}
+.legend{position:absolute;left:12px;top:10px;display:flex;flex-wrap:wrap;gap:8px;background:var(--panel);padding:6px 10px;border:1px solid var(--line);border-radius:var(--r);font-size:12px;max-width:calc(100% - 24px)}
+.lg{display:inline-flex;align-items:center;gap:5px}
+.lg i{width:12px;height:12px;border-radius:2px;display:inline-block;border:1.5px solid}
+.hint{position:absolute;left:12px;top:48px;z-index:2;background:#fff7d6;border:1px solid #e6c34a;padding:8px 12px;border-radius:var(--r);font-size:13px;font-weight:600;max-width:min(520px,calc(100% - 80px))}
+aside{grid-row:2/4;grid-column:2;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.ph{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);min-height:56px}
+.ph h2{margin:0;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pb{flex:1;overflow:auto;padding:12px 14px;display:grid;gap:10px;align-content:start}
+.sec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+.kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.k{border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;background:var(--panel2);text-align:left}
+.k b{display:block;font-family:var(--fm);font-size:22px}
+.k span{font-size:12px;color:var(--mute);font-weight:600}
+.al{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:var(--r);padding:8px 10px;display:grid;gap:6px;background:var(--panel)}
+.al.early{border-left-color:var(--early)}.al.park{border-left-color:var(--park)}
+.al .t{font-weight:700;font-size:13px}
+.al .acts{display:flex;flex-wrap:wrap;gap:6px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);text-align:left;width:100%}
+.row .mono{font-size:15px;font-weight:600}
+.row .s{grid-column:1/-1;font-size:12px;color:var(--mute)}
+.row.sel{border-color:var(--acc);box-shadow:inset 3px 0 0 var(--acc)}
+dl.d{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 12px;margin:0;font-size:13px}
+dl.d dt{color:var(--mute)}dl.d dd{margin:0;font-weight:600}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.durs{display:flex;flex-wrap:wrap;gap:4px}
+.durs button{min-height:34px;padding:0 10px;border:1px solid var(--line2);border-radius:var(--r);background:var(--panel);font-weight:600}
+.durs button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bar{height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--door)}
+.bar.over i{background:var(--warn)}
+/* gantt */
+.gantt{grid-column:1;border-top:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0;max-height:34dvh}
+.gh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--line)}
+.gh b{font-size:13px}
+.gh select{width:auto;min-height:30px}
+.gb{overflow:auto;flex:1}
+.gb svg{display:block;width:100%}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-weight:600;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+/* svg */
+.road{fill:none;stroke:var(--road);stroke-width:30;stroke-linejoin:round}
+.walk{fill:none;stroke:#c9d3dd;stroke-width:34;opacity:.85}
+.rb{fill:#eef2f6;stroke:#d6dee7}
+.rb.sel{fill:#dff3f8;stroke:var(--acc);stroke-width:2}
+.rbt{font-family:var(--fm);font-size:10px;fill:var(--mute)}
+.hall rect{fill:var(--hall);stroke:#9fb0c1;stroke-width:1.5}
+.hall text{font-family:var(--fm);font-weight:600;fill:#c3ced9}
+.slot{cursor:pointer}
+.slot rect{stroke-width:1.2}
+.s-free rect{fill:#fff;stroke:#9aa9b8}
+.s-soon rect{fill:#fff;stroke:var(--park);stroke-width:2}
+.s-busy rect{fill:var(--door);stroke:var(--door)}
+.s-over rect{fill:var(--warn);stroke:var(--warn)}
+.s-early rect{fill:#ccfbf1;stroke:var(--early);stroke-width:2}
+.slot.sel rect{stroke:#ffb703;stroke-width:3}
+.did{font-family:var(--fm);font-size:8px;fill:var(--ink);pointer-events:none}
+.s-busy .did,.s-over .did{fill:#fff}
+svg[data-z="lo"] .did{display:none}
+.route{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 7;opacity:.9}
+.route.in{stroke:#16a34a}.route.out{stroke:#dc2626}
+.park polygon{fill:rgba(161,74,6,.12);stroke:var(--park);stroke-width:2;stroke-dasharray:6 4;cursor:pointer}
+.park.full polygon{fill:rgba(180,35,24,.18);stroke:var(--warn)}
+.park text{font-family:var(--fm);font-size:13px;font-weight:600;fill:var(--ink);pointer-events:none}
+.acc circle{stroke:#fff;stroke-width:3;cursor:pointer}
+.acc text{font-family:var(--fm);font-weight:700;fill:#fff;font-size:14px;pointer-events:none}
+.acc .lb{fill:var(--ink);font-size:11px}
+.edit .slot,.edit .park polygon,.edit .acc circle{cursor:move}
+.handle{fill:#ffb703;stroke:#fff;stroke-width:2;cursor:move}
+@media (max-width:980px){
+ .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 56dvh auto auto;height:auto;min-height:100dvh}
+ aside{grid-row:4;grid-column:1;border-left:0;border-top:1px solid var(--line)}
+ .gantt{grid-row:3;max-height:none}
+ .legend{display:none}
+ header .brand span{display:none}
+ header .sp{display:none}
+}
+@media print{header,.zoom,.legend,aside .acts{display:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<header>
+  <div class="brand">BeUnifyT <span>· Gran Via · rampas y puertas</span></div>
+  <span class="clock" id="clock">--:--</span><span class="sim" id="sim"></span>
+  <span class="seg" role="group" aria-label="Simular tiempo"><button class="btn sm" data-sim="5">+5′</button><button class="btn sm" data-sim="15">+15′</button><button class="btn sm" data-sim="0">Ahora</button></span>
+  <span class="sp"></span>
+  <span class="seg" role="group" aria-label="Modo"><button class="btn sm" data-mode="op" aria-pressed="true">Operar</button><button class="btn sm" data-mode="cfg" aria-pressed="false">Configurar plano</button></span>
+  <button class="btn sm" id="imp">Importar de BeUnifyT</button>
+  <button class="btn sm p" id="newb">+ Reserva</button>
+</header>
+<section class="map" id="map"><svg id="svg" viewBox="0 0 1600 1000" aria-label="Plano Fira Gran Via"></svg>
+  <div class="zoom"><button class="btn" data-z="in" aria-label="Acercar">+</button><button class="btn" data-z="out" aria-label="Alejar">−</button><button class="btn" data-z="fit" aria-label="Ver todo">⤢</button></div>
+  <div class="legend"><span class="lg"><i style="background:#fff;border-color:#9aa9b8"></i>Libre</span><span class="lg"><i style="background:#fff;border-color:var(--park)"></i>Llega en 30′</span><span class="lg"><i style="background:var(--door);border-color:var(--door)"></i>Descargando</span><span class="lg"><i style="background:var(--warn);border-color:var(--warn)"></i>Excedido</span><span class="lg"><i style="background:#ccfbf1;border-color:var(--early)"></i>Libre antes de hora</span><span class="lg"><i style="background:none;border:0;border-top:3px dashed #16a34a;border-radius:0;height:0"></i>Entrada</span><span class="lg"><i style="background:none;border:0;border-top:3px dashed #dc2626;border-radius:0;height:0"></i>Salida</span></div>
+  <div class="hint" id="hint" hidden></div>
+</section>
+<aside id="side"></aside>
+<section class="gantt"><div class="gh"><b>Planificación</b><select class="in" id="gsel" aria-label="Rambla"></select><span class="mute" style="font-size:12px">Pulsa una fila vacía para reservar a esa hora · barra = reserva</span></div><div class="gb" id="gb"></div></section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="fimg" accept="image/*" hidden><input type="file" id="fjson" accept="application/json,.json" hidden>
+
+<script>
+"use strict";
+/* =========================================================
+   MAPA FIRA GRAN VIA · BeUnifyT
+   Planificador de puertas/rampas con slots de tiempo.
+   Datos propios en localStorage (bu_mapa_layout_v1, bu_mapa_plan_v1).
+   Lee (sin modificar) los datos de BeUnifyT en localStorage 'cu1_local'.
+   ========================================================= */
+const KL='bu_mapa_layout_v1',KP='bu_mapa_plan_v1',SRC='cu1_local',M=60000;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const normP=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+let OFF=0;const now=()=>Date.now()+OFF;
+const hhmm=t=>t?new Date(t).toTimeString().slice(0,5):'—';
+const mm=x=>Math.round(x/M);
+let tT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>e.classList.remove('on'),2600)}
+
+/* ---------------- plano por defecto (esquema según plano oficial: pabellones en franjas paralelas, pasarela transversal) ---------------- */
+function defLayout(){
+  const H=[['1','1',60,520,190,420],['2','2',290,60,210,840],['3','3',540,350,210,610],['4','4',790,350,190,510],['6','6',1020,350,200,410],['5','5',540,60,210,230],['7','7',790,60,190,230],['8','8.0',1290,380,240,220],['8b','8.1',1290,90,240,170]]
+   .map(h=>({id:h[0],label:h[1],x:h[2],y:h[3],w:h[4],h:h[5]}));
+  const hall=id=>H.find(h=>h.id===id);
+  const doors=[];
+  function gen(hid,side,pre,n0,cnt){const h=hall(hid);const vert=side==='W'||side==='E';const a=vert?h.y:h.x,b=vert?h.y+h.h:h.x+h.w;
+    let pos=[];const step=(b-a)/(cnt+1);for(let i=1;i<=cnt;i++){let p=a+step*i;if(vert&&p>285&&p<355)p=p<320?280:360;pos.push(Math.round(p))}
+    if(side==='E'&&hid==='3')pos=pos; // numeración de arriba abajo
+    pos.forEach((p,i)=>doors.push({id:pre+'.'+(n0+i),hall:hid,side,x:side==='W'?h.x:side==='E'?h.x+h.w:p,y:vert?p:(side==='N'?h.y:h.y+h.h)}));}
+  gen('1','W','1',1,4);gen('1','E','1',5,4);
+  gen('2','W','2',1,8);gen('2','E','2',9,8);
+  gen('3','W','3',1,9);gen('3','E','3',10,9);
+  gen('4','W','4',1,7);gen('4','E','4',8,7);
+  gen('6','W','6',1,6);gen('6','E','6',7,6);
+  gen('5','W','5',1,3);gen('5','E','5',4,3);gen('5','N','5',7,3);
+  gen('7','W','7',1,3);gen('7','E','7',4,3);gen('7','N','7',7,3);
+  gen('8','S','8',1,6);gen('8b','N','8',7,6);
+  const A=[{id:'1',x:160,y:992,inn:true,out:false},{id:'2',x:390,y:8,inn:false,out:true},{id:'3',x:770,y:8,inn:false,out:true},{id:'4',x:770,y:992,inn:true,out:true},{id:'5',x:1592,y:700,inn:true,out:true}];
+  const P=[{id:'P21',name:'Triángulo 2.1',pts:[[80,70],[240,70],[240,250]],cap:10},{id:'P317',name:'Triángulo 3.17',pts:[[805,965],[975,965],[975,880]],cap:10},{id:'SOT',name:'SOT del Migdia (externo)',pts:[[1330,860],[1565,860],[1565,955],[1330,955]],cap:60}];
+  const R=[
+   ['R12','Rambla 1-2',250,40,40,935,'1','2','P21',[[160,992],[160,975],[270,975],[270,40],[390,40],[390,8]]],
+   ['R23','Rambla 2-3',500,350,40,625,'4','2','P21',[[770,992],[770,975],[520,975],[520,40],[390,40],[390,8]]],
+   ['R25','Rambla 2-5',500,40,40,260,'1','3','P21',[[160,992],[160,975],[20,975],[20,40],[520,40],[520,290],[520,40],[770,40],[770,8]]],
+   ['R34','Rambla 3-4',750,350,40,625,'4','3','P317',[[770,992],[770,8]]],
+   ['R57','Rambla 5-7',750,40,40,260,'5','3','SOT',[[1592,700],[1580,700],[1580,40],[770,40],[770,290],[770,40],[770,8]]],
+   ['R7E','Rambla 7 este',980,40,40,260,'5','3','SOT',[[1592,700],[1580,700],[1580,40],[1000,40],[1000,290],[1000,40],[770,40],[770,8]]],
+   ['R46','Rambla 4-6',980,350,40,625,'5','4','P317',[[1592,700],[1580,700],[1580,975],[1000,975],[1000,360],[1000,975],[770,975],[770,992]]],
+   ['R6E','Lateral este 6',1220,350,50,625,'5','5','SOT',[[1592,700],[1580,700],[1580,975],[1245,975],[1245,360],[1245,975],[1580,975],[1580,700],[1592,700]]],
+   ['R1W','Lateral oeste 1',20,500,40,475,'1','1','P317',[[160,992],[160,975],[40,975],[40,520],[40,975],[160,975],[160,992]]],
+   ['RN','Vial norte 5-7',540,20,440,40,'5','3','SOT',[[1592,700],[1580,700],[1580,40],[770,40],[770,8]]],
+   ['R8S','Muelle 8.0',1290,600,240,40,'5','5','SOT',[[1592,700],[1580,700],[1580,620],[1300,620],[1580,620],[1580,700],[1592,700]]],
+   ['R8N','Muelle 8.1',1290,50,240,40,'5','3','SOT',[[1592,700],[1580,700],[1580,70],[1290,70],[1290,40],[770,40],[770,8]]],
+  ].map(r=>({id:r[0],name:r[1],x:r[2],y:r[3],w:r[4],h:r[5],inAcc:r[6],outAcc:r[7],park:r[8],pts:r[9]}));
+  return {v:1,halls:H,doors,acc:A,parks:P,ramblas:R,bg:{img:null,op:.6,x:0,y:0,w:1600,h:1000,schema:true},durs:[30,45,60],tol:5};
+}
+let L,PL;
+try{L=JSON.parse(localStorage.getItem(KL))}catch(e){}
+if(!L||!L.doors)L=defLayout();
+const saveL=()=>{try{localStorage.setItem(KL,JSON.stringify(L))}catch(e){toast('No se pudo guardar el plano (imagen demasiado grande)')}};
+
+/* ---------------- geometría ---------------- */
+function slotRect(d){const w=18,h=16;switch(d.side){case'W':return{x:d.x-w-1,y:d.y-h/2,w,h};case'E':return{x:d.x+1,y:d.y-h/2,w,h};case'N':return{x:d.x-h/2,y:d.y-w-1,w:h,h:w};default:return{x:d.x-h/2,y:d.y+1,w:h,h:w}}}
+function slotC(d){const r=slotRect(d);return[r.x+r.w/2,r.y+r.h/2]}
+const inR=(p,r)=>p[0]>=r.x&&p[0]<=r.x+r.w&&p[1]>=r.y&&p[1]<=r.y+r.h;
+function ramblaOf(d){const c=slotC(d);return L.ramblas.find(r=>inR(c,r))||null}
+const doorById=id=>L.doors.find(d=>d.id===id);
+const parkById=id=>L.parks.find(p=>p.id===id);
+const ramById=id=>L.ramblas.find(r=>r.id===id);
+const accById=id=>L.acc.find(a=>a.id===id);
+function doorsOfR(r){return L.doors.filter(d=>{const x=ramblaOf(d);return x&&x.id===r.id}).sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}))}
+function centroid(pts){let x=0,y=0;pts.forEach(p=>{x+=p[0];y+=p[1]});return[x/pts.length,y/pts.length]}
+
+/* ---------------- plan (reservas) ---------------- */
+function seedPlan(){
+  const n=now(),b=[];const r5=t=>Math.round(t/(5*M))*5*M;
+  const add=(mat,emp,door,startMin,dur,st,o)=>b.push(Object.assign({id:uid(),mat,emp,door,start:r5(n+startMin*M),dur,st,tArr:null,tStart:null,tEnd:null,park:null,src:'demo'},o||{}));
+  // Rambla 2-3
+  add('4821KLM','Printek Iberia','3.3',-50,45,'puerta',{tArr:n-58*M,tStart:n-48*M}); // excedido
+  add('GH512PL','Atelier Lumen','3.3',-5,30,'parking',{tArr:n-14*M,park:'P21'});
+  add('1093HBT','Kromo Inks','2.11',-20,60,'puerta',{tArr:n-25*M,tStart:n-21*M});
+  add('AA12BC','Tecido Norte','2.11',40,30,'prog');
+  add('VX892K','Nordlys Signage','3.5',-35,45,'fin',{tArr:n-40*M,tStart:n-35*M,tEnd:n-12*M,early:18});
+  add('BX77FT','Imprim Ouest','3.5',10,30,'parking',{tArr:n-8*M,park:'P21'});
+  add('KT204P','Druk Poznań','2.13',5,30,'prog');
+  add('MI7781ZZ','Stampa Milano','3.1',-10,45,'parking',{tArr:n-3*M,park:'P21'});
+  add('ZZ1020','Serigrafía Ebro','2.9',25,60,'prog');
+  for(let i=0;i<4;i++)add('P21X'+i,'Expositor '+(i+1),'3.'+(6+i%3),60+i*30,30,'parking',{tArr:n-(30-i*5)*M,park:'P21'});
+  // Rambla 3-4
+  add('FL482TR','Grafica Adriatica','3.10',-30,30,'puerta',{tArr:n-38*M,tStart:n-29*M});
+  add('3345GHT','Digital Sur','3.10',5,45,'parking',{tArr:n-20*M,park:'P317'});
+  add('ZU55RT','Folien Werk','4.3',-15,30,'puerta',{tArr:n-17*M,tStart:n-12*M});
+  add('9921MNB','Serigrafía Norte','3.17',15,60,'prog');
+  add('6612LLC','Textil Print BCN','4.5',-90,60,'fin',{tArr:n-95*M,tStart:n-88*M,tEnd:n-25*M});
+  add('HHKL920','Grafikum','4.1',30,45,'prog');
+  // Otras
+  add('5502JKF','Vallès Graphics','5.5',-10,30,'puerta',{tArr:n-15*M,tStart:n-9*M});
+  add('1187KPR','Cartelería Norte','7.2',20,45,'prog');
+  add('MAB4417','Rheinpress GmbH','6.3',-40,60,'puerta',{tArr:n-45*M,tStart:n-38*M});
+  add('7310LZD','Atlas Display','8.2',35,30,'prog');
+  return {bk:b,log:[]};
+}
+try{PL=JSON.parse(localStorage.getItem(KP))}catch(e){}
+if(!PL||!PL.bk)PL=seedPlan();
+const saveP=()=>{try{localStorage.setItem(KP,JSON.stringify(PL))}catch(e){}};
+const active=b=>b.st!=='fin'&&b.st!=='cancel';
+const bkOfDoor=id=>PL.bk.filter(b=>b.door===id&&b.st!=='cancel').sort((a,b)=>a.start-b.start);
+const cur=id=>PL.bk.find(b=>b.door===id&&b.st==='puerta');
+const parkCount=pid=>PL.bk.filter(b=>b.st==='parking'&&b.park===pid).length;
+function log(t){PL.log.unshift({t:now(),txt:t});PL.log=PL.log.slice(0,80)}
+
+/* proyección en cascada por puerta: inicio/fin previstos y retraso arrastrado */
+function project(doorId){
+  const out={};let prevEnd=-Infinity;const n=now();
+  bkOfDoor(doorId).forEach(b=>{
+    if(b.st==='fin'){out[b.id]={ps:b.tStart||b.start,pe:b.tEnd,delay:0};return}
+    let ps,pe;
+    if(b.st==='puerta'){ps=b.tStart;pe=Math.max(b.tStart+b.dur*M,n)}
+    else{ps=Math.max(b.start,prevEnd,b.st==='prog'?b.start:n>b.start?n:b.start);pe=ps+b.dur*M}
+    prevEnd=Math.max(prevEnd,pe);out[b.id]={ps,pe,delay:Math.max(0,mm(ps-b.start))};
+  });
+  return out;
+}
+function doorState(d){
+  const c=cur(d.id),n=now();
+  if(c)return n>c.tStart+c.dur*M?'over':'busy';
+  const lastFin=bkOfDoor(d.id).filter(b=>b.st==='fin'&&b.early>0&&b.tStart+b.dur*M>n).pop();
+  if(lastFin)return'early';
+  const nx=bkOfDoor(d.id).find(b=>active(b)&&b.start>=n-L.tol*M);
+  if(nx&&nx.start-n<=30*M)return'soon';
+  return'free';
+}
+function arrTag(b){const tol=L.tol;
+  if(b.tArr){const d=mm(b.tArr-b.start);return d<-tol?['t-early','Llegó '+(-d)+'′ antes']:d>tol?['t-late','Llegó '+d+'′ tarde']:['t-ok','Puntual']}
+  const late=mm(now()-b.start);if(b.st==='prog'&&late>tol)return['t-late','Sin llegar +'+late+'′'];return null}
+function doorTag(b){
+  if(b.st==='puerta'){const r=mm(b.tStart+b.dur*M-now());return r>=0?['t-ok','Quedan '+r+'′']:['t-late','Excede '+(-r)+'′']}
+  if(b.st==='fin'&&b.tStart){const d=mm(b.tEnd-(b.tStart+b.dur*M));return d<-1?['t-early','Terminó '+(-d)+'′ antes']:d>1?['t-late','Terminó '+d+'′ tarde']:['t-ok','En tiempo']}
+  return null}
+const T=t=>t?'<span class="tag '+t[0]+'">'+t[1]+'</span>':'';
+const STN={prog:'Programado',parking:'En parking',puerta:'En puerta',fin:'Finalizado',cancel:'Cancelado'};
+const STC={prog:'c-prog',parking:'c-park',puerta:'c-door',fin:'c-fin',cancel:'c-prog'};
+
+/* ---------------- acciones ---------------- */
+function rOfBk(b){const d=doorById(b.door);return d?ramblaOf(d):null}
+function arrive(id){const b=PL.bk.find(x=>x.id===id);if(!b)return;const r=rOfBk(b);let pid=r&&r.park||'SOT';const p=parkById(pid);
+  if(p&&parkCount(pid)>=p.cap){const alt=L.parks.find(q=>q.id!==pid&&parkCount(q.id)<q.cap);if(!alt){toast('Todos los parkings están llenos');return}toast(p.name+' lleno ('+p.cap+') → '+alt.name);pid=alt.id}
+  b.st='parking';b.tArr=now();b.park=pid;log(b.mat+' llega · '+(parkById(pid)||{}).name);commit()}
+function toDoor(id,doorId){const b=PL.bk.find(x=>x.id===id);if(!b)return;const dId=doorId||b.door;const c=cur(dId);
+  if(c&&c.id!==b.id){toast('Puerta '+dId+' ocupada por '+c.mat);return}
+  if(doorId&&doorId!==b.door){log(b.mat+' cambia '+b.door+' → '+doorId);b.door=doorId}
+  if(!b.tArr)b.tArr=now();b.st='puerta';b.tStart=now();b.park=null;log(b.mat+' entra a puerta '+b.door);commit()}
+function finish(id){const b=PL.bk.find(x=>x.id===id);if(!b)return;b.st='fin';b.tEnd=now();const gap=mm(b.tStart+b.dur*M-b.tEnd);b.early=gap>1?gap:0;
+  log(b.mat+' termina en '+b.door+(gap>1?' · '+gap+'′ antes':gap<-1?' · '+(-gap)+'′ tarde':''));commit();
+  if(gap>1){sel={k:'door',id:b.door};renderSide();toast('Puerta '+b.door+' libre '+gap+'′ antes: elige qué adelantar')}}
+function extend(id,m){const b=PL.bk.find(x=>x.id===id);if(!b)return;b.dur+=m;log(b.mat+' amplía +'+m+'′');commit()}
+function cancel(id){const b=PL.bk.find(x=>x.id===id);if(!b||!confirm('¿Cancelar la reserva de '+b.mat+'?'))return;b.st='cancel';log(b.mat+' cancelado');commit()}
+/* candidatos para ocupar el hueco de una puerta que se libera antes */
+function candidates(doorId){const d=doorById(doorId),r=ramblaOf(d);const n=now();
+  const same=bkOfDoor(doorId).filter(b=>b.st==='parking'||b.st==='prog'&&b.start>n);
+  const rm=r?PL.bk.filter(b=>b.st==='parking'&&b.door!==doorId&&(()=>{const x=rOfBk(b);return x&&x.id===r.id})()):[];
+  const list=[...same.filter(b=>b.st==='parking'),...rm,...same.filter(b=>b.st==='prog')];
+  const seen={};return list.filter(b=>!seen[b.id]&&(seen[b.id]=1)).slice(0,6)}
+function nextFree(doorId,from,dur){let t=from;const pr=project(doorId);
+  const bl=bkOfDoor(doorId).filter(active).map(b=>[pr[b.id].ps,pr[b.id].pe]).sort((a,b)=>a[0]-b[0]);
+  for(const [s,e] of bl){if(t+dur*M<=s)return t;if(e>t)t=e}return t}
+function addBk(o){const b=Object.assign({id:uid(),st:'prog',tArr:null,tStart:null,tEnd:null,park:null,src:'manual'},o);b.mat=normP(b.mat);PL.bk.push(b);log(b.mat+' reservado '+b.door+' '+hhmm(b.start)+' · '+b.dur+'′');commit();return b}
+
+/* ---------------- estado de UI ---------------- */
+let sel=null;       // {k:'door'|'park'|'bk'|'ram'|'acc'|'new'|'cfg'...,id}
+let MODE='op',TOOL='move',draft=[];
+let VB={x:0,y:0,w:1600,h:1000};
+let gR='R23';
+
+/* ---------------- render mapa ---------------- */
+function rMap(){
+  const s=[],ed=MODE==='cfg';
+  if(L.bg.img)s.push('<image href="'+L.bg.img+'" x="'+L.bg.x+'" y="'+L.bg.y+'" width="'+L.bg.w+'" height="'+L.bg.h+'" opacity="'+L.bg.op+'" preserveAspectRatio="none"/>');
+  const sch=L.bg.schema||!L.bg.img;
+  if(sch){
+    s.push('<path class="road" d="M20 40 H1580 V975 H20 Z"/>');
+    L.ramblas.forEach(r=>s.push('<rect class="rb'+(sel&&sel.k==='ram'&&sel.id===r.id||gR===r.id&&!sel?' sel':'')+'" data-k="ram" data-id="'+r.id+'" x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'"/>'));
+    L.halls.forEach(h=>s.push('<g class="hall"><rect x="'+h.x+'" y="'+h.y+'" width="'+h.w+'" height="'+h.h+'" rx="2"/><text x="'+(h.x+h.w/2)+'" y="'+(h.y+h.h/2+Math.min(h.w,h.h)*.18)+'" text-anchor="middle" font-size="'+Math.min(110,Math.min(h.w,h.h)*.55)+'">'+esc(h.label)+'</text></g>'));
+    s.push('<path class="walk" d="M10 320 C 300 340, 900 310, 1270 320 S 1500 320 1595 320"/><text x="640" y="324" font-family="var(--fm)" font-size="11" fill="#5f7184">PASARELA</text>');
+    L.ramblas.forEach(r=>{const v=r.h>r.w;s.push('<text class="rbt" x="'+(r.x+r.w/2)+'" y="'+(r.y+r.h/2)+'" text-anchor="middle" '+(v?'transform="rotate(-90 '+(r.x+r.w/2)+' '+(r.y+r.h/2)+')"':'')+'>'+esc(r.name.toUpperCase())+'</text>')});
+  }
+  // ruta resaltada
+  const R=sel&&sel.k==='ram'?ramById(sel.id):sel&&sel.k==='bk'?rOfBk(PL.bk.find(b=>b.id===sel.id)||{}):sel&&sel.k==='door'?ramblaOf(doorById(sel.id)||{x:-9,y:-9,side:'W'}):ramById(gR);
+  if(R&&R.pts&&R.pts.length>1){const pts=R.pts;let k=0,best=-1;const docks=doorsOfR(R).map(slotC);
+    for(let i=0;i<pts.length;i++){if(docks.some(c=>Math.hypot(c[0]-pts[i][0],c[1]-pts[i][1])<400)&&inR(pts[i],{x:R.x-5,y:R.y-5,w:R.w+10,h:R.h+10})){best=i}}
+    k=best<0?Math.floor(pts.length/2):best;
+    const pin=pts.slice(0,k+1),pout=pts.slice(k);
+    s.push('<polyline class="route in" points="'+pin.map(p=>p.join(',')).join(' ')+'"/>');
+    if(pout.length>1)s.push('<polyline class="route out" points="'+pout.map(p=>p.join(',')).join(' ')+'"/>');
+    if(ed)pts.forEach((p,i)=>s.push('<circle class="handle" data-k="rpt" data-id="'+R.id+'" data-i="'+i+'" cx="'+p[0]+'" cy="'+p[1]+'" r="7"/>'));
+  }
+  // parkings
+  L.parks.forEach(p=>{const n=parkCount(p.id),c=centroid(p.pts);s.push('<g class="park'+(n>=p.cap?' full':'')+'"><polygon data-k="park" data-id="'+p.id+'" points="'+p.pts.map(q=>q.join(',')).join(' ')+'"/><text x="'+c[0]+'" y="'+(c[1]-4)+'" text-anchor="middle">'+n+'/'+p.cap+'</text><text x="'+c[0]+'" y="'+(c[1]+12)+'" text-anchor="middle" style="font-size:9px;font-weight:500">'+esc(p.name)+'</text></g>');
+    if(ed&&sel&&sel.k==='park'&&sel.id===p.id)p.pts.forEach((q,i)=>s.push('<circle class="handle" data-k="ppt" data-id="'+p.id+'" data-i="'+i+'" cx="'+q[0]+'" cy="'+q[1]+'" r="7"/>'))});
+  // puertas
+  L.doors.forEach(d=>{const r=slotRect(d),st=doorState(d),c=cur(d.id);const isSel=sel&&((sel.k==='door'&&sel.id===d.id)||(sel.k==='bk'&&(PL.bk.find(b=>b.id===sel.id)||{}).door===d.id));
+    s.push('<g class="slot s-'+st+(isSel?' sel':'')+'" data-k="door" data-id="'+esc(d.id)+'"><rect x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'" rx="2"/><title>Puerta '+esc(d.id)+(c?' · '+esc(c.mat):'')+'</title><text class="did" x="'+(r.x+r.w/2)+'" y="'+(r.y+r.h/2+3)+'" text-anchor="middle">'+esc(d.id.split('.')[1]||d.id)+'</text></g>')});
+  // accesos
+  L.acc.forEach(a=>{const col=a.inn&&a.out?'#6d28d9':a.inn?'#16a34a':'#dc2626';const lb=(a.inn?'Entrada':'')+(a.inn&&a.out?' / ':'')+(a.out?'Salida':'');
+    s.push('<g class="acc" data-k="acc" data-id="'+a.id+'"><circle cx="'+a.x+'" cy="'+a.y+'" r="15" fill="'+col+'"/><text x="'+a.x+'" y="'+(a.y+5)+'" text-anchor="middle">'+esc(a.id)+'</text><text class="lb" x="'+(a.x+(a.x>1500?-20:20))+'" y="'+(a.y+(a.y<30?22:a.y>970?-18:4))+'" text-anchor="'+(a.x>1500?'end':'start')+'">Acceso '+esc(a.id)+' · '+lb+'</text></g>')});
+  if(ed&&TOOL==='park'&&draft.length)s.push('<polyline points="'+draft.map(p=>p.join(',')).join(' ')+'" fill="none" stroke="#ffb703" stroke-width="3"/>');
+  const svg=$('#svg');svg.innerHTML=s.join('');svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);svg.dataset.z=VB.w>1100?'lo':'hi';svg.classList.toggle('edit',ed);
+}
+
+/* ---------------- panel ---------------- */
+const rowBk=b=>{const d=doorById(b.door),r=d&&ramblaOf(d);return '<button class="row'+(sel&&sel.k==='bk'&&sel.id===b.id?' sel':'')+'" data-bk="'+b.id+'"><span class="mono">'+esc(b.mat)+'</span><span class="chip '+STC[b.st]+'">'+STN[b.st]+'</span><span class="s">'+esc(b.emp)+' · Puerta '+esc(b.door)+(r?' · '+esc(r.name):'')+' · '+hhmm(b.start)+' · '+b.dur+'′ '+T(arrTag(b))+' '+T(doorTag(b))+'</span></button>'};
+function panelNow(){
+  const n=now(),act=PL.bk.filter(active);
+  const k=st=>PL.bk.filter(b=>b.st===st).length;
+  const al=[];
+  L.doors.forEach(d=>{const c=cur(d.id);if(c&&n>c.tStart+c.dur*M){const pr=project(d.id),aff=bkOfDoor(d.id).filter(b=>active(b)&&b.st!=='puerta'&&pr[b.id].delay>0).length;
+    al.push('<div class="al"><span class="t">Puerta '+esc(d.id)+' excede '+mm(n-c.tStart-c.dur*M)+'′ · '+esc(c.mat)+'</span><span class="mute">'+(aff?aff+' reserva(s) siguientes retrasadas':'Sin reservas detrás')+'</span><div class="acts"><button class="btn sm p" data-fin="'+c.id+'">Finalizar</button><button class="btn sm" data-ext="'+c.id+'">+15′</button><button class="btn sm" data-door="'+esc(d.id)+'">Ver puerta</button></div></div>')}});
+  L.doors.forEach(d=>{if(doorState(d)==='early'){const f=bkOfDoor(d.id).filter(b=>b.st==='fin'&&b.early>0).pop();const left=mm(f.tStart+f.dur*M-n);const cs=candidates(d.id);
+    al.push('<div class="al early"><span class="t">Puerta '+esc(d.id)+' libre · '+left+'′ de tiempo extra</span>'+(cs.length?'<div class="acts">'+cs.slice(0,3).map(b=>'<button class="btn sm p" data-adv="'+b.id+'" data-to="'+esc(d.id)+'">Adelantar '+esc(b.mat)+'</button>').join('')+'</div>':'<span class="mute">Nadie esperando en esta rambla</span>')+'</div>')}});
+  L.parks.forEach(p=>{const c=parkCount(p.id);if(c>=p.cap)al.push('<div class="al park"><span class="t">'+esc(p.name)+' lleno '+c+'/'+p.cap+'</span><span class="mute">Las nuevas llegadas se desvían al siguiente parking libre</span></div>')});
+  act.filter(b=>b.st==='prog'&&mm(n-b.start)>L.tol).forEach(b=>al.push('<div class="al park"><span class="t">'+esc(b.mat)+' sin llegar · +'+mm(n-b.start)+'′</span><div class="acts"><button class="btn sm" data-arr="'+b.id+'">Ha llegado</button><button class="btn sm" data-bk="'+b.id+'">Ficha</button></div></div>'));
+  const next=act.filter(b=>b.st!=='puerta').sort((a,b)=>a.start-b.start).slice(0,8);
+  return ['Ahora en el recinto','<div class="kp"><div class="k"><b class="c-prog">'+k('prog')+'</b><span>Programados</span></div><div class="k"><b class="c-park">'+k('parking')+'</b><span>En parking</span></div><div class="k"><b class="c-door">'+k('puerta')+'</b><span>En puerta</span></div><div class="k"><b class="c-fin">'+k('fin')+'</b><span>Finalizados</span></div></div>'+
+   '<div class="sec">Parkings de espera</div>'+L.parks.map(p=>{const c=parkCount(p.id);return '<button class="row" data-park="'+p.id+'"><span>'+esc(p.name)+'</span><b class="mono '+(c>=p.cap?'c-warn':'')+'">'+c+'/'+p.cap+'</b><span class="s"><span class="bar'+(c>=p.cap?' over':'')+'" style="display:block"><i style="width:'+Math.min(100,c/p.cap*100)+'%;background:'+(c>=p.cap?'var(--warn)':'var(--park)')+'"></i></span></span></button>'}).join('')+
+   '<div class="sec">Avisos · '+al.length+'</div>'+(al.join('')||'<p class="mute" style="margin:0">Todo en hora</p>')+
+   '<div class="sec">Próximos</div>'+next.map(rowBk).join('')];
+}
+function panelDoor(id){
+  const d=doorById(id);if(!d)return panelNow();const r=ramblaOf(d),c=cur(id),pr=project(id),n=now(),list=bkOfDoor(id);
+  let h='<dl class="d"><dt>Pabellón</dt><dd>'+esc((L.halls.find(x=>x.id===d.hall)||{}).label||d.hall)+'</dd><dt>Rambla</dt><dd>'+(r?esc(r.name):'—')+'</dd>'+(r?'<dt>Entra / sale</dt><dd>Acceso '+esc(r.inAcc)+' → Acceso '+esc(r.outAcc)+'</dd><dt>Parking</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+'</dd>':'')+'</dl>';
+  if(c){const p=Math.min(1,(n-c.tStart)/(c.dur*M)),over=n>c.tStart+c.dur*M;
+    h+='<div class="sec">Descargando</div><div class="al'+(over?'':' early')+'" style="border-left-color:'+(over?'var(--warn)':'var(--door)')+'"><span class="t mono" style="font-size:18px">'+esc(c.mat)+'</span><span>'+esc(c.emp)+' · desde '+hhmm(c.tStart)+' · '+c.dur+'′ '+T(doorTag(c))+'</span><span class="bar'+(over?' over':'')+'"><i style="width:'+p*100+'%"></i></span><div class="acts"><button class="btn sm p" data-fin="'+c.id+'">Finalizar descarga</button><button class="btn sm" data-ext="'+c.id+'">+15′</button><button class="btn sm" data-bk="'+c.id+'">Ficha</button></div></div>'}
+  else{const st=doorState(d);if(st==='early'){const cs=candidates(id);h+='<div class="al early"><span class="t">Libre antes de hora</span>'+(cs.length?'<span class="mute">Adelanta un vehículo que ya espera:</span><div class="acts">'+cs.map(b=>'<button class="btn sm p" data-adv="'+b.id+'" data-to="'+esc(id)+'">'+esc(b.mat)+' · '+STN[b.st]+'</button>').join('')+'</div>':'<span class="mute">Nadie esperando en esta rambla</span>')+'</div>'}
+    else h+='<p class="mute" style="margin:0">Puerta libre.</p>'}
+  h+='<div class="acts"><button class="btn p" data-newat="'+esc(id)+'">+ Reservar esta puerta</button></div>';
+  h+='<div class="sec">Agenda de la puerta</div>'+(list.filter(b=>b.st!=='fin'||n-b.tEnd<3*3600*M).map(b=>{const p=pr[b.id];return rowBk(b).replace('</span></button>',(p&&p.delay&&b.st!=='fin'&&b.st!=='puerta'?' <span class="tag t-late">Prevista '+hhmm(p.ps)+' (+'+p.delay+'′)</span>':'')+'</span></button>')}).join('')||'<p class="mute" style="margin:0">Sin reservas</p>');
+  return ['Puerta '+esc(id),h];
+}
+function panelPark(id){const p=parkById(id);if(!p)return panelNow();const list=PL.bk.filter(b=>b.st==='parking'&&b.park===id).sort((a,b)=>a.tArr-b.tArr);
+  return [esc(p.name)+' · '+list.length+'/'+p.cap,'<div class="bar'+(list.length>=p.cap?' over':'')+'"><i style="width:'+Math.min(100,list.length/p.cap*100)+'%;background:'+(list.length>=p.cap?'var(--warn)':'var(--park)')+'"></i></div>'+
+   (list.map(b=>{const free=!cur(b.door);return '<div class="row"><span class="mono">'+esc(b.mat)+'</span><span class="mute">'+mm(now()-b.tArr)+'′ esperando</span><span class="s">'+esc(b.emp)+' · Puerta '+esc(b.door)+' a las '+hhmm(b.start)+' '+T(arrTag(b))+'</span><span class="acts" style="grid-column:1/-1"><button class="btn sm p" data-call="'+b.id+'" '+(free?'':'disabled')+'>Llamar a '+esc(b.door)+(free?'':' (ocupada)')+'</button><button class="btn sm" data-bk="'+b.id+'">Ficha</button></span></div>'}).join('')||'<p class="mute" style="margin:0">Vacío</p>')];}
+function panelRam(id){const r=ramById(id);if(!r)return panelNow();const ds=doorsOfR(r);
+  return [esc(r.name),'<dl class="d"><dt>Entrada</dt><dd>Acceso '+esc(r.inAcc)+'</dd><dt>Salida</dt><dd>Acceso '+esc(r.outAcc)+'</dd><dt>Parking de espera</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+' · '+parkCount(r.park)+'/'+((parkById(r.park)||{}).cap||0)+'</dd><dt>Puertas</dt><dd>'+ds.length+'</dd></dl>'+
+   '<div class="sec">Puertas</div>'+ds.map(d=>{const c=cur(d.id),st=doorState(d);return '<button class="row" data-door="'+esc(d.id)+'"><span class="mono">'+esc(d.id)+'</span><span class="chip '+({free:'c-prog',soon:'c-park',busy:'c-door',over:'c-warn',early:'c-early'})[st]+'">'+({free:'Libre',soon:'Llega pronto',busy:'Descargando',over:'Excedido',early:'Libre antes'})[st]+'</span><span class="s">'+(c?esc(c.mat)+' · '+esc(c.emp):'')+'</span></button>'}).join('')];}
+function panelBk(id){const b=PL.bk.find(x=>x.id===id);if(!b)return panelNow();const d=doorById(b.door),r=d&&ramblaOf(d),pr=project(b.door)[b.id]||{};
+  let a='';
+  if(b.st==='prog')a='<button class="btn p" data-arr="'+b.id+'">Ha llegado → parking</button><button class="btn" data-call="'+b.id+'" '+(cur(b.door)?'disabled':'')+'>Directo a puerta</button>';
+  if(b.st==='parking')a='<button class="btn p" data-call="'+b.id+'" '+(cur(b.door)?'disabled':'')+'>Llamar a puerta '+esc(b.door)+'</button>';
+  if(b.st==='puerta')a='<button class="btn p" data-fin="'+b.id+'">Finalizar descarga</button><button class="btn" data-ext="'+b.id+'">+15′</button>';
+  if(active(b))a+='<button class="btn d" data-cancel="'+b.id+'">Cancelar</button>';
+  const doors=r?doorsOfR(r):L.doors;
+  return ['<span class="mono">'+esc(b.mat)+'</span> <span class="chip '+STC[b.st]+'">'+STN[b.st]+'</span>',
+   '<dl class="d"><dt>Empresa</dt><dd>'+esc(b.emp)+'</dd><dt>Puerta</dt><dd>'+esc(b.door)+' · '+(r?esc(r.name):'')+'</dd><dt>Slot</dt><dd>'+hhmm(b.start)+' – '+hhmm(b.start+b.dur*M)+' ('+b.dur+'′)</dd>'+(pr.delay&&active(b)&&b.st!=='puerta'?'<dt>Previsión</dt><dd class="c-warn">'+hhmm(pr.ps)+' (+'+pr.delay+'′ por la puerta)</dd>':'')+
+   (r?'<dt>Recorrido</dt><dd>Acceso '+esc(r.inAcc)+' → '+esc((parkById(b.park||r.park)||{}).name||'')+' → '+esc(b.door)+' → Acceso '+esc(r.outAcc)+'</dd>':'')+
+   '<dt>Llegada</dt><dd>'+hhmm(b.tArr)+' '+T(arrTag(b))+'</dd><dt>En puerta</dt><dd>'+hhmm(b.tStart)+(b.tEnd?' – '+hhmm(b.tEnd):'')+' '+T(doorTag(b))+'</dd></dl>'+
+   '<div class="acts">'+a+'</div>'+
+   (active(b)?'<div class="sec">Cambiar</div><div class="grid2"><label class="f">Puerta<select class="in" id="cdoor">'+doors.map(x=>'<option'+(x.id===b.door?' selected':'')+'>'+esc(x.id)+'</option>').join('')+'</select></label><label class="f">Hora<input class="in" type="time" id="ctime" value="'+hhmm(b.start)+'"></label></div><div class="durs">'+L.durs.map(v=>'<button data-cdur="'+v+'" aria-pressed="'+(b.dur===v)+'">'+v+'′</button>').join('')+'</div><div class="acts"><button class="btn" data-save="'+b.id+'">Guardar cambios</button></div>':'')];}
+let NF={mat:'',emp:'',door:'',dur:30,time:''};
+function panelNew(){const ds=L.doors.map(d=>d.id).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  if(!NF.door)NF.door='3.10';
+  const nf=nextFree(NF.door,now(),NF.dur);if(!NF.time)NF.time=hhmm(Math.ceil(nf/(5*M))*5*M);
+  const d=doorById(NF.door),r=d&&ramblaOf(d);
+  return ['Nueva reserva','<label class="f">Matrícula<input class="in mono" id="nmat" value="'+esc(NF.mat)+'" style="font-size:18px;text-transform:uppercase" autocomplete="off"></label><label class="f">Empresa<input class="in" id="nemp" value="'+esc(NF.emp)+'"></label>'+
+   '<div class="grid2"><label class="f">Puerta<select class="in" id="ndoor">'+ds.map(x=>'<option'+(x===NF.door?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></label><label class="f">Hora de slot<input class="in" type="time" id="ntime" value="'+NF.time+'"></label></div>'+
+   '<div class="f" style="font-size:12px;font-weight:600;color:var(--mute)">Duración</div><div class="durs">'+L.durs.map(v=>'<button data-ndur="'+v+'" aria-pressed="'+(NF.dur===v)+'">'+v+'′</button>').join('')+'<button data-ndur="90" aria-pressed="'+(NF.dur===90)+'">90′</button></div>'+
+   '<p class="mute" style="margin:0;font-size:13px">'+(r?esc(r.name)+' · entra por acceso '+esc(r.inAcc)+', sale por '+esc(r.outAcc)+' · espera en '+esc((parkById(r.park)||{}).name||'')+'. ':'')+'Primer hueco libre: <b>'+hhmm(nf)+'</b> <button class="btn sm" id="nusefree">Usar</button></p>'+
+   '<div class="acts"><button class="btn p" id="nsave">Guardar reserva</button><button class="btn q" data-back>Cancelar</button></div>'];}
+function panelCfg(){
+  const it=sel&&sel.k!=='cfg'?sel:null;let props='';
+  if(it&&it.k==='door'){const d=doorById(it.id);if(d)props='<div class="sec">Puerta seleccionada</div><div class="grid2"><label class="f">Número<input class="in" id="pd-id" value="'+esc(d.id)+'"></label><label class="f">Pabellón<select class="in" id="pd-hall">'+L.halls.map(h=>'<option value="'+h.id+'"'+(h.id===d.hall?' selected':'')+'>'+esc(h.label)+'</option>').join('')+'</select></label><label class="f">Lado del slot<select class="in" id="pd-side">'+[['W','Oeste'],['E','Este'],['N','Norte'],['S','Sur']].map(o=>'<option value="'+o[0]+'"'+(o[0]===d.side?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label></div><div class="acts"><button class="btn" id="pd-save">Aplicar</button><button class="btn d" id="pd-del">Borrar puerta</button></div>'}
+  if(it&&it.k==='park'){const p=parkById(it.id);if(p)props='<div class="sec">Parking seleccionado</div><div class="grid2"><label class="f">Nombre<input class="in" id="pp-name" value="'+esc(p.name)+'"></label><label class="f">Capacidad (camiones)<input class="in" type="number" min="1" id="pp-cap" value="'+p.cap+'"></label></div><p class="mute" style="margin:0;font-size:12px">Arrastra los vértices amarillos para ajustar la forma.</p><div class="acts"><button class="btn" id="pp-save">Aplicar</button><button class="btn d" id="pp-del">Borrar parking</button></div>'}
+  if(it&&it.k==='acc'){const a=accById(it.id);if(a)props='<div class="sec">Acceso '+esc(a.id)+'</div><div class="acts"><label class="btn sm"><input type="checkbox" id="pa-in"'+(a.inn?' checked':'')+'> Entrada</label><label class="btn sm"><input type="checkbox" id="pa-out"'+(a.out?' checked':'')+'> Salida</label><button class="btn" id="pa-save">Aplicar</button></div>'}
+  if(it&&it.k==='ram'){const r=ramById(it.id);if(r)props='<div class="sec">'+esc(r.name)+' · mapa de circulación</div><div class="grid2"><label class="f">Nombre<input class="in" id="pr-name" value="'+esc(r.name)+'"></label><label class="f">Parking de espera<select class="in" id="pr-park">'+L.parks.map(p=>'<option value="'+p.id+'"'+(p.id===r.park?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></label><label class="f">Entra por<select class="in" id="pr-in">'+L.acc.filter(a=>a.inn).map(a=>'<option'+(a.id===r.inAcc?' selected':'')+'>'+a.id+'</option>').join('')+'</select></label><label class="f">Sale por<select class="in" id="pr-out">'+L.acc.filter(a=>a.out).map(a=>'<option'+(a.id===r.outAcc?' selected':'')+'>'+a.id+'</option>').join('')+'</select></label></div><div class="acts"><button class="btn" id="pr-save">Aplicar</button><button class="btn" id="pr-draw">'+(TOOL==='route'?'Terminar ruta':'Redibujar ruta')+'</button></div><p class="mute" style="margin:0;font-size:12px">Ruta: verde hasta la rambla, rojo hasta la salida. Arrastra los puntos amarillos o redibújala pulsando sobre el plano.</p>'}
+  return ['Configurar plano','<p class="mute" style="margin:0;font-size:13px">Pulsa un elemento para editarlo y arrástralo para colocarlo en su sitio real.</p><div class="sec">Herramienta</div><div class="seg" style="flex-wrap:wrap">'+[['move','Mover / editar'],['door','+ Puerta'],['park','+ Parking (3 clics)']].map(t=>'<button class="btn sm" data-tool="'+t[0]+'" aria-pressed="'+(TOOL===t[0])+'">'+t[1]+'</button>').join('')+'</div>'+props+
+   '<div class="sec">Plano de fondo</div><p class="mute" style="margin:0;font-size:12px">Sube el plano oficial de montaje (PNG/JPG). Ajusta posición y transparencia y luego coloca puertas, accesos y parkings encima.</p><div class="acts"><button class="btn sm" id="bg-up">Subir imagen</button>'+(L.bg.img?'<button class="btn sm d" id="bg-del">Quitar imagen</button>':'')+'<label class="btn sm"><input type="checkbox" id="bg-sch"'+(L.bg.schema?' checked':'')+'> Mostrar esquema</label></div>'+
+   (L.bg.img?'<div class="grid2"><label class="f">Transparencia<input type="range" min="0.1" max="1" step="0.05" id="bg-op" value="'+L.bg.op+'"></label><label class="f">X<input class="in" type="number" id="bg-x" value="'+L.bg.x+'"></label><label class="f">Y<input class="in" type="number" id="bg-y" value="'+L.bg.y+'"></label><label class="f">Ancho<input class="in" type="number" id="bg-w" value="'+L.bg.w+'"></label><label class="f">Alto<input class="in" type="number" id="bg-h" value="'+L.bg.h+'"></label></div><div class="acts"><button class="btn sm" id="bg-apply">Aplicar posición</button></div>':'')+
+   '<div class="sec">Tiempos</div><div class="grid2"><label class="f">Duraciones (min, separadas por coma)<input class="in" id="t-durs" value="'+L.durs.join(',')+'"></label><label class="f">Tolerancia puntual (±min)<input class="in" type="number" id="t-tol" value="'+L.tol+'"></label></div><div class="acts"><button class="btn sm" id="t-save">Aplicar</button></div>'+
+   '<div class="sec">Copia de seguridad del plano</div><div class="acts"><button class="btn sm" id="ex">Exportar JSON</button><button class="btn sm" id="im">Importar JSON</button><button class="btn sm d" id="rs">Restablecer plano</button></div>'];
+}
+function renderSide(){
+  let p;
+  if(MODE==='cfg')p=panelCfg();
+  else if(!sel)p=panelNow();
+  else p=({door:panelDoor,park:panelPark,ram:panelRam,bk:panelBk,new:panelNew})[sel.k](sel.id);
+  $('#side').innerHTML='<div class="ph">'+(sel&&MODE==='op'?'<button class="btn q sm" data-back aria-label="Volver">←</button>':'')+'<h2>'+p[0]+'</h2></div><div class="pb">'+p[1]+'</div>';
+  bindSide();
+}
+
+/* ---------------- gantt por rambla ---------------- */
+function rGantt(){
+  const sel2=$('#gsel');sel2.innerHTML=L.ramblas.map(r=>'<option value="'+r.id+'"'+(r.id===gR?' selected':'')+'>'+esc(r.name)+' · '+doorsOfR(r).length+' puertas</option>').join('');
+  const r=ramById(gR);if(!r){$('#gb').innerHTML='';return}
+  const ds=doorsOfR(r),n=now(),t0=n-90*M,t1=n+4*3600000,W=1000,LW=56,RH=24,H=ds.length*RH+22;
+  const X=t=>LW+(t-t0)/(t1-t0)*(W-LW);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" style="height:'+H*1.02+'px;min-width:700px" id="gsvg">';
+  for(let t=Math.ceil(t0/(30*M))*30*M;t<t1;t+=30*M){const x=X(t);s+='<line x1="'+x+'" y1="16" x2="'+x+'" y2="'+H+'" stroke="#e3e9ef"/><text x="'+x+'" y="11" font-size="10" text-anchor="middle" fill="#4a5e72" font-family="var(--fm)">'+hhmm(t)+'</text>'}
+  ds.forEach((d,i)=>{const y=18+i*RH,pr=project(d.id);
+    s+='<rect class="grow" data-gd="'+esc(d.id)+'" x="'+LW+'" y="'+y+'" width="'+(W-LW)+'" height="'+(RH-2)+'" fill="'+(i%2?'#f7f9fb':'#fff')+'"/><text x="4" y="'+(y+15)+'" font-size="12" font-weight="600" font-family="var(--fm)" fill="#0f2233" style="cursor:pointer" data-door="'+esc(d.id)+'">'+esc(d.id)+'</text>';
+    bkOfDoor(d.id).forEach(b=>{const p=pr[b.id];if(!p)return;const ps=b.start,pe=b.start+b.dur*M;if(pe<t0&&(!p.pe||p.pe<t0))return;
+      s+='<rect x="'+X(ps)+'" y="'+(y+2)+'" width="'+Math.max(2,X(pe)-X(ps))+'" height="'+(RH-6)+'" fill="none" stroke="#9aa9b8" stroke-dasharray="3 2" rx="2"/>';
+      const col=b.st==='fin'?(b.early?'#0f766e':'#047857'):b.st==='puerta'?(n>b.tStart+b.dur*M?'#b42318':'#1d4ed8'):b.st==='parking'?'#a14a06':'#7d90a3';
+      const a=Math.max(p.ps,t0),e=b.st==='fin'?b.tEnd:p.pe;
+      s+='<g data-gbk="'+b.id+'" style="cursor:pointer"><rect x="'+X(a)+'" y="'+(y+4)+'" width="'+Math.max(3,X(e)-X(a))+'" height="'+(RH-10)+'" fill="'+col+'" rx="2" opacity="'+(b.st==='prog'?.75:1)+'"/><text x="'+(X(a)+4)+'" y="'+(y+15)+'" font-size="10" fill="#fff" font-family="var(--fm)" font-weight="600">'+esc(b.mat)+(p.delay&&active(b)&&b.st!=='puerta'?' +'+p.delay+'′':'')+'</text></g>'})});
+  const xn=X(n);s+='<line x1="'+xn+'" y1="14" x2="'+xn+'" y2="'+H+'" stroke="#b42318" stroke-width="2"/></svg>';
+  $('#gb').innerHTML=s;
+  $('#gsvg').addEventListener('click',e=>{const g=e.target.closest('[data-gbk]');if(g){sel={k:'bk',id:g.dataset.gbk};MODE='op';renderAll();return}
+    const lab=e.target.closest('[data-door]');if(lab){sel={k:'door',id:lab.dataset.door};renderAll();return}
+    const row=e.target.closest('[data-gd]');if(row){const svg=$('#gsvg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+      let t=t0+(q.x-LW)/(W-LW)*(t1-t0);t=Math.round(t/(5*M))*5*M;NF={mat:'',emp:'',door:row.dataset.gd,dur:L.durs[0],time:hhmm(Math.max(t,now()))};sel={k:'new'};renderAll()}});
+}
+$('#gsel').onchange=e=>{gR=e.target.value;sel={k:'ram',id:gR};renderAll()};
+
+/* ---------------- eventos panel ---------------- */
+function bindSide(){
+  const S=$('#side'),on=(q,f)=>S.querySelectorAll(q).forEach(e=>e.onclick=()=>f(e));
+  on('[data-back]',()=>{sel=null;renderAll()});
+  on('[data-bk]',e=>{sel={k:'bk',id:e.dataset.bk};renderAll()});
+  on('[data-door]',e=>{sel={k:'door',id:e.dataset.door};renderAll()});
+  on('[data-park]',e=>{sel={k:'park',id:e.dataset.park};renderAll()});
+  on('[data-fin]',e=>finish(e.dataset.fin));
+  on('[data-ext]',e=>extend(e.dataset.ext,15));
+  on('[data-arr]',e=>arrive(e.dataset.arr));
+  on('[data-call]',e=>toDoor(e.dataset.call));
+  on('[data-cancel]',e=>cancel(e.dataset.cancel));
+  on('[data-adv]',e=>{const b=PL.bk.find(x=>x.id===e.dataset.adv);if(!b)return;const to=e.dataset.to;
+    if(b.st==='prog'){b.start=now();if(b.door!==to){log(b.mat+' cambia '+b.door+' → '+to);b.door=to}log(b.mat+' adelantado a '+to);commit();toast(b.mat+' adelantado: avisar para que entre a '+to)}
+    else{toDoor(b.id,to);toast(b.mat+' adelantado a puerta '+to)}});
+  on('[data-newat]',e=>{NF={mat:'',emp:'',door:e.dataset.newat,dur:L.durs[0],time:''};sel={k:'new'};renderAll()});
+  on('[data-cdur]',e=>{S.querySelectorAll('[data-cdur]').forEach(x=>x.setAttribute('aria-pressed',String(x===e)))});
+  on('[data-save]',e=>{const b=PL.bk.find(x=>x.id===e.dataset.save);const dd=$('#cdoor').value,tm=$('#ctime').value.split(':'),du=+((S.querySelector('[data-cdur][aria-pressed="true"]')||{}).dataset||{}).cdur||b.dur;
+    const st=new Date(b.start);st.setHours(+tm[0],+tm[1],0,0);b.door=dd;b.start=st.getTime();b.dur=du;log(b.mat+' modificado → '+dd+' '+hhmm(b.start)+' '+du+'′');commit();toast('Guardado')});
+  on('[data-ndur]',e=>{NF.dur=+e.dataset.ndur;NF.time='';readNF();renderSide()});
+  const nd=$('#ndoor');if(nd)nd.onchange=()=>{readNF();NF.door=nd.value;NF.time='';renderSide();renderMap()};
+  const uf=$('#nusefree');if(uf)uf.onclick=()=>{readNF();NF.time='';renderSide()};
+  const ns=$('#nsave');if(ns)ns.onclick=()=>{readNF();if(!normP(NF.mat)){toast('Falta la matrícula');return}const tm=NF.time.split(':');const d=new Date(now());d.setHours(+tm[0],+tm[1],0,0);
+    const st=d.getTime(),pr=project(NF.door);const clash=bkOfDoor(NF.door).filter(active).find(b=>{const p=pr[b.id];return st<p.pe&&st+NF.dur*M>p.ps});
+    if(clash&&!confirm('Se solapa con '+clash.mat+' en '+NF.door+'. ¿Guardar igualmente?'))return;
+    const b=addBk({mat:NF.mat,emp:NF.emp,door:NF.door,start:st,dur:NF.dur});sel={k:'bk',id:b.id};NF={mat:'',emp:'',door:NF.door,dur:NF.dur,time:''};renderAll()};
+  if(MODE==='cfg')bindCfg();
+}
+function readNF(){const g=id=>{const e=$('#'+id);return e?e.value:''};NF.mat=g('nmat')||NF.mat;NF.emp=g('nemp')||NF.emp;NF.time=g('ntime')||NF.time}
+function bindCfg(){
+  const S=$('#side'),g=id=>S.querySelector('#'+id),on=(id,f)=>{const e=g(id);if(e)e.onclick=f};
+  S.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{TOOL=b.dataset.tool;draft=[];hint();renderSide();renderMap()});
+  on('pd-save',()=>{const d=doorById(sel.id),nid=g('pd-id').value.trim();if(nid!==d.id&&doorById(nid)){toast('Ya existe la puerta '+nid);return}PL.bk.forEach(b=>{if(b.door===d.id)b.door=nid});d.id=nid;d.hall=g('pd-hall').value;d.side=g('pd-side').value;sel.id=nid;saveL();commit()});
+  on('pd-del',()=>{if(!confirm('¿Borrar la puerta '+sel.id+'? Sus reservas quedan sin puerta.'))return;L.doors=L.doors.filter(d=>d.id!==sel.id);sel=null;saveL();renderAll()});
+  on('pp-save',()=>{const p=parkById(sel.id);p.name=g('pp-name').value;p.cap=Math.max(1,+g('pp-cap').value||1);saveL();renderAll()});
+  on('pp-del',()=>{if(!confirm('¿Borrar este parking?'))return;L.parks=L.parks.filter(p=>p.id!==sel.id);sel=null;saveL();renderAll()});
+  on('pa-save',()=>{const a=accById(sel.id);a.inn=g('pa-in').checked;a.out=g('pa-out').checked;saveL();renderAll()});
+  on('pr-save',()=>{const r=ramById(sel.id);r.name=g('pr-name').value;r.park=g('pr-park').value;r.inAcc=g('pr-in').value;r.outAcc=g('pr-out').value;saveL();renderAll()});
+  on('pr-draw',()=>{if(TOOL==='route'){TOOL='move';hint();saveL();renderAll();return}TOOL='route';ramById(sel.id).pts=[];hint('Pulsa en el plano los puntos del recorrido: desde el acceso de entrada, por la rambla, hasta el acceso de salida. Pulsa “Terminar ruta” al acabar.');renderAll()});
+  on('bg-up',()=>$('#fimg').click());
+  on('bg-del',()=>{L.bg.img=null;L.bg.schema=true;saveL();renderAll()});
+  const sch=g('bg-sch');if(sch)sch.onchange=()=>{L.bg.schema=sch.checked;saveL();renderMap()};
+  const op=g('bg-op');if(op)op.oninput=()=>{L.bg.op=+op.value;saveL();renderMap()};
+  on('bg-apply',()=>{['x','y','w','h'].forEach(k=>L.bg[k]=+g('bg-'+k).value);saveL();renderMap()});
+  on('t-save',()=>{const ds=g('t-durs').value.split(',').map(x=>+x.trim()).filter(x=>x>0);if(ds.length)L.durs=ds;L.tol=Math.max(0,+g('t-tol').value||0);saveL();renderAll()});
+  on('ex',()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(L,null,1)],{type:'application/json'}));a.download='plano_granvia_'+new Date().toISOString().slice(0,10)+'.json';a.click()});
+  on('im',()=>$('#fjson').click());
+  on('rs',()=>{if(!confirm('¿Volver al plano por defecto? Se pierden tus ajustes de puertas, accesos y parkings.'))return;L=defLayout();saveL();sel=null;renderAll()});
+}
+$('#fimg').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),k=Math.min(1,2000/im.width);c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  L.bg.img=c.toDataURL('image/jpeg',.82);const ar=c.height/c.width;L.bg.x=0;L.bg.w=1600;L.bg.h=Math.round(1600*ar);L.bg.y=Math.round((1000-L.bg.h)/2);L.bg.schema=false;saveL();renderAll();toast('Plano cargado: ajusta posición y coloca los elementos')};im.src=rd.result};rd.readAsDataURL(f);e.target.value=''};
+$('#fjson').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);if(!j.doors||!j.ramblas)throw 0;L=j;saveL();renderAll();toast('Plano importado')}catch(x){toast('JSON no válido')}});e.target.value=''};
+
+/* ---------------- interacción en el mapa ---------------- */
+const svg=$('#svg');
+function svgPt(e){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return[Math.round(q.x),Math.round(q.y)]}
+let drag=null;
+svg.addEventListener('pointerdown',e=>{
+  const t=e.target.closest('[data-k]'),p=svgPt(e);
+  if(MODE==='cfg'){
+    if(TOOL==='door'&&!t){const id=prompt('Número de puerta (ej. 3.10):');if(!id)return;if(doorById(id)){toast('Ya existe');return}
+      const h=L.halls.slice().sort((a,b)=>dist(p,a)-dist(p,b))[0];const side=sideOf(p,h);L.doors.push({id,hall:h.id,side,x:side==='W'?h.x:side==='E'?h.x+h.w:p[0],y:side==='N'?h.y:side==='S'?h.y+h.h:p[1]});saveL();sel={k:'door',id};renderAll();return}
+    if(TOOL==='park'){draft.push(p);if(draft.length===3){const id='P'+uid().slice(0,4);L.parks.push({id,name:'Parking '+(L.parks.length+1),pts:draft,cap:10});draft=[];TOOL='move';hint();saveL();sel={k:'park',id};renderAll()}else renderMap();return}
+    if(TOOL==='route'&&sel&&sel.k==='ram'){ramById(sel.id).pts.push(p);renderMap();return}
+    if(t){const k=t.dataset.k,id=t.dataset.id;
+      if(k==='rpt'||k==='ppt'){drag={k,id,i:+t.dataset.i,p0:p};svg.setPointerCapture(e.pointerId);return}
+      sel={k,id};drag={k,id,p0:p,moved:false};svg.setPointerCapture(e.pointerId);renderSide();renderMap();return}
+  }else if(t){const k=t.dataset.k,id=t.dataset.id;sel={k:k==='acc'?'ram':k,id:k==='acc'?(L.ramblas.find(r=>r.inAcc===id)||{}).id:id};if(k==='ram')gR=id;if(k==='door'){const r=ramblaOf(doorById(id));if(r)gR=r.id}if(!sel.id)sel=null;renderAll();return}
+  drag={k:'pan',p0:[e.clientX,e.clientY],vb:Object.assign({},VB)};svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener('pointermove',e=>{if(!drag)return;
+  if(drag.k==='pan'){const r=svg.getBoundingClientRect(),s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);VB.x=drag.vb.x-(e.clientX-drag.p0[0])*s;VB.y=drag.vb.y-(e.clientY-drag.p0[1])*s;svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);return}
+  const p=svgPt(e),dx=p[0]-drag.p0[0],dy=p[1]-drag.p0[1];if(!dx&&!dy)return;drag.p0=p;drag.moved=true;
+  if(drag.k==='door'){const d=doorById(drag.id);if(d){if(d.side==='W'||d.side==='E')d.y+=dy;else d.x+=dx;if(e.shiftKey){d.x+=d.side==='W'||d.side==='E'?dx:0;d.y+=d.side==='N'||d.side==='S'?dy:0}}}
+  if(drag.k==='park'){const q=parkById(drag.id);q.pts=q.pts.map(v=>[v[0]+dx,v[1]+dy])}
+  if(drag.k==='acc'){const a=accById(drag.id);a.x+=dx;a.y+=dy}
+  if(drag.k==='rpt'){const r=ramById(drag.id);r.pts[drag.i]=[r.pts[drag.i][0]+dx,r.pts[drag.i][1]+dy]}
+  if(drag.k==='ppt'){const q=parkById(drag.id);q.pts[drag.i]=[q.pts[drag.i][0]+dx,q.pts[drag.i][1]+dy]}
+  renderMap();
+});
+const endDrag=()=>{if(drag&&drag.k!=='pan'){saveL();if(drag.moved)renderSide()}drag=null};
+svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);
+function dist(p,h){const cx=Math.max(h.x,Math.min(p[0],h.x+h.w)),cy=Math.max(h.y,Math.min(p[1],h.y+h.h));return Math.hypot(p[0]-cx,p[1]-cy)}
+function sideOf(p,h){const d={W:Math.abs(p[0]-h.x),E:Math.abs(p[0]-h.x-h.w),N:Math.abs(p[1]-h.y),S:Math.abs(p[1]-h.y-h.h)};return Object.keys(d).sort((a,b)=>d[a]-d[b])[0]}
+function zoom(f,cx,cy){const nw=Math.min(1600,Math.max(250,VB.w*f)),k=nw/VB.w;cx=cx==null?VB.x+VB.w/2:cx;cy=cy==null?VB.y+VB.h/2:cy;VB={x:cx-(cx-VB.x)*k,y:cy-(cy-VB.y)*k,w:nw,h:VB.h*k};renderMap()}
+svg.addEventListener('wheel',e=>{e.preventDefault();const p=svgPt(e);zoom(e.deltaY>0?1.15:1/1.15,p[0],p[1])},{passive:false});
+document.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{if(b.dataset.z==='fit'){VB={x:0,y:0,w:1600,h:1000};renderMap()}else zoom(b.dataset.z==='in'?1/1.4:1.4)});
+function hint(t){const h=$('#hint');if(t){h.textContent=t;h.hidden=false}else h.hidden=true}
+
+/* ---------------- cabecera ---------------- */
+document.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>{const v=+b.dataset.sim;OFF=v?OFF+v*M:0;renderAll()});
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{MODE=b.dataset.mode;TOOL='move';draft=[];hint(MODE==='cfg'?'Modo configuración: arrastra puertas, accesos y parkings a su sitio real. Los cambios se guardan solos.':'');if(MODE==='op')sel=null;renderAll()});
+$('#newb').onclick=()=>{MODE='op';NF={mat:'',emp:'',door:sel&&sel.k==='door'?sel.id:(NF.door||'3.10'),dur:L.durs[0],time:''};sel={k:'new'};renderAll()};
+/* Importa la agenda de hoy de BeUnifyT (solo lectura de 'cu1_local'; no modifica nada de la app principal) */
+$('#imp').onclick=()=>{let db;try{db=JSON.parse(localStorage.getItem(SRC))}catch(e){}
+  if(!db){toast('No hay datos de BeUnifyT en este navegador. Abre primero la app principal.');return}
+  const today=new Date(now()).toISOString().slice(0,10),ag=(db.agenda||[]).filter(a=>a.fecha===today&&a.matricula);
+  let n=0,sk=0;ag.forEach(a=>{if(PL.bk.some(b=>b.src==='agenda:'+a.id)){sk++;return}
+    let door=a.puertaHall&&doorById(String(a.puertaHall).replace(',','.'))?String(a.puertaHall).replace(',','.'):null;
+    const h=String(a.hall||'').split(/[,\s]/)[0];if(!door){const ds=L.doors.filter(d=>d.hall===h);door=ds.length?ds[0].id:'3.10'}
+    const tm=String(a.hora||'08:00').split(':');const d=new Date(now());d.setHours(+tm[0]||8,+tm[1]||0,0,0);
+    PL.bk.push({id:uid(),mat:normP(a.matricula),emp:a.empresa||a.expositor||'',door,start:d.getTime(),dur:L.durs[0],st:'prog',tArr:null,tStart:null,tEnd:null,park:null,src:'agenda:'+a.id});n++});
+  log('Importadas '+n+' citas de agenda');commit();toast(n?'Importadas '+n+' citas de hoy'+(sk?' ('+sk+' ya estaban)':''):'Sin citas nuevas para hoy en la agenda'+(sk?' ('+sk+' ya importadas)':''))};
+
+/* ---------------- render ---------------- */
+function renderMap(){rMap()}
+function renderAll(){$('#clock').textContent=hhmm(now());$('#sim').textContent=OFF?'SIMULACIÓN +'+mm(OFF)+'′':'';
+  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===MODE)));
+  rMap();renderSide();rGantt()}
+function commit(){saveP();renderAll()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(TOOL!=='move'){TOOL='move';draft=[];hint()}else sel=null;renderAll()}});
+renderAll();
+setInterval(()=>{const a=document.activeElement;if(drag||a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;renderAll()},20000);
+</script>
+</body>
+</html>
