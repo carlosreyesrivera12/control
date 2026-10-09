@@ -112,7 +112,7 @@ dl.d dt{color:var(--mute)}dl.d dd{margin:0;font-weight:600}
 .s-busy .did,.s-over .did{fill:#fff}
 svg[data-z="lo"] .did{display:none}
 .route{fill:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 7;opacity:.9}
-.route.in{stroke:#16a34a}.route.out{stroke:#dc2626}
+.route.in{stroke:#16a34a}.route.alt{stroke:#f59e0b;stroke-width:5;opacity:.85}.route.out{stroke:#dc2626}
 .park polygon{fill:rgba(161,74,6,.12);stroke:var(--park);stroke-width:2;stroke-dasharray:6 4;cursor:pointer}
 .park.full polygon{fill:rgba(180,35,24,.18);stroke:var(--warn)}
 .park text{font-family:var(--fm);font-size:20px;font-weight:600;fill:var(--ink);pointer-events:none}
@@ -162,7 +162,7 @@ svg[data-z="lo"] .did{display:none}
    Datos propios en localStorage (bu_mapa_layout_v1, bu_mapa_plan_v1).
    Lee (sin modificar) los datos de BeUnifyT en localStorage 'cu1_local'.
    ========================================================= */
-const KL='bu_mapa_layout_v7',KP='bu_mapa_plan_v2',SRC='cu1_local',M=60000;
+const KL='bu_mapa_layout_v8',KP='bu_mapa_plan_v2',SRC='cu1_local',M=60000;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -212,7 +212,10 @@ function defLayout(){
   const rr=(id,name,x0,y0,x1,y1,i,o,pk,pts,poly)=>{const a=V(x0,y0),b=V(x1,y1);return{id,name,x:a[0],y:a[1],w:b[0]-a[0],h:b[1]-a[1],poly:poly?poly.map(p=>V(p[0],p[1])):null,inAcc:i,outAcc:o,park:pk,pts:pts.map(p=>V(p[0],p[1]))}};
   const R=[
    rr('B','B · Rambla 1-2',430,270,466,1160,'1','4','P21',[[415,262],[447,265],[447,1138],[990,1138],[995,1178]]),
-   Object.assign(rr('C','C · Rambla 2-3',657,280,736,905,'1','4','P21',[[415,262],[447,270],[697,288],[697,890],[697,288],[447,280],[447,1030],[447,1138],[990,1138],[995,1178]]),{split:3}), // sin salida por abajo (prohibido junto a 2.19): vuelve por arriba, baja por B y sale por Gate 4
+   Object.assign(rr('C','C · Rambla 2-3',657,280,736,905,'1','4','P21',[[415,262],[447,270],[697,288],[697,890]]),{split:3,exits:[ // sin salida por abajo (prohibido junto a 2.19)
+     {name:'Vuelta por 2.1 → B → Gate 4',out:'4',pts:[[697,890],[697,288],[447,280],[447,1030],[447,1138],[990,1138],[995,1178]].map(p=>V(p[0],p[1]))},
+     {name:'Sube a 3.2 → derecha → Gate 2',out:'2',pts:[[697,890],[697,288],[745,205],[930,150],[930,90]].map(p=>V(p[0],p[1]))},
+     {name:'Hasta 7.1 → derecha → Alumini → Gate 4',out:'4',pts:[[697,890],[697,288],[745,205],[1003,170],[1396,170],[1507,170],[1507,1138],[995,1138],[995,1178]].map(p=>V(p[0],p[1]))}]}),
    rr('D','D · Rambla 3-4',953,672,1052,1115,'4','4','P317',[[995,1178],[1003,1138],[1003,680],[1003,1138],[995,1178]]),
    rr('E','E · Rambla 3-5',953,150,1052,597,'4','2','P317',[[995,1178],[1003,1138],[1003,170],[1000,150],[930,90]]),
    rr('F','F · Rambla 4-6',1242,672,1300,1115,'4','4','SOT',[[995,1178],[1003,1138],[1271,1138],[1271,680],[1271,1138],[1003,1138],[995,1178]]),
@@ -363,8 +366,11 @@ function rMap(){
   if(R&&R.pts&&R.pts.length>1){const pts=R.pts;let k=0,best=-1;const docks=doorsOfR(R).map(slotC);
     for(let i=0;i<pts.length;i++){if(docks.some(c=>Math.hypot(c[0]-pts[i][0],c[1]-pts[i][1])<400)&&inR(pts[i],{x:R.x-5,y:R.y-5,w:R.w+10,h:R.h+10})){best=i}}
     k=R.split!=null&&R.split<pts.length?R.split:best<0?Math.floor(pts.length/2):best;
-    const pin=pts.slice(0,k+1),pout=pts.slice(k);
-    if(pout.length>1)s.push('<polyline class="route out" points="'+pout.map(p=>p.join(',')).join(' ')+'"/>');
+    const pin=pts.slice(0,k+1),pout=pts.slice(k);const bk=sel&&sel.k==='bk'?PL.bk.find(b=>b.id===sel.id):null;
+    if(R.exits&&R.exits.length){const ex=bk&&bk.exit!=null?bk.exit:(R.exitSel||0);
+      R.exits.forEach((e,i)=>{if(i!==ex)s.push('<polyline class="route alt" points="'+e.pts.map(p=>p.join(',')).join(' ')+'"/>')});
+      s.push('<polyline class="route out" points="'+R.exits[ex].pts.map(p=>p.join(',')).join(' ')+'"/>')}
+    else if(pout.length>1)s.push('<polyline class="route out" points="'+pout.map(p=>p.join(',')).join(' ')+'"/>');
     s.push('<polyline class="route in" points="'+pin.map(p=>p.join(',')).join(' ')+'" style="transform:translate(-6px,0)"/>');
     if(ed)pts.forEach((p,i)=>s.push('<circle class="handle" data-k="rpt" data-id="'+R.id+'" data-i="'+i+'" cx="'+p[0]+'" cy="'+p[1]+'" r="10"/>'));
   }
@@ -415,7 +421,7 @@ function panelPark(id){const p=parkById(id);if(!p)return panelNow();const list=P
   return [esc(p.name)+' · '+list.length+'/'+p.cap,'<div class="bar'+(list.length>=p.cap?' over':'')+'"><i style="width:'+Math.min(100,list.length/p.cap*100)+'%;background:'+(list.length>=p.cap?'var(--warn)':'var(--park)')+'"></i></div>'+
    (list.map(b=>{const free=!cur(b.door);return '<div class="row"><span class="mono">'+esc(b.mat)+'</span><span class="mute">'+mm(now()-b.tArr)+'′ esperando</span><span class="s">'+esc(b.emp)+' · Puerta '+esc(b.door)+' a las '+hhmm(b.start)+' '+T(arrTag(b))+'</span><span class="acts" style="grid-column:1/-1"><button class="btn sm p" data-call="'+b.id+'" '+(free?'':'disabled')+'>Llamar a '+esc(b.door)+(free?'':' (ocupada)')+'</button><button class="btn sm" data-bk="'+b.id+'">Ficha</button></span></div>'}).join('')||'<p class="mute" style="margin:0">Vacío</p>')];}
 function panelRam(id){const r=ramById(id);if(!r)return panelNow();const ds=doorsOfR(r);
-  return [esc(r.name),'<dl class="d"><dt>Entrada</dt><dd>Acceso '+esc(r.inAcc)+'</dd><dt>Salida</dt><dd>Acceso '+esc(r.outAcc)+'</dd><dt>Parking de espera</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+' · '+parkCount(r.park)+'/'+((parkById(r.park)||{}).cap||0)+'</dd><dt>Puertas</dt><dd>'+ds.length+'</dd></dl>'+
+  return [esc(r.name),'<dl class="d"><dt>Entrada</dt><dd>Acceso '+esc(r.inAcc)+'</dd><dt>Salida</dt><dd>'+(r.exits?r.exits.map((e,i)=>'<button class="btn sm'+((r.exitSel||0)===i?' p':'')+'" data-exsel="'+i+'" style="margin:2px 0;white-space:normal;text-align:left">'+esc(e.name)+'</button>').join('<br>'):'Acceso '+esc(r.outAcc))+'</dd><dt>Parking de espera</dt><dd>'+esc((parkById(r.park)||{}).name||'—')+' · '+parkCount(r.park)+'/'+((parkById(r.park)||{}).cap||0)+'</dd><dt>Puertas</dt><dd>'+ds.length+'</dd></dl>'+
    '<div class="sec">Puertas</div>'+ds.map(d=>{const c=cur(d.id),st=doorState(d);return '<button class="row" data-door="'+esc(d.id)+'"><span class="mono">'+esc(d.id)+'</span><span class="chip '+({free:'c-prog',soon:'c-park',busy:'c-door',over:'c-warn',early:'c-early',off:'c-prog'})[st]+'">'+({free:'Libre',soon:'Llega pronto',busy:'Descargando',over:'Excedido',early:'Libre antes',off:'No utilizable'})[st]+'</span><span class="s">'+(c?esc(c.mat)+' · '+esc(c.emp):'')+'</span></button>'}).join('')];}
 function panelBk(id){const b=PL.bk.find(x=>x.id===id);if(!b)return panelNow();const d=doorById(b.door),r=d&&ramblaOf(d),pr=project(b.door)[b.id]||{};
   let a='';
@@ -426,7 +432,8 @@ function panelBk(id){const b=PL.bk.find(x=>x.id===id);if(!b)return panelNow();co
   const doors=(r?doorsOfR(r):L.doors).filter(x=>!x.off||x.id===b.door);
   return ['<span class="mono">'+esc(b.mat)+'</span> <span class="chip '+STC[b.st]+'">'+STN[b.st]+'</span>',
    '<dl class="d"><dt>Empresa</dt><dd>'+esc(b.emp)+'</dd><dt>Puerta</dt><dd>'+esc(b.door)+' · '+(r?esc(r.name):'')+'</dd><dt>Slot</dt><dd>'+hhmm(b.start)+' – '+hhmm(b.start+b.dur*M)+' ('+b.dur+'′)</dd>'+(pr.delay&&active(b)&&b.st!=='puerta'?'<dt>Previsión</dt><dd class="c-warn">'+hhmm(pr.ps)+' (+'+pr.delay+'′ por la puerta)</dd>':'')+
-   (r?'<dt>Recorrido</dt><dd>Acceso '+esc(r.inAcc)+' → '+esc((parkById(b.park||r.park)||{}).name||'')+' → '+esc(b.door)+' → Acceso '+esc(r.outAcc)+'</dd>':'')+
+   (r&&r.exits?'<dt>Salida</dt><dd><select class="in" id="bexit">'+r.exits.map((e,i)=>'<option value="'+i+'"'+((b.exit!=null?b.exit:(r.exitSel||0))===i?' selected':'')+'>'+esc(e.name)+'</option>').join('')+'</select></dd>':'')+
+   (r?'<dt>Recorrido</dt><dd>Acceso '+esc(r.inAcc)+' → '+esc((parkById(b.park||r.park)||{}).name||'')+' → '+esc(b.door)+' → Gate '+esc(r.exits?r.exits[b.exit!=null?b.exit:(r.exitSel||0)].out:r.outAcc)+'</dd>':'')+
    '<dt>Llegada</dt><dd>'+hhmm(b.tArr)+' '+T(arrTag(b))+'</dd><dt>En puerta</dt><dd>'+hhmm(b.tStart)+(b.tEnd?' – '+hhmm(b.tEnd):'')+' '+T(doorTag(b))+'</dd></dl>'+
    '<div class="acts">'+a+'</div>'+
    (active(b)?'<div class="sec">Cambiar</div><div class="grid2"><label class="f">Puerta<select class="in" id="cdoor">'+doors.map(x=>'<option'+(x.id===b.door?' selected':'')+'>'+esc(x.id)+'</option>').join('')+'</select></label><label class="f">Hora<input class="in" type="time" id="ctime" value="'+hhmm(b.start)+'"></label></div><div class="durs">'+L.durs.map(v=>'<button data-cdur="'+v+'" aria-pressed="'+(b.dur===v)+'">'+v+'′</button>').join('')+'</div><div class="acts"><button class="btn" data-save="'+b.id+'">Guardar cambios</button></div>':'')];}
@@ -489,6 +496,8 @@ $('#gsel').onchange=e=>{gR=e.target.value;sel={k:'ram',id:gR};renderAll()};
 function bindSide(){
   const S=$('#side'),on=(q,f)=>S.querySelectorAll(q).forEach(e=>e.onclick=()=>f(e));
   on('[data-back]',()=>{sel=null;renderAll()});
+  on('[data-exsel]',e=>{const r=ramById(sel.id);r.exitSel=+e.dataset.exsel;saveL();renderAll()});
+  const bx=$('#bexit');if(bx)bx.onchange=()=>{const b=PL.bk.find(x=>x.id===sel.id);b.exit=+bx.value;log(b.mat+' salida: '+rOfBk(b).exits[b.exit].name);commit()};
   on('[data-bk]',e=>{sel={k:'bk',id:e.dataset.bk};renderAll()});
   on('[data-door]',e=>{sel={k:'door',id:e.dataset.door};renderAll()});
   on('[data-park]',e=>{sel={k:'park',id:e.dataset.park};renderAll()});
