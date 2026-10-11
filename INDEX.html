@@ -514,6 +514,27 @@ a:hover{color:#3a4558;}
   #mIngDetail.ov>.modal{margin:0;max-width:520px;height:100%;max-height:100%;overflow-y:auto;border-radius:0;box-shadow:-12px 0 40px rgba(15,23,42,.18);animation:uiSheetIn .2s cubic-bezier(.2,.8,.2,1)}
 }
 @keyframes uiSheetIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+/* Ingresos: KPIs-filtro, filas clicables y acciones uniformes */
+.ui-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 12px}
+.ui-kpi{display:flex!important;flex-direction:column;align-items:flex-start!important;justify-content:flex-start!important;gap:2px!important;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;text-align:left;color:var(--text);box-shadow:none;white-space:normal}
+.ui-kpi:hover{border-color:var(--border2)}
+.ui-kpi.on{border-color:#185FA5;box-shadow:inset 0 0 0 1px #185FA5}
+.ui-kpi-l{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text2)}
+.ui-kpi-l i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.ui-kpi-v{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1.15;font-variant-numeric:tabular-nums}
+.ui-kpi-s{font-size:11.5px;color:var(--text3)}
+@media(max-width:700px){.ui-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ui-kpi{padding:8px 10px}.ui-kpi-v{font-size:21px}}
+table.dtbl-ing tbody tr{cursor:pointer}
+table.dtbl-ing tbody tr:hover td{background:rgba(24,95,165,.045)}
+/* Acciones de fila: iconos neutros; color solo en eliminar */
+table.dtbl-ing td button.btn.tt{background:var(--bg2)!important;color:var(--text)!important;border:1px solid var(--border2)!important;box-shadow:none!important;min-width:38px!important;height:36px!important}
+table.dtbl-ing td button.btn.tt:hover{background:var(--bg3)!important}
+table.dtbl-ing td button.btn.tt[data-tip="ELIMINAR"]{color:#c5221f!important;border-color:#f1b8b5!important}
+table.dtbl-ing td button.btn.tt[data-tip="RAMPA"]{color:#0b7a5e!important;font-weight:800!important}
+/* Barra de herramientas de Ingresos: iconos neutros (importar/exportar/limpiar) */
+#tab-ingresos2 .subtab-bar button.btn.tt-down{background:var(--bg2)!important;color:var(--text)!important;border:1px solid var(--border2)!important;box-shadow:none!important}
+#tab-ingresos2 .subtab-bar button.btn.tt-down:hover{background:var(--bg3)!important}
+#tab-ingresos2 .subtab-bar button.btn.tt-down[data-tip="LIMPIAR REGISTROS"]{color:#c5221f!important;border-color:#f1b8b5!important}
 /* iPad / táctil: objetivos de toque mínimos de 44px */
 @media(pointer:coarse){.btn-tab,.tg-grp-btn,#appHdr .hbtn,#appHdr .hbtn-txt{min-height:44px}}
 /* Teclado: foco visible solo al navegar con teclado */
@@ -522,6 +543,26 @@ a:hover{color:#3a4558;}
 <script>
 /* REDISENO 2026-10-11: tecla "/" abre la búsqueda global (si no se está escribiendo) */
 document.addEventListener('keydown',function(e){if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;var a=document.activeElement,t=a&&a.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||(a&&a.isContentEditable))return;var h=document.getElementById('appHdr');if(!h||h.style.display==='none'||typeof openGlobalSearch!=='function')return;e.preventDefault();openGlobalSearch();});
+
+/* REDISENO 2026-10-11: KPIs de Ingresos (también son filtros) */
+function _ui2Kpis(base){
+  var tot=base.length,dentro=0,salida=0,sinRef=0;
+  base.forEach(function(i){if(i.salida)salida++;else dentro++;if(!i.referencia)sinRef++;});
+  var act=!!iF.activos2;
+  function k(id,lbl,val,col,on,click,sub){return '<button class="ui-kpi'+(on?' on':'')+'" onclick="'+click+'"><span class="ui-kpi-l"><i style="background:'+col+'"></i>'+lbl+'</span><span class="ui-kpi-v">'+val+'</span><span class="ui-kpi-s">'+sub+'</span></button>';}
+  return '<div class="ui-kpis">'
+    +k('tot','Total',tot,'#64748b',!act,"iF.activos2=false;iF._pg2=0;renderIngresos2()",'registros del filtro')
+    +k('in','En recinto',dentro,'#188038',act,"iF.activos2=true;iF._pg2=0;renderIngresos2()",tot?Math.round(dentro*100/tot)+'% del total':'—')
+    +k('out','Con salida',salida,'#1967d2',false,"iF.activos2=false;iF._pg2=0;renderIngresos2()",tot?Math.round(salida*100/tot)+'% del total':'—')
+    +k('ref','Sin referencia',sinRef,'#b06000',false,"var e=document.getElementById('srch-ingresos2');if(e)e.focus()",'revisar')
+    +'</div>';
+}
+/* Clic en cualquier parte de la fila abre el detalle (como Gmail); botones y enlaces siguen funcionando igual */
+document.addEventListener('click',function(e){
+  var tr=e.target.closest&&e.target.closest('table.dtbl-ing tbody tr');if(!tr)return;
+  if(e.target.closest('button,a,input,select,textarea,label,.mchip,[onclick]'))return;
+  var m=tr.querySelector('.mchip[onclick]');if(m)m.click();
+});
 document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('#appHdr button[onclick*="openGlobalSearch"]');if(b&&!b.querySelector('.ui-q')){var q=document.createElement('span');q.className='ui-q';q.textContent='Buscar en todo…  /';b.appendChild(q);}});
 </script>
 </head>
@@ -5664,7 +5705,7 @@ function renderIngresos2(){
   const q=(iF.q2||'').toLowerCase();
   if(q)items=items.filter(i=>`${i.pos||''} ${i.matricula} ${i.nombre||''} ${i.apellido||''} ${i.empresa||''} ${i.llamador||''} ${i.referencia||''} ${(i.halls||[i.hall||'']).join(' ')} ${i.stand||''} ${i.remolque||''} ${i.montador||''} ${i.expositor||''} ${i.comentario||''} ${i.telefono||''} ${i.email||''} ${i.pasaporte||''} ${i.eventoNombre||''} ${i.puertaHall||''} ${i.tipoCarga||''}`.toLowerCase().includes(q));
   if(iF.hall2)items=items.filter(i=>(i.halls||[i.hall||'']).includes(iF.hall2));
-  if(iF.activos2)items=items.filter(i=>!i.salida);
+  const _ui2Act=!!iF.activos2;
   // FILTRO FECHA: filtrar por fecha de entrada (solo día seleccionado)
   if(iF.fechaDesde2||iF.fechaHasta2){
     items=items.filter(i=>_dateRangePass(i.entrada,iF.fechaDesde2,iF.fechaHasta2,''));
@@ -5674,6 +5715,8 @@ function renderIngresos2(){
       return i.entrada.slice(0,10)===iF.fecha2;
     });
   }
+  window._ui2Base=items.slice(); // REDISENO 2026-10-11: base para KPIs (antes de 'solo activos')
+  if(_ui2Act)items=items.filter(i=>!i.salida);
   // Ordenación: pos ASC primero, luego matrícula como segundo criterio
   const s=getSort('ingresos2');
   const sortCol=s.col||'pos';
@@ -5708,7 +5751,7 @@ function renderIngresos2(){
       ${canClean()?`<button class="btn tt-down" data-tip="LIMPIAR REGISTROS" style="height:38px;min-width:44px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--red);border:1px solid var(--red)" onclick="if(!confirm('¿Limpiar registros del día en Ingresos?'))return;cleanTab('ingresos2')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>`:''}
       </span>
     </div>
-    ${sub2!=='print'&&sub2!=='campos'&&sub2!=='columnas'?`<div class="filter-bar" style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none">
+    ${sub2==='lista'&&typeof _ui2Kpis==='function'?_ui2Kpis(window._ui2Base||[]):''}${sub2!=='print'&&sub2!=='campos'&&sub2!=='columnas'?`<div class="filter-bar" style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none">
       <div class="sbox" style="flex:1;min-width:120px"><span class="sico">🔍</span><input type="search" data-i18n-ph="phSearchDash" placeholder="${tr('phSearchDash')}" value="${iF.q2||''}" id="srch-ingresos2" oninput="iF.q2=this.value;iF._pg2=0;debounceSearch('ingresos2',renderIngresos2)"></div>
       ${_dateFilterUI({fecha:iF.fecha2,desde:iF.fechaDesde2,hasta:iF.fechaHasta2,onChange:'_ing2DateHandler',tag:'dfIng2',mode:iF._dateMode2})}
       <span class="pill" style="flex-shrink:0;border:1.5px solid ${iF.activos2?'#4a5568':'var(--border)'};background:${iF.activos2?'#4a5568':'var(--bg2)'};color:${iF.activos2?'#fff':'var(--text3)'}" onclick="iF.activos2=!iF.activos2;iF._pg2=0;renderIngresos2()">${tr('soloActivos')}</span>
