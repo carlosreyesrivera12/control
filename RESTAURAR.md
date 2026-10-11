@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| (archivo) `backups/INDEX_2026-10-11_antes-rediseno.html` | `b885a82` | INDEX antes del rediseño visual fase 1 — renombrar a `INDEX.html` |
 | `restore-2026-10-09-antes-mapa` | `12a7962` | INDEX antes del botón 🗺️ y sin `MAPA_FIRA.html` |
 | `restore-2026-10-09-antes-mapa-integrado` | `d6f24f1` | Capacidad hecha, mapa aún en ventana aparte (sin panel dentro de INDEX) |
 | `restore-2026-10-09-antes-capacidad` | `7227031` | Mapa con plano RESA y rutas, antes de los estados por color, el zoom por rambla, la sincronización con la web y la capacidad |

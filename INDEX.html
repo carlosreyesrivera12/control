@@ -469,6 +469,43 @@ a:hover{color:#3a4558;}
 </style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style id="ui-2026-10-11">
+/* REDISENO 2026-10-11 · capa visual aditiva (solo CSS). Restaurar: borrar este <style id="ui-2026-10-11"> o usar backups/INDEX_2026-10-11_antes-rediseno.html */
+/* Cabecera: botones planos, sin sombras ni saltos, altura uniforme */
+#appHdr .hbtn,#appHdr .hbtn-txt{box-shadow:none;border-radius:8px;height:38px;padding:0 14px;font-weight:600;letter-spacing:.3px;transition:background .12s,border-color .12s}
+#appHdr .hbtn:hover,#appHdr .hbtn-txt:hover{transform:none;box-shadow:none;background:var(--bg3);border-color:var(--border2)}
+/* Búsqueda global como barra (estilo Google) en pantallas anchas */
+@media(min-width:1100px){
+  #appHdr button[onclick*="openGlobalSearch"]{min-width:280px;justify-content:flex-start;gap:10px;background:var(--bg3);border-color:transparent;color:var(--text3);text-transform:none;font-weight:500;letter-spacing:0}
+  #appHdr button[onclick*="openGlobalSearch"]>.ui-q{display:inline;font-size:14px}
+  #appHdr button[onclick*="openGlobalSearch"]:hover{border-color:var(--border2);background:var(--bg2)}
+}
+.ui-q{display:none}
+/* Pestañas y grupos: estilo pestaña con indicador inferior, sin cajas */
+.tabs-bar{gap:2px;padding:0 12px;border-top:0;border-bottom:1px solid var(--border);background:var(--bg2);margin-top:0}
+.btn-tab,.tg-grp-btn{border:0!important;background:transparent;border-radius:0;height:46px;padding:0 14px;font-weight:600;letter-spacing:.3px;color:var(--text2);box-shadow:inset 0 -3px 0 transparent!important;transition:color .12s,box-shadow .12s,background .12s}
+.btn-tab:hover,.tg-grp-btn:hover{background:var(--bg3);color:var(--text)}
+.btn-tab:not(.active):focus,.tg-grp-btn:not(.active):focus,.btn-tab:not(.active):active,.tg-grp-btn:not(.active):active{background:transparent;color:var(--text2)}
+.btn-tab.active,.tg-grp-btn.active,.btn-tab.active:hover,.tg-grp-btn.active:hover{background:rgba(24,95,165,.08)!important;color:#185FA5!important;box-shadow:inset 0 -3px 0 #185FA5!important;border:0!important}
+[data-theme="dark"] .btn-tab.active,[data-theme="dark"] .tg-grp-btn.active,[data-theme="contrast"] .btn-tab.active,[data-theme="contrast"] .tg-grp-btn.active{color:#8ab4f8!important;box-shadow:inset 0 -3px 0 #8ab4f8!important;background:rgba(138,180,248,.1)!important}
+#tgGroupBar{gap:2px!important;align-self:stretch}
+#tgGroupBar .tg-grp-btn{height:100%;min-height:46px}
+/* Tablas: cabecera fija, números alineados, fila resaltada al pasar */
+@media screen{
+  .dtbl thead th{position:sticky;top:0;z-index:2}
+  .dtbl td{font-variant-numeric:tabular-nums}
+  .dtbl tbody tr:hover{box-shadow:inset 3px 0 0 #185FA5}
+}
+/* iPad / táctil: objetivos de toque mínimos de 44px */
+@media(pointer:coarse){.btn-tab,.tg-grp-btn,#appHdr .hbtn,#appHdr .hbtn-txt{min-height:44px}}
+/* Teclado: foco visible solo al navegar con teclado */
+#appHdr button:focus-visible,.btn-tab:focus-visible,.tg-grp-btn:focus-visible{outline:2px solid #185FA5!important;outline-offset:-2px}
+</style>
+<script>
+/* REDISENO 2026-10-11: tecla "/" abre la búsqueda global (si no se está escribiendo) */
+document.addEventListener('keydown',function(e){if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;var a=document.activeElement,t=a&&a.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||(a&&a.isContentEditable))return;var h=document.getElementById('appHdr');if(!h||h.style.display==='none'||typeof openGlobalSearch!=='function')return;e.preventDefault();openGlobalSearch();});
+document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('#appHdr button[onclick*="openGlobalSearch"]');if(b&&!b.querySelector('.ui-q')){var q=document.createElement('span');q.className='ui-q';q.textContent='Buscar en todo…  /';b.appendChild(q);}});
+</script>
 </head>
 <body>
 <!-- SETUP -->
