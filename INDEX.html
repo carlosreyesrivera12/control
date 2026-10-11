@@ -474,8 +474,14 @@ a:hover{color:#3a4558;}
 /* Cabecera: botones planos, sin sombras ni saltos, altura uniforme */
 #appHdr .hbtn,#appHdr .hbtn-txt{box-shadow:none;border-radius:8px;height:38px;padding:0 14px;font-weight:600;letter-spacing:.3px;transition:background .12s,border-color .12s}
 #appHdr .hbtn:hover,#appHdr .hbtn-txt:hover{transform:none;box-shadow:none;background:var(--bg3);border-color:var(--border2)}
-/* Búsqueda global como barra (estilo Google) en pantallas anchas */
-@media(min-width:1100px){
+/* Cabecera compacta en pantallas medianas para que todo quepa (incl. SALIR) */
+@media(max-width:1400px){#appHdr .hbtn,#appHdr .hbtn-txt{padding:0 10px}#tgGroupBar .tg-grp-btn{padding:0 10px}#hdrUser,#hdrUser+span,#appHdr .hdr-right>span.hdr-hide-mobile{display:none!important}}
+@media(max-width:1200px){#tgGroupBar .tg-grp-btn{font-size:12px;padding:0 8px;letter-spacing:0}#themeLbl{display:none}#appHdr .hdr-logo>span{font-size:18px!important}}
+@media(max-width:1023px){#appHdr .hbtn,#appHdr .hbtn-txt{padding:0 7px}#tgGroupBar{margin-left:2px!important}#tgGroupBar .tg-grp-btn{font-size:11px;padding:0 6px}#appHdr .hdr-logo>span{display:none}}
+@media(max-width:800px){#tgGroupBar .tg-grp-btn{width:34px!important;min-width:34px!important;max-width:34px!important;overflow:hidden!important;justify-content:flex-start!important;padding:0 8px!important;white-space:nowrap}#btnMapa{width:38px;overflow:hidden;justify-content:flex-start;padding:0 9px!important}#appHdr .hdr-logo{display:none!important}}
+@media(max-width:600px){#appHdr{padding:0 4px}#appHdr .hdr-right{gap:2px!important}#tgGroupBar{gap:0!important}#btnLang{width:34px!important;min-width:34px;overflow:hidden;justify-content:flex-start!important;padding:0 9px!important}#btnSalirWrap button{width:36px!important;min-width:36px;padding:0!important;font-size:0!important;justify-content:center!important}#btnSalirWrap button svg{width:17px;height:17px}#btnSalirWrap{padding-left:2px}}
+/* Búsqueda global como barra (estilo Google) solo donde cabe sin empujar la cabecera */
+@media(min-width:1600px){
   #appHdr button[onclick*="openGlobalSearch"]{min-width:280px;justify-content:flex-start;gap:10px;background:var(--bg3);border-color:transparent;color:var(--text3);text-transform:none;font-weight:500;letter-spacing:0}
   #appHdr button[onclick*="openGlobalSearch"]>.ui-q{display:inline;font-size:14px}
   #appHdr button[onclick*="openGlobalSearch"]:hover{border-color:var(--border2);background:var(--bg2)}

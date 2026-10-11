@@ -15,6 +15,7 @@ Todo el cambio está en un único bloque `<style id="ui-2026-10-11">` + un `<scr
 - Pestañas y grupos: estilo pestaña con indicador inferior (sin cajas); activa en azul con fondo suave. Soporte tema oscuro/contraste.
 - Menú lateral (pantallas ≥1100px): las pestañas pasan a una columna fija a la izquierda; los grupos de la cabecera (Operativa, Logística, Configuración, Datos) filtran el menú. En móvil/iPad vertical siguen como barra horizontal.
 - Detalle de ingreso (`#mIngDetail`) como panel lateral derecho en pantallas ≥1100px: la lista sigue visible detrás. En móvil sigue como hoja inferior.
+- Arreglo: la cabecera no cabía en pantallas <1600px y SALIR quedaba fuera de la pantalla. Ahora la barra de búsqueda ancha solo aparece ≥1600px y la cabecera se compacta por tamaños (≤1400, ≤1200, ≤1023, ≤800, ≤600: grupos y MAPA solo icono, SALIR solo icono en móvil). Comprobado SALIR pulsable de 390px a 1920px.
 - Tablas `.dtbl`: cabecera fija al hacer scroll, números con ancho fijo, marca lateral en la fila bajo el cursor.
 - iPad/táctil: objetivos de toque mínimos de 44px. Foco visible al navegar con teclado.
 - No se tocó ninguna función, dato ni estructura de DB.
