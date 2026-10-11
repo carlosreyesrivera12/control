@@ -496,6 +496,18 @@ a:hover{color:#3a4558;}
   .dtbl td{font-variant-numeric:tabular-nums}
   .dtbl tbody tr:hover{box-shadow:inset 3px 0 0 #185FA5}
 }
+/* Menú lateral (≥1100px): las pestañas pasan a una columna fija a la izquierda; los grupos de la cabecera filtran el menú */
+@media screen and (min-width:1100px){
+  #mainTabs.tabs-bar{position:fixed;left:0;top:calc(58px + env(safe-area-inset-top));bottom:0;width:232px;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:2px;padding:12px 10px;overflow-y:auto;overflow-x:hidden;border:0;border-right:1px solid var(--border);background:var(--bg2);z-index:150}
+  #mainTabs .btn-tab{width:100%;justify-content:flex-start;height:42px;padding:0 14px;border-radius:8px;box-shadow:none!important;text-transform:none;letter-spacing:0;font-size:14.5px}
+  #mainTabs .btn-tab.active,#mainTabs .btn-tab.active:hover{box-shadow:inset 3px 0 0 #185FA5!important}
+  [data-theme="dark"] #mainTabs .btn-tab.active,[data-theme="contrast"] #mainTabs .btn-tab.active{box-shadow:inset 3px 0 0 #8ab4f8!important}
+  body:has(#mainTabs.tabs-bar:not([style*="none"])) #appMain{margin-left:232px;width:calc(100% - 232px)}
+  /* Detalle de ingreso como panel lateral derecho: la lista sigue visible */
+  #mIngDetail.ov{justify-content:flex-end;align-items:stretch;padding:0;background:rgba(15,23,42,.18);backdrop-filter:none;overflow:hidden}
+  #mIngDetail.ov>.modal{margin:0;max-width:520px;height:100%;max-height:100%;overflow-y:auto;border-radius:0;box-shadow:-12px 0 40px rgba(15,23,42,.18);animation:uiSheetIn .2s cubic-bezier(.2,.8,.2,1)}
+}
+@keyframes uiSheetIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
 /* iPad / táctil: objetivos de toque mínimos de 44px */
 @media(pointer:coarse){.btn-tab,.tg-grp-btn,#appHdr .hbtn,#appHdr .hbtn-txt{min-height:44px}}
 /* Teclado: foco visible solo al navegar con teclado */

@@ -5,7 +5,7 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
-## 2026-10-11 · Rediseño visual, fase 1 (cabecera, pestañas, tablas)
+## 2026-10-11 · Rediseño visual (cabecera, menú lateral, detalle lateral, tablas)
 
 **Copia de restauración:** `backups/INDEX_2026-10-11_antes-rediseno.html` (renombrar a `INDEX.html` para volver atrás).
 Todo el cambio está en un único bloque `<style id="ui-2026-10-11">` + un `<script>` corto antes de `</head>`; borrarlo también restaura.
@@ -13,6 +13,8 @@ Todo el cambio está en un único bloque `<style id="ui-2026-10-11">` + un `<scr
 - Cabecera: botones planos, sin sombras ni saltos al pasar el ratón, altura uniforme.
 - Búsqueda global como barra ancha "Buscar en todo… /" en pantallas ≥1100px; la tecla `/` la abre.
 - Pestañas y grupos: estilo pestaña con indicador inferior (sin cajas); activa en azul con fondo suave. Soporte tema oscuro/contraste.
+- Menú lateral (pantallas ≥1100px): las pestañas pasan a una columna fija a la izquierda; los grupos de la cabecera (Operativa, Logística, Configuración, Datos) filtran el menú. En móvil/iPad vertical siguen como barra horizontal.
+- Detalle de ingreso (`#mIngDetail`) como panel lateral derecho en pantallas ≥1100px: la lista sigue visible detrás. En móvil sigue como hoja inferior.
 - Tablas `.dtbl`: cabecera fija al hacer scroll, números con ancho fijo, marca lateral en la fila bajo el cursor.
 - iPad/táctil: objetivos de toque mínimos de 44px. Foco visible al navegar con teclado.
 - No se tocó ninguna función, dato ni estructura de DB.
