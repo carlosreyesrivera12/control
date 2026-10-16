@@ -581,14 +581,27 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
       <div id="logoEmergency"><span id="v5SecretBtn" style="font-family:Oxanium,monospace,sans-serif;font-size:24px;font-weight:700;color:#0f172a;letter-spacing:-.02em"><span style="color:#00b89a">Be</span>Unify<span style="color:#00b89a">T</span><span id="devApprovalDot" style="display:none;position:absolute;top:-3px;right:-5px;width:7px;height:7px;background:#4a5568;border-radius:50%;border:1.5px solid #fff"></span></span></div>
       
     </div>
-    <!-- PASO 0: Elegir tipo de acceso -->
-    <div id="loginStep0" style="display:flex;flex-direction:column;gap:10px">
-      <div id="gLoginBox" style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px;width:100%">
-        <div style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.1px">Inicia sesión</div>
-        <button type="button" class="g-btn" id="gBtn" onclick="gLogin()"><span class="g-ico"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="g-txt" id="gBtnTxt">Google</span></button>
-        <div id="gErr" style="display:none;color:#b3261e;font-size:12px;font-weight:600;text-align:center;max-width:260px"></div>
+    <!-- PASO 0: LOGIN v2 -->
+    <div id="loginStep0" style="display:flex;flex-direction:column">
+      <div id="lwTitle">Bienvenido</div>
+      <div class="lw-seg" role="tablist"><button type="button" class="nk lw-tab on" id="lwTabIn" onclick="lwMode('in')">Entrar</button><button type="button" class="nk lw-tab" id="lwTabUp" onclick="lwMode('up')">Crear cuenta</button></div>
+      <div id="gLoginBox" style="display:contents">
+        <button type="button" class="g-btn nk lw-b" id="gBtn" onclick="lwGoogle()"><span class="g-ico"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="g-txt" id="gBtnTxt">Continuar con Google</span></button>
       </div>
-      <div id="gPinBox" style="display:none;margin-top:8px">
+      <div class="lw-div"><span>o email</span></div>
+      <input class="lw-in" id="lwEmail" type="email" placeholder="tu@email.com" autocomplete="email" oninput="lwCheck()" onkeydown="if(event.key==='Enter')document.getElementById('lwPass').focus()">
+      <div class="lw-pw"><input class="lw-in" id="lwPass" type="password" placeholder="Contraseña" autocomplete="current-password" oninput="lwCheck()" onkeydown="if(event.key==='Enter')lwSubmit()"><button type="button" class="nk lw-eye" onclick="lwEye(this)" aria-label="Mostrar contraseña"><svg width="22" height="22" style="width:22px!important;height:22px!important;min-width:22px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><line class="lw-eye-x" x1="3" y1="3" x2="21" y2="21"/></svg></button></div>
+      <div id="lwForgotRow"><button type="button" class="nk lw-link" onclick="lwForgot()">¿Olvidaste la contraseña?</button></div>
+      <div id="lwRules" style="display:none"><div class="lw-rg"><span data-r="len">8 caracteres</span><span data-r="up">Una mayúscula</span><span data-r="lo">Una minúscula</span><span data-r="num">Un número</span><span data-r="sp">Un carácter</span></div><div class="lw-ex">Ejemplos: Rampa#25 · Fira!Bcn7 · Truck9@x</div></div>
+      <div id="gErr" class="lw-msg" style="display:none"></div>
+      <button type="button" class="nk lw-b lw-pri" id="lwSubmitBtn" disabled onclick="lwSubmit()">Entrar</button>
+      <div class="lw-row" id="loginStep0LangWrap">
+        <button type="button" class="nk lw-b" id="lwEmpBtn" onclick="lwEmpBtnClick()"><span id="lbl_empresaBtn">EMPRESA</span><span id="lwVolverTxt" style="display:none">Volver</span></button>
+        <select id="loginLangSel" style="display:none"></select>
+        <button type="button" class="nk lw-b" id="loginLangBtn" onclick="lwLangToggle(this)"><span id="loginLangBtnLbl">Idioma</span><span class="lw-caret">▾</span></button>
+      </div>
+      <div id="loginLangDrop" style="display:none"></div>
+<div id="gPinBox" style="display:none;margin-top:8px">
         <div class="fg" style="margin-bottom:10px">
           <span class="flbl" id="lbl_loginIdent0">Usuario o email</span>
           <input id="loginIdent" type="text" placeholder="" autocomplete="username" style="font-size:14px" oninput="loginIdentChange()" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
@@ -603,19 +616,9 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
         <div id="loginStrip" style="display:none;margin-bottom:10px;padding:6px 10px;border-radius:var(--r);font-size:11px;align-items:center;gap:4px;font-weight:700"></div>
         <div id="loginErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;padding:6px 10px;background:var(--rll);border-radius:var(--r)"></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:4px">
-        <button class="btn" id="gAccederBtn" style="display:none;width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="doLogin()">
+      <button class="btn" id="gAccederBtn" style="display:none;width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="doLogin()">
           <span id="lbl_operadorBtn">ACCEDER</span>
         </button>
-        <button class="btn" style="width:fit-content;min-width:160px;padding:10px 24px;font-size:14px;font-weight:700;background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);border-radius:20px;justify-content:center" onclick="loginChoose('empresa')">
-          <span id="lbl_empresaBtn">EMPRESA</span>
-        </button>
-      </div>
-    </div>
-    <div style="margin-top:20px;text-align:center;position:relative;display:flex;justify-content:center" id="loginStep0LangWrap">
-      <select id="loginLangSel" style="display:none"></select>
-      <button onclick="var d=document.getElementById('loginLangDrop');if(d.style.display==='none'){var r=this.getBoundingClientRect();d.style.width=r.width+'px';d.style.left=r.left+'px';d.style.top=(r.bottom+4)+'px';d.style.display='block';}else{d.style.display='none';}" style="border-radius:20px;font-size:13px;padding:8px 14px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center" id="loginLangBtn"><span style="margin-left:18px;margin-right:0" id="loginLangBtnLbl">${tr('thLanguage')}</span><span style="margin-left:36px;font-size:20px;line-height:1">▾</span></button>
-      <div id="loginLangDrop" style="display:none;position:fixed;z-index:99999;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.18);overflow:hidden;max-height:360px;overflow-y:auto"></div>
     </div>
   </div>
   <div class="login-card" style="max-width:320px;width:100%;display:none;min-height:500px" id="loginCard1">
@@ -2971,9 +2974,57 @@ let _gUser=null,_gSel=[];
 function _gApp(){if(typeof firebase==='undefined'||!firebase.auth)return null;if(!window._gAppObj){try{window._gAppObj=firebase.app('cu1_gauth');}catch(e){window._gAppObj=firebase.initializeApp(_G_CFG,'cu1_gauth');}window._gAuthObj=firebase.auth(window._gAppObj);}return window._gAppObj;}
 function _gKey(em){return String(em||'').trim().toLowerCase().replace(/\./g,',');}
 function _gErr(m){['gErr','empLoginErr'].forEach(id=>{const e=document.getElementById(id);if(!e)return;e.textContent=m||'';e.style.display=m?'block':'none';});}
-function _gBusy(b){['gBtn','gEmpBtn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;btn.disabled=!!b;const t=btn.querySelector('.g-txt');if(t)t.textContent=b?'Conectando…':'Google';});}
+function _gBusy(b){['gBtn','gEmpBtn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;btn.disabled=!!b;const t=btn.querySelector('.g-txt');if(t)t.textContent=b?'Conectando…':(id==='gBtn'?'Continuar con Google':'Google');});}
 function gTogglePin(){const b=document.getElementById('gPinBox'),a=document.getElementById('gAccederBtn'),l=document.getElementById('gPinLink');const show=b.style.display==='none';b.style.display=show?'block':'none';if(a)a.style.display=show?'':'none';if(l)l.textContent=show?'Ocultar acceso con PIN':'Acceder con usuario y PIN';if(show)setTimeout(()=>{const i=document.getElementById('loginIdent');if(i)i.focus();},100);}
 function gEmpLogin(){window._gMode='empresa';gLogin(true);}
+
+// ═══ LOGIN v2: email/contraseña (Firebase Auth) — restaurar: borrar este bloque y el CSS "LOGIN v2" ═══
+var _lwM='in';
+function lwMode(m){_lwM=m;document.getElementById('lwTabIn').classList.toggle('on',m==='in');document.getElementById('lwTabUp').classList.toggle('on',m==='up');
+  document.getElementById('lwRules').style.display=m==='up'?'block':'none';document.getElementById('lwForgotRow').style.display=m==='in'?'block':'none';
+  document.getElementById('lwPass').setAttribute('autocomplete',m==='up'?'new-password':'current-password');_gErr('');lwCheck();}
+function _lwRules(p){return {len:p.length>=8,up:/[A-ZÁÉÍÓÚÑ]/.test(p),lo:/[a-záéíóúñ]/.test(p),num:/\d/.test(p),sp:/[^A-Za-z0-9ÁÉÍÓÚÑáéíóúñ]/.test(p)};}
+function lwCheck(){const e=document.getElementById('lwEmail').value.trim(),p=document.getElementById('lwPass').value,b=document.getElementById('lwSubmitBtn');
+  const r=_lwRules(p);document.querySelectorAll('#lwRules [data-r]').forEach(el=>el.classList.toggle('ok',!!r[el.dataset.r]));
+  const okE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);b.disabled=_lwM==='up'?!(okE&&Object.values(r).every(Boolean)):!(okE&&p.length>0);b.textContent=_lwM==='up'?'Crear cuenta':'Entrar';}
+function lwEye(btn){const i=document.getElementById('lwPass');const show=i.type==='password';i.type=show?'text':'password';btn.classList.toggle('on',show);}
+function _lwMsg(m,ok){const e=document.getElementById('gErr');e.textContent=m||'';e.style.display=m?'block':'none';e.classList.toggle('ok',!!ok);}
+function _lwErrTxt(c){return ({'auth/invalid-credential':'Email o contraseña incorrectos.','auth/wrong-password':'Email o contraseña incorrectos.','auth/user-not-found':'Email o contraseña incorrectos.','auth/invalid-login-credentials':'Email o contraseña incorrectos.','auth/email-already-in-use':'Ese email ya tiene cuenta. Usa Entrar.','auth/weak-password':'La contraseña es demasiado débil.','auth/invalid-email':'Email no válido.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos.','auth/network-request-failed':'Sin conexión. Revisa la red.','auth/operation-not-allowed':'El acceso con email no está activado en Firebase.'})[c]||'No se pudo completar. Inténtalo de nuevo.';}
+async function lwSubmit(){const b=document.getElementById('lwSubmitBtn');if(b.disabled)return;
+  if(!_gApp()){_lwMsg('Cargando… inténtalo de nuevo en un segundo.');return;}
+  const auth=window._gAuthObj,em=document.getElementById('lwEmail').value.trim().toLowerCase(),pw=document.getElementById('lwPass').value;
+  window._gMode=window._lwCtx==='empresa'?'empresa':'staff';_lwMsg('');b.disabled=true;const t=b.textContent;b.textContent='Conectando…';
+  try{
+    if(_lwM==='up'){const r=await auth.createUserWithEmailAndPassword(em,pw);try{await r.user.sendEmailVerification();}catch(e){}_lwNotifyAdmin('Nueva cuenta creada',em,window._lwCtx==='empresa'?'Sitio Empresa':'Staff');await auth.signOut();lwMode('in');_lwMsg('Cuenta creada. Te enviamos un email para verificarla; después entra con tu email y contraseña.',true);return;}
+    const r=await auth.signInWithEmailAndPassword(em,pw);
+    if(!r.user.emailVerified){try{await r.user.sendEmailVerification();}catch(e){}await auth.signOut();_lwMsg('Verifica tu email antes de entrar. Te reenviamos el enlace.');return;}
+    await _gAfterSignIn(r.user);
+  }catch(e){_lwMsg(_lwErrTxt(e&&e.code));console.warn('lwSubmit',e);}
+  finally{b.textContent=t;lwCheck();}}
+async function lwForgot(){const em=document.getElementById('lwEmail').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){_lwMsg('Escribe tu email y vuelve a pulsar.');document.getElementById('lwEmail').focus();return;}
+  if(!_gApp())return;try{await window._gAuthObj.sendPasswordResetEmail(em);}catch(e){if(e&&e.code==='auth/network-request-failed'){_lwMsg(_lwErrTxt(e.code));return;}}
+  _lwMsg('Si el email tiene cuenta, recibirás un enlace para cambiar la contraseña.',true);}
+function lwLangToggle(btn){const d=document.getElementById('loginLangDrop');const open=d.style.display==='none';d.style.display=open?'block':'none';btn.classList.toggle('on',open);
+  if(open){const sel=d.querySelector('div[style*="f0f8ff"]');if(sel)d.scrollTop=sel.offsetTop-d.offsetTop-40;setTimeout(()=>d.scrollIntoView({block:'nearest',behavior:'smooth'}),30);}}
+document.addEventListener('click',function(){const d=document.getElementById('loginLangDrop'),b=document.getElementById('loginLangBtn');if(b&&d&&d.style.display==='none')b.classList.remove('on');});
+// Contexto staff / empresa sobre la misma tarjeta
+window._lwCtx='staff';
+function lwSetCtx(c){window._lwCtx=c;const emp=c==='empresa';
+  if(emp&&typeof applyEmpLoginLang==='function'){try{applyEmpLoginLang();}catch(e){}}
+  const t=document.getElementById('lwTitle'),et=document.getElementById('empLoginTitle'),vb=document.getElementById('empVolverBtn');
+  if(t)t.textContent=emp?((et&&et.textContent.trim())||'Sitio Empresa'):'Bienvenido';
+  const v=document.getElementById('lwVolverTxt');if(v){v.textContent=(vb&&vb.textContent.trim())||'Volver';v.style.display=emp?'':'none';}
+  const l=document.getElementById('lbl_empresaBtn');if(l)l.style.display=emp?'none':'';
+  _gErr('');lwMode('in');}
+function lwEmpBtnClick(){if(window._lwCtx==='empresa'){lwSetCtx('staff');}else{loginChoose('empresa');}}
+function lwGoogle(){if(window._lwCtx==='empresa')gEmpLogin();else gLogin();}
+// Aviso al admin por email (EmailJS, plantilla existente)
+const _LW_ADMIN='carlosreyesrivera12@gmail.com';
+function _lwNotifyAdmin(kind,email,detalle){try{if(typeof emailjs==='undefined')return;
+  const k=localStorage.getItem('cu1_ejsKey')||'6ZhU_NYFyTPdDk5OB',sv=localStorage.getItem('cu1_ejsSvc')||'service_44tapzx',tp=localStorage.getItem('cu1_ejsTpl')||'template_n440nxc';
+  emailjs.send(sv,tp,{to_email:_LW_ADMIN,to_name:'Admin BeUnifyT',otp_code:kind,device:email||'—',browser:detalle||'—',ip:'—',location:(typeof nowL==='function'?nowL():new Date().toLocaleString()),app_name:'BeUnifyT — '+kind+': '+(email||'')},{publicKey:k}).catch(e=>console.warn('notifyAdmin',e));}catch(e){console.warn('notifyAdmin',e);}}
+
 async function gLogin(keepMode){
   if(keepMode!==true)window._gMode='staff';
   _gErr('');
@@ -3064,7 +3115,7 @@ async function gSendReq(){
     if(er)er.style.display='none';
   }else{req.areas=_gSel.slice(0,10);}
   b.disabled=true;const lbl=b.textContent;b.textContent='Enviando…';
-  try{await firebase.database(_gApp()).ref('cu1/solicitudes/'+_gKey(_gUser.email)).set(req);_gState('pend',req);}
+  try{await firebase.database(_gApp()).ref('cu1/solicitudes/'+_gKey(_gUser.email)).set(req);_gState('pend',req);_lwNotifyAdmin(emp?'Solicitud de acceso empresa':'Solicitud de acceso',req.email,emp?[req.empresa,req.contacto,req.tel].filter(Boolean).join(' · '):(req.areas||[]).join(', '));}
   catch(e){console.warn('gSendReq',e);b.disabled=false;b.textContent=lbl;toast('No se pudo enviar. Inténtalo de nuevo.','var(--red)');}
 }
 async function gSwitchAccount(){try{if(window._gAuthObj)await window._gAuthObj.signOut();}catch(e){}_gUser=null;document.getElementById('gReqWrap').style.display='none';showLogin();}
@@ -3144,6 +3195,7 @@ function gReqResolve(k,status){try{if(fbDb)fbDb.ref('cu1/solicitudes/'+k).update
 window.gLogin=gLogin;window.gEmpLogin=gEmpLogin;window.gTogglePin=gTogglePin;window.gToggleArea=gToggleArea;window.gSendReq=gSendReq;window.gSwitchAccount=gSwitchAccount;window.gReqApprove=gReqApprove;window.gReqResolve=gReqResolve;
 
 function showLogin(){
+  if(typeof lwSetCtx==='function'&&window._lwCtx!=='staff')lwSetCtx('staff');
   const dot=document.getElementById('devApprovalDot');
   if(dot)dot.style.display=DB._devRequireApproval?'block':'none';
   document.getElementById('loginWrap').style.display='flex';
@@ -13036,6 +13088,8 @@ window.applyEmpLoginLang=applyEmpLoginLang;
 window.openEmpLangPicker=openEmpLangPicker;
 window.empSetLang=empSetLang;
 function openEmpresaLogin(){
+  var lw=document.getElementById('loginWrap'),s0=document.getElementById('loginStep0'),c0=document.getElementById('loginCard0'),lr=document.getElementById('loginStep0LangWrap');
+  if(lw&&s0){lw.style.display='flex';s0.style.display='flex';if(c0)c0.style.display='flex';if(lr)lr.style.display='block';lwSetCtx('empresa');return;}
   var w=document.getElementById('empLoginWrap');
   if(w)w.style.display='flex';
   if(w){w.style.display='flex';var e=document.getElementById('empLoginEmail');if(e)setTimeout(function(){e.focus();},150);}
@@ -13045,7 +13099,7 @@ window.openEmpresaLogin=openEmpresaLogin;
 
 function closeEmpLogin(){
   var w=document.getElementById('empLoginWrap');if(w)w.style.display='none';
-  showLogin();
+  showLogin();if(typeof lwSetCtx==='function')lwSetCtx('staff');
 }
 window.closeEmpLogin=closeEmpLogin;
 
@@ -15505,6 +15559,58 @@ function _saveColW(tab,key,w){
 .gr-st{text-align:center;padding:8px 0 4px}
 .gr-ico{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
 .gr-foot{text-align:center;margin-top:16px}
+
+/* LOGIN v2 — restaurar: borrar este bloque */
+#loginWrap{background:#f4f5f7!important}
+#loginWrap #loginCard0{max-width:420px!important;padding:32px 28px 26px!important;border-radius:22px!important;background:#fff!important;box-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 40px rgba(16,24,40,.08)!important;border:1px solid #eceef2;max-height:none!important;color:#1f2433}
+#loginWrap #loginCard0>div:first-child{margin-bottom:4px!important}
+#loginStep0{gap:14px}
+#lwTitle{font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#1f2433;text-align:center;line-height:1.15;margin-bottom:4px}
+#loginWrap .nk{font-family:inherit;box-shadow:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.lw-seg{display:flex;gap:4px;padding:5px;background:#f2f3f5;border-radius:16px}
+.lw-tab{flex:1;height:42px;border:0;border-radius:12px;background:transparent;color:#2b3040;font-size:15px;font-weight:600;cursor:pointer}
+.lw-tab.on{background:#fff;box-shadow:0 1px 3px rgba(16,24,40,.12)!important}
+.lw-b{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:52px;padding:0 16px;border:1px solid #dfe2e7;border-radius:16px;background:#fff;color:#1f2433;font-size:15px;font-weight:600;cursor:pointer;line-height:1}
+.lw-b:hover:not(:disabled){background:#f7f8fa;border-color:#cfd3da}
+#loginWrap #gBtn{height:52px;border-radius:16px;font-size:15px;font-weight:600;color:#1f2433;width:100%}
+#gBtn .g-ico,#gBtn .g-ico svg{width:20px;height:20px}
+.lw-div{display:flex;align-items:center;gap:14px;color:#4b5263;font-size:13px}
+.lw-div:before,.lw-div:after{content:"";flex:1;height:1px;background:#e8eaee}
+.lw-in{width:100%;height:52px;padding:0 18px;border:1px solid #dfe2e7!important;border-radius:16px!important;background:#fff!important;color:#1f2433!important;font-size:15px!important;font-family:inherit;box-sizing:border-box}
+.lw-in::placeholder{color:#9aa1ad}
+.lw-in:focus{border-color:#7a9aa8!important;outline:none;box-shadow:0 0 0 3px rgba(122,154,168,.18)}
+.lw-pw{position:relative}.lw-pw .lw-in{padding-right:52px}
+.lw-eye{position:absolute;right:6px;top:6px;width:40px;height:40px;border:0;background:none;color:#2b3040;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:10px}
+.lw-eye.on .lw-eye-x{display:none}
+.lw-eye svg{width:22px!important;height:22px!important}
+.lw-tab{transition:background .15s,box-shadow .15s}
+#lwForgotRow{text-align:right;margin-top:-2px}
+.lw-link{background:none;border:0;padding:2px 0;color:#3d6b7a;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#lwRules{border:1px solid #e8eaee;border-radius:16px;padding:12px 14px}
+.lw-rg{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:13px;color:#2b3040}
+.lw-rg span{display:flex;align-items:center;gap:8px}
+.lw-rg span:before{content:"";width:16px;height:16px;border-radius:50%;border:1.5px solid #c9cdd4;flex-shrink:0;box-sizing:border-box}
+.lw-rg span.ok{color:#1e7a5f}.lw-rg span.ok:before{border:0;background:#1e9e78 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/16px}
+.lw-ex{font-size:12px;color:#4b5263;margin-top:8px}
+.lw-msg{font-size:13px;font-weight:600;color:#b3261e;text-align:center}.lw-msg.ok{color:#1e7a5f}
+.lw-pri{margin-top:6px;border:0!important;background:#3d6b7a;color:#fff}
+.lw-pri:hover:not(:disabled){background:#335c69}
+.lw-pri:disabled{background:#a3b9c2;color:#fff;cursor:default}
+.lw-row{display:flex;gap:10px;margin-top:6px;padding-top:16px;border-top:1px solid #eef0f3}
+.lw-row .lw-b{flex:1;min-width:0;font-weight:500;color:#2b3040}
+#loginStep0LangWrap[style*="block"]{display:flex!important}
+#loginLangDrop{margin-top:-4px;border:1px solid #e3e6eb;border-radius:16px!important;max-height:232px;overflow-y:auto;background:#fff}
+#loginLangDrop>div{padding:10px 16px!important;gap:12px!important}
+#loginLangDrop>div:last-child{border-bottom:0!important}
+#loginLangDrop>div>span:nth-child(2){font-size:15px!important}
+#loginLangDrop>div:hover{background:#f7f8fa!important}
+#loginLangBtn.on{border-color:#7a9aa8!important}
+#loginLangBtn.on .lw-caret{transform:rotate(180deg)}
+.lw-caret{transition:transform .15s}
+
+#loginLangBtn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lw-caret{font-size:12px;color:#6b7280;flex-shrink:0}
+@media(max-width:440px){#loginWrap #loginCard0{padding:26px 18px 20px!important}#lwTitle{font-size:28px}}
 </style>
 <div id="gReqWrap"><div class="gr-card">
   <div class="gr-acc" id="grAcc"></div>

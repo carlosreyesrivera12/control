@@ -5,6 +5,20 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-16 · Login v2 (Entrar / Crear cuenta, Sitio Empresa, aviso al admin)
+
+**Punto de restauración:** tag `restore-2026-10-16-antes-login-v2` y copia `backups/INDEX_2026-10-16_antes-login-v2.html`.
+Borrar el bloque CSS `/* LOGIN v2 */` y el bloque JS `LOGIN v2` también deshace el diseño.
+
+- Tarjeta de acceso nueva: título "Bienvenido", pestañas Entrar / Crear cuenta, Google, email + contraseña (ojo para ver), "¿Olvidaste la contraseña?".
+- Crear cuenta: checklist de contraseña (8 caracteres, mayúscula, minúscula, número, carácter) y botón activo solo si se cumple. Envía email de verificación; no se entra hasta verificar.
+- Todos los botones con la misma altura (52px) y ancho; Empresa e Idioma en una fila de dos botones iguales.
+- Menú de idioma desplegable dentro de la tarjeta (ya no flota encima del formulario).
+- Sitio Empresa usa la misma tarjeta (título "Sitio Empresa", botón Volver). Google y email entran como empresa.
+- Aviso por email a carlosreyesrivera12@gmail.com (EmailJS) al crear cuenta y al enviar solicitud de acceso (staff o empresa).
+- Requiere activar Email/contraseña en Firebase → Authentication → Sign-in method.
+- No se tocó ningún dato ni estructura de DB.
+
 ## 2026-10-11 · Rediseño visual (cabecera, menú lateral, detalle lateral, tablas)
 
 **Copia de restauración:** `backups/INDEX_2026-10-11_antes-rediseno.html` (renombrar a `INDEX.html` para volver atrás).
