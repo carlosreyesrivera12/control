@@ -597,8 +597,8 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
       <button type="button" class="nk lw-b lw-pri" id="lwSubmitBtn" disabled onclick="lwSubmit()">Entrar</button>
       <div class="lw-row" id="loginStep0LangWrap">
         <button type="button" class="nk lw-b" id="lwEmpBtn" onclick="lwEmpBtnClick()"><span id="lbl_empresaBtn">EMPRESA</span><span id="lwVolverTxt" style="display:none">Volver</span></button>
-        <select id="loginLangSel" style="display:none"></select>
-        <button type="button" class="nk lw-b" id="loginLangBtn" onclick="lwLangToggle(this)"><span id="loginLangBtnLbl">Idioma</span><span class="lw-caret">▾</span></button>
+        <select id="loginLangSel" class="lw-b lw-sel" aria-label="Idioma" onchange="if(!this._langBound&&this.value)selectLoginLang(this.value)"></select>
+        <button type="button" class="nk lw-b" id="loginLangBtn" style="display:none" onclick="lwLangToggle(this)"><span id="loginLangBtnLbl">Idioma</span><span class="lw-caret">▾</span></button>
       </div>
       <div id="lwLangPanel"><div class="lw-lp-h" onclick="event.stopPropagation()"><span id="lwLangTitle">Idioma</span><button type="button" class="nk lw-lp-x" onclick="lwLangClose()" aria-label="Cerrar">✕</button></div><div id="loginLangDrop" style="display:none"></div></div>
 <div id="gPinBox" style="display:none;margin-top:8px">
@@ -2974,19 +2974,56 @@ let _gUser=null,_gSel=[];
 function _gApp(){if(typeof firebase==='undefined'||!firebase.auth)return null;if(!window._gAppObj){try{window._gAppObj=firebase.app('cu1_gauth');}catch(e){window._gAppObj=firebase.initializeApp(_G_CFG,'cu1_gauth');}window._gAuthObj=firebase.auth(window._gAppObj);}return window._gAppObj;}
 function _gKey(em){return String(em||'').trim().toLowerCase().replace(/\./g,',');}
 function _gErr(m){['gErr','empLoginErr'].forEach(id=>{const e=document.getElementById(id);if(!e)return;e.textContent=m||'';e.style.display=m?'block':'none';});}
-function _gBusy(b){['gBtn','gEmpBtn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;btn.disabled=!!b;const t=btn.querySelector('.g-txt');if(t)t.textContent=b?'Conectando…':(id==='gBtn'?'Continuar con Google':'Google');});}
+function _gBusy(b){['gBtn','gEmpBtn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;btn.disabled=!!b;const t=btn.querySelector('.g-txt');if(t)t.textContent=b?'Conectando…':(id==='gBtn'?(typeof lwT==='function'?lwT().g:'Continuar con Google'):'Google');});}
 function gTogglePin(){const b=document.getElementById('gPinBox'),a=document.getElementById('gAccederBtn'),l=document.getElementById('gPinLink');const show=b.style.display==='none';b.style.display=show?'block':'none';if(a)a.style.display=show?'':'none';if(l)l.textContent=show?'Ocultar acceso con PIN':'Acceder con usuario y PIN';if(show)setTimeout(()=>{const i=document.getElementById('loginIdent');if(i)i.focus();},100);}
 function gEmpLogin(){window._gMode='empresa';gLogin(true);}
 
 // ═══ LOGIN v2: email/contraseña (Firebase Auth) — restaurar: borrar este bloque y el CSS "LOGIN v2" ═══
 var _lwM='in';
+// LOGIN v2.3 — textos traducidos de la tarjeta de acceso
+const LW_I18N={
+es:{w:'Bienvenido',i:'Entrar',u:'Crear cuenta',g:'Continuar con Google',o:'o email',e:'tu@email.com',p:'Contraseña',f:'¿Olvidaste la contraseña?',r:['8 caracteres','Una mayúscula','Una minúscula','Un número','Un carácter'],x:'Ejemplos'},
+en:{w:'Welcome',i:'Sign in',u:'Create account',g:'Continue with Google',o:'or email',e:'you@email.com',p:'Password',f:'Forgot your password?',r:['8 characters','One uppercase','One lowercase','One number','One symbol'],x:'Examples'},
+fr:{w:'Bienvenue',i:'Se connecter',u:'Créer un compte',g:'Continuer avec Google',o:'ou e-mail',e:'vous@email.com',p:'Mot de passe',f:'Mot de passe oublié ?',r:['8 caractères','Une majuscule','Une minuscule','Un chiffre','Un symbole'],x:'Exemples'},
+de:{w:'Willkommen',i:'Anmelden',u:'Konto erstellen',g:'Weiter mit Google',o:'oder E-Mail',e:'du@email.com',p:'Passwort',f:'Passwort vergessen?',r:['8 Zeichen','Ein Großbuchstabe','Ein Kleinbuchstabe','Eine Zahl','Ein Sonderzeichen'],x:'Beispiele'},
+it:{w:'Benvenuto',i:'Accedi',u:'Crea account',g:'Continua con Google',o:'o email',e:'tu@email.com',p:'Password',f:'Password dimenticata?',r:['8 caratteri','Una maiuscola','Una minuscola','Un numero','Un simbolo'],x:'Esempi'},
+pt:{w:'Bem-vindo',i:'Entrar',u:'Criar conta',g:'Continuar com Google',o:'ou email',e:'voce@email.com',p:'Palavra-passe',f:'Esqueceu a palavra-passe?',r:['8 caracteres','Uma maiúscula','Uma minúscula','Um número','Um símbolo'],x:'Exemplos'},
+pl:{w:'Witaj',i:'Zaloguj się',u:'Utwórz konto',g:'Kontynuuj z Google',o:'lub e-mail',e:'ty@email.com',p:'Hasło',f:'Nie pamiętasz hasła?',r:['8 znaków','Wielka litera','Mała litera','Cyfra','Znak specjalny'],x:'Przykłady'},
+ro:{w:'Bun venit',i:'Conectare',u:'Creează cont',g:'Continuă cu Google',o:'sau email',e:'tu@email.com',p:'Parolă',f:'Ai uitat parola?',r:['8 caractere','O majusculă','O minusculă','O cifră','Un simbol'],x:'Exemple'},
+nl:{w:'Welkom',i:'Inloggen',u:'Account aanmaken',g:'Doorgaan met Google',o:'of e-mail',e:'jij@email.com',p:'Wachtwoord',f:'Wachtwoord vergeten?',r:['8 tekens','Een hoofdletter','Een kleine letter','Een cijfer','Een symbool'],x:'Voorbeelden'},
+hu:{w:'Üdvözöljük',i:'Belépés',u:'Fiók létrehozása',g:'Folytatás Google-lel',o:'vagy e-mail',e:'te@email.com',p:'Jelszó',f:'Elfelejtette a jelszót?',r:['8 karakter','Egy nagybetű','Egy kisbetű','Egy szám','Egy szimbólum'],x:'Példák'},
+cs:{w:'Vítejte',i:'Přihlásit',u:'Vytvořit účet',g:'Pokračovat přes Google',o:'nebo e-mail',e:'vy@email.com',p:'Heslo',f:'Zapomněli jste heslo?',r:['8 znaků','Velké písmeno','Malé písmeno','Číslice','Symbol'],x:'Příklady'},
+hr:{w:'Dobrodošli',i:'Prijava',u:'Izradi račun',g:'Nastavi s Googleom',o:'ili e-pošta',e:'vi@email.com',p:'Lozinka',f:'Zaboravili ste lozinku?',r:['8 znakova','Veliko slovo','Malo slovo','Broj','Simbol'],x:'Primjeri'},
+uk:{w:'Ласкаво просимо',i:'Увійти',u:'Створити акаунт',g:'Продовжити з Google',o:'або email',e:'vy@email.com',p:'Пароль',f:'Забули пароль?',r:['8 символів','Велика літера','Мала літера','Цифра','Спецсимвол'],x:'Приклади'},
+ru:{w:'Добро пожаловать',i:'Войти',u:'Создать аккаунт',g:'Продолжить с Google',o:'или email',e:'vy@email.com',p:'Пароль',f:'Забыли пароль?',r:['8 символов','Заглавная буква','Строчная буква','Цифра','Спецсимвол'],x:'Примеры'},
+tr:{w:'Hoş geldiniz',i:'Giriş yap',u:'Hesap oluştur',g:'Google ile devam et',o:'veya e-posta',e:'siz@email.com',p:'Şifre',f:'Şifrenizi mi unuttunuz?',r:['8 karakter','Bir büyük harf','Bir küçük harf','Bir rakam','Bir sembol'],x:'Örnekler'},
+ar:{w:'مرحبًا',i:'تسجيل الدخول',u:'إنشاء حساب',g:'المتابعة باستخدام Google',o:'أو البريد الإلكتروني',e:'you@email.com',p:'كلمة المرور',f:'نسيت كلمة المرور؟',r:['8 أحرف','حرف كبير','حرف صغير','رقم','رمز'],x:'أمثلة'},
+sv:{w:'Välkommen',i:'Logga in',u:'Skapa konto',g:'Fortsätt med Google',o:'eller e-post',e:'du@email.com',p:'Lösenord',f:'Glömt lösenordet?',r:['8 tecken','En versal','En gemen','En siffra','En symbol'],x:'Exempel'},
+fi:{w:'Tervetuloa',i:'Kirjaudu',u:'Luo tili',g:'Jatka Googlella',o:'tai sähköposti',e:'sina@email.com',p:'Salasana',f:'Unohditko salasanan?',r:['8 merkkiä','Iso kirjain','Pieni kirjain','Numero','Erikoismerkki'],x:'Esimerkit'},
+el:{w:'Καλώς ήρθατε',i:'Σύνδεση',u:'Δημιουργία λογαριασμού',g:'Συνέχεια με Google',o:'ή email',e:'esy@email.com',p:'Κωδικός',f:'Ξεχάσατε τον κωδικό;',r:['8 χαρακτήρες','Ένα κεφαλαίο','Ένα πεζό','Ένας αριθμός','Ένα σύμβολο'],x:'Παραδείγματα'},
+bg:{w:'Добре дошли',i:'Вход',u:'Създай акаунт',g:'Продължи с Google',o:'или имейл',e:'vie@email.com',p:'Парола',f:'Забравена парола?',r:['8 символа','Главна буква','Малка буква','Цифра','Символ'],x:'Примери'},
+sk:{w:'Vitajte',i:'Prihlásiť',u:'Vytvoriť účet',g:'Pokračovať cez Google',o:'alebo e-mail',e:'vy@email.com',p:'Heslo',f:'Zabudli ste heslo?',r:['8 znakov','Veľké písmeno','Malé písmeno','Číslica','Symbol'],x:'Príklady'},
+sl:{w:'Dobrodošli',i:'Prijava',u:'Ustvari račun',g:'Nadaljuj z Googlom',o:'ali e-pošta',e:'vi@email.com',p:'Geslo',f:'Ste pozabili geslo?',r:['8 znakov','Velika črka','Mala črka','Številka','Simbol'],x:'Primeri'}};
+function lwT(){const c=(typeof pendingLangCode!=='undefined'&&pendingLangCode)||(typeof CUR_LANG!=='undefined'&&CUR_LANG)||'es';return LW_I18N[c]||LW_I18N.en;}
+function lwApplyLang(){try{const t=lwT(),$=id=>document.getElementById(id);if(!$('lwTabIn'))return;
+  $('lwTabIn').textContent=t.i;$('lwTabUp').textContent=t.u;
+  const g=$('gBtnTxt');if(g&&g.textContent!=='Conectando…')g.textContent=t.g;
+  const dv=document.querySelector('#loginStep0 .lw-div span');if(dv)dv.textContent=t.o;
+  $('lwEmail').placeholder=t.e;$('lwPass').placeholder=t.p;
+  const fl=document.querySelector('#lwForgotRow .lw-link');if(fl)fl.textContent=t.f;
+  document.querySelectorAll('#lwRules [data-r]').forEach((el,i)=>{el.textContent=t.r[i]||el.textContent;});
+  const ex=document.querySelector('#lwRules .lw-ex');if(ex)ex.textContent=t.x+': Rampa#25 · Fira!Bcn7 · Truck9@x';
+  if(window._lwCtx==='empresa'){const et=$('empLoginTitle');$('lwTitle').textContent=(et&&et.textContent.trim())||'Sitio Empresa';const vb=$('empVolverBtn'),v=$('lwVolverTxt');if(v&&vb)v.textContent=vb.textContent.trim()||v.textContent;}
+  else $('lwTitle').textContent=t.w;
+  const b=$('lwSubmitBtn');if(b&&b.textContent!=='Conectando…')b.textContent=_lwM==='up'?t.u:t.i;
+}catch(e){console.warn('lwApplyLang',e);}}
 function lwMode(m){_lwM=m;document.getElementById('lwTabIn').classList.toggle('on',m==='in');document.getElementById('lwTabUp').classList.toggle('on',m==='up');
   document.getElementById('lwRules').classList.toggle('lw-off',m!=='up');document.getElementById('lwForgotRow').classList.toggle('lw-off',m!=='in');
   document.getElementById('lwPass').setAttribute('autocomplete',m==='up'?'new-password':'current-password');_gErr('');lwCheck();}
 function _lwRules(p){return {len:p.length>=8,up:/[A-ZÁÉÍÓÚÑ]/.test(p),lo:/[a-záéíóúñ]/.test(p),num:/\d/.test(p),sp:/[^A-Za-z0-9ÁÉÍÓÚÑáéíóúñ]/.test(p)};}
 function lwCheck(){const e=document.getElementById('lwEmail').value.trim(),p=document.getElementById('lwPass').value,b=document.getElementById('lwSubmitBtn');
   const r=_lwRules(p);document.querySelectorAll('#lwRules [data-r]').forEach(el=>el.classList.toggle('ok',!!r[el.dataset.r]));
-  const okE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);b.disabled=_lwM==='up'?!(okE&&Object.values(r).every(Boolean)):!(okE&&p.length>0);b.textContent=_lwM==='up'?'Crear cuenta':'Entrar';}
+  const okE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);b.disabled=_lwM==='up'?!(okE&&Object.values(r).every(Boolean)):!(okE&&p.length>0);b.textContent=_lwM==='up'?lwT().u:lwT().i;}
 function lwEye(btn){const i=document.getElementById('lwPass');const show=i.type==='password';i.type=show?'text':'password';btn.classList.toggle('on',show);}
 function _lwMsg(m,ok){const e=document.getElementById('gErr');e.textContent=m||'';e.style.display=m?'block':'none';e.classList.toggle('ok',!!ok);}
 function _lwErrTxt(c){return ({'auth/invalid-credential':'Email o contraseña incorrectos.','auth/wrong-password':'Email o contraseña incorrectos.','auth/user-not-found':'Email o contraseña incorrectos.','auth/invalid-login-credentials':'Email o contraseña incorrectos.','auth/email-already-in-use':'Ese email ya tiene cuenta. Usa Entrar.','auth/weak-password':'La contraseña es demasiado débil.','auth/invalid-email':'Email no válido.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos.','auth/network-request-failed':'Sin conexión. Revisa la red.','auth/operation-not-allowed':'El acceso con email no está activado en Firebase.'})[c]||'No se pudo completar. Inténtalo de nuevo.';}
@@ -3018,7 +3055,7 @@ function lwSetCtx(c){window._lwCtx=c;const emp=c==='empresa';
   if(t)t.textContent=emp?((et&&et.textContent.trim())||'Sitio Empresa'):'Bienvenido';
   const v=document.getElementById('lwVolverTxt');if(v){v.textContent=(vb&&vb.textContent.trim())||'Volver';v.style.display=emp?'':'none';}
   const l=document.getElementById('lbl_empresaBtn');if(l)l.style.display=emp?'none':'';
-  _gErr('');lwMode('in');}
+  _gErr('');lwMode('in');lwApplyLang();}
 function lwEmpBtnClick(){if(window._lwCtx==='empresa'){lwSetCtx('staff');}else{loginChoose('empresa');}}
 function lwGoogle(){if(window._lwCtx==='empresa')gEmpLogin();else gLogin();}
 // Aviso al admin por email (EmailJS, plantilla existente)
@@ -12617,6 +12654,7 @@ LANGS_UI.forEach(function(l){
 });
 
 function applyLoginScreenLang(){
+  setTimeout(function(){if(typeof lwApplyLang==='function')lwApplyLang();},0);
   var code = CUR_LANG || 'es';
   var t = function(k){ return (I18N[code]&&I18N[code][k]) || (I18N.es&&I18N.es[k]) || k; };
   var p = function(k){ return (PI18N[code]&&PI18N[code][k]) || (PI18N.es&&PI18N.es[k]) || k; };
@@ -15635,6 +15673,14 @@ function _saveColW(tab,key,w){
 #loginWrap .lw-tab:focus,#loginWrap .lw-tab:focus-visible,#loginWrap #loginLangBtn:focus,#loginWrap #lwEmpBtn:focus{outline:none!important;box-shadow:none!important}
 #loginWrap .lw-tab.on:focus{box-shadow:0 1px 3px rgba(16,24,40,.12)!important}
 .lw-tab,.lw-caret{transition:none!important}
+/* LOGIN v2.3: idioma = selector nativo, sin panel */
+#loginWrap .lw-sel{-webkit-appearance:none;appearance:none;flex:1;min-width:0;font-family:inherit;font-weight:500;color:#2b3040;text-align:center;text-align-last:center;padding:0 34px 0 16px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;cursor:pointer;outline:none}
+#loginWrap .lw-sel:hover{background-color:#f7f8fa;border-color:#cfd3da}
+#loginWrap .lw-sel:focus-visible{border-color:#7a9aa8;box-shadow:0 0 0 3px rgba(122,154,168,.18)}
+#lwLangPanel{display:none!important}
+#loginStep0LangWrap.lw-row,#loginStep0LangWrap.lw-row[style*="block"]{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+#loginStep0LangWrap[style*="none"]{display:none!important}
+.lw-row>.lw-b{width:100%!important;min-width:0!important}
 #loginLangDrop{margin-top:-4px;border:1px solid #e3e6eb;border-radius:16px!important;max-height:232px;overflow-y:auto;background:#fff}
 #loginLangDrop>div{padding:10px 16px!important;gap:12px!important}
 #loginLangDrop>div:last-child{border-bottom:0!important}
