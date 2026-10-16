@@ -589,18 +589,18 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
         <button type="button" class="g-btn nk lw-b" id="gBtn" onclick="lwGoogle()"><span class="g-ico"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="g-txt" id="gBtnTxt">Continuar con Google</span></button>
       </div>
       <div class="lw-div"><span>o email</span></div>
-      <input class="lw-in" id="lwEmail" type="email" placeholder="tu@email.com" autocomplete="email" oninput="lwCheck()" onkeydown="if(event.key==='Enter')document.getElementById('lwPass').focus()">
-      <div class="lw-pw"><input class="lw-in" id="lwPass" type="password" placeholder="Contraseña" autocomplete="current-password" oninput="lwCheck()" onkeydown="if(event.key==='Enter')lwSubmit()"><button type="button" class="nk lw-eye" onclick="lwEye(this)" aria-label="Mostrar contraseña"><svg width="22" height="22" style="width:22px!important;height:22px!important;min-width:22px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><line class="lw-eye-x" x1="3" y1="3" x2="21" y2="21"/></svg></button></div>
-      <div id="lwForgotRow"><button type="button" class="nk lw-link" onclick="lwForgot()">¿Olvidaste la contraseña?</button></div>
-      <div id="lwRules" style="display:none"><div class="lw-rg"><span data-r="len">8 caracteres</span><span data-r="up">Una mayúscula</span><span data-r="lo">Una minúscula</span><span data-r="num">Un número</span><span data-r="sp">Un carácter</span></div><div class="lw-ex">Ejemplos: Rampa#25 · Fira!Bcn7 · Truck9@x</div></div>
-      <div id="gErr" class="lw-msg" style="display:none"></div>
+      <input class="lw-in" id="lwEmail" type="email" placeholder="tu@email.com" autocomplete="email" oninput="lwInput()" onkeydown="if(event.key==='Enter')document.getElementById('lwPass').focus()">
+      <div class="lw-pw"><input class="lw-in" id="lwPass" type="password" placeholder="Contraseña" autocomplete="current-password" oninput="lwInput()" onkeydown="if(event.key==='Enter')lwSubmit()"><button type="button" class="nk lw-eye" onclick="lwEye(this)" aria-label="Mostrar contraseña"><svg width="22" height="22" style="width:22px!important;height:22px!important;min-width:22px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><line class="lw-eye-x" x1="3" y1="3" x2="21" y2="21"/></svg></button></div>
+      <div id="lwSlot"><div id="lwForgotRow"><button type="button" class="nk lw-link" onclick="lwForgot()">¿Olvidaste la contraseña?</button></div>
+      <div id="lwRules" class="lw-off"><div class="lw-rg"><span data-r="len">8 caracteres</span><span data-r="up">Una mayúscula</span><span data-r="lo">Una minúscula</span><span data-r="num">Un número</span><span data-r="sp">Un carácter</span></div><div class="lw-ex">Ejemplos: Rampa#25 · Fira!Bcn7 · Truck9@x</div></div>
+      <div id="gErr" class="lw-msg" style="display:none"></div></div>
       <button type="button" class="nk lw-b lw-pri" id="lwSubmitBtn" disabled onclick="lwSubmit()">Entrar</button>
       <div class="lw-row" id="loginStep0LangWrap">
         <button type="button" class="nk lw-b" id="lwEmpBtn" onclick="lwEmpBtnClick()"><span id="lbl_empresaBtn">EMPRESA</span><span id="lwVolverTxt" style="display:none">Volver</span></button>
         <select id="loginLangSel" style="display:none"></select>
         <button type="button" class="nk lw-b" id="loginLangBtn" onclick="lwLangToggle(this)"><span id="loginLangBtnLbl">Idioma</span><span class="lw-caret">▾</span></button>
       </div>
-      <div id="loginLangDrop" style="display:none"></div>
+      <div id="lwLangPanel"><div class="lw-lp-h" onclick="event.stopPropagation()"><span id="lwLangTitle">Idioma</span><button type="button" class="nk lw-lp-x" onclick="lwLangClose()" aria-label="Cerrar">✕</button></div><div id="loginLangDrop" style="display:none"></div></div>
 <div id="gPinBox" style="display:none;margin-top:8px">
         <div class="fg" style="margin-bottom:10px">
           <span class="flbl" id="lbl_loginIdent0">Usuario o email</span>
@@ -2981,7 +2981,7 @@ function gEmpLogin(){window._gMode='empresa';gLogin(true);}
 // ═══ LOGIN v2: email/contraseña (Firebase Auth) — restaurar: borrar este bloque y el CSS "LOGIN v2" ═══
 var _lwM='in';
 function lwMode(m){_lwM=m;document.getElementById('lwTabIn').classList.toggle('on',m==='in');document.getElementById('lwTabUp').classList.toggle('on',m==='up');
-  document.getElementById('lwRules').style.display=m==='up'?'block':'none';document.getElementById('lwForgotRow').style.display=m==='in'?'block':'none';
+  document.getElementById('lwRules').classList.toggle('lw-off',m!=='up');document.getElementById('lwForgotRow').classList.toggle('lw-off',m!=='in');
   document.getElementById('lwPass').setAttribute('autocomplete',m==='up'?'new-password':'current-password');_gErr('');lwCheck();}
 function _lwRules(p){return {len:p.length>=8,up:/[A-ZÁÉÍÓÚÑ]/.test(p),lo:/[a-záéíóúñ]/.test(p),num:/\d/.test(p),sp:/[^A-Za-z0-9ÁÉÍÓÚÑáéíóúñ]/.test(p)};}
 function lwCheck(){const e=document.getElementById('lwEmail').value.trim(),p=document.getElementById('lwPass').value,b=document.getElementById('lwSubmitBtn');
@@ -3005,8 +3005,10 @@ async function lwForgot(){const em=document.getElementById('lwEmail').value.trim
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){_lwMsg('Escribe tu email y vuelve a pulsar.');document.getElementById('lwEmail').focus();return;}
   if(!_gApp())return;try{await window._gAuthObj.sendPasswordResetEmail(em);}catch(e){if(e&&e.code==='auth/network-request-failed'){_lwMsg(_lwErrTxt(e.code));return;}}
   _lwMsg('Si el email tiene cuenta, recibirás un enlace para cambiar la contraseña.',true);}
-function lwLangToggle(btn){const d=document.getElementById('loginLangDrop');const open=d.style.display==='none';d.style.display=open?'block':'none';btn.classList.toggle('on',open);
-  if(open){const sel=d.querySelector('div[style*="f0f8ff"]');if(sel)d.scrollTop=sel.offsetTop-d.offsetTop-40;setTimeout(()=>d.scrollIntoView({block:'nearest',behavior:'smooth'}),30);}}
+function lwLangToggle(btn){const d=document.getElementById('loginLangDrop');if(d.style.display!=='none'){d.style.display='none';return;}
+  d.style.display='block';const sel=d.querySelector('div[style*="f0f8ff"]');d.scrollTop=sel?Math.max(0,sel.offsetTop-d.offsetTop-8):0;}
+function lwLangClose(){const d=document.getElementById('loginLangDrop');if(d)d.style.display='none';}
+function lwInput(){const e=document.getElementById('gErr');if(e&&e.style.display!=='none')_lwMsg('');lwCheck();}
 document.addEventListener('click',function(){const d=document.getElementById('loginLangDrop'),b=document.getElementById('loginLangBtn');if(b&&d&&d.style.display==='none')b.classList.remove('on');});
 // Contexto staff / empresa sobre la misma tarjeta
 window._lwCtx='staff';
@@ -15615,6 +15617,24 @@ function _saveColW(tab,key,w){
 #loginWrap .nk:focus{outline:none!important}
 #loginWrap .nk:focus-visible{outline:2px solid #7a9aa8!important;outline-offset:2px}
 @media(max-height:700px){#loginWrap #loginCard0>div:first-child svg{width:40px!important;height:40px!important}#lwTitle{font-size:24px!important}#loginStep0{gap:8px!important}}
+/* LOGIN v2.2: sin saltos — altura fija, idioma como panel dentro de la tarjeta */
+#loginStep0{position:relative}
+#lwSlot{display:grid;min-height:118px}
+#lwSlot>*{grid-area:1/1;align-self:start}
+#lwSlot #lwForgotRow{text-align:right;margin:0}
+#lwSlot #gErr{align-self:center;padding:0 6px}
+.lw-off,.lw-off *,#lwSlot:has(#gErr[style*="block"])>:not(#gErr),#lwSlot:has(#gErr[style*="block"])>:not(#gErr) *{visibility:hidden!important;pointer-events:none}
+#lwSlot #lwForgotRow.lw-off,#lwSlot:has(#gErr[style*="block"]) #lwForgotRow{display:none!important}
+#loginWrap .lw-tab,#loginWrap .lw-tab:focus,#loginWrap .lw-tab:active,#loginWrap .lw-tab:hover{color:#2b3040!important}
+#lwLangPanel{display:flex;flex-direction:column;position:absolute;inset:0;z-index:5;background:#fff}
+#lwLangPanel:has(#loginLangDrop[style*="none"]){display:none}
+.lw-lp-h{display:flex;align-items:center;justify-content:space-between;height:38px;margin-bottom:10px;font-size:15px;font-weight:600;color:#1f2433}
+.lw-lp-x{width:38px;height:38px;border:1px solid #dfe2e7;border-radius:12px;background:#fff;color:#4b5263;font-size:14px;cursor:pointer}
+#lwLangPanel #loginLangDrop{flex:1;min-height:0;max-height:none!important;margin:0!important;display:block}
+#lwLangPanel #loginLangDrop[style*="none"]{display:none!important}
+#loginWrap .lw-tab:focus,#loginWrap .lw-tab:focus-visible,#loginWrap #loginLangBtn:focus,#loginWrap #lwEmpBtn:focus{outline:none!important;box-shadow:none!important}
+#loginWrap .lw-tab.on:focus{box-shadow:0 1px 3px rgba(16,24,40,.12)!important}
+.lw-tab,.lw-caret{transition:none!important}
 #loginLangDrop{margin-top:-4px;border:1px solid #e3e6eb;border-radius:16px!important;max-height:232px;overflow-y:auto;background:#fff}
 #loginLangDrop>div{padding:10px 16px!important;gap:12px!important}
 #loginLangDrop>div:last-child{border-bottom:0!important}
