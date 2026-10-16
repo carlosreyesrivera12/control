@@ -17,6 +17,7 @@ Borrar el bloque CSS `/* LOGIN v2 */` y el bloque JS `LOGIN v2` también deshace
 - Sitio Empresa usa la misma tarjeta (título "Sitio Empresa", botón Volver). Google y email entran como empresa.
 - Aviso por email a carlosreyesrivera12@gmail.com (EmailJS) al crear cuenta y al enviar solicitud de acceso (staff o empresa).
 - Requiere activar Email/contraseña en Firebase → Authentication → Sign-in method.
+- v2.1: tarjeta más compacta (cabe en ventanas bajas), scroll correcto si no cabe, sin anillo azul al pulsar pestañas.
 - No se tocó ningún dato ni estructura de DB.
 
 ## 2026-10-11 · Rediseño visual (cabecera, menú lateral, detalle lateral, tablas)

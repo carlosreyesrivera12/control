@@ -15599,6 +15599,22 @@ function _saveColW(tab,key,w){
 .lw-row{display:flex;gap:10px;margin-top:6px;padding-top:16px;border-top:1px solid #eef0f3}
 .lw-row .lw-b{flex:1;min-width:0;font-weight:500;color:#2b3040}
 #loginStep0LangWrap[style*="block"]{display:flex!important}
+/* LOGIN v2.1: compacto, scroll seguro, sin anillo de foco al pulsar */
+#loginWrap{justify-content:flex-start!important;padding:16px!important}
+#loginWrap #loginCard0{margin:auto!important;padding:24px 26px 22px!important;flex-shrink:0}
+#loginWrap #loginCard0>div:first-child svg{width:52px!important;height:52px!important}
+#loginWrap #loginCard0>div:first-child #v5SecretBtn{font-size:19px!important}
+#lwTitle{font-size:28px!important;margin:2px 0 2px!important}
+#loginStep0{gap:10px!important}
+.lw-tab{height:38px!important}
+.lw-b,#loginWrap #gBtn,.lw-in{height:46px!important;border-radius:14px!important}
+.lw-eye{top:3px!important}
+#lwRules{padding:10px 12px!important}.lw-rg{gap:4px 12px!important}.lw-ex{margin-top:6px!important}
+.lw-pri{margin-top:2px!important}
+.lw-row{margin-top:2px!important;padding-top:12px!important}
+#loginWrap .nk:focus{outline:none!important}
+#loginWrap .nk:focus-visible{outline:2px solid #7a9aa8!important;outline-offset:2px}
+@media(max-height:700px){#loginWrap #loginCard0>div:first-child svg{width:40px!important;height:40px!important}#lwTitle{font-size:24px!important}#loginStep0{gap:8px!important}}
 #loginLangDrop{margin-top:-4px;border:1px solid #e3e6eb;border-radius:16px!important;max-height:232px;overflow-y:auto;background:#fff}
 #loginLangDrop>div{padding:10px 16px!important;gap:12px!important}
 #loginLangDrop>div:last-child{border-bottom:0!important}
