@@ -17,6 +17,7 @@ Borrar el bloque CSS `/* LOGIN v2 */` y el bloque JS `LOGIN v2` también deshace
 - Sitio Empresa usa la misma tarjeta (título "Sitio Empresa", botón Volver). Google y email entran como empresa.
 - Aviso por email a carlosreyesrivera12@gmail.com (EmailJS) al crear cuenta y al enviar solicitud de acceso (staff o empresa).
 - Requiere activar Email/contraseña en Firebase → Authentication → Sign-in method.
+- v2.4: idioma con menú propio de la web (se abre sobre el botón, con ✓ en el actual; cierra con clic fuera o Esc). Ojo de contraseña estándar: ojo = mostrar, ojo tachado = ocultar.
 - v2.3: idioma con selector nativo (sin panel ni lista encima). Todos los textos de la tarjeta se traducen a los 22 idiomas. Empresa e Idioma mismo ancho.
 - v2.2: la tarjeta no se mueve al cambiar Entrar/Crear cuenta ni con errores (altura fija). Idioma abre como panel dentro de la tarjeta, sin desplazar nada.
 - v2.1: tarjeta más compacta (cabe en ventanas bajas), scroll correcto si no cabe, sin anillo azul al pulsar pestañas.

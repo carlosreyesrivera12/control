@@ -597,8 +597,8 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
       <button type="button" class="nk lw-b lw-pri" id="lwSubmitBtn" disabled onclick="lwSubmit()">Entrar</button>
       <div class="lw-row" id="loginStep0LangWrap">
         <button type="button" class="nk lw-b" id="lwEmpBtn" onclick="lwEmpBtnClick()"><span id="lbl_empresaBtn">EMPRESA</span><span id="lwVolverTxt" style="display:none">Volver</span></button>
-        <select id="loginLangSel" class="lw-b lw-sel" aria-label="Idioma" onchange="if(!this._langBound&&this.value)selectLoginLang(this.value)"></select>
-        <button type="button" class="nk lw-b" id="loginLangBtn" style="display:none" onclick="lwLangToggle(this)"><span id="loginLangBtnLbl">Idioma</span><span class="lw-caret">▾</span></button>
+        <select id="loginLangSel" style="display:none" onchange="if(!this._langBound&&this.value)selectLoginLang(this.value)"></select>
+        <div class="lw-lwrap"><div id="lwLangMenu" role="listbox" hidden></div><button type="button" class="nk lw-b" id="loginLangBtn" aria-haspopup="listbox" onclick="lwMenuToggle(event)"><span id="loginLangBtnLbl">Idioma</span><span class="lw-caret">▾</span></button></div>
       </div>
       <div id="lwLangPanel"><div class="lw-lp-h" onclick="event.stopPropagation()"><span id="lwLangTitle">Idioma</span><button type="button" class="nk lw-lp-x" onclick="lwLangClose()" aria-label="Cerrar">✕</button></div><div id="loginLangDrop" style="display:none"></div></div>
 <div id="gPinBox" style="display:none;margin-top:8px">
@@ -3044,6 +3044,17 @@ async function lwForgot(){const em=document.getElementById('lwEmail').value.trim
   _lwMsg('Si el email tiene cuenta, recibirás un enlace para cambiar la contraseña.',true);}
 function lwLangToggle(btn){const d=document.getElementById('loginLangDrop');if(d.style.display!=='none'){d.style.display='none';return;}
   d.style.display='block';const sel=d.querySelector('div[style*="f0f8ff"]');d.scrollTop=sel?Math.max(0,sel.offsetTop-d.offsetTop-8):0;}
+
+function lwMenuBuild(){const m=document.getElementById('lwLangMenu');if(!m||typeof LANGS_UI==='undefined')return;const cur=(typeof pendingLangCode!=='undefined'&&pendingLangCode)||'es';
+  m.innerHTML='';LANGS_UI.forEach(l=>{const b=document.createElement('button');b.type='button';b.className='nk lw-mi'+(l.code===cur?' on':'');b.setAttribute('role','option');
+    const f=document.createElement('span');f.className='lw-mf';if(l.flag.includes('<svg'))f.innerHTML=l.flag;else f.textContent=l.flag;
+    const n=document.createElement('span');n.className='lw-mn';n.textContent=l.name;const c=document.createElement('span');c.className='lw-mc';c.textContent=l.code===cur?'✓':'';
+    b.append(f,n,c);b.onclick=e=>{e.stopPropagation();lwMenuClose();if(l.code!==cur)selectLoginLang(l.code);};m.appendChild(b);});}
+function lwMenuToggle(e){if(e)e.stopPropagation();const m=document.getElementById('lwLangMenu');if(!m)return;if(!m.hidden){lwMenuClose();return;}
+  lwMenuBuild();m.hidden=false;document.getElementById('loginLangBtn').classList.add('on');const s=m.querySelector('.on');if(s)m.scrollTop=s.offsetTop-m.clientHeight/2+s.offsetHeight/2;}
+function lwMenuClose(){const m=document.getElementById('lwLangMenu');if(m)m.hidden=true;const b=document.getElementById('loginLangBtn');if(b)b.classList.remove('on');}
+document.addEventListener('click',e=>{const m=document.getElementById('lwLangMenu');if(m&&!m.hidden&&!m.contains(e.target))lwMenuClose();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')lwMenuClose();});
 function lwLangClose(){const d=document.getElementById('loginLangDrop');if(d)d.style.display='none';}
 function lwInput(){const e=document.getElementById('gErr');if(e&&e.style.display!=='none')_lwMsg('');lwCheck();}
 document.addEventListener('click',function(){const d=document.getElementById('loginLangDrop'),b=document.getElementById('loginLangBtn');if(b&&d&&d.style.display==='none')b.classList.remove('on');});
@@ -15621,7 +15632,7 @@ function _saveColW(tab,key,w){
 .lw-in:focus{border-color:#7a9aa8!important;outline:none;box-shadow:0 0 0 3px rgba(122,154,168,.18)}
 .lw-pw{position:relative}.lw-pw .lw-in{padding-right:52px}
 .lw-eye{position:absolute;right:6px;top:6px;width:40px;height:40px;border:0;background:none;color:#2b3040;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:10px}
-.lw-eye.on .lw-eye-x{display:none}
+
 .lw-eye svg{width:22px!important;height:22px!important}
 .lw-tab{transition:background .15s,box-shadow .15s}
 #lwForgotRow{text-align:right;margin-top:-2px}
@@ -15677,6 +15688,23 @@ function _saveColW(tab,key,w){
 #loginWrap .lw-sel{-webkit-appearance:none;appearance:none;flex:1;min-width:0;font-family:inherit;font-weight:500;color:#2b3040;text-align:center;text-align-last:center;padding:0 34px 0 16px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;cursor:pointer;outline:none}
 #loginWrap .lw-sel:hover{background-color:#f7f8fa;border-color:#cfd3da}
 #loginWrap .lw-sel:focus-visible{border-color:#7a9aa8;box-shadow:0 0 0 3px rgba(122,154,168,.18)}
+/* LOGIN v2.4: menú de idioma propio (popover sobre el botón), ojo estándar */
+.lw-lwrap{position:relative;min-width:0}
+.lw-lwrap>#loginLangBtn{width:100%!important}
+#lwLangMenu{position:absolute;right:0;bottom:calc(100% + 6px);width:max(100%,220px);max-height:280px;overflow-y:auto;background:#fff;border:1px solid #e3e6eb;border-radius:14px;box-shadow:0 10px 30px rgba(16,24,40,.14);padding:6px;z-index:20}
+#lwLangMenu[hidden]{display:none}
+.lw-mi{display:flex;align-items:center;gap:10px;width:100%;height:38px;padding:0 10px;border:0;border-radius:10px;background:none;color:#2b3040;font-size:14px;font-family:inherit;text-align:left;cursor:pointer}
+.lw-mi{font-weight:400!important}
+.lw-mi:hover{background:#f3f4f6}
+.lw-mi.on{font-weight:600!important;color:#1f2433}
+.lw-eye:hover{background:#f3f4f6}
+.lw-mf{width:20px;display:inline-flex;justify-content:center;flex-shrink:0}.lw-mf svg{width:18px;height:13px}
+.lw-mn{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lw-mc{width:16px;color:#3d6b7a;font-weight:700;flex-shrink:0}
+#loginLangBtn{display:flex!important}
+#loginLangBtn.on{border-color:#7a9aa8!important}
+.lw-eye .lw-eye-x{display:none}
+.lw-eye.on .lw-eye-x{display:inline!important}
 #lwLangPanel{display:none!important}
 #loginStep0LangWrap.lw-row,#loginStep0LangWrap.lw-row[style*="block"]{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
 #loginStep0LangWrap[style*="none"]{display:none!important}
