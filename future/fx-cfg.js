@@ -221,6 +221,7 @@ function ocrPanel(){
   h+='<h3 class="fx-h3">'+t('ocr_7d')+'</h3><div class="fx-bars">'+by.map(function(x){var r=x.n?Math.round(x.ok/x.n*100):0;return '<div class="fx-barrow"><span class="fx-num">'+E(FX.dayLbl(x.d))+'</span><i><em style="width:'+Math.round(x.n/mx*100)+'%"><s style="width:'+(x.n?Math.round(x.ok/x.n*100):0)+'%"></s></em></i><b class="fx-num">'+x.n+'</b><span class="fx-num">'+(x.n?r+'%':'–')+'</span></div>';}).join('')+'</div>';
   var rec=st.slice().reverse().slice(0,10);
   h+='<h3 class="fx-h3">'+t('ocr_last')+'</h3><ul class="fx-vl">'+rec.map(function(s){var d=s.ts?new Date(s.ts):null;return '<li>'+(s.matricula?U.plate(s.matricula,'','sm'):U.dash)+'<span class="fx-grow"><small style="margin:0">'+E((s.servicio==='local'?t('ocr_local'):t('ocr_vision'))+(d?' · '+FX.dayLbl(s.fecha||'')+', '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2):''))+'</small></span>'+U.st(s.exito?'in':'blk',t(s.exito?'ocr_ok':'ocr_ko'))+'</li>';}).join('')+'</ul>';
+  h+='<div class="fx-bar" style="justify-content:flex-end;margin-top:16px">'+U.btn('ocr.reset',I.restore,t('ocr_reset'),'dng sm')+'</div>';
   return h;
 }
 function usRender(){

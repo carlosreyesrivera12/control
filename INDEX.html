@@ -663,7 +663,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
         <button class="nk" onclick="numPress('7')">7</button><button class="nk" onclick="numPress('8')">8</button><button class="nk" onclick="numPress('9')">9</button>
         <button class="nk" onclick="numPress('del')" style="font-size:14px">⌫</button><button class="nk" onclick="numPress('0')">0</button><button class="nk btn-p" onclick="numPress('ok')">OK</button>
       </div>
-      <div id="pinErr" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-top:8px">${tr('pinIncorrecto')}</div>
+      <div id="pinErr" data-i18n="pinIncorrecto" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-top:8px">PIN incorrecto</div>
     </div>
   </div>
 </div>
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
   <div class="fgrid">
     <div class="fg"><span class="flbl">Fecha <span class="freq">*</span></span><input id="agFecha" type="date"></div>
     <div class="fg"><span class="flbl">Hora planificada <span class="freq">*</span></span><input id="agHora" type="time"></div>
-    <div class="fg s2" id="agEvWrap"><span class="flbl">${tr('evento')}</span><select id="agEvento" onchange="onAgEventoChange()" style="font-weight:700"><option value="">— Sin evento —</option></select></div>
+    <div class="fg s2" id="agEvWrap"><span class="flbl" data-i18n="evento">Evento</span><select id="agEvento" onchange="onAgEventoChange()" style="font-weight:700"><option value="">— Sin evento —</option></select></div>
     <div class="fg"><span class="flbl">Chofer preregistrado</span><div style="position:relative"><input id="agChoferSearch" data-i18n-ph="phSearchDriver" placeholder="🔍 Buscar chofer..." oninput="searchChoferAg(this.value)" autocomplete="off"><div class="dr" id="agChoferResults"></div></div></div>
     <div class="fg"><span class="flbl" data-i18n="matricula">Matrícula <span class="freq">*</span></span><input id="agMat" style="font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="fg"><span class="flbl" data-i18n="thTrailer">Remolque</span><input id="agRem" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
@@ -767,7 +767,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
     <div class="fg"><span class="flbl">Servicio Descarga/Carga</span><div style="display:flex;gap:4px"><button type="button" class="btn btn-sm btn-gh" id="agDcHand" onclick="setAgDescarga('mano')" style="flex:1">🤾 Handball</button><button type="button" class="btn btn-sm btn-gh" id="agDcFork" onclick="setAgDescarga('maquinaria')" style="flex:1">🏗 Forklift</button></div><input type="hidden" id="agDescarga"></div>
     <div class="fg"><span class="flbl">Conductor</span><input id="agCond"></div>
     <div class="fg"><span class="flbl" data-i18n="empresa">Empresa</span><input id="agEmp"></div>
-    <div class="fg"><span class="flbl">${tr('ingresos')}</span><input id="agRef" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="fg"><span class="flbl" data-i18n="lblRef">Referencia / Booking</span><input id="agRef" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="fg"><span class="flbl">Montador</span><input id="agMontador"></div>
     <div class="fg"><span class="flbl">Expositor</span><input id="agExpositor"></div>
     <div class="fg"><span class="flbl">Hall</span><div style="position:relative"><input id="agHall" placeholder="Hall..." autocomplete="off" oninput="_filterAgHall(this.value)" style="font-weight:700"><div class="dr" id="agHallResults"></div></div></div>
@@ -776,7 +776,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
     <div class="fg"><span class="flbl">Puerta Hall</span><input id="agPuertaHall" data-i18n-ph="phHallDoor" placeholder="Puerta del pabellón"></div>
     <div class="fg"><span class="flbl">Acceso</span><input id="agPuerta"></div>
     <div class="fg"><span class="flbl">Pase</span><select id="agPase"><option value="">--</option><option value="temporal">🎫 Temporal</option><option value="evento">📋 Evento</option><option value="vip">⭐ VIP</option><option value="staff">🔧 Staff</option></select></div>
-    <div class="fg"><span class="flbl" data-i18n="telefono">${tr('telefono')}</span><input id="agTel" type="tel"></div>
+    <div class="fg"><span class="flbl" data-i18n="telefono">Teléfono</span><input id="agTel" type="tel"></div>
     <div class="fg"><span class="flbl">GPS URL</span><input id="agGps" placeholder="https://..."></div>
     <div class="fg"><span class="flbl">Tipo carga</span><select id="agCarga"><option value="">--</option><option value="EF">🔴 EF</option><option value="SUNDAY">🟣 SUNDAY</option><option value="PRIORITY">🟠 PRIORITY</option><option value="GOODS">🟢 GOODS</option><option value="EMPTY">⚪ EMPTY</option></select></div>
     <div class="fg"><span class="flbl">Gasto/Pago</span><select id="agGastoTipo"><option value="">--</option><option value="tarjeta">💳 Tarjeta</option><option value="efectivo">💵 Efectivo</option><option value="ambos">💳💵 Mixto</option></select></div>
@@ -796,10 +796,10 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
     <div class="fg"><span class="flbl">Nombre <span class="freq">*</span></span><input id="fcNom"></div>
     <div class="fg"><span class="flbl">Apellido <span class="freq">*</span></span><input id="fcApe"></div>
     <div class="fg"><span class="flbl" data-i18n="empresa">Empresa</span><input id="fcEmp"></div>
-    <div class="fg"><span class="flbl">${tr('matHabitual')}</span><input id="fcMat" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="fg"><span class="flbl" data-i18n="matHabitual">Matrícula habitual</span><input id="fcMat" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="fg"><span class="flbl">Remolque habitual</span><input id="fcRem" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="fg"><span class="flbl">Hall habitual</span><select id="fcHall"><option value="">--</option><option>1</option><option>2A</option><option>2B</option><option>3A</option><option>3B</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>CS</option></select></div>
-    <div class="fg"><span class="flbl" data-i18n="telefono">${tr('telefono')}</span><div style="display:flex;gap:4px"><input id="fcTelP" list="dlTelP2" style="width:auto;flex-shrink:0;min-width:90px;max-width:110px;font-family:'JetBrains Mono',monospace;font-size:12px" placeholder="+34 ✏"><datalist id="dlTelP2"></datalist><input id="fcTel" type="tel"></div></div>
+    <div class="fg"><span class="flbl" data-i18n="telefono">Teléfono</span><div style="display:flex;gap:4px"><input id="fcTelP" list="dlTelP2" style="width:auto;flex-shrink:0;min-width:90px;max-width:110px;font-family:'JetBrains Mono',monospace;font-size:12px" placeholder="+34 ✏"><datalist id="dlTelP2"></datalist><input id="fcTel" type="tel"></div></div>
     <div class="fg"><span class="flbl">Email</span><input id="fcEmail" type="email"></div>
     <div class="fg"><span class="flbl">Tipo vehículo</span><select id="fcTipoV"><option value="">--</option><option value="camion">🚛 Camión</option><option value="semiremolque">🚚 Semirremolque</option><option value="furgoneta">🚐 Furgoneta</option><option value="trailer">🚛 Trailer</option><option value="coche">🚗 Coche</option></select></div>
     <div class="fg"><span class="flbl">Idioma ficha 🖨</span><select id="fcIdioma"><option value="">--</option></select></div>
@@ -820,7 +820,6 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
       <div class="fg s2"><span class="flbl">GPS URL</span><input id="fcGps" placeholder="https://maps.google.com/..."></div>
       <div class="fg s2"><span class="flbl">Notas</span><textarea id="fcNotas" rows="2"></textarea></div>
     </div>
-  </div>
   <div class="ffoot"><button class="btn btn-gh" onclick="closeOv('mCond')">Cancelar</button><button class="btn btn-p" id="btnCondLbl" onclick="saveCond()">Crear</button></div>
   <input type="hidden" id="fcId">
 </div></div>
@@ -870,7 +869,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
   <div class="modal-section">
     <div class="modal-section-title">📞 Atención al cliente</div>
     <div class="fgrid">
-      <div class="fg"><span class="flbl" data-i18n="telefono">${tr('telefono')}</span><input id="recAtcTel" placeholder="+34 900..."></div>
+      <div class="fg"><span class="flbl" data-i18n="telefono">Teléfono</span><input id="recAtcTel" placeholder="+34 900..."></div>
       <div class="fg"><span class="flbl">Email</span><input id="recAtcEmail" type="email" data-i18n-ph="phVenueEmail" placeholder="info@recinto.com"></div>
       <div class="fg s2"><span class="flbl">Notas / Info adicional</span><textarea id="recAtcNotas" rows="2" data-i18n-ph="phVenueNotes" placeholder="Horarios, web, etc."></textarea></div>
     </div>
@@ -933,7 +932,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
     <div class="fg"><span class="flbl">Conductor</span><input id="eeCond"></div>
     <div class="fg"><span class="flbl" data-i18n="empresa">Empresa</span><input id="eeEmp"></div>
     <div class="fg"><span class="flbl">Hall</span><select id="eeHall"><option value="">--</option><option>1</option><option>2A</option><option>2B</option><option>3A</option><option>3B</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>CS</option></select></div>
-    <div class="fg"><span class="flbl" data-i18n="telefono">${tr('telefono')}</span><input id="eeTel" type="tel"></div>
+    <div class="fg"><span class="flbl" data-i18n="telefono">Teléfono</span><input id="eeTel" type="tel"></div>
     <div class="fg"><span class="flbl">Booking / Ref</span><input id="eeRef"></div>
     <div class="fg s2"><span class="flbl">Notas</span><textarea id="eeNotas" rows="2"></textarea></div>
   </div>
@@ -972,7 +971,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
     <div class="fg"><span class="flbl" data-i18n="frUserLbl">Nombre de usuario <span class="freq">*</span></span><input id="fuUsername" data-i18n-ph="phNoSpaces" placeholder="sin espacios" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')"></div>
     <div class="fg"><span class="flbl">Gmail (acceso con Google)</span><input id="fuEmail" type="email" autocomplete="off" autocapitalize="none" placeholder="nombre@gmail.com"></div>
     <div class="fg" style="display:none"><span class="flbl" data-i18n="passLabel">Contraseña</span><input id="fuPass" type="password" data-i18n-ph="phLeaveEmpty" placeholder="Dejar vacío = no cambia" oninput="checkPassStrength(this.value)"></div>
-    <div class="fg" style="display:none"><span class="flbl" data-i18n="confirmPassLbl">${tr('confirmPassLbl')}</span><input id="fuPass2" type="password" data-i18n-ph="phRepeatPass" placeholder="Repetir contraseña"></div>
+    <div class="fg" style="display:none"><span class="flbl" data-i18n="confirmPassLbl">Confirmar contraseña</span><input id="fuPass2" type="password" data-i18n-ph="phRepeatPass" placeholder="Repetir contraseña"></div>
     <div class="fg"><span class="flbl">PIN de acceso <span class="freq">*</span></span><input id="fuPin" type="password" maxlength="8" inputmode="numeric" placeholder="4 a 8 dígitos"></div>
     <div class="fg"><span class="flbl">Confirmar PIN</span><input id="fuPin2" type="password" maxlength="8" inputmode="numeric" placeholder="Repetir PIN"></div>
     <div id="passStrengthWrap" style="display:none;grid-column:1/-1">
@@ -994,7 +993,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
     <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">PERMISOS</div>
     <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
       <thead><tr style="background:var(--bg2)">
-        <th style="padding:4px 7px;text-align:left;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)"><span id="lbl_permAction">${tr('accion')}</span></th>
+        <th style="padding:4px 7px;text-align:left;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)"><span id="lbl_permAction">Acción</span></th>
         <th style="padding:4px 7px;text-align:left;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)"><span id="lbl_permDesc">Descripción</span></th>
         <th style="padding:4px 7px;text-align:center;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)"><span id="lbl_permActive">Activo</span></th>
       </tr></thead>
@@ -1975,7 +1974,7 @@ function applyLang(){
     'lbl_allRead':'allRead','lbl_noData2':'noData2',
     'lbl_noPlatesYet':'noPlatesYet','lbl_noVehicles':'noVehicles'
   };
-  var _agPh=document.getElementById('agendaSearchPh');if(_agPh)_agPh.placeholder="'+'Matrícula, ref, conductor…'+'";
+  var _agPh=document.getElementById('agendaSearchPh');if(_agPh)_agPh.placeholder="Matrícula, ref, conductor…";
   Object.keys(_staticLabels).forEach(function(id){
     var el=document.getElementById(id);
     if(el)el.textContent=tr(_staticLabels[id]);
@@ -2006,7 +2005,7 @@ function applyLang(){
     var el=document.getElementById(id);if(el)el.textContent=tr(_permDescs[id]);
   });
   // Placeholder búsqueda global
-  var _gs=document.getElementById('globalSearchPh');if(_gs)_gs.placeholder="'+'Buscar posición, matrícula, nombre, empresa, referencia...'+'";
+  var _gs=document.getElementById('globalSearchPh');if(_gs)_gs.placeholder="Buscar posición, matrícula, nombre, empresa, referencia...";
   // Primera configuración — actualizar si está visible
   var _frTitle=document.querySelector('#firstRunWrap [style*="font-size:20px"]');
   if(_frTitle)_frTitle.textContent='Primera configuración';
@@ -2064,7 +2063,7 @@ function applyLang(){
   // Búsqueda referencia (fiMatResults input)
   var _fiMatInput=document.querySelector('#fiMatResults input,[id^=fiMat]');
   var _refSearch=document.getElementById('fiMat');
-  if(_refSearch)_refSearch.placeholder="'+'🔍 Matrícula, nombre o empresa...'+'";
+  if(_refSearch)_refSearch.placeholder="🔍 Matrícula, nombre o empresa...";
 }
 function openLangPicker(){pendingLangCode=CUR_LANG;buildLangGrid('langGrid',pendingLangCode,'selectLang2');document.getElementById('mLangPicker').classList.add('open');}
 function buildLangGrid(gid,sel,fn){
@@ -2341,7 +2340,7 @@ function fmt(ts,m){if(!ts)return'–';var s=String(ts);
   if(mm&&mm.length){s=mm[mm.length-1];}
   else{var md=s.match(/\d{4}-\d{2}-\d{2}/g);if(md&&md.length){s=md[md.length-1];}}
   const d=new Date(s.replace(' ','T'));if(isNaN(d))return s;if(m==='d')return d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'});if(m==='t')return d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});return d.toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
-function addH(ts,h){if(!ts)return null;const d=new Date(String(ts).replace(' ','T'));d.setHours(d.getHours()+h);return d.toISOString().replace('T',' ').slice(0,19);}
+function addH(ts,h){if(!ts)return null;const d=new Date(String(ts).replace(' ','T'));d.setHours(d.getHours()+h);const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
 function addMin(ts,min){if(!ts)return null;const d=new Date(String(ts).replace(' ','T'));if(isNaN(d))return ts;d.setMinutes(d.getMinutes()+min);const pad=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
 function hBadge(h){return h?`<span class="hbadge">${h}</span>`:'–';}
 function sBadge(s){const c=SCFG[s]||{l:s,i:'',cls:'s-fin'};return`<span class="sbadge ${c.cls}">${c.i} ${c.l}</span>`;}
@@ -5934,6 +5933,8 @@ function showIngDetalle(id,source){
   document.getElementById('mIngDetailPrint').onclick=()=>{const _ck=source==='ingresos2'?'ing2':'ing1';_printWithActiveTpl(_ck,i,source==='ingresos2',_ck,'normal');};
   const trqBtn=document.getElementById('mIngDetailPrintTrq');if(trqBtn)trqBtn.onclick=()=>{const cfgK=source==='ingresos2'?'ing2':'ing1';const destK=cfgK+'_rampa';_printWithActiveTpl(cfgK,i,source==='ingresos2',destK,'troquel');};
   document.getElementById('mIngDetailPrint').style.display='';
+  if(trqBtn)trqBtn.style.display='';
+  {const _t=document.getElementById('mIngDetailTitle');if(_t)_t.style.display='none';}
   // ── Botón SALIDA + EDITAR dinámico ──
   const _editFn=()=>{closeOv('mIngDetail');if(source==='ingresos2')openIngModal2(i);else openIngModal(i);};
   (function(){
@@ -7115,7 +7116,7 @@ function renderUsuarios(){
         +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:10px"><thead><tr style="color:var(--text3)"><th style="text-align:left;padding:3px 6px;font-weight:700">'+tr('fecha')+'</th><th style="text-align:right;padding:3px 6px;color:#2563eb">V Int</th><th style="text-align:right;padding:3px 6px;color:#2563eb">V ok</th><th style="text-align:right;padding:3px 6px;color:var(--green)">L Int</th><th style="text-align:right;padding:3px 6px;color:var(--green)">L ok</th><th style="text-align:right;padding:3px 6px;font-weight:800">Total</th><th style="text-align:right;padding:3px 6px;font-weight:800">%ok</th><th style="padding:3px 6px;min-width:60px"></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
         +'<div onclick="var p=this.nextElementSibling;var o=p.style.display===\'none\';p.style.display=o?\'flex\':\'none\'" style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);cursor:pointer;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">v Ultimos escaneos</div>'
         +'<div style="display:none;flex-direction:column;gap:4px;margin-top:8px">'+rHtml+'</div>'
-        +'<div style="display:flex;justify-content:flex-end;margin-top:12px"><button onmouseover="this.style.borderColor=\'var(--red)\';this.style.color=\'var(--red)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text3)\'" style="background:none;border:1px solid var(--border);color:var(--text3);border-radius:20px;padding:4px 12px;font-size:10px;cursor:pointer;font-weight:600" onclick="if(window.DB){DB.ocrStats=[];if(typeof saveDB===\'function\')saveDB();}if(typeof renderUsuarios===\'function\')renderUsuarios()">'+ tr('resetContadores') +'</button></div>'
+        +'<div style="display:flex;justify-content:flex-end;margin-top:12px"><button onmouseover="this.style.borderColor=\'var(--red)\';this.style.color=\'var(--red)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text3)\'" style="background:none;border:1px solid var(--border);color:var(--text3);border-radius:20px;padding:4px 12px;font-size:10px;cursor:pointer;font-weight:600" onclick="if(typeof DB!==\'undefined\'&&DB){DB.ocrStats=[];if(typeof saveDB===\'function\')saveDB();}if(typeof renderUsuarios===\'function\')renderUsuarios()">'+ tr('resetContadores') +'</button></div>'
         +'</div>';
     },80);
   }
@@ -9404,15 +9405,22 @@ function telLink(telPais,tel){
   </div>`;
 }
 // ═══ DETALLE UNIVERSAL (matrícula clic en cualquier tab) ═══
+// Prepara la ventana de detalle para fichas que no son de ingreso (conductor, agenda, vehículo):
+// título visible, botón EDITAR propio y botones de impresión solo si aplican.
+function _detPrep(title,editFn,printFn){
+  const t=document.getElementById('mIngDetailTitle');if(t){t.textContent=title||'';t.style.display=title?'':'none';}
+  const row=document.getElementById('mIngDetailActRow');
+  if(row){row.innerHTML='';if(editFn){const b=document.createElement('button');b.id='mIngDetailEdit';b.className='btn tt';b.setAttribute('data-tip','EDITAR REGISTRO');b.textContent='✏️ EDITAR';b.style.cssText='background:#fff;color:#111;border:1.5px solid #111;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:.5px;text-transform:uppercase;padding:14px 22px';b.onclick=editFn;row.appendChild(b);}}
+  const pr=document.getElementById('mIngDetailPrint');if(pr){pr.style.display=printFn?'':'none';pr.onclick=printFn||null;}
+  const tq=document.getElementById('mIngDetailPrintTrq');if(tq){tq.style.display='none';tq.onclick=null;}
+}
 function showDetalle(id,coleccion){
   const map={ingresos:showIngDetalle,ingresos2:(id)=>showIngDetalle(id,'ingresos2'),agenda:showAgDetalle,conductores:showCondDetalle,vehiculos:showVehDetalle};
   const fn=map[coleccion||'ingresos'];if(fn)fn(id);
 }
 function showAgDetalle(id){
   const a=DB.agenda.find(x=>x.id===id);if(!a)return;
-  document.getElementById('mIngDetailTitle').textContent='📅 '+a.matricula+' · '+a.fecha+' '+a.hora;
-  document.getElementById('mIngDetailPrint').onclick=()=>printAgendaItem(a);
-  document.getElementById('mIngDetailEdit').onclick=()=>{closeOv('mIngDetail');openAgendaModal(a);};
+  _detPrep('📅 '+a.matricula+' · '+a.fecha+' '+a.hora,()=>{closeOv('mIngDetail');openAgendaModal(a);},()=>printAgendaItem(a));
   document.getElementById('mIngDetailBody').innerHTML=`
     <div class="sg sg3" style="margin-bottom:6px">
       <div class="stat-box" style="border-top:#3a4558"><div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900">${a.hora||'–'}</div><div class="stat-l">${tr('fechaPlan')}</div></div>
@@ -9429,9 +9437,7 @@ function showCondDetalle(id){
   const c=DB.conductores.find(x=>x.id===id);if(!c)return;
   const l=LANGS_UI.find(x=>x.code===(c.idioma||'es'));
   const ingCount=DB.ingresos.filter(i=>i.matricula===c.matricula).length+DB.ingresos2.filter(i=>i.matricula===c.matricula).length;
-  document.getElementById('mIngDetailTitle').textContent='👤 '+c.nombre+' '+c.apellido;
-  document.getElementById('mIngDetailPrint').style.display='none';
-  document.getElementById('mIngDetailEdit').onclick=()=>{closeOv('mIngDetail');openCondModal(c);};
+  _detPrep('👤 '+c.nombre+' '+c.apellido,()=>{closeOv('mIngDetail');openCondModal(c);},null);
   document.getElementById('mIngDetailBody').innerHTML=`
     <div class="sg sg3" style="margin-bottom:6px">
       <div class="stat-box" style="border-top:#3a4558"><div class="stat-n">${ingCount}</div><div class="stat-l">${tr('ingresosTotales')}</div></div>
@@ -9446,9 +9452,7 @@ function showCondDetalle(id){
 function showVehDetalle(id){
   const v=DB.vehiculos.find(x=>x.id===id);if(!v)return;
   const ings=[...DB.ingresos,...(DB.ingresos2||[])].filter(i=>i.matricula===v.matricula).sort((a,b)=>(b.entrada||'').localeCompare(a.entrada||'')).slice(0,10);
-  document.getElementById('mIngDetailTitle').textContent='🚛 '+v.matricula;
-  document.getElementById('mIngDetailPrint').style.display='none';
-  document.getElementById('mIngDetailEdit').style.display='none';
+  _detPrep('🚛 '+v.matricula,null,null);
   document.getElementById('mIngDetailBody').innerHTML=`
     <div class="sg sg3" style="margin-bottom:6px">
       <div class="stat-box" style="border-top:#3a4558"><div class="stat-n">${v.ingresos||0}</div><div class="stat-l">${tr('ingresosTotales')}</div></div>
@@ -15744,13 +15748,13 @@ function buCloseMapa(){document.getElementById('buMapaOv').style.display='none';
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buMapaOv');if(o&&o.style.display==='flex')buCloseMapa()}});
 </script>
 <!-- FUTURE 2026-10-17 · interfaz nueva en la pestaña FUTURE (solo SA). No toca datos ni funciones. Quitar: borrar estas líneas FUTURE y la carpeta future/ -->
-<link rel="stylesheet" href="future/fx.css?v=9">
-<script src="future/fx.js?v=9"></script>
-<script src="future/fx-ops.js?v=9"></script>
-<script src="future/fx-log.js?v=9"></script>
-<script src="future/fx-cfg.js?v=9"></script>
-<script src="future/fx-dat.js?v=9"></script>
-<script src="future/fx-sub.js?v=9"></script>
+<link rel="stylesheet" href="future/fx.css?v=10">
+<script src="future/fx.js?v=10"></script>
+<script src="future/fx-ops.js?v=10"></script>
+<script src="future/fx-log.js?v=10"></script>
+<script src="future/fx-cfg.js?v=10"></script>
+<script src="future/fx-dat.js?v=10"></script>
+<script src="future/fx-sub.js?v=10"></script>
 <!-- /FUTURE -->
 </body>
 </html>

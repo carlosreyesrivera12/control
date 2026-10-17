@@ -5,6 +5,16 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · Vista clásica: 5 correcciones
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-fix-clasica` (commit `ffb02cc`).
+
+1. **Reiniciar contadores de lectura de matrículas** (Usuarios): ahora sí borra. Comprobaba `window.DB`, que no existe porque `DB` se declara con `let`. FUTURE vuelve a mostrar el botón, con confirmación.
+2. **Aviso +9 h en SOT** (Embalaje): `addH` devolvía la hora en UTC y se leía como local, así que el aviso salía 2 h antes en verano y 1 h en invierno. Ahora devuelve hora local.
+3. **Ventana de conductor**: sobraba un `</div>` que dejaba Cancelar y Crear fuera de la ventana. Las etiquetas que mostraban `${tr(...)}` (Matrícula habitual, Evento, Referencia, Teléfono, Confirmar contraseña, Acción, PIN incorrecto) ahora muestran el texto y se traducen.
+4. **Ficha de conductor, cita y vehículo**: daban error al abrirse porque buscaban un botón EDITAR que solo existe tras abrir una ficha de ingreso. Ahora tienen título visible, su propio EDITAR (conductor y cita) y no arrastran botones de otra ficha.
+5. **Placeholders**: quitadas las comillas y `+` sobrantes en el buscador de matrícula, búsqueda global y búsqueda de agenda.
+
 ## 2026-10-17 · FUTURE 8.1 (revisión independiente)
 
 **Punto de restauración:** commit `f763ec4` (etapa 8).
