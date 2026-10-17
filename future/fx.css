@@ -908,3 +908,148 @@ body.fx #fxLegacy.fx-hh .fx-ph{margin-bottom:6px}
 body.fx #tab-impresion :is(button,.btn,input:not([type=range]),select,textarea){font-family:var(--fx-font)!important}
 body.fx #tab-impresion :is(button,.btn){box-shadow:none!important}
 body.fx #tab-impresion{padding:0 16px}
+
+/* ═══════════ Etapa 9 · Impresión: el editor con el sistema de diseño (solo FUTURE) ═══════════
+   Solo cambia el marco del editor (pestañas, herramientas, paneles). El papel y las fichas del lienzo
+   no se tocan: reflejan lo que se imprime. */
+.fx-imp-lbl{display:none}
+body.fx .fx-imp-lbl{display:inline}
+body.fx #tab-impresion#tab-impresion{padding:0;container-type:inline-size}
+body.fx #tab-impresion#tab-impresion>.app-main{max-width:none!important;padding:0 28px 32px!important;overflow:visible!important}
+@media(max-width:1023px){body.fx #fxLegacy.fx-hh .fx-page{padding:22px 20px 8px}body.fx #tab-impresion#tab-impresion>.app-main{padding:0 20px 28px!important}}
+@media(max-width:760px){body.fx #fxLegacy.fx-hh .fx-page{padding:18px 14px 6px}body.fx #tab-impresion#tab-impresion>.app-main{padding:0 14px 24px!important}}
+body.fx #tab-impresion#tab-impresion [id^="pcfg-"]{background:transparent!important;padding:0!important;border-radius:0!important}
+
+/* Barra superior: pestañas por tipo de ficha + herramientas del lienzo */
+body.fx #tab-impresion#tab-impresion .fx-imp-bar{gap:12px!important;row-gap:10px!important;margin:6px 0 16px!important;padding:0!important;border:0!important;align-items:center!important}
+body.fx #tab-impresion#tab-impresion .fx-imp-bar>div[style*="flex:1"]{display:none}
+.fx-imp-tabs{display:none}
+body.fx .fx-imp-tabs{display:inline-flex;align-items:stretch;gap:2px;padding:3px;background:var(--fx-sunk);border:1px solid var(--fx-line);border-radius:8px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+body.fx .fx-imp-tabs::-webkit-scrollbar{display:none}
+body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button{display:inline-flex!important;align-items:center;gap:8px!important;height:36px;padding:0 14px!important;margin:0!important;border:0!important;border-radius:5px!important;background:transparent!important;color:var(--fx-ink2)!important;font:600 14.5px/1 var(--fx-font)!important;box-shadow:none!important;white-space:nowrap;flex:0 0 auto;cursor:pointer}
+body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button:hover{background:var(--fx-hover)!important;color:var(--fx-ink)!important}
+body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button.on{background:var(--fx-surface)!important;color:var(--fx-ink)!important;box-shadow:0 1px 2px rgba(20,32,48,.14),0 0 0 1px var(--fx-line)!important}
+html[data-theme="dark"] body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button.on{background:var(--fx-line)!important}
+body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button>span:not(.fx-imp-lbl){display:none}
+body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button svg{width:16px;height:16px;flex:0 0 auto}
+body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button i{width:7px;height:7px;border-radius:50%;background:#F2B400;flex:0 0 auto}
+@media(pointer:coarse){body.fx #tab-impresion#tab-impresion .fx-imp-tabs>button{height:40px}}
+
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"]{margin-left:auto;background:var(--fx-surface)!important;border:1px solid var(--fx-line)!important;border-radius:8px!important;padding:3px!important;gap:2px!important;min-height:0!important;flex-wrap:wrap!important;justify-content:flex-start!important;max-width:100%}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] :is(button,.pc-btn-3d){display:inline-flex!important;align-items:center;justify-content:center;gap:6px;min-width:36px;height:36px!important;min-height:36px!important;padding:0 10px!important;margin:0!important;border:1px solid transparent!important;border-radius:6px!important;background:transparent!important;color:var(--fx-ink)!important;font:600 13.5px/1 var(--fx-font)!important;letter-spacing:0!important;box-shadow:none!important;transform:none!important;white-space:nowrap;cursor:pointer}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] :is(button,.pc-btn-3d):hover{background:var(--fx-sunk)!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] :is(button,.pc-btn-3d):is(.on,[style*="#4a5568"],[style*="rgb(74, 85, 104)"],[style*="#5a6a8a"],[style*="rgb(90, 106, 138)"]){background:var(--fx-teal-bg)!important;border-color:var(--fx-teal)!important;color:var(--fx-teal-ink)!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] [id^="pc-lblbtn-"]{border-color:var(--fx-line2)!important;min-width:104px}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] [id^="pc-bold-"]{font-weight:800!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] [id^="pc-italic-"]{font-style:italic!important;font-family:Georgia,serif!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] [id^="pc-under-"]{text-decoration:underline!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] [style*="color:var(--red)"]{color:var(--fx-red)!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] [style*="color:var(--red)"]:hover{background:var(--fx-red-bg)!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] svg{width:16px;height:16px}
+body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"] input[type=range]{width:96px!important;height:auto!important;accent-color:var(--fx-teal);margin:0 4px 0 8px!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-zoom-lbl-"]{font:600 13px/1 var(--fx-font)!important;font-variant-numeric:tabular-nums;color:var(--fx-ink2);min-width:40px!important}
+body.fx #tab-impresion#tab-impresion .pc-sep-v{width:1px!important;height:22px!important;margin:0 4px!important;background:var(--fx-line)!important;align-self:center}
+
+/* Rejilla: campos · lienzo · propiedades. Si no cabe, las propiedades bajan bajo los campos y el lienzo conserva su ancho */
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]{display:grid!important;grid-template-columns:288px minmax(0,1fr)!important;gap:16px!important;overflow:visible!important;align-items:start!important}
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(1){grid-column:1;grid-row:1}
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(2){grid-column:2;grid-row:1/span 2}
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(3){grid-column:1;grid-row:2}
+@container (min-width:1340px){
+  body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]{grid-template-columns:280px minmax(0,1fr) 312px!important}
+  body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(2){grid-row:1}
+  body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(3){grid-column:3;grid-row:1}
+}
+@container (max-width:760px){
+  body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]{grid-template-columns:minmax(0,1fr)!important}
+  body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>*{grid-column:1!important;grid-row:auto!important}
+  body.fx #tab-impresion#tab-impresion [id^="pc-toolbar-"]{margin-left:0}
+}
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"].fx-focus>*{grid-column:1/-1!important;grid-row:auto!important}
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(2){background:var(--fx-sunk);border:1px solid var(--fx-line);border-radius:10px;padding:10px 16px 14px;gap:8px!important;min-width:0}
+body.fx #tab-impresion#tab-impresion [id^="pc-selinfo-"]{font:500 12.5px/1.3 var(--fx-font)!important;color:var(--fx-mute)!important;min-height:16px!important}
+body.fx #tab-impresion#tab-impresion [class^="pc-outer-"]>:nth-child(2)>div:last-child:not([id]){font:500 12px/1.4 var(--fx-font)!important;color:var(--fx-mute)!important}
+body.fx #tab-impresion#tab-impresion [id^="pc-canvas-wrap-"]{scrollbar-width:thin}
+
+/* Paneles */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"]{max-height:none!important;overflow:visible!important;padding:0!important;gap:12px!important;font-family:var(--fx-font)}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec{background:var(--fx-surface)!important;border:1px solid var(--fx-line)!important;border-radius:10px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr{background:var(--fx-surface)!important;border-bottom:1px solid var(--fx-line)!important;border-radius:9px 9px 0 0;padding:0 14px!important;min-height:46px;gap:8px!important;color:var(--fx-ink)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span{font:600 14.5px/1.2 var(--fx-font)!important;color:var(--fx-ink)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span[style*="font-size:9px"]:not([class]){font:400 12.5px/1.2 var(--fx-font)!important;color:var(--fx-mute)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span[class*="-arrow-"],body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span[id*="-arrow-"]{font-size:10px!important;color:var(--fx-mute)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>svg{width:17px;height:17px;color:var(--fx-mute);flex:0 0 auto}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-body{padding:14px!important;gap:12px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [id^="pc-fld-body-"]{padding:8px 10px 12px!important;border-top:1px solid var(--fx-line)!important;max-height:560px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row{gap:8px!important;min-height:36px}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-lbl{font:500 13px/1.2 var(--fx-font)!important;color:var(--fx-mute)!important;min-width:52px!important}
+/* textos pequeños del editor → escala del sistema */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(span,div,label)[style*="font-size:9px"]{font-size:12px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(span,div,label)[style*="font-size:10px"]{font-size:13px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(span,div,label)[style*="font-size:11px"]{font-size:13.5px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [style*="font-weight:700"]:not(button),body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [style*="font-weight:800"]:not(button){font-weight:600!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [style*="color:var(--text3)"]:not(button){color:var(--fx-mute)!important}
+/* cajas de color → neutras */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is([style*="background:#eff6ff"],[style*="background:#fff7ed"],[style*="background:#f0fdf4"],[style*="background:#faf5ff"],[style*="background:#fffbeb"]):not(.pc-sec-hdr){background:var(--fx-surface)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is([style*="background:#bfdbfe"],[style*="background:#fed7aa"],[style*="background:var(--bg3)"]):not(button):not(.pc-sec-hdr){background:var(--fx-sunk)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is([style*="color:#1e3a8a"],[style*="color:#7c2d12"],[style*="color:#4a5568"]):not(button){color:var(--fx-ink2)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [style*="border:0.5px solid var(--border)"]:not(button):not(input):not(select):not(textarea){border:1px solid var(--fx-line)!important;border-radius:8px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [style*="padding:4px 8px"]:not(button){padding:8px 10px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [style*="padding:6px 8px"]:not(button){padding:10px!important}
+
+/* Botones de los paneles: altura y letra únicas */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(button,.pc-btn-3d,.btn,label[style*="border-radius:20px"]){display:inline-flex!important;align-items:center;justify-content:center;gap:6px;min-height:36px!important;height:auto!important;padding:0 12px!important;margin:0!important;border:1px solid var(--fx-line2)!important;border-radius:6px!important;background:var(--fx-surface)!important;color:var(--fx-ink)!important;font:600 13.5px/1.15 var(--fx-font)!important;letter-spacing:0!important;text-transform:none!important;text-decoration:none!important;box-shadow:none!important;transform:none!important;white-space:nowrap;cursor:pointer}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(button,.pc-btn-3d,.btn,label[style*="border-radius:20px"]):hover{background:var(--fx-sunk)!important;border-color:var(--fx-mute)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(button,.pc-btn-3d,.btn).on{background:var(--fx-teal-bg)!important;border-color:var(--fx-teal)!important;color:var(--fx-teal-ink)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(.btn-p,button[style*="background:#4a5568"],button[style*="background:#1f2733"]){background:var(--fx-pri-bg)!important;border-color:var(--fx-pri-bg)!important;color:var(--fx-pri-fg)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(.btn-p,button[style*="background:#4a5568"],button[style*="background:#1f2733"]):hover{background:var(--fx-pri-hover)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(button,.btn)[style*="color:var(--red)"]{color:var(--fx-red)!important;border-color:var(--fx-red-line)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(button,.btn)[style*="color:var(--red)"]:hover{background:var(--fx-red-bg)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(button,.btn):disabled{opacity:.45;cursor:not-allowed}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr label[style*="border-radius:20px"]{min-height:32px!important;font-size:13px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr label svg{width:14px;height:14px}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row>button[onclick*="bgOpacity"],body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row>button:only-of-type[style*="width:22px"]{min-width:36px;padding:0!important}
+/* Guardar imagen como guía: campo y botón a lo ancho */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] div:has(>[id^="pc-bg-tpl-name-"]){flex-wrap:wrap!important;gap:8px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] div:has(>[id^="pc-bg-tpl-name-"])>*{flex:1 1 100%!important}
+
+/* Campos de texto */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea){font:400 14px/1.35 var(--fx-font)!important;min-height:38px;padding:7px 10px!important;border:1px solid var(--fx-line2)!important;border-radius:6px!important;background:var(--fx-surface)!important;color:var(--fx-ink)!important;box-sizing:border-box;min-width:0}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] :is(input,select,textarea):focus{border-color:var(--fx-teal)!important;box-shadow:0 0 0 3px var(--fx-teal-ring)!important;outline:none}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] textarea{width:100%;resize:vertical}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] input[type=range]{accent-color:var(--fx-teal)!important;height:auto!important}
+
+/* Interruptores ON/OFF */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] div[style*="width:28px"][style*="height:15px"]{width:36px!important;height:20px!important;border-radius:10px!important;background:var(--fx-line2)!important;flex:0 0 auto}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] div[style*="width:28px"][style*="height:15px"][style*="#4a5568"]{background:var(--fx-teal)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] div[style*="width:28px"][style*="height:15px"]>div{width:16px!important;height:16px!important;top:2px!important;left:2px!important;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] div[style*="width:28px"][style*="height:15px"][style*="#4a5568"]>div{left:18px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] span[style*="min-width:22px"]{color:var(--fx-mute)!important;font:600 12px/1 var(--fx-font)!important;min-width:26px!important}
+
+/* Lista de campos */
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .fg-hdr{background:transparent!important;padding:12px 4px 6px!important;margin:0!important;font:600 12px/1 var(--fx-font)!important;letter-spacing:.06em!important;color:var(--fx-mute)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .fg-hdr span{font-size:12px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .fg-body{gap:4px!important;padding:0!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [class*="fp-item-"]{min-height:40px;padding:4px 6px 4px 10px!important;gap:6px!important;border:1px solid var(--fx-line)!important;border-radius:6px!important;background:var(--fx-surface)!important;font:500 14px/1.2 var(--fx-font)!important;color:var(--fx-ink)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [class*="fp-item-"]:hover{border-color:var(--fx-line2)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [class*="fp-item-"] button{min-height:30px!important;min-width:30px;height:30px!important;padding:0!important;border-radius:6px!important;font:600 15px/1 var(--fx-font)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [class*="fp-item-"] button[data-action="add"]{color:var(--fx-teal-ink)!important;border-color:var(--fx-teal)!important;background:var(--fx-teal-bg)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [class*="fp-item-"] [style*="background:#3b5bdb"]{font:600 11.5px/1.6 var(--fx-font)!important;padding:0 6px!important}
+body.fx #tab-impresion#tab-impresion input[type=range]{-webkit-appearance:auto!important;appearance:auto!important;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;min-height:0!important;height:20px!important;box-shadow:none!important;accent-color:var(--fx-teal)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row>input[type=range]{flex:1 1 auto!important;min-width:60px}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr{flex-wrap:nowrap!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span[style*="font-size:9px"]:not([class]){min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>label{flex:0 0 auto}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row>div[style*="width:1px"]{display:none}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row>.pc-btn-3d{padding:0 10px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] [id^="pc-fld-body-"]{max-height:min(560px,56vh)!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr{flex-wrap:wrap!important;row-gap:0!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span:not([style]){white-space:nowrap}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-sec-hdr>span[style*="font-size:9px"]:not([class]){order:9;flex:1 1 100%;padding:0 0 10px 25px;margin-top:-6px;overflow:visible;white-space:normal}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row>input[type=range]{flex:1 1 0!important;min-width:40px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-row{gap:6px!important}
+body.fx #tab-impresion#tab-impresion [class*="pc-side-"] .pc-lbl{min-width:48px!important}
+/* alinear el editor con el título (el contenedor clásico ya aporta 24 px) */
+body.fx #tab-impresion#tab-impresion>.app-main{padding:0 0 32px!important;margin:0 4px!important}
+@media(max-width:1023px){body.fx #tab-impresion#tab-impresion>.app-main{padding:0 0 28px!important;margin:0 -4px!important}}
+@media(max-width:760px){body.fx #tab-impresion#tab-impresion>.app-main{padding:0 0 24px!important;margin:0 -10px!important}}

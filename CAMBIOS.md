@@ -5,6 +5,20 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE 9.0: Impresión con el sistema de diseño
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e9` (commit `5897708`).
+
+Solo FUTURE (`future/fx.css`, `future/fx-cfg.js`). El papel y las fichas del lienzo no cambian: reflejan lo que se imprime. La vista clásica queda igual.
+
+- Pestañas del editor con nombre (Referencia, Ingresos, Agenda, Conductores, Embalaje) en un selector agrupado; punto ámbar = sin plantilla asignada.
+- Barra de herramientas con botones de 36 px, iconos de 16 px y estados activos en verde de marca (negrita, alineación, Solo Valor).
+- Paneles: tarjetas blancas sin cabeceras de colores, textos a 13–14,5 px, todos los botones a la misma altura, interruptores ON/OFF legibles, deslizadores nativos (antes parecían interruptores).
+- «Guardar imagen como guía» ya no queda cortado.
+- El lienzo ya no se corta por la derecha: si no caben tres columnas, las propiedades bajan bajo la lista de campos y el lienzo conserva su ancho. Tres columnas a partir de 1340 px útiles; una columna en móvil.
+- Modo enfoque compatible con la nueva rejilla.
+- Cargador `?v=11`.
+
 ## 2026-10-17 · Vista clásica: resto de fallos del mismo tipo
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-fix-clasica-2` (commit `efdf6a2`).

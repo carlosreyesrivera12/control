@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| rama `restore-2026-10-17-antes-future-e9` | `5897708` | Antes del rediseño de Impresión en FUTURE (vista clásica ya corregida) |
 | rama `restore-2026-10-17-antes-fix-clasica-2` | `efdf6a2` | Antes del resto de correcciones de la vista clásica (portal empresa, frases, halls…) |
 | rama `restore-2026-10-17-antes-fix-clasica` | `ffb02cc` | Antes de las 5 correcciones de la vista clásica (FUTURE 8.1 completo) |
 | rama `restore-2026-10-17-antes-future-e8` | `a3e6152` | FUTURE etapa 7 (falta Campos y totales, Uso de botones e Impresión) |

@@ -408,5 +408,38 @@ function openPpDrawer(id){
 FX.addT({es:{im_sub:'Diseña la ficha que se imprime para cada vehículo: campos, tamaño de letra, papel, textos y códigos QR. Los cambios se ven en el lienzo central.'},
  en:{im_sub:'Design the sheet printed for each vehicle: fields, font size, paper, texts and QR codes. Changes show on the central canvas.'},
  de:{im_sub:'Gestalten Sie das Blatt, das für jedes Fahrzeug gedruckt wird: Felder, Schriftgröße, Papier, Texte und QR-Codes. Änderungen erscheinen auf der Arbeitsfläche.'}});
-FX.hostHead('impresion',function(){return '<div class="fx-page" style="padding-bottom:0">'+U.ph(t('tab_impresion'),t('im_sub'),'')+'</div>';});
+FX.addT({es:{im_notpl:'Sin plantilla asignada'},en:{im_notpl:'No template assigned'},de:{im_notpl:'Keine Vorlage zugewiesen'}});
+FX.hostHead('impresion',function(){setTimeout(impDec,0);return '<div class="fx-page" style="padding-bottom:0">'+U.ph(t('tab_impresion'),t('im_sub'),'')+'</div>';});
+/* Etapa 9: pestañas con nombre (agrupadas) y enfoque compatible con la rejilla FUTURE. Solo marco; no toca datos. */
+var IMP_T={ing1:'tab_ingresos',ing2:'tab_ingresos2',ag:'tab_agenda',cond:'tab_conductores',flota:'tab_flota'};
+function impDec(){
+  if(!FX.on())return;
+  var el=document.getElementById('tab-impresion');if(!el)return;
+  var bar=el.querySelector('.app-main>div');if(!bar||bar.classList.contains('fx-imp-bar'))return;
+  var btns=[].filter.call(bar.children,function(b){return b.tagName==='BUTTON'&&/_impSub='/.test(b.getAttribute('onclick')||'');});
+  if(!btns.length)return;
+  bar.classList.add('fx-imp-bar');
+  var grp=document.createElement('div');grp.className='fx-imp-tabs';grp.setAttribute('role','tablist');
+  var cur=window._impSub||'ing1';
+  btns.forEach(function(b){
+    var k=((b.getAttribute('onclick')||'').match(/_impSub='(\w+)'/)||[])[1];
+    var s=document.createElement('span');s.className='fx-imp-lbl';s.textContent=IMP_T[k]?t(IMP_T[k]):(b.getAttribute('title')||'').split(' — ')[0];
+    b.appendChild(s);
+    if(/ — Sin plantilla$/.test(b.getAttribute('title')||'')){var d=document.createElement('i');d.title=t('im_notpl');b.appendChild(d);}
+    b.setAttribute('role','tab');b.setAttribute('aria-selected',k===cur?'true':'false');
+    if(k===cur)b.classList.add('on');
+    grp.appendChild(b);
+  });
+  bar.insertBefore(grp,bar.firstChild);
+  var of=window.pcToggleFocus;
+  if(typeof of==='function'&&!of.__fx){
+    var w=function(ck){var r=of.apply(this,arguments);
+      var o=document.querySelector('.pc-outer-'+ck);
+      if(o&&FX.on()){var f=!!(window._pcFocusMode||{})[ck];o.classList.toggle('fx-focus',f);if(!f)o.style.removeProperty('grid-template-columns');}
+      return r;};
+    w.__fx=1;window.pcToggleFocus=w;
+  }
+}
+(function(){var o=window.renderImpresion;if(typeof o!=='function'||o.__fx)return;
+  var w=function(){var r=o.apply(this,arguments);try{impDec();}catch(e){}return r;};w.__fx=1;window.renderImpresion=w;})();
 })();
