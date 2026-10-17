@@ -7,7 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
-| `restore-2026-10-17-antes-future` | `700b036` | INDEX antes de FUTURE (sin botón FUTURE ni carpeta `future/`) |
+| rama `restore-2026-10-17-antes-future` | `700b036` | INDEX antes de FUTURE (sin botón FUTURE ni carpeta `future/`) |
 | `restore-2026-10-16-antes-login-v2` / `backups/INDEX_2026-10-16_antes-login-v2.html` | `9dc86ad` | INDEX antes del login v2 (Entrar/Crear cuenta, Sitio Empresa) |
 | (archivo) `backups/INDEX_2026-10-11_antes-rediseno.html` | `b885a82` | INDEX antes del rediseño visual fase 1 — renombrar a `INDEX.html` |
 | `restore-2026-10-09-antes-mapa` | `12a7962` | INDEX antes del botón 🗺️ y sin `MAPA_FIRA.html` |

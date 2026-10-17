@@ -7,7 +7,7 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ## 2026-10-17 · FUTURE etapa 1 (sistema de diseño, armazón e Ingresos)
 
-**Punto de restauración:** tag `restore-2026-10-17-antes-future`.
+**Punto de restauración:** rama `restore-2026-10-17-antes-future` (commit `700b036`).
 Quitar FUTURE sin restaurar nada: borrar en `INDEX.html` las 3 líneas `FUTURE 2026-10-17` (antes de `</body>`) y la carpeta `future/`.
 
 - Botón **FUTURE** a la derecha de DATOS (solo SuperAdmin). Abre la interfaz nueva encima de la actual; la vista clásica no cambia.
