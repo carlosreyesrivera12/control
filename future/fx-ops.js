@@ -180,7 +180,7 @@ FX.act('ing.xlsx',function(el){FX.closeMenu();if(!can('canImport')){call('toast'
 FX.act('ing.tpl',function(el){FX.closeMenu();call(C(el).tpl);});
 FX.act('ing.opts',function(el){var c=C(el),x=' data-src="'+c.tab+'"';var h=U.mi('ing.sub',I.listx,t('special'),'',x+' data-v="listanegra"')+U.mi('ing.sub',I.hist,t('edits'),'',x+' data-v="historial"')+U.mi('ing.sub',I.cols,t('columns'),'',x+' data-v="columnas"');if(can('canCampos'))h+=U.mi('ing.sub',I.sliders,t('fields'),'',x+' data-v="campos"');if(can('canClean'))h+='<hr>'+U.mi('ing.clean',I.trash,t('clean'),'dng',x);FX.menu(el,h,true);});
 FX.act('ing.sub',function(el,id,v){FX.closeMenu();var c=C(el),f=FX.IF();if(!f)return;f[c.k.sub]=v;call('_saveSubTab',c.tab,v);ingRerender(c);FX.scrollTop();});
-FX.act('ing.clean',function(el){FX.closeMenu();call('cleanTab',C(el).clean);});
+FX.act('ing.clean',function(el){FX.closeMenu();if(!window.confirm(t('clean')+'?'))return;call('cleanTab',C(el).clean);});
 FX.act('ing.st',function(el,id,v){var c=C(el),f=FX.IF();if(!f)return;ST[c.tab]=v;f[c.k.act]=(v==='in');f[c.k.pg]=0;ingRerender(c);});
 FX.act('ing.date',function(el,id,v){var c=C(el),f=FX.IF();if(f)f[c.k.pg]=0;call(c.dateH,v);});
 FX.act('ing.range',function(el){var c=C(el),f=FX.IF()||{};U.rangeMenu(el,'ing.rangeOk" data-src="'+c.tab,f[c.k.desde]||f[c.k.fecha],f[c.k.hasta]||f[c.k.fecha]);});

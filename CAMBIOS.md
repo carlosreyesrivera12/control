@@ -5,6 +5,18 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE 8.1 (revisión independiente)
+
+**Punto de restauración:** commit `f763ec4` (etapa 8).
+
+- Análisis › Campos y totales: el PIN de usuario ya no puede aparecer al cruzar campos.
+- Textos de la base de datos escapados en el filtro de Papelera y en Historial (número de ingresos).
+- Quitado el botón «Reiniciar contadores» de lectura de matrículas: el de la vista clásica no llega a borrar nada (usa `window.DB`, que no existe), así que FUTURE no debe hacerlo por su cuenta.
+- Al salir de FUTURE: el panel lateral ya no deja sombra en el borde derecho, el pie de la ventana de conductor vuelve a su posición exacta y los botones de impresión conservan su último estilo.
+- Tema claro/oscuro del menú de usuario: ahora usa `selectTheme` (antes no hacía nada).
+- Papelera: la selección se limita a lo que se ve, para que «N seleccionados» coincida con lo que se restaura o elimina.
+- Limpiar en Ingresos y Referencia pide la misma doble confirmación que la vista clásica.
+
 ## 2026-10-17 · FUTURE etapa 8 (Campos y totales, Uso de botones, Impresión) · FUTURE completo
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e8` (commit `a3e6152`).

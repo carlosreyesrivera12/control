@@ -221,7 +221,6 @@ function ocrPanel(){
   h+='<h3 class="fx-h3">'+t('ocr_7d')+'</h3><div class="fx-bars">'+by.map(function(x){var r=x.n?Math.round(x.ok/x.n*100):0;return '<div class="fx-barrow"><span class="fx-num">'+E(FX.dayLbl(x.d))+'</span><i><em style="width:'+Math.round(x.n/mx*100)+'%"><s style="width:'+(x.n?Math.round(x.ok/x.n*100):0)+'%"></s></em></i><b class="fx-num">'+x.n+'</b><span class="fx-num">'+(x.n?r+'%':'–')+'</span></div>';}).join('')+'</div>';
   var rec=st.slice().reverse().slice(0,10);
   h+='<h3 class="fx-h3">'+t('ocr_last')+'</h3><ul class="fx-vl">'+rec.map(function(s){var d=s.ts?new Date(s.ts):null;return '<li>'+(s.matricula?U.plate(s.matricula,'','sm'):U.dash)+'<span class="fx-grow"><small style="margin:0">'+E((s.servicio==='local'?t('ocr_local'):t('ocr_vision'))+(d?' · '+FX.dayLbl(s.fecha||'')+', '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2):''))+'</small></span>'+U.st(s.exito?'in':'blk',t(s.exito?'ocr_ok':'ocr_ko'))+'</li>';}).join('')+'</ul>';
-  h+='<div class="fx-bar" style="justify-content:flex-end;margin-top:16px">'+U.btn('ocr.reset',I.restore,t('ocr_reset'),'dng sm')+'</div>';
   return h;
 }
 function usRender(){
@@ -361,10 +360,11 @@ function ppRender(){
   if(sa&&d.total)acts+=U.btn('pp.empty',I.trash,t('pp_vaciar'),'dng');
   var h='<div class="fx-page" data-view="papelera">'+U.ph(t('tab_papelera'),t('pp_sub'),acts);
   if(!d.total)return h+U.empty(t('pp_empty'),t('pp_empty_p'),'')+'</div>';
-  var opts=[{v:'',lbl:t('st_all'),n:d.total}].concat(Object.keys(d.oc).map(function(k){return {v:k,lbl:ppLbl(k),n:d.oc[k]};}));
+  var opts=[{v:'',lbl:t('st_all'),n:d.total}].concat(Object.keys(d.oc).map(function(k){return {v:k,lbl:E(ppLbl(k)),n:d.oc[k]};}));
   h+='<div class="fx-bar">'+U.search('papelera',d.q,t('pp_q'))+U.seg('pp.f',opts,d.f,t('c_origin'))+'</div>';
+  var pg=U.page('papelera',[d.q,d.f].join('|'),d.items),shown={};pg.list.forEach(function(p){shown[p.id]=1;});
+  Object.keys(SEL).forEach(function(k){if(!shown[k])delete SEL[k];});n=Object.keys(SEL).length;
   if(n)h+='<div class="fx-selbar" role="region" aria-live="polite"><b>'+E(cnt(n,'n_sel1','n_sel'))+'</b>'+U.btn('pp.selClear',I.x,t('sel_clear'),'ghost sm')+'<span class="fx-grow"></span>'+U.btn('pp.restoreSel',I.restore,t('a_restore'),'go sm')+((can('canDel')||sa)?U.btn('pp.purgeSel',I.trash,t('a_purge'),'dng sm'):'')+'</div>';
-  var pg=U.page('papelera',[d.q,d.f].join('|'),d.items);
   if(!d.items.length)h+=d.q?U.empty(t('empty_q'),t('empty_q_p'),U.btn('qclr',I.x,t('clear_q'),'',' data-k="papelera"')):U.empty(t('pp_empty'),'','');
   else if(FX.S.lay!=='table')h+=U.list(pg.list.map(function(p){var meta=[U.st('idle',ppLbl(p.origen))];if(ppSub(p))meta.push('<span class="fx-ell">'+E(ppSub(p))+'</span>');meta.push('<span class="fx-num">'+E((p.borradoPor||'–')+' · '+ts(p.ts))+'</span>');var hasM=p.item&&p.item.matricula;if(hasM&&ppSub(p))meta.splice(1,1);return U.li({id:p.id,src:'papelera',cls:SEL[p.id]?'sel':'',pos:chk(p.id,SEL[p.id]),plate:hasM?U.plate(p.item.matricula,'','sm'):'',title:E(hasM?(ppSub(p)||ppLbl(p.origen)):ppTitle(p)),meta:meta,st:'',act:ppActs(p)});}).join(''));
   else{

@@ -12,7 +12,7 @@
 if(window.FX)return;
 var FX=window.FX={};
 
-var FX_VER='8.0';
+var FX_VER='8.1';
 var LS_MODE='bu_fx_mode',LS_RAIL='bu_fx_rail';
 var LIM=150;
 var VIEWS={};             // pestañas con diseño nuevo
@@ -432,15 +432,15 @@ function updLauncher(){var b=document.getElementById('fxLaunch');if(b)b.classLis
 function capWord(s){return s.toLowerCase().replace(/^(\s*)(\S)/,function(m,a,b){return a+b.toUpperCase();});}
 function tame(on_){
   document.querySelectorAll(on_?'.ov button[style*="!important"]':'.ov button[data-fx-style]').forEach(function(b){
-    if(on_){if(b.dataset.fxStyle==null)b.dataset.fxStyle=b.getAttribute('style')||'';b.removeAttribute('style');b.classList.add('fx-tamed');}
+    if(on_){b.dataset.fxStyle=b.getAttribute('style')||'';b.removeAttribute('style');b.classList.add('fx-tamed');}
     else if(b.dataset.fxStyle!=null){if(!b.getAttribute('style'))b.setAttribute('style',b.dataset.fxStyle);delete b.dataset.fxStyle;b.classList.remove('fx-tamed');}
   });
   /* Arreglos solo visuales dentro de FUTURE (se deshacen al salir):
      pie de ventana fuera de su caja, textos ${tr(...)} sin traducir, marcadores '+' en placeholders y botones en mayúsculas. */
   document.querySelectorAll('.ov').forEach(function(ov){
     var m=ov.querySelector(':scope>.modal');
-    if(on_){var f=ov.querySelector(':scope>.ffoot');if(f&&m){f.dataset.fxMoved='1';m.appendChild(f);}}
-    else{var f2=ov.querySelector('.modal>.ffoot[data-fx-moved]');if(f2){delete f2.dataset.fxMoved;ov.appendChild(f2);}}
+    if(on_){var f=ov.querySelector(':scope>.ffoot');if(f&&m){f.dataset.fxMoved='1';f.__fxNext=f.nextSibling;m.appendChild(f);}}
+    else{var f2=ov.querySelector('.modal>.ffoot[data-fx-moved]');if(f2){delete f2.dataset.fxMoved;var nx=f2.__fxNext;delete f2.__fxNext;ov.insertBefore(f2,nx&&nx.parentNode===ov?nx:null);}}
   });
   document.querySelectorAll('.ov .flbl,.ov .modal-section-title,.ov label').forEach(function(el){
     if(on_){if(el.children.length)return;var mt=/^\s*\$\{tr\('(\w+)'\)\}\s*$/.exec(el.textContent);if(mt&&fn('tr')){el.dataset.fxTxt=el.textContent;el.textContent=call('tr',mt[1]);}}
@@ -591,7 +591,7 @@ A.search=function(){call('openGlobalSearch');};
 A.map=function(){call('buOpenMapa');};
 A.lang=function(){closeMenu();call('openLangPicker');};
 A.user=function(el){userMenu(el);};
-A.theme=function(){closeMenu();var dk=/dark|contrast/.test(document.documentElement.getAttribute('data-theme')||'');call('applyTheme',dk?'light':'dark');};
+A.theme=function(){closeMenu();var dk=/dark|contrast/.test(document.documentElement.getAttribute('data-theme')||'');if(fn('selectTheme'))call('selectTheme',dk?'light':'dark');else call('applyTheme',dk?'light':'dark');fxSyncSoon();};
 A.backup=function(){closeMenu();call('exportDia');};
 A.logout=function(){closeMenu();FX.drawer.close();call('doLogout');};
 A.qclr=function(el){var k=el.getAttribute('data-k');if(Q[k])Q[k]('');var qi=document.getElementById('fxQ-'+k);if(qi)setTimeout(function(){var n=document.getElementById('fxQ-'+k);if(n)n.focus();},30);};

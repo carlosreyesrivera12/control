@@ -141,10 +141,10 @@ function vhRender(){
   var pg=U.page('vehiculos',[d.q,d.col,d.dir].join('|'),d.items),td=FX.todayStr();
   var last=function(v){var p=FX.parseTs(v.ultimoIngreso);return p?(p.ymd===td?t('d_today')+', '+p.hm:FX.dayLbl(p.ymd)+(p.hm?', '+p.hm:'')):'';};
   if(!d.items.length)h+=U.empty(t('empty_q'),t('empty_q_p'),U.btn('qclr',I.x,t('clear_q'),'',' data-k="vehiculos"'));
-  else if(FX.S.lay!=='table')h+=U.list(pg.list.map(function(v){var meta=[];if(v.empresa)meta.push('<span class="fx-ell">'+E(v.empresa)+'</span>');if(v.telefono)meta.push('<span class="fx-num">'+E([v.telPais,v.telefono].filter(Boolean).join(' '))+'</span>');if(v.evento)meta.push('<span>'+E(v.evento)+'</span>');meta.push('<span class="fx-num">'+E(last(v))+'</span>');return U.li({id:v.id,src:'vehiculos',pos:'<span class="fx-num">'+(v.ingresos||0)+'</span>',plate:U.plate(v.matricula,''),title:E(v.nombre||'–'),meta:meta,st:'',act:''});}).join(''));
+  else if(FX.S.lay!=='table')h+=U.list(pg.list.map(function(v){var meta=[];if(v.empresa)meta.push('<span class="fx-ell">'+E(v.empresa)+'</span>');if(v.telefono)meta.push('<span class="fx-num">'+E([v.telPais,v.telefono].filter(Boolean).join(' '))+'</span>');if(v.evento)meta.push('<span>'+E(v.evento)+'</span>');meta.push('<span class="fx-num">'+E(last(v))+'</span>');return U.li({id:v.id,src:'vehiculos',pos:'<span class="fx-num">'+E(v.ingresos||0)+'</span>',plate:U.plate(v.matricula,''),title:E(v.nombre||'–'),meta:meta,st:'',act:''});}).join(''));
   else{var a='vh.sort',dd={col:d.col,dir:d.dir};
     h+=U.table(U.th(a,'matricula',t('c_plate'),dd)+U.th(a,'nombre',t('c_driver'),dd)+U.th(a,'empresa',t('c_comp'),dd)+U.th(a,null,t('c_tel'),dd)+U.th(a,'ingresos',t('c_visits2'),dd,'c-n')+U.th(a,'evento',t('c_lastev'),dd)+U.th(a,'ultimoIngreso',t('c_lastin'),dd),
-      pg.list.map(function(v){return '<tr data-fxrow="'+E(v.id)+'" data-src="vehiculos"><td class="c-plate">'+U.plate(v.matricula,'')+'</td><td class="c-txt"><span class="fx-strong fx-ell">'+E(v.nombre||'–')+'</span></td><td class="c-txt"><span class="fx-ell">'+E(v.empresa||'–')+'</span></td><td class="c-tel fx-num">'+(v.telefono?E([v.telPais,v.telefono].filter(Boolean).join(' ')):U.dash)+'</td><td class="c-n">'+(v.ingresos||0)+'</td><td class="c-txt"><span class="fx-ell">'+E(v.evento||'–')+'</span></td><td class="c-time fx-num">'+E(last(v)||'–')+'</td></tr>';}).join(''));}
+      pg.list.map(function(v){return '<tr data-fxrow="'+E(v.id)+'" data-src="vehiculos"><td class="c-plate">'+U.plate(v.matricula,'')+'</td><td class="c-txt"><span class="fx-strong fx-ell">'+E(v.nombre||'–')+'</span></td><td class="c-txt"><span class="fx-ell">'+E(v.empresa||'–')+'</span></td><td class="c-tel fx-num">'+(v.telefono?E([v.telPais,v.telefono].filter(Boolean).join(' ')):U.dash)+'</td><td class="c-n">'+E(v.ingresos||0)+'</td><td class="c-txt"><span class="fx-ell">'+E(v.evento||'–')+'</span></td><td class="c-time fx-num">'+E(last(v)||'–')+'</td></tr>';}).join(''));}
   h+=U.foot('vehiculos',pg.list.length,d.items.length);
   return h+'</div>';
 }
@@ -162,7 +162,7 @@ function openVhDrawer(id){
     var v=vhRec(id);if(!v)return null;var D=db(),ids2={};(D.ingresos2||[]).forEach(function(x){ids2[x.id]=1;});
     var list=(D.ingresos||[]).concat(D.ingresos2||[]).filter(function(i){return i.matricula===v.matricula;}).sort(function(a,b){return String(b.entrada||'').localeCompare(String(a.entrada||''));}).slice(0,10);
     var tel=[v.telPais,v.telefono].filter(Boolean).join(' '),num=String(v.telefono||'').replace(/[^\d+]/g,'');
-    var h='<div class="fx-dr-h"><div class="fx-dr-id"><span class="fx-dr-pos"><small>'+t('c_visits2')+'</small><b>'+(v.ingresos||0)+'</b></span><span class="fx-dr-plates">'+U.plate(v.matricula,'','lg')+'</span></div>'+U.ibtn('drClose',I.x,t('close'),'ghost')+'</div>';
+    var h='<div class="fx-dr-h"><div class="fx-dr-id"><span class="fx-dr-pos"><small>'+t('c_visits2')+'</small><b>'+E(v.ingresos||0)+'</b></span><span class="fx-dr-plates">'+U.plate(v.matricula,'','lg')+'</span></div>'+U.ibtn('drClose',I.x,t('close'),'ghost')+'</div>';
     h+='<div class="fx-dr-b">';
     if(num)h+='<div class="fx-dr-acts" style="margin-top:0"><a class="fx-btn" href="tel:'+E((num.charAt(0)==='+'?'':(v.telPais||''))+num)+'">'+I.phone+'<span>'+t('a_call')+'</span></a><a class="fx-btn" target="_blank" rel="noopener" href="https://wa.me/'+E(((num.charAt(0)==='+'?'':(v.telPais||''))+num).replace(/\D/g,''))+'">'+I.msg+'<span>'+t('a_wa')+'</span></a></div>';
     h+='<h3>'+t('dr_data')+'</h3>'+U.dl([[t('f_name'),v.nombre],[t('f_comp'),v.empresa],[t('f_tel'),tel],[t('f_trailer'),v.remolque],[t('f_vtype'),FX.tv(v.tipoVehiculo)],[t('c_lastev'),v.evento],[t('c_lastin'),v.ultimoIngreso?FX.tsLbl(v.ultimoIngreso,''):'']]);
@@ -288,7 +288,7 @@ function afFilled(v){return v!==undefined&&v!==null&&String(v).trim()!=='';}
 function nCk(n,k){if(k>n)return 0;var r=1;for(var i=0;i<k;i++)r=r*(n-i)/(i+1);return Math.round(r);}
 function combos(arr,size){var res=[];(function h(st,cur){if(cur.length===size){res.push(cur.slice());return;}for(var i=st;i<arr.length;i++){cur.push(arr[i]);h(i+1,cur);cur.pop();}})(0,[]);return res;}
 function afRender(){
-  var S=S_(),D=db(),key=S.camposTab||'ingresos',src=AF_SRC.find(function(x){return x[0]===key;})||AF_SRC[0],fields=src[1],arr=D[src[0]]||[],keys=Object.keys(fields),sel=(S.anlSelFields||[]).filter(function(k){return fields[k];}),total=arr.length;
+  var S=S_(),D=db(),key=S.camposTab||'ingresos',src=AF_SRC.find(function(x){return x[0]===key;})||AF_SRC[0],fields=src[1],arr=D[src[0]]||[],keys=Object.keys(fields),sel=(S.anlSelFields||[]).filter(function(k){return fields[k]&&!AF_SECRET[k];}),total=arr.length;
   var acts=can('canExport')?U.btn('an.export',I.down,t('an_export')):'';
   var h='<div class="fx-page" data-view="analytics-campos"><div class="fx-crumb">'+U.btn('af.back',I.back,t('af_back'),'ghost sm')+'<span class="fx-lbl">'+t('tab_analytics')+'</span></div>'+U.ph(t('af_title'),t('af_sub'),acts);
   h+=U.tabs('af.src',AF_SRC.map(function(x){return {v:x[0],lbl:t('src_'+x[0]),n:(D[x[0]]||[]).length};}),src[0],t('af_title'));
