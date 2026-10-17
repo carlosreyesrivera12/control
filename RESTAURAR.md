@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| rama `restore-2026-10-17-antes-future-e3` | `d207f3c` | FUTURE etapa 2 (Operativa con diseño propio) |
 | rama `restore-2026-10-17-antes-future-e2` | `0bd1941` | FUTURE etapa 1 (solo Ingresos con diseño propio) |
 | rama `restore-2026-10-17-antes-future` | `700b036` | INDEX antes de FUTURE (sin botón FUTURE ni carpeta `future/`) |
 | `restore-2026-10-16-antes-login-v2` / `backups/INDEX_2026-10-16_antes-login-v2.html` | `9dc86ad` | INDEX antes del login v2 (Entrar/Crear cuenta, Sitio Empresa) |

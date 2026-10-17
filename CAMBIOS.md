@@ -5,6 +5,17 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 3 (Logística: Conductores, Embalaje, Empresas)
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e3` (commit `d207f3c`).
+
+- Nuevo `future/fx-log.js`.
+- **Conductores**: directorio con iniciales, vehículo (placa), empresa, teléfono, hall, idioma y número de ingresos. Ficha lateral con Llamar, WhatsApp y Email, todos los datos y los últimos ingresos de esa matrícula.
+- **Embalaje**: flujo Almacén → SOT → Fira → Final con contadores que filtran; aviso en rojo cuando un vehículo en SOT supera 9 h desde el tacógrafo. Cada fila tiene el siguiente paso (Pasar a SOT, Pasar a Fira, Finalizar); el menú ⋯ permite cualquier estado. Usa `cambiarEstMov` como siempre.
+- **Empresas** (solo SuperAdmin): pestañas Empresas y Preregistros. Empresas con nivel (Verificada, Sin verificar, Bloqueada) y RGPD; ficha con vehículos y preregistros, Ver portal, Editar usuario, Verificar, Bloquear o Desbloquear. Preregistros con filtro por evento y estado.
+- Ver portal de una empresa pausa FUTURE y lo recupera al volver como SA.
+- Componentes nuevos: pestañas de sección, flujo de estados, iniciales y monograma, avisos.
+
 ## 2026-10-17 · FUTURE etapa 2 (Referencia, Agenda, Mensajes y capa de marca)
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e2` (commit `0bd1941`).
