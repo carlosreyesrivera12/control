@@ -12,7 +12,7 @@
 if(window.FX)return;
 var FX=window.FX={};
 
-var FX_VER='3.0';
+var FX_VER='4.0';
 var LS_MODE='bu_fx_mode',LS_RAIL='bu_fx_rail';
 var LIM=150;
 var VIEWS={};             // pestañas con diseño nuevo

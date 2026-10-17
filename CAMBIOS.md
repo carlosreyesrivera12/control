@@ -5,6 +5,18 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 4 (Configuración: Recintos, Eventos, Usuarios, Archivos, Papelera)
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e4` (commit `d874abf`).
+
+- Nuevo `future/fx-cfg.js`. Impresión mantiene su editor (con la marca FUTURE alrededor).
+- **Recintos**: tarjetas con halls como señalética, puertas con dirección y enlace, y contacto de atención al cliente (llamar, email).
+- **Eventos**: evento activo para todos y tu evento de trabajo arriba; tabla con fechas (en curso, próximo, finalizado), halls, puertas y estado; Activar, usar para trabajar (estrella), predefinir, editar, eliminar. Historial de cambios y eliminados con Restaurar (solo SA).
+- **Usuarios**: solicitudes de acceso con Dar acceso / Rechazar; operadores con filtro por rol, cuentas de empresa; pestaña Lectura de matrículas con servicio (Google Vision / local), acierto por servicio, últimos 7 días y últimas lecturas; zona peligrosa al final.
+- **Archivos**: Sesiones, Acciones, Seguridad, Exportaciones y Dispositivos (interruptor de aprobación, Aprobar, Bloquear, Renombrar, Eliminar). Listas largas paginadas.
+- **Papelera**: filtro por origen, selección múltiple con barra Restaurar / Eliminar para siempre, ficha con todos los campos del registro antes de restaurar.
+- Casillas de verificación visibles dentro de FUTURE (la vista clásica las oculta por un estilo general).
+
 ## 2026-10-17 · FUTURE etapa 3 (Logística: Conductores, Embalaje, Empresas)
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e3` (commit `d207f3c`).
