@@ -5,6 +5,16 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE 9.1: Impresión todo a la vista
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e9-1` (commit `c9f5e55`).
+
+- Tres columnas (campos · lienzo · propiedades) desde 980 px útiles: a zoom 100 % ya no baja nada. Cada panel lateral se desplaza por su cuenta y el lienzo queda fijo a la vista.
+- El papel se ajusta solo al hueco si el zoom guardado no cabe (solo en pantalla; no cambia el zoom guardado). «Auto» ajusta al ancho y lo guarda.
+- Quitado el texto «Diseña la ficha que se imprime…». Las pestañas del editor suben a la línea del título.
+- Plantillas guardadas: botones de cargar/renombrar/eliminar con icono visible y chips de destino (Ref, Ing, Ag…) en verde cuando están asignados.
+- Cargador `?v=12`.
+
 ## 2026-10-17 · FUTURE 9.0: Impresión con el sistema de diseño
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e9` (commit `5897708`).

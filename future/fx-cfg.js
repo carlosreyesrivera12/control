@@ -409,7 +409,7 @@ FX.addT({es:{im_sub:'Diseña la ficha que se imprime para cada vehículo: campos
  en:{im_sub:'Design the sheet printed for each vehicle: fields, font size, paper, texts and QR codes. Changes show on the central canvas.'},
  de:{im_sub:'Gestalten Sie das Blatt, das für jedes Fahrzeug gedruckt wird: Felder, Schriftgröße, Papier, Texte und QR-Codes. Änderungen erscheinen auf der Arbeitsfläche.'}});
 FX.addT({es:{im_notpl:'Sin plantilla asignada'},en:{im_notpl:'No template assigned'},de:{im_notpl:'Keine Vorlage zugewiesen'}});
-FX.hostHead('impresion',function(){setTimeout(impDec,0);return '<div class="fx-page" style="padding-bottom:0">'+U.ph(t('tab_impresion'),t('im_sub'),'')+'</div>';});
+FX.hostHead('impresion',function(){setTimeout(impDec,0);return '<div class="fx-page fx-imp-hd">'+U.ph(t('tab_impresion'),'','')+'</div>';});
 /* Etapa 9: pestañas con nombre (agrupadas) y enfoque compatible con la rejilla FUTURE. Solo marco; no toca datos. */
 var IMP_T={ing1:'tab_ingresos',ing2:'tab_ingresos2',ag:'tab_agenda',cond:'tab_conductores',flota:'tab_flota'};
 function impDec(){
@@ -430,16 +430,35 @@ function impDec(){
     if(k===cur)b.classList.add('on');
     grp.appendChild(b);
   });
-  bar.insertBefore(grp,bar.firstChild);
+  var acts=document.querySelector('#fxLegacy .fx-imp-hd .fx-acts');
+  if(acts){acts.innerHTML='';acts.appendChild(grp);}else bar.insertBefore(grp,bar.firstChild);
+  /* «Auto» ajusta el papel al ancho disponible (guarda el zoom, como hacía «Auto») */
+  var ab=[].filter.call(bar.querySelectorAll('[id^="pc-toolbar-"] button'),function(b){return /pcSetZoom\(/.test(b.getAttribute('onclick')||'');})[0];
+  if(ab){ab.removeAttribute('onclick');ab.addEventListener('click',function(){impFit(window._impSub||'ing1',true);});}
+  setTimeout(function(){impFit(cur,false);},180);setTimeout(function(){impFit(cur,false);},650);
   var of=window.pcToggleFocus;
   if(typeof of==='function'&&!of.__fx){
     var w=function(ck){var r=of.apply(this,arguments);
       var o=document.querySelector('.pc-outer-'+ck);
-      if(o&&FX.on()){var f=!!(window._pcFocusMode||{})[ck];o.classList.toggle('fx-focus',f);if(!f)o.style.removeProperty('grid-template-columns');}
+      if(o&&FX.on()){var f=!!(window._pcFocusMode||{})[ck];o.classList.toggle('fx-focus',f);if(!f){o.style.removeProperty('grid-template-columns');setTimeout(function(){impFit(ck,false);},250);}}
       return r;};
     w.__fx=1;window.pcToggleFocus=w;
   }
 }
+/* Si el zoom guardado no cabe en el hueco del lienzo, se ajusta solo a la vista (sin guardar) */
+function impFit(ck,save){
+  if(!FX.on())return;
+  var pv=document.getElementById('pv-'+ck),wr=document.getElementById('pc-canvas-wrap-'+ck);if(!pv||!wr||!wr.clientWidth)return;
+  var bw=pv.offsetWidth||794,bh=pv.offsetHeight||1123,av=wr.clientWidth-6;
+  var z=Math.max(30,Math.min(150,Math.floor(av/bw*100)));
+  if(save){if(typeof window.pcSetZoom==='function')window.pcSetZoom(ck,Math.min(z,100));return;}
+  var sl=document.getElementById('pc-zoom-'+ck),cz=parseInt(sl&&sl.value,10)||76;
+  if(bw*cz/100<=av)return;
+  var sc=z/100;pv.style.transform='scale('+sc+')';pv.style.transformOrigin='top left';
+  wr.style.height=Math.round(bh*sc+20)+'px';
+  if(sl)sl.value=z;var lb=document.getElementById('pc-zoom-lbl-'+ck);if(lb)lb.textContent=z+'%';
+}
+var _impRz=0;window.addEventListener('resize',function(){clearTimeout(_impRz);_impRz=setTimeout(function(){if(FX.on()&&document.querySelector('.fx-imp-tabs'))impFit(window._impSub||'ing1',false);},200);});
 (function(){var o=window.renderImpresion;if(typeof o!=='function'||o.__fx)return;
   var w=function(){var r=o.apply(this,arguments);try{impDec();}catch(e){}return r;};w.__fx=1;window.renderImpresion=w;})();
 })();
