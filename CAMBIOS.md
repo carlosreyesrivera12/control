@@ -5,6 +5,21 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · Vista clásica: resto de fallos del mismo tipo
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-fix-clasica-2` (commit `efdf6a2`).
+
+Revisión completa del archivo buscando funciones o variables que se usan donde no existen.
+
+1. **Portal de empresa**: al entrar con una cuenta de empresa se abría el portal vacío (sin nombre, datos ni estado en vivo). `_launchPortal` vivía dentro del `load` y no se veía desde el login. Ahora se publica en `window`; la espera al arrancar sube de 2 s a 30 s para móviles lentos. La etiqueta «Teléfono» del portal ya no muestra `${tr(...)}`.
+2. **Portal › Halls**: el botón «+ Hall» que aparece tras añadir el primer hall llamaba a una función inexistente (`pAddHall`). Ahora abre el selector como el original, y las sugerencias de halls ya no se duplican cada vez que se abre.
+3. **Impresión › Frases 1 y 2**: lo que se escribía en el cuadro de frase no se guardaba (llamaba a `pcSavePhrase`, que no existía). Creada la función: guarda con espera de 0,65 s y refresca la frase en el lienzo.
+4. **Dashboard y Análisis › Tracking por paso**: los pasos salían como código interno con «•» en vez de «🅿️ Rampa», «🏢 Cabina»… (usaba `window.TRACKING_STEPS`, que es `const`).
+5. **Orden de sub-pestañas arrastrado**: se guardaba igual para todos los usuarios del dispositivo (usaba `window.CU`). Ahora es por usuario; si un usuario no tiene orden propio, se usa el que había guardado antes.
+6. **Botón de tema**: la etiqueta («Tema») no cambiaba de idioma hasta abrir el menú. `updateThemeMenuLabels` ahora es visible para `setLang`.
+7. **Tracking público › Acceso operario**: el botón «← Volver» de la pantalla de error daba error (`renderTracking` no visible). Publicado en `window`.
+8. **Impresión › modo normal/troquel** (`showFixedBlocks`): leía `window.DB` y siempre daba «normal». Corregido; esa función no se llama desde ningún sitio hoy, así que no cambia nada visible.
+
 ## 2026-10-17 · Vista clásica: 5 correcciones
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-fix-clasica` (commit `ffb02cc`).
