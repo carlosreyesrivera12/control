@@ -12,7 +12,7 @@
 if(window.FX)return;
 var FX=window.FX={};
 
-var FX_VER='6.0';
+var FX_VER='7.0';
 var LS_MODE='bu_fx_mode',LS_RAIL='bu_fx_rail';
 var LIM=150;
 var VIEWS={};             // pestañas con diseño nuevo
@@ -300,6 +300,7 @@ FX.q=function(key,f){Q[key]=f;};
 FX.row=function(src,f){ROW[src]=f;};
 FX.view=function(tab,def){VIEWS[tab]=def;if(def.wrap)def.wrap.forEach(function(n){wrapRender(n,tab);});if(on())fxSyncSoon();};
 FX.isView=function(tab){return !!VIEWS[tab];};
+FX.getView=function(tab){return VIEWS[tab]||null;};
 
 /* ── Navegación ── */
 var GROUPS=[

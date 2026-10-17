@@ -5,6 +5,16 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 7 (pantallas del menú ⋯)
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e7` (commit `bbb083d`).
+
+- Nuevo `future/fx-sub.js`: Lista especial, Historial de ediciones, Columnas y Campos con diseño propio en Ingresos, Referencia, Agenda, Conductores y Embalaje, con «Volver a la lista».
+- **Historial de ediciones**: acción, usuario, cambios (antes tachado → ahora) y fecha; búsqueda; en Ingresos y Referencia la fila abre la ficha.
+- **Columnas**: interruptor por columna agrupado (Vehículo, Conductor, Expositor, Trazabilidad), subir/bajar para ordenar, plantillas con guardar, aplicar, editar, eliminar, favoritas y filtro por evento. Mismo almacenamiento por usuario que la vista clásica.
+- **Campos**: cada campo como Oculto / Visible / Obligatorio para el evento activo, ancho (solo SA) y plantillas.
+- **Lista especial**: bloqueos y alertas con búsqueda, añadir, editar, eliminar y exportar.
+
 ## 2026-10-17 · FUTURE etapa 6 (ventanas y formularios)
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e6` (commit `34936b2`).

@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| rama `restore-2026-10-17-antes-future-e7` | `bbb083d` | FUTURE etapa 6 (ventanas rediseñadas; menú ⋯ aún con pantalla anterior) |
 | rama `restore-2026-10-17-antes-future-e6` | `34936b2` | FUTURE etapa 5 (todas las pestañas, ventanas sin rediseñar) |
 | rama `restore-2026-10-17-antes-future-e5` | `f0578ac` | FUTURE etapa 4 (todo menos Datos con diseño propio) |
 | rama `restore-2026-10-17-antes-future-e4` | `d874abf` | FUTURE etapa 3 (Operativa y Logística con diseño propio) |
