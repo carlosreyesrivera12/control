@@ -5,6 +5,15 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 6 (ventanas y formularios)
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e6` (commit `34936b2`).
+
+- Todas las ventanas (nuevo ingreso, cita, conductor, movimiento, recinto, evento, usuario, mensaje, importar, búsqueda, idioma, confirmaciones) con cabecera y pie fijos y desplazamiento interno; en móvil ocupan la pantalla completa.
+- Matrícula y remolque se escriben sobre una placa UE; tipo de vehículo y descarga se marcan como segmentos; Cancelar como botón discreto y la acción principal destacada; Eliminar en rojo.
+- Solo dentro de FUTURE y reversible al salir: el pie de la ventana de conductor vuelve dentro de su caja, se traducen etiquetas que mostraban `${tr(...)}`, se limpian los `'+'` del buscador de matrícula y los botones en mayúsculas pasan a tipo frase.
+- Corregido: al volver a la vista clásica, los botones del pie de Nuevo ingreso recuperan su estilo original.
+
 ## 2026-10-17 · FUTURE etapa 5 (Datos: Dashboard, Análisis, Historial) · todas las pestañas en FUTURE
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e5` (commit `f0578ac`).

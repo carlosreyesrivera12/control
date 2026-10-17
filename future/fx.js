@@ -12,7 +12,7 @@
 if(window.FX)return;
 var FX=window.FX={};
 
-var FX_VER='5.0';
+var FX_VER='6.0';
 var LS_MODE='bu_fx_mode',LS_RAIL='bu_fx_rail';
 var LIM=150;
 var VIEWS={};             // pestañas con diseño nuevo
@@ -425,10 +425,33 @@ function addLauncher(){
   bar.appendChild(b);
 }
 function updLauncher(){var b=document.getElementById('fxLaunch');if(b)b.classList.toggle('on',allowed());}
+function capWord(s){return s.toLowerCase().replace(/^(\s*)(\S)/,function(m,a,b){return a+b.toUpperCase();});}
 function tame(on_){
-  document.querySelectorAll('.ov button[style*="!important"]').forEach(function(b){
+  document.querySelectorAll(on_?'.ov button[style*="!important"]':'.ov button[data-fx-style]').forEach(function(b){
     if(on_){if(b.dataset.fxStyle==null)b.dataset.fxStyle=b.getAttribute('style')||'';b.removeAttribute('style');b.classList.add('fx-tamed');}
-    else if(b.dataset.fxStyle!=null){b.setAttribute('style',b.dataset.fxStyle);delete b.dataset.fxStyle;b.classList.remove('fx-tamed');}
+    else if(b.dataset.fxStyle!=null){if(!b.getAttribute('style'))b.setAttribute('style',b.dataset.fxStyle);delete b.dataset.fxStyle;b.classList.remove('fx-tamed');}
+  });
+  /* Arreglos solo visuales dentro de FUTURE (se deshacen al salir):
+     pie de ventana fuera de su caja, textos ${tr(...)} sin traducir, marcadores '+' en placeholders y botones en mayúsculas. */
+  document.querySelectorAll('.ov').forEach(function(ov){
+    var m=ov.querySelector(':scope>.modal');
+    if(on_){var f=ov.querySelector(':scope>.ffoot');if(f&&m){f.dataset.fxMoved='1';m.appendChild(f);}}
+    else{var f2=ov.querySelector('.modal>.ffoot[data-fx-moved]');if(f2){delete f2.dataset.fxMoved;ov.appendChild(f2);}}
+  });
+  document.querySelectorAll('.ov .flbl,.ov .modal-section-title,.ov label').forEach(function(el){
+    if(on_){if(el.children.length)return;var mt=/^\s*\$\{tr\('(\w+)'\)\}\s*$/.exec(el.textContent);if(mt&&fn('tr')){el.dataset.fxTxt=el.textContent;el.textContent=call('tr',mt[1]);}}
+    else if(el.dataset.fxTxt!=null){el.textContent=el.dataset.fxTxt;delete el.dataset.fxTxt;}
+  });
+  document.querySelectorAll('.ov input[placeholder]').forEach(function(el){
+    if(on_){var ph=el.getAttribute('placeholder');if(ph&&ph.indexOf("'+'")>=0){el.dataset.fxPh=ph;el.setAttribute('placeholder',ph.split("'+'").join('').replace(/^\s+|\s+$/g,''));}}
+    else if(el.dataset.fxPh!=null){el.setAttribute('placeholder',el.dataset.fxPh);delete el.dataset.fxPh;}
+  });
+  document.querySelectorAll('.ov .ffoot button').forEach(function(b){
+    var nodes=[];b.childNodes.forEach(function(n){if(n.nodeType===3)nodes.push(n);else if(n.nodeType===1&&n.tagName==='SPAN'&&!n.children.length)nodes.push(n.firstChild);});
+    nodes.forEach(function(n){if(!n)return;
+      if(on_){var v=n.nodeValue;if(v&&/[A-ZÁÉÍÓÚÑ]{4}/.test(v)&&v===v.toUpperCase()&&!/[a-záéíóúñ]/.test(v)){n.__fxTxt=v;n.nodeValue=capWord(v);}}
+      else if(n.__fxTxt!=null){n.nodeValue=n.__fxTxt;delete n.__fxTxt;}
+    });
   });
 }
 var _ovObs=null;
