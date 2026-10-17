@@ -5,6 +5,20 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 1 (sistema de diseño, armazón e Ingresos)
+
+**Punto de restauración:** tag `restore-2026-10-17-antes-future`.
+Quitar FUTURE sin restaurar nada: borrar en `INDEX.html` las 3 líneas `FUTURE 2026-10-17` (antes de `</body>`) y la carpeta `future/`.
+
+- Botón **FUTURE** a la derecha de DATOS (solo SuperAdmin). Abre la interfaz nueva encima de la actual; la vista clásica no cambia.
+- Todo FUTURE vive en `future/fx.css` y `future/fx.js`. No cambia datos, funciones ni permisos: dibuja pantallas nuevas y llama a las funciones existentes (mismo DB, mismas acciones).
+- Sistema de diseño (menú lateral → Sistema de diseño): colores, tipografía Barlow, botones, filtros, estados, matrículas tipo placa UE, halls como señalética, tablas.
+- Armazón: menú lateral con todos los módulos agrupados y contadores (en recinto, agenda pendiente, mensajes), barra superior con evento de trabajo, búsqueda, mapa, sincronización, idioma y menú de usuario. Menú plegable; en iPad horizontal arranca plegado; en iPad vertical y móvil es un cajón.
+- **Ingresos** rediseñado: búsqueda, Todos / En recinto / Con salida con contadores, Hoy / Ayer / Evento / Todo, rango de fechas, filtro por hall, tabla con franja de estado, Dar salida, imprimir ficha, ticket de rampa y menú ⋯ (ver ficha, editar, anular salida, eliminar). Importar, exportar, lista especial, historial, columnas, campos y limpiar en sus menús. Tabla en escritorio, lista en iPad, tarjetas en móvil. Un ingreso nuevo se ilumina al llegar.
+- Textos de FUTURE en español, inglés y alemán (sigue el idioma de la app). Tema claro y oscuro.
+- Las demás pestañas se ven dentro de FUTURE con su diseño anterior hasta su etapa.
+- Salir: menú de usuario → Vista clásica, o abrir `INDEX.html?clasica`. Entrar directo: `INDEX.html?future`.
+
 ## 2026-10-16 · Login v2 (Entrar / Crear cuenta, Sitio Empresa, aviso al admin)
 
 **Punto de restauración:** tag `restore-2026-10-16-antes-login-v2` y copia `backups/INDEX_2026-10-16_antes-login-v2.html`.
