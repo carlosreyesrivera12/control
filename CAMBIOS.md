@@ -5,10 +5,22 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 2 (Referencia, Agenda, Mensajes y capa de marca)
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e2` (commit `0bd1941`).
+
+- Nuevo `future/fx-ops.js`: Operativa con diseño propio.
+- **Referencia**: igual que Ingresos, con trazabilidad (rampa → oficina → salida → salida parking). Hora de rampa estimada marcada con ~.
+- **Agenda**: agrupada por día, hora prevista y retraso (llega tarde / no presentado), filtros Pendientes / Con retraso / Llegados / Con salida. Marcar llegada, salida, imprimir, tracking, editar y eliminar llaman a las funciones de siempre. El estado se calcula al dibujar; no se guarda nada en los datos.
+- **Mensajes**: tarjetas por prioridad (urgente / alerta), no leídos marcados, pausar, marcar todo leído, exportar y limpiar.
+- **Ficha lateral** al pulsar una fila (Ingresos, Referencia, Agenda): estado, halls, línea de tiempo, datos y acciones.
+- **Capa de marca** para las pestañas que aún no tienen diseño propio: botones, campos, matrículas, halls, tablas, tarjetas y ventanas con los colores y la tipografía de FUTURE. El editor de Impresión no se toca.
+- Ventanas (nuevo ingreso, etc.): botones del pie con el estilo FUTURE y Guardar como acción principal. Al volver a la vista clásica recuperan su aspecto original.
+
 ## 2026-10-17 · FUTURE etapa 1 (sistema de diseño, armazón e Ingresos)
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future` (commit `700b036`).
-Quitar FUTURE sin restaurar nada: borrar en `INDEX.html` las 3 líneas `FUTURE 2026-10-17` (antes de `</body>`) y la carpeta `future/`.
+Quitar FUTURE sin restaurar nada: borrar en `INDEX.html` el bloque `FUTURE 2026-10-17` … `/FUTURE` (antes de `</body>`) y la carpeta `future/`.
 
 - Botón **FUTURE** a la derecha de DATOS (solo SuperAdmin). Abre la interfaz nueva encima de la actual; la vista clásica no cambia.
 - Todo FUTURE vive en `future/fx.css` y `future/fx.js`. No cambia datos, funciones ni permisos: dibuja pantallas nuevas y llama a las funciones existentes (mismo DB, mismas acciones).

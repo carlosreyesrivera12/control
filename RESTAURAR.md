@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| rama `restore-2026-10-17-antes-future-e2` | `0bd1941` | FUTURE etapa 1 (solo Ingresos con diseño propio) |
 | rama `restore-2026-10-17-antes-future` | `700b036` | INDEX antes de FUTURE (sin botón FUTURE ni carpeta `future/`) |
 | `restore-2026-10-16-antes-login-v2` / `backups/INDEX_2026-10-16_antes-login-v2.html` | `9dc86ad` | INDEX antes del login v2 (Entrar/Crear cuenta, Sitio Empresa) |
 | (archivo) `backups/INDEX_2026-10-11_antes-rediseno.html` | `b885a82` | INDEX antes del rediseño visual fase 1 — renombrar a `INDEX.html` |
@@ -47,7 +48,7 @@ O a mano: en `INDEX.html` borra el bloque `MAPA_FIRA integrado` (antes de `</bod
 En `INDEX.html`, busca `MAPA_FIRA 2026-10-09` y borra esa línea de comentario y el `<button>` que va justo debajo.
 
 ## Quitar FUTURE
-En `INDEX.html`, borra las 3 líneas que empiezan por `<!-- FUTURE 2026-10-17` (justo antes de `</body>`) y la carpeta `future/`. La vista clásica queda exactamente como antes.
+En `INDEX.html`, borra las líneas del bloque `<!-- FUTURE 2026-10-17` … `<!-- /FUTURE -->` (justo antes de `</body>`) y la carpeta `future/`. La vista clásica queda exactamente como antes.
 Para salir de FUTURE sin borrar nada: menú de usuario → Vista clásica, o abre `INDEX.html?clasica`.
 FUTURE guarda solo dos preferencias en el navegador: `bu_fx_mode` (entrar en FUTURE) y `bu_fx_rail` (menú plegado).
 
