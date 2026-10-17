@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| rama `restore-2026-10-17-antes-future-e5` | `f0578ac` | FUTURE etapa 4 (todo menos Datos con diseño propio) |
 | rama `restore-2026-10-17-antes-future-e4` | `d874abf` | FUTURE etapa 3 (Operativa y Logística con diseño propio) |
 | rama `restore-2026-10-17-antes-future-e3` | `d207f3c` | FUTURE etapa 2 (Operativa con diseño propio) |
 | rama `restore-2026-10-17-antes-future-e2` | `0bd1941` | FUTURE etapa 1 (solo Ingresos con diseño propio) |

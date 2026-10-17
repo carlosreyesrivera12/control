@@ -203,6 +203,7 @@ FX.act('ing.del',function(el,id){FX.closeMenu();FX.drawer.close();call(C(el).del
 /* ── Panel de detalle de un ingreso o referencia ── */
 function dl(pairs){var h='<dl class="fx-dl">';pairs.forEach(function(p){if(p[1]==null||String(p[1]).trim()==='')return;h+='<div'+(p[2]?' class="w"':'')+'><dt>'+E(p[0])+'</dt><dd>'+E(p[1])+'</dd></div>';});return h+'</dl>';}
 function tl(steps){return '<ol class="fx-tl">'+steps.map(function(s){return '<li class="'+(s.v?'':'off')+'"><b>'+E(s.l)+'</b><span>'+(s.v?E(s.v):E(t('tl_pending')))+'</span></li>';}).join('')+'</ol>';}
+FX.openIng=function(src,id){openIngDrawer(ING[src]||ING.ingresos2,id);};
 function openIngDrawer(c,id){
   FX.drawer.open(function(){
     var i=rec(c,id);if(!i)return null;

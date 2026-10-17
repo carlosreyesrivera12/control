@@ -5,6 +5,16 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 5 (Datos: Dashboard, Análisis, Historial) · todas las pestañas en FUTURE
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e5` (commit `f0578ac`).
+
+- Nuevo `future/fx-dat.js`. Con esta etapa todas las pestañas tienen diseño propio en FUTURE, salvo el editor de Impresión y Uso de botones (ventana), que mantienen su pantalla.
+- **Dashboard**: aviso de mensajes sin leer, 6 indicadores que llevan a su pestaña, últimos 7 días (Ingresos y Referencia), hoy por hora, halls más activos, Referencia frente a Ingresos y tipo de descarga, tracking por paso, preregistros por empresa, agenda de hoy y últimos ingresos (abren su ficha). Evento activo o todos.
+- **Análisis**: origen (Todo, Ingresos, Referencia), evento, fechas y panel de filtros (estado, descarga, tipo de vehículo, carga, hall, empresa); los filtros activos se ven como etiquetas. Indicadores con estancia media y mediana. Gráficos por día, por hora, halls, empresas y tipos de vehículo: pulsar una barra filtra. Menú Métricas para mostrar u ocultar cada bloque. Campos y totales sigue en su pantalla anterior.
+- **Historial**: vehículos con conductor, empresa, teléfono, número de ingresos y último ingreso; ficha con llamar, WhatsApp y los 10 últimos ingresos. Limpiar evento y vaciar historial siguen pidiendo el PIN de SuperAdmin.
+- Gráficos hechos con HTML y CSS (sin librerías), en los colores de la marca, modo claro y oscuro.
+
 ## 2026-10-17 · FUTURE etapa 4 (Configuración: Recintos, Eventos, Usuarios, Archivos, Papelera)
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e4` (commit `d874abf`).
