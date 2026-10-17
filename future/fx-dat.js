@@ -238,8 +238,8 @@ function anRender(){
   return h+'</div>';
 }
 FX.view('analytics',{
-  when:function(){return S_().subtab!=='campos';},
-  render:anRender,
+  when:function(){return true;},
+  render:function(){return S_().subtab==='campos'?afRender():anRender();},
   back:function(){S_().subtab='graficos';call('renderAnalytics');},
   reset:function(){S_().subtab='graficos';},
   wrap:['renderAnalytics','renderAnalyticsGraficos','renderAnalyticsCampos']
@@ -263,4 +263,90 @@ FX.act('an.export',function(){call('exportDia');});
 FX.act('an.fields',function(){S_().subtab='campos';call('renderAnalyticsCampos');FX.scrollTop();});
 FX.act('an.metrics',function(el){var M=S_().metrics,h='';METRICS.forEach(function(k){h+=U.mi('an.mt',M[k]?I.check:null,t('m_'+k),M[k]?'on':'',' data-v="'+k+'"');});FX.menu(el,h,true);});
 FX.act('an.mt',function(el,id,v){var M=S_().metrics;M[v]=!M[v];FX.closeMenu();anRe();});
+/* ════════════ ANÁLISIS · Campos y totales ════════════ */
+FX.addT({
+es:{af_title:'Campos y totales',af_sub:'Cuántos registros tienen cada campo relleno y qué valores se repiten. Cruza campos para ver combinaciones.',af_back:'Volver a gráficos',af_fields:'Campos',af_pairs:'Pares posibles',af_trip:'Tripletas posibles',af_cross:'Cruzar campos',af_cross_p:'Elige 2 o más campos: se muestran sus combinaciones más repetidas (pares y, con 3 o más, tripletas).',af_sel:'{n} seleccionados',af_clear:'Quitar selección',af_comp:'Campos rellenos',af_none:'Sin datos cruzados.',af_trip1:'Tripleta',
+ src_ingresos:'Referencia',src_ingresos2:'Ingresos',src_movimientos:'Embalaje',src_agenda:'Agenda',src_vehiculos:'Historial',src_auditLog:'Archivos',src_papelera:'Papelera',src_usuarios:'Usuarios'},
+en:{af_title:'Fields and totals',af_sub:'How many records have each field filled in and which values repeat. Cross fields to see combinations.',af_back:'Back to charts',af_fields:'Fields',af_pairs:'Possible pairs',af_trip:'Possible triplets',af_cross:'Cross fields',af_cross_p:'Pick 2 or more fields to see their most frequent combinations (pairs and, with 3 or more, triplets).',af_sel:'{n} selected',af_clear:'Clear selection',af_comp:'Filled-in fields',af_none:'No combined data.',af_trip1:'Triplet',
+ src_ingresos:'Reference',src_ingresos2:'Entries',src_movimientos:'Packaging',src_agenda:'Schedule',src_vehiculos:'History',src_auditLog:'Records',src_papelera:'Bin',src_usuarios:'Users'},
+de:{af_title:'Felder und Summen',af_sub:'Wie viele Datensätze jedes Feld ausgefüllt haben und welche Werte sich wiederholen. Felder kombinieren, um Kombinationen zu sehen.',af_back:'Zurück zu den Diagrammen',af_fields:'Felder',af_pairs:'Mögliche Paare',af_trip:'Mögliche Tripel',af_cross:'Felder kombinieren',af_cross_p:'Wählen Sie 2 oder mehr Felder, um die häufigsten Kombinationen zu sehen (Paare und ab 3 auch Tripel).',af_sel:'{n} ausgewählt',af_clear:'Auswahl aufheben',af_comp:'Ausgefüllte Felder',af_none:'Keine kombinierten Daten.',af_trip1:'Tripel',
+ src_ingresos:'Referenzen',src_ingresos2:'Einfahrten',src_movimientos:'Leergut',src_agenda:'Zeitplan',src_vehiculos:'Verlauf',src_auditLog:'Protokolle',src_papelera:'Papierkorb',src_usuarios:'Benutzer'}
+});
+var AF_SRC=[
+ ['ingresos',{matricula:'Matrícula',referencia:'Referencia',llamador:'Llamador',nombre:'Nombre',apellido:'Apellido',empresa:'Empresa',montador:'Montador',expositor:'Expositor',hall:'Hall',stand:'Stand',puertaHall:'Puerta Hall',remolque:'Remolque',tipoVehiculo:'Tipo Vehículo',descargaTipo:'Descarga',pasaporte:'Pasaporte/DNI',telefono:'Teléfono',email:'Email',comentario:'Comentario',tipoCarga:'Tipo Carga',entrada:'Hora Entrada',salida:'Hora Salida',pos:'Posición',eventoNombre:'Evento'}],
+ ['ingresos2',{matricula:'Matrícula',nombre:'Nombre',apellido:'Apellido',empresa:'Empresa',hall:'Hall',stand:'Stand',puertaHall:'Puerta Hall',remolque:'Remolque',tipoVehiculo:'Tipo Vehículo',descargaTipo:'Descarga',telefono:'Teléfono',comentario:'Comentario',entrada:'Hora Entrada',salida:'Hora Salida',pos:'Posición',eventoNombre:'Evento'}],
+ ['movimientos',{matricula:'Tractora',remolque:'Remolque',empresa:'Empresa',hall:'Hall',status:'Estado',tipoCarga:'Tipo Carga',posicion:'Posición',nombre:'Conductor',apellido:'Apellido',telefono:'Teléfono',tipoVehiculo:'Tipo Vehículo'}],
+ ['agenda',{matricula:'Matrícula',conductor:'Conductor',empresa:'Empresa',referencia:'Referencia',montador:'Montador',expositor:'Expositor',hall:'Hall',stand:'Stand',tipoCarga:'Tipo Carga',descargaTipo:'Descarga',tipoVehiculo:'Tipo Vehículo',telefono:'Teléfono',notas:'Notas',estado:'Estado',fecha:'Fecha',hora:'Hora Plan',horaReal:'Hora Real',eventoNombre:'Evento'}],
+ ['vehiculos',{matricula:'Matrícula',empresa:'Empresa',nombre:'Conductor',telefono:'Teléfono',ingresos:'Nº Ingresos',evento:'Último Evento',ultimoIngreso:'Último Ingreso',remolque:'Remolque',tipoVehiculo:'Tipo Vehículo'}],
+ ['auditLog',{user:'Usuario',action:'Acción',entity:'Entidad',detail:'Detalle',ts:'Fecha y hora'}],
+ ['papelera',{origen:'Origen',borradoPor:'Borrado por',ts:'Fecha',_mat:'Matrícula',_emp:'Empresa'}],
+ ['usuarios',{nombre:'Nombre',rol:'Rol',lang:'Idioma',pin:'Tiene PIN',email:'Email'}]
+];
+var AF_SECRET={pin:1};
+function afVal(row,f){if(f==='_mat')return row.item&&row.item.matricula||'';if(f==='_emp')return row.item&&row.item.empresa||'';return row[f];}
+function afFilled(v){return v!==undefined&&v!==null&&String(v).trim()!=='';}
+function nCk(n,k){if(k>n)return 0;var r=1;for(var i=0;i<k;i++)r=r*(n-i)/(i+1);return Math.round(r);}
+function combos(arr,size){var res=[];(function h(st,cur){if(cur.length===size){res.push(cur.slice());return;}for(var i=st;i<arr.length;i++){cur.push(arr[i]);h(i+1,cur);cur.pop();}})(0,[]);return res;}
+function afRender(){
+  var S=S_(),D=db(),key=S.camposTab||'ingresos',src=AF_SRC.find(function(x){return x[0]===key;})||AF_SRC[0],fields=src[1],arr=D[src[0]]||[],keys=Object.keys(fields),sel=(S.anlSelFields||[]).filter(function(k){return fields[k];}),total=arr.length;
+  var acts=can('canExport')?U.btn('an.export',I.down,t('an_export')):'';
+  var h='<div class="fx-page" data-view="analytics-campos"><div class="fx-crumb">'+U.btn('af.back',I.back,t('af_back'),'ghost sm')+'<span class="fx-lbl">'+t('tab_analytics')+'</span></div>'+U.ph(t('af_title'),t('af_sub'),acts);
+  h+=U.tabs('af.src',AF_SRC.map(function(x){return {v:x[0],lbl:t('src_'+x[0]),n:(D[x[0]]||[]).length};}),src[0],t('af_title'));
+  h+='<div class="fx-kpis k4">'+kpi(t('k_rec'),total,'','')+kpi(t('af_fields'),keys.length,'','')+kpi(t('af_pairs'),nCk(keys.length,2).toLocaleString(FX.loc?FX.loc():undefined),'','')+kpi(t('af_trip'),nCk(keys.length,3).toLocaleString(FX.loc?FX.loc():undefined),'','')+'</div>';
+  var cmb=combos(sel,2).concat(sel.length>=3?combos(sel,3):[]);
+  h+='<section class="fx-panel" style="margin-top:16px"><header><h2>'+t('af_cross')+' <small class="fx-num">'+E(t('af_sel',{n:sel.length}))+'</small></h2>'+(sel.length?U.btn('af.clear',I.x,t('af_clear'),'ghost sm'):'')+'</header><div class="fx-panel-b"><p class="fx-hint" style="margin:0 0 12px">'+t('af_cross_p')+'</p><div class="fx-fchips" style="margin:0">'+keys.filter(function(k){return !AF_SECRET[k];}).map(function(k){var i=sel.indexOf(k);return '<button type="button" class="fx-fchip'+(i>=0?' on':'')+'" data-fx="af.pick" data-v="'+E(k)+'" aria-pressed="'+(i>=0)+'">'+(i>=0?'<b class="fx-badge">'+(i+1)+'</b>':'')+E(fields[k])+'</button>';}).join('')+'</div></div></section>';
+  if(cmb.length){
+    h+='<div class="fx-dgrid '+grid()+'">';
+    cmb.forEach(function(c){
+      var m={};arr.forEach(function(row){var v=c.map(function(f){return String(afVal(row,f)||'').trim().slice(0,24);});if(v.some(function(x){return !x;}))return;var k=v.join(' × ');m[k]=(m[k]||0)+1;});
+      var top=Object.keys(m).sort(function(a,b){return m[b]-m[a];}).slice(0,10).map(function(k){return {lbl:'<span class="fx-ell">'+E(k)+'</span>',v:m[k]};});
+      h+=panel(c.map(function(f){return E(fields[f]);}).join(' × ')+(c.length===3?' <small>'+t('af_trip1')+'</small>':''),hbars(top,{empty:t('af_none')}),'');
+    });
+    h+='</div>';
+  }
+  var rows='';
+  if(!total)rows='<p class="fx-sub" style="margin:0">'+t('no_data')+'</p>';
+  else rows='<div class="fx-comp">'+keys.map(function(f){
+    var nf=arr.filter(function(r){return afFilled(afVal(r,f));}).length,p=Math.round(nf/total*100),cls=p===100?'ok':p>=50?'':p>0?'mid':'none';
+    var top='';if(!AF_SECRET[f]){var vc={};arr.forEach(function(r){var v=String(afVal(r,f)||'').trim();if(v)vc[v]=(vc[v]||0)+1;});top=Object.keys(vc).sort(function(a,b){return vc[b]-vc[a];}).slice(0,3).map(function(v){return '<span>'+E(v.slice(0,22))+' <b class="fx-num">'+vc[v]+'</b></span>';}).join('');}
+    return '<div class="fx-comp-r '+cls+'"><span class="fx-comp-l">'+E(fields[f])+'</span><i><em style="width:'+p+'%"></em></i><b class="fx-num">'+nf+' / '+total+' <small>'+p+'%</small></b>'+(top?'<div class="fx-comp-top">'+top+'</div>':'')+'</div>';
+  }).join('')+'</div>';
+  h+=panel(t('af_comp'),rows,'');
+  return h+'</div>';
+}
+FX.act('af.back',function(){S_().subtab='graficos';call('renderAnalytics');FX.sync();FX.scrollTop();});
+FX.act('af.src',function(el,id,v){var S=S_();S.camposTab=v;S.anlSelFields=[];FX.sync();});
+FX.act('af.pick',function(el,id,v){var S=S_(),sf=S.anlSelFields||[],i=sf.indexOf(v);if(i>=0)sf.splice(i,1);else sf.push(v);S.anlSelFields=sf;FX.sync();});
+FX.act('af.clear',function(){S_().anlSelFields=[];FX.sync();});
+
+/* ════════════ USO DE BOTONES ════════════ */
+FX.addT({
+es:{bs_title:'Uso de botones',bs_sub:'Cuántas veces se pulsa cada botón en este navegador. Sirve para detectar botones que nadie usa.',bs_btns:'Botones',bs_clicks:'Pulsaciones',bs_low:'Con 2 usos o menos',bs_all:'Todos',bs_q:'Buscar botón',bs_reset:'Reiniciar',bs_reset_q:'¿Borrar todas las estadísticas de uso de botones?',bs_csv:'Exportar CSV',bs_empty:'Todavía no hay pulsaciones registradas',c_btn:'Botón',c_uses:'Usos',c_lastuse:'Último uso',bs_today:'Hoy',bs_yday:'Ayer',bs_days:'Hace {n} días'},
+en:{bs_title:'Button usage',bs_sub:'How many times each button is pressed in this browser. Helps spot buttons nobody uses.',bs_btns:'Buttons',bs_clicks:'Clicks',bs_low:'Used 2 times or less',bs_all:'All',bs_q:'Search button',bs_reset:'Reset',bs_reset_q:'Delete all button usage statistics?',bs_csv:'Export CSV',bs_empty:'No clicks recorded yet',c_btn:'Button',c_uses:'Uses',c_lastuse:'Last used',bs_today:'Today',bs_yday:'Yesterday',bs_days:'{n} days ago'},
+de:{bs_title:'Tastennutzung',bs_sub:'Wie oft jede Taste in diesem Browser gedrückt wird. Hilft, ungenutzte Tasten zu finden.',bs_btns:'Tasten',bs_clicks:'Klicks',bs_low:'Höchstens 2-mal genutzt',bs_all:'Alle',bs_q:'Taste suchen',bs_reset:'Zurücksetzen',bs_reset_q:'Alle Statistiken zur Tastennutzung löschen?',bs_csv:'CSV exportieren',bs_empty:'Noch keine Klicks erfasst',c_btn:'Taste',c_uses:'Nutzungen',c_lastuse:'Zuletzt genutzt',bs_today:'Heute',bs_yday:'Gestern',bs_days:'Vor {n} Tagen'}
+});
+var BS={f:'',q:''};
+var BS_KEY='beunify_btn_stats_v1';
+function bsLoad(){try{return JSON.parse(localStorage.getItem(BS_KEY)||'{}')||{};}catch(e){return {};}}
+function bsAgo(ts){var d=Math.floor((Date.now()-ts)/86400000);return d<=0?t('bs_today'):d===1?t('bs_yday'):t('bs_days',{n:d});}
+function bsName(k){var m;if((m=/^tab:(.+)$/.exec(k))){var tk='tab_'+m[1];return t(tk)!==tk?t(tk):m[1];}if(k.charAt(0)==='#')return k.slice(1);return k.split(' | ')[0];}
+function bsRender(){
+  var s=bsLoad(),all=Object.keys(s).map(function(k){return {k:k,n:s[k].n||0,last:s[k].last||0};}).sort(function(a,b){return b.n-a.n;});
+  var total=all.reduce(function(a,x){return a+x.n;},0),low=all.filter(function(x){return x.n<=2;}).length,q=BS.q.toLowerCase();
+  var list=all.filter(function(x){return (!BS.f||x.n<=2)&&(!q||x.k.toLowerCase().indexOf(q)>=0);}),mx=all.length?all[0].n:1;
+  var h='<div class="fx-page" data-view="btnstats">'+U.ph(t('bs_title'),t('bs_sub'),(all.length?U.btn('bs.csv',I.down,t('bs_csv'))+U.btn('bs.reset',I.restore,t('bs_reset'),'dng'):''));
+  if(!all.length)return h+U.empty(t('bs_empty'),'','')+'</div>';
+  h+='<div class="fx-kpis k3">'+kpi(t('bs_btns'),all.length,'','')+kpi(t('bs_clicks'),total,'','')+kpi(t('bs_low'),low,'',low?'mid':'')+'</div>';
+  h+='<div class="fx-bar" style="margin-top:16px">'+U.search('bsq',BS.q,t('bs_q'))+U.seg('bs.f',[{v:'',lbl:t('bs_all'),n:all.length},{v:'low',lbl:t('bs_low'),n:low}],BS.f,'')+'</div>';
+  var pg=U.page('btnstats',[BS.q,BS.f].join('|'),list.map(function(x,i){return {id:i,x:x};})),rows=pg.list.map(function(o){return o.x;});
+  if(FX.S.lay!=='table')h+=U.list(rows.map(function(x){return U.li({id:'',src:'',pos:'<span class="fx-num">'+x.n+'</span>',plate:'',title:E(bsName(x.k)),meta:['<span class="fx-code fx-ell" style="font-size:13px">'+E(x.k)+'</span>','<span>'+E(bsAgo(x.last))+'</span>'],st:'',act:''});}).join(''));
+  else h+=U.table(U.th('',null,t('c_btn'),{})+U.th('',null,t('c_uses'),{},'c-n')+'<th style="width:28%"></th>'+U.th('',null,t('c_lastuse'),{}),rows.map(function(x){return '<tr><td class="c-txt" style="max-width:520px"><span class="fx-strong fx-ell">'+E(bsName(x.k))+'</span>'+(bsName(x.k)!==x.k?'<span class="fx-meta fx-code" style="font-size:13px" title="'+E(x.k)+'">'+E(x.k)+'</span>':'')+'</td><td class="c-n">'+x.n+'</td><td><div class="fx-hb-r" style="grid-template-columns:1fr;margin:0"><i><em style="width:'+Math.max(2,Math.round(x.n/mx*100))+'%"></em></i></div></td><td class="fx-num">'+E(bsAgo(x.last))+'</td></tr>';}).join(''));
+  h+=U.foot('btnstats',rows.length,list.length);
+  return h+'</div>';
+}
+FX.view('btnstats',{render:bsRender});
+FX.q('bsq',function(v){BS.q=v;FX.sync();});
+FX.act('bs.f',function(el,id,v){BS.f=v||'';FX.sync();});
+FX.act('bs.csv',function(){call('tgExportStats');});
+FX.act('bs.reset',function(){if(!window.confirm(t('bs_reset_q')))return;try{localStorage.removeItem(BS_KEY);}catch(e){}FX.sync();});
 })();

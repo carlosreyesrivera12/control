@@ -403,4 +403,9 @@ function openPpDrawer(id){
     return h;
   });
 }
+/* ════════════ IMPRESIÓN (editor actual, con cabecera FUTURE) ════════════ */
+FX.addT({es:{im_sub:'Diseña la ficha que se imprime para cada vehículo: campos, tamaño de letra, papel, textos y códigos QR. Los cambios se ven en el lienzo central.'},
+ en:{im_sub:'Design the sheet printed for each vehicle: fields, font size, paper, texts and QR codes. Changes show on the central canvas.'},
+ de:{im_sub:'Gestalten Sie das Blatt, das für jedes Fahrzeug gedruckt wird: Felder, Schriftgröße, Papier, Texte und QR-Codes. Änderungen erscheinen auf der Arbeitsfläche.'}});
+FX.hostHead('impresion',function(){return '<div class="fx-page" style="padding-bottom:0">'+U.ph(t('tab_impresion'),t('im_sub'),'')+'</div>';});
 })();

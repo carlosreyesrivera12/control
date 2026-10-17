@@ -881,3 +881,30 @@ body.fx .fx-cvlist .fx-btn.ico[disabled]{opacity:.25;cursor:default}
 .fx-fchip svg{width:15px;height:15px}
 .fx-fchips .fx-fchip svg:first-child{color:var(--fx-amber-solid);fill:var(--fx-amber-solid)}
 @media(max-width:1059px){.fx-split2{grid-template-columns:1fr}.fx-side{position:static}}
+
+/* ════════════ Etapa 8 · Campos y totales, Uso de botones ════════════ */
+.fx-kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:760px){.fx-kpis.k4,.fx-kpis.k3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+body.fx .fx-fchip.on{background:var(--fx-ink);border-color:var(--fx-ink);color:var(--fx-surface)}
+.fx-fchip.on .fx-badge{background:var(--fx-teal);color:#fff;min-width:18px;height:18px;font-size:11px}
+.fx-comp{display:flex;flex-direction:column}
+.fx-comp-r{display:grid;grid-template-columns:minmax(120px,200px) minmax(0,1fr) 120px;align-items:center;gap:6px 14px;padding:10px 0;border-bottom:1px solid var(--fx-line);font:500 14.5px/1.25 var(--fx-font)}
+.fx-comp-r:last-child{border-bottom:0}
+.fx-comp-l{font-weight:600;color:var(--fx-ink)}
+.fx-comp-r>i{display:block;height:10px;border-radius:3px;background:var(--fx-sunk)}
+.fx-comp-r>i em{display:block;height:100%;border-radius:3px;background:var(--fx-slate)}
+.fx-comp-r.ok>i em{background:var(--fx-teal)}
+.fx-comp-r.mid>i em{background:var(--fx-amber-solid)}
+.fx-comp-r>b{text-align:right;font:600 15px/1 var(--fx-cond);color:var(--fx-ink)}
+.fx-comp-r>b small{font:500 13px/1 var(--fx-font);color:var(--fx-mute);margin-left:4px}
+.fx-comp-top{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px}
+.fx-comp-top span{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:4px;background:var(--fx-sunk);font:500 13px/1 var(--fx-font);color:var(--fx-ink2)}
+.fx-comp-top b{font:600 13px/1 var(--fx-cond);color:var(--fx-mute)}
+@media(max-width:760px){.fx-comp-r{grid-template-columns:1fr 90px}.fx-comp-r>i{grid-column:1/-1;grid-row:2}.fx-comp-top{grid-column:1/-1}}
+/* Impresión: cabecera FUTURE sobre el editor y tipografía de la marca sin cambiar tamaños */
+body.fx #fxLegacy.fx-hh{display:block;margin:0;padding:0;background:transparent;border:0;border-radius:0}
+body.fx #fxLegacy.fx-hh .fx-page{padding:26px 28px 8px}
+body.fx #fxLegacy.fx-hh .fx-ph{margin-bottom:6px}
+body.fx #tab-impresion :is(button,.btn,input:not([type=range]),select,textarea){font-family:var(--fx-font)!important}
+body.fx #tab-impresion :is(button,.btn){box-shadow:none!important}
+body.fx #tab-impresion{padding:0 16px}

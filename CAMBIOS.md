@@ -5,6 +5,15 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-17 · FUTURE etapa 8 (Campos y totales, Uso de botones, Impresión) · FUTURE completo
+
+**Punto de restauración:** rama `restore-2026-10-17-antes-future-e8` (commit `a3e6152`).
+
+- **Análisis → Campos y totales** con diseño propio: pestañas por origen (Referencia, Ingresos, Embalaje, Agenda, Historial, Archivos, Papelera, Usuarios), campos rellenos con sus valores más repetidos y cruce de campos (pares y tripletas). Los PIN de usuario nunca se muestran.
+- **Uso de botones** como página dentro de FUTURE (antes ventana): botones, pulsaciones, poco usados, búsqueda, exportar CSV y reiniciar.
+- **Impresión**: cabecera FUTURE con explicación sobre el editor de siempre; botones y campos con la tipografía de la marca. El lienzo no se toca.
+- Sistema de diseño: añadidos pestañas de sección, indicadores, interruptor y avisos.
+
 ## 2026-10-17 · FUTURE etapa 7 (pantallas del menú ⋯)
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e7` (commit `bbb083d`).

@@ -3,7 +3,7 @@
    Capa aislada: no cambia datos ni funciones. Dibuja pantallas nuevas encima
    de las funciones existentes (mismo DB, mismos permisos, mismas acciones).
    Módulos: fx-ops.js (Operativa), fx-log.js (Logística), fx-cfg.js
-   (Configuración), fx-dat.js (Datos).
+   (Configuración), fx-dat.js (Datos), fx-sub.js (menú ⋯).
    Salir: menú de usuario → Vista clásica, o abrir INDEX.html?clasica
    Quitar todo: borrar la carpeta future/ y las líneas FUTURE de INDEX.html.
    ════════════════════════════════════════════════════════════════════════ */
@@ -12,7 +12,7 @@
 if(window.FX)return;
 var FX=window.FX={};
 
-var FX_VER='7.0';
+var FX_VER='8.0';
 var LS_MODE='bu_fx_mode',LS_RAIL='bu_fx_rail';
 var LIM=150;
 var VIEWS={};             // pestañas con diseño nuevo
@@ -322,7 +322,7 @@ function badges(){
 var BADGE_CLS={ingresos2:'t',agenda:'a',mensajes:'r'};
 function renderNav(){
   var nav=document.getElementById('fxNav');if(!nav)return;
-  var ct=S.page?null:cur(),b=badges(),h='',sc=(nav.querySelector('.fx-navscroll')||{}).scrollTop||0;
+  var ct=S.page?(S.page==='btnstats'?'btnstats':null):cur(),b=badges(),h='',sc=(nav.querySelector('.fx-navscroll')||{}).scrollTop||0;
   GROUPS.forEach(function(g){
     var items=g.tabs.filter(tabOk);if(!items.length)return;
     h+='<div class="fx-ngrp"><div class="fx-nh">'+t('g_'+g.k)+'</div>';
@@ -359,10 +359,13 @@ function renderTop(){
     +'<button type="button" class="fx-av" data-fx="user" aria-haspopup="menu" aria-label="'+E(u.nombre||'')+'">'+E(ini)+'</button>'
     +'</div>';
 }
+var HH={};FX.hostHead=function(tab,f){HH[tab]=f;};
 function legacyNote(tab){
   var am=document.getElementById('appMain');if(!am)return;
   var n=document.getElementById('fxLegacy');
   if(!n){n=document.createElement('div');n.id='fxLegacy';am.insertBefore(n,am.firstChild);}
+  if(HH[tab]){n.className='fx-hh';n.innerHTML=HH[tab]();return;}
+  n.className='';
   var v=VIEWS[tab],sub=!!(v&&v.back);
   n.innerHTML=I.info+'<span>'+t(sub?'legacySub':'legacy')+'</span>'+(sub?U.btn('subBack',I.back,t('backList'),'sm',' data-tab="'+tab+'"'):'');
 }
@@ -504,7 +507,7 @@ function scrollTop(){['fxMain','appMain'].forEach(function(id){var e=document.ge
 FX.scrollTop=scrollTop;
 function fxGo(tab){
   closeMenu();FX.drawer.close();document.body.classList.remove('fx-navopen');
-  if(tab==='btnstats'){call('tgShowStats');return;}
+  if(tab==='btnstats'){if(VIEWS.btnstats){S.page='btnstats';scrollTop();fxSync();}else call('tgShowStats');return;}
   S.page=null;
   var v=VIEWS[tab];if(v&&v.reset)try{v.reset();}catch(e){}
   var b=document.querySelector('#mainTabs .btn-tab[data-tab="'+tab+'"]');
@@ -547,6 +550,11 @@ function renderSystem(){
   h+='<h2>'+t('h_plate')+'</h2><p>'+t('h_plate_p')+'</p>'
     +'<div class="fx-ds-row">'+U.plate('4183JBT','E','lg')+U.plate('B KX 4471','D','lg')+U.plate('WGM87933','PL','lg')+'</div>'
     +'<div class="fx-ds-row">'+U.plate('ZFBD148','')+U.plate('R5244BCG','','sm')+U.hall('2')+U.hall('3')+U.hall('5')+U.hall('8.1')+'</div>';
+  h+='<h2>'+t('h_more')+'</h2><p>'+t('h_more_p')+'</p>'
+    +'<div class="fx-ds-row"><small>'+t('dsx_tabs')+'</small><div style="flex:1 1 360px">'+U.tabs('noop',[{v:'a',lbl:t('tab_ingresos2'),n:71},{v:'b',lbl:t('tab_ingresos'),n:48},{v:'c',lbl:t('tab_agenda'),n:26}],'a','')+'</div></div>'
+    +'<div class="fx-ds-row"><small>'+t('dsx_kpi')+'</small><div class="fx-kpis k3" style="flex:1 1 480px;margin:0"><div class="fx-kpi ok"><small>'+t('st_in')+'</small><b class="fx-num">6</b></div><div class="fx-kpi mid"><small>'+t('st_pend')+'</small><b class="fx-num">11</b></div><div class="fx-kpi bad"><small>'+t('st_blk')+'</small><b class="fx-num">1</b></div></div></div>'
+    +'<div class="fx-ds-row"><small>'+t('dsx_sw')+'</small><button type="button" class="fx-switch on" role="switch" aria-checked="true" aria-label="on" data-fx="noop"><i></i></button><button type="button" class="fx-switch" role="switch" aria-checked="false" aria-label="off" data-fx="noop"><i></i></button></div>'
+    +'<div class="fx-ds-row"><small>'+t('dsx_note')+'</small><div style="flex:1 1 360px">'+U.note('blk',I.alert,E(t('st_blk')))+U.note('pend',I.info,E(t('st_pend')))+'</div></div>';
   if(FX.sysTable)h+='<h2>'+t('h_tbl')+'</h2><p>'+t('h_tbl_p')+'</p>'+FX.sysTable();
   return h+'</div>';
 }
@@ -627,7 +635,7 @@ function wrapRender(name,tab){
 FX.wrap=wrap;
 function install(){
   addLauncher();updLauncher();
-  wrap('goTab',function(){if(on())fxSyncSoon();});
+  wrap('goTab',function(){S.page=null;if(on())fxSyncSoon();});
   wrap('renderHdr',function(){updLauncher();if(!on()&&lsGet(LS_MODE)==='1'&&allowed())fxEnter();else if(on())fxSyncSoon();});
   wrap('setSyncStatus',function(){if(on())renderTop();});
   wrap('applyTheme',function(){if(on())fxSyncSoon();});
@@ -639,5 +647,8 @@ function install(){
   else if(/[?&]future\b/.test(location.search))lsSet(LS_MODE,'1');
   if(lsGet(LS_MODE)==='1'&&allowed())fxEnter();
 }
+FX.addT({es:{h_more:'Más componentes',h_more_p:'Pestañas de sección, indicadores, interruptores y avisos. Siempre los mismos colores de estado.',dsx_tabs:'Pestañas de sección',dsx_kpi:'Indicadores',dsx_sw:'Interruptor',dsx_note:'Avisos'},
+ en:{h_more:'More components',h_more_p:'Section tabs, indicators, switches and notices. Always the same status colours.',dsx_tabs:'Section tabs',dsx_kpi:'Indicators',dsx_sw:'Switch',dsx_note:'Notices'},
+ de:{h_more:'Weitere Komponenten',h_more_p:'Bereichsreiter, Kennzahlen, Schalter und Hinweise. Immer dieselben Statusfarben.',dsx_tabs:'Bereichsreiter',dsx_kpi:'Kennzahlen',dsx_sw:'Schalter',dsx_note:'Hinweise'}});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else setTimeout(install,0);
 })();
