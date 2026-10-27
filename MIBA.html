@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MIBA · Logística de empresa</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#0f172a;--ink2:#334155;--mute:#64748b;--line:#e2e8f0;--line2:#cbd5e1;--brand:#00a88c;--brand2:#00806b;--brandl:#e6f7f4;--red:#dc2626;--redl:#fef2f2;--amber:#d97706;--amberl:#fffbeb;--blue:#2563eb;--bluel:#eff6ff;--green:#16a34a;--greenl:#f0fdf4;--purple:#7c3aed;--purplel:#f5f3ff;--r:10px;--sh:0 1px 2px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.08);--font:system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:400 14.5px/1.45 var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+.top{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:8px 14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:.3px}
+.brand i{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--brand);color:#fff;font-style:normal;font-size:13px}
+.tabs{display:flex;gap:2px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:transparent;padding:0 12px;height:36px;border-radius:8px;color:var(--ink2);font-weight:600;white-space:nowrap}
+.tab:hover{background:var(--bg)}
+.tab.on{background:var(--brandl);color:var(--brand2)}
+.tab em{font-style:normal;font-size:11.5px;background:var(--line);border-radius:10px;padding:1px 7px;margin-left:5px;color:var(--ink2)}
+.sync{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sync b{width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block}
+.sync.ok b{background:var(--green)}.sync.err b{background:var(--red)}
+.main{padding:16px;max-width:1500px;margin:0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 13px;border-radius:8px;border:1px solid var(--line2);background:var(--card);color:var(--ink);font-weight:600;white-space:nowrap}
+.btn:hover{border-color:var(--ink2)}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}.btn.p:hover{background:var(--brand2)}
+.btn.d{color:var(--red);border-color:#fecaca}.btn.d:hover{background:var(--redl)}
+.btn.sm{height:30px;padding:0 10px;font-size:13px}
+.btn.g{border-color:transparent;background:transparent}.btn.g:hover{background:var(--bg)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sp{flex:1}
+.h1{font-size:20px;font-weight:800;margin:0}
+.h2{font-size:15px;font-weight:700;margin:0 0 10px}
+.muted{color:var(--mute)}.small{font-size:12.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.kpi .v{font-size:26px;font-weight:800;line-height:1.1}
+.kpi .l{font-size:12.5px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.kpi .s{font-size:12px;color:var(--mute);margin-top:2px}
+input.in,select.in,textarea.in{width:100%;height:38px;border:1px solid var(--line2);border-radius:8px;padding:0 10px;background:#fff;outline:none}
+textarea.in{height:auto;min-height:70px;padding:8px 10px;resize:vertical}
+.in:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,168,140,.15)}
+.search{max-width:320px}
+table.t{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
+.t th{position:sticky;top:0;background:#f8fafc;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--mute);font-weight:700;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.t td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.t tr.click{cursor:pointer}.t tr.click:hover td{background:#f8fafc}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card);max-height:calc(100vh - 210px)}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:2px 9px;font-size:12px;font-weight:700;white-space:nowrap;background:var(--line);color:var(--ink2)}
+.badge:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip{display:inline-block;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;white-space:nowrap}
+.c-red{background:var(--redl);color:var(--red)}.c-amb{background:var(--amberl);color:var(--amber)}.c-grn{background:var(--greenl);color:var(--green)}.c-blu{background:var(--bluel);color:var(--blue)}.c-pur{background:var(--purplel);color:var(--purple)}.c-gry{background:#f1f5f9;color:var(--mute)}
+.pipe{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.pipe .st{flex:1;min-width:112px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);cursor:pointer;text-align:left}
+.pipe .st:hover{border-color:var(--line2)}
+.pipe .st b{display:block;font-size:22px;line-height:1.1}
+.pipe .st span{font-size:12px;font-weight:700;color:var(--mute)}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line)}
+.bar i{display:block;height:100%}
+.hbar{display:grid;grid-template-columns:minmax(90px,170px) 1fr 50px;gap:8px;align-items:center;font-size:13px;margin:5px 0}
+.hbar .tr{height:10px;background:var(--line);border-radius:5px;overflow:hidden}.hbar .tr i{display:block;height:100%;background:var(--brand);border-radius:5px}
+.hbar .n{text-align:right;font-weight:700}
+.empty{padding:40px 20px;text-align:center;color:var(--mute)}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:50;display:none}
+.ov.on{display:block}
+.dr{position:fixed;top:0;right:0;bottom:0;width:min(860px,100%);background:var(--bg);z-index:60;display:none;flex-direction:column;box-shadow:-8px 0 30px rgba(15,23,42,.15)}
+.dr.on{display:flex}
+.dr .hd{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+.dr .hd .tt{font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr .bd{flex:1;overflow:auto;padding:16px}
+.dr .ft{display:flex;gap:8px;padding:10px 16px;background:var(--card);border-top:1px solid var(--line);flex-wrap:wrap}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:12px}
+.sec>h4{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--brand2)}
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 12px}
+.f label{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:4px}
+.f.full{grid-column:1/-1}
+.f .ck{display:flex;align-items:center;gap:8px;height:38px;font-weight:600}
+.f .ck input{width:18px;height:18px;accent-color:var(--brand)}
+.req:after{content:" *";color:var(--red)}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 14px}
+.kv div{font-size:13.5px;min-width:0;overflow-wrap:anywhere}.kv small{display:block;font-size:11.5px;color:var(--mute);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 12px 20px;font-size:13.5px}
+.tl li:before{content:"";position:absolute;left:4px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--brand)}
+.tl li:after{content:"";position:absolute;left:7.5px;top:16px;bottom:0;width:1px;background:var(--line2)}
+.tl li:last-child:after{display:none}
+.steps{display:flex;gap:4px;margin:4px 0 12px;flex-wrap:wrap}
+.steps span{flex:1;min-width:70px;height:6px;border-radius:3px;background:var(--line)}
+.steps span.on{background:var(--brand)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;z-index:99;display:none;max-width:90vw}
+.toast.e{background:var(--red)}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:8px;margin-bottom:6px;font-size:13.5px}
+.donut{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.donut div{width:84px;height:84px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-weight:800;font-size:20px}
+.legend{font-size:13px}.legend span{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.mini{font-size:12.5px;color:var(--mute)}
+.list-mini{max-height:320px;overflow:auto}
+.lm{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.lm:last-child{border-bottom:0}
+@media(max-width:700px){.tabs{order:9;flex-basis:100%}.main{padding:10px}.hide-m{display:none}.dr .bd{padding:10px}.g2{grid-template-columns:1fr}}
+@media print{.top,.no-print{display:none!important}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand"><i>MI</i>MIBA</div>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="sync" id="sync"><b></b><span>Conectando…</span></div>
+  <button class="btn p" onclick="M.newServicio()">+ Servicio</button>
+</div>
+<main class="main" id="main"></main>
+<div class="ov" id="ov" onclick="M.closeDr()"></div>
+<aside class="dr" id="dr"><div class="hd"><div class="tt" id="drT"></div><button class="btn g" onclick="M.closeDr()">✕</button></div><div class="bd" id="drB"></div><div class="ft" id="drF"></div></aside>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+'use strict';
+/* ═══ MIBA · módulo de logística de empresa (BeUnifyT) ═══
+   Datos en Firebase RTDB: cu1/miba/<colección>/<id>  (no toca cu1/controlunificado)
+   Sin Firebase (archivo abierto suelto) → localStorage 'bu_miba_local'. */
+var COLL=['empresa','choferes','vehiculos','logisticas','supervisores','eventos','servicios'];
+var S={};COLL.forEach(function(c){S[c]={};});
+var REF=null,MODE='local',VIEW='dash',F={q:'',est:'',ev:'',per:'semana',arch:false},LS='bu_miba_local',CUR=null,RTE=null;
+var M=window.M={};
+
+/* ── Utilidades ── */
+function $(id){return document.getElementById(id);}
+function E(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function toast(m,err){var t=$('toast');t.textContent=m;t.className='toast'+(err?' e':'');t.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(function(){t.style.display='none';},err?5000:2400);}
+function pad(n){return (n<10?'0':'')+n;}
+function toLocalInput(ts){if(!ts)return '';var d=new Date(ts);if(isNaN(d))return '';return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}
+function fromLocalInput(v){if(!v)return null;var t=new Date(v).getTime();return isNaN(t)?null:t;}
+function fdt(ts){if(!ts)return '—';var d=new Date(ts);return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function fdate(v){if(!v)return '—';var d=new Date(v);if(isNaN(d))return E(v);return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();}
+function fnum(n,dec){if(n==null||n===''||isNaN(n))return '—';return Number(n).toLocaleString('es-ES',{maximumFractionDigits:dec==null?0:dec});}
+function fmin(m){if(m==null||isNaN(m))return '—';var s=m<0?'-':'';m=Math.abs(Math.round(m));var h=Math.floor(m/60),mm=m%60;return s+(h?h+' h ':'')+(mm||!h?mm+' min':'');}
+function digits(s){return String(s||'').replace(/[^\d+]/g,'').replace(/^\+/,'');}
+function user(){try{var u=parent.buMibaUser&&parent.buMibaUser();return u?(u.nombre||u.email||u.id||''):'';}catch(e){return '';}}
+function list(c,all){var o=S[c]||{};return Object.keys(o).map(function(k){return o[k];}).filter(function(x){return x&&(all||!x._arch);});}
+function get(c,id){return id&&S[c]?S[c][id]:null;}
+function clean(o){return JSON.parse(JSON.stringify(o));}
+function daysTo(d){if(!d)return null;var t=new Date(d).getTime();if(isNaN(t))return null;return Math.floor((t-Date.now())/864e5);}
+
+/* ── Persistencia ── */
+function setSync(st,msg){var s=$('sync');s.className='sync'+(st==='ok'?' ok':st==='err'?' err':'');s.querySelector('span').textContent=msg;}
+function loadLocal(){try{var v=JSON.parse(localStorage.getItem(LS)||'{}');COLL.forEach(function(c){S[c]=v[c]||{};});}catch(e){}}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+function init(){
+  var db=null;try{db=parent.buMibaFb&&parent.buMibaFb();}catch(e){}
+  if(db&&db.ref){
+    REF=db.ref('cu1/miba');
+    REF.on('value',function(sn){var v=sn.val()||{};COLL.forEach(function(c){S[c]=v[c]||{};});MODE='fb';setSync('ok','Sincronizado');render();},
+      function(err){MODE='local';loadLocal();setSync('err','Sin permiso en la nube · guardado local');toast('Sin acceso a cu1/miba ('+(err&&err.code||'error')+'). Se guarda en este dispositivo.',1);render();});
+  }else{loadLocal();setSync('err','Modo local (sin sesión)');render();}
+}
+function save(c,o,silent){
+  var now=Date.now();if(!o.id)o.id=uid();if(!o.createdAt){o.createdAt=now;o.createdBy=user();}o.updatedAt=now;o.updatedBy=user();
+  S[c][o.id]=o;
+  if(REF&&MODE==='fb'){REF.child(c+'/'+o.id).set(clean(o)).catch(function(e){toast('Error al guardar: '+(e&&e.code||e),1);});}else saveLocal();
+  if(!silent)render();return o;
+}
+
+/* ── Catálogos ── */
+var TIPOS=['Furgoneta (< 3,5 t)','Rígido 7,5 t','Rígido 12 t','Rígido 18 t','Tráiler / semirremolque','Megatráiler','Frigorífico','Lona / tautliner','Plataforma','Góndola / especial','Portacontenedores','Camión grúa'];
+var PAISES=['España','Francia','Alemania','Italia','Portugal','Países Bajos','Bélgica','Reino Unido','Suiza','Austria','Polonia','Chequia','Dinamarca','Suecia','Noruega','Irlanda','Hungría','Rumanía','Grecia','Turquía','Marruecos','EE. UU.','México','Argentina','Brasil','Chile','Emiratos Árabes Unidos','China'];
+var EST=[
+ {k:'PLANIFICADO',l:'Planificado',c:'#64748b'},
+ {k:'CONFIRMADO',l:'Confirmado',c:'#2563eb'},
+ {k:'CARGANDO',l:'Cargando',c:'#4f46e5'},
+ {k:'EN_RUTA',l:'En ruta',c:'#d97706'},
+ {k:'ESPERA',l:'Preregistro / parking',c:'#7c3aed'},
+ {k:'LLEGADO',l:'Llegado',c:'#0d9488'},
+ {k:'DESCARGA',l:'Descargando',c:'#0891b2'},
+ {k:'COMPLETADO',l:'Completado',c:'#16a34a'},
+ {k:'ANULADO',l:'Anulado',c:'#dc2626'}];
+var ESTI={};EST.forEach(function(e,i){e.i=i;ESTI[e.k]=e;});
+var INC_T=['Retraso','Adelanto','Avería','Accidente','Tráfico / corte','Documentación','Aduana','Acreditación / acceso','Carga dañada','Chofer','Otro'];
+function badge(k){var e=ESTI[k]||ESTI.PLANIFICADO;return '<span class="badge" style="color:'+e.c+';background:'+e.c+'14">'+E(e.l)+'</span>';}
+
+/* ── Esquemas de formularios ── */
+var REFLBL={
+ choferes:function(x){return (x.nombre||'')+' '+(x.apellidos||'');},
+ vehiculos:function(x){return (x.matricula||'')+(x.tipo?' · '+x.tipo:'');},
+ logisticas:function(x){return (x.nombre||'')+(x.ciudad?' · '+x.ciudad:'');},
+ supervisores:function(x){return (x.nombre||'')+(x.rol?' · '+x.rol:'');},
+ eventos:function(x){return (x.nombre||'')+(x.ciudad?' · '+x.ciudad:'');}
+};
+function lbl(c,id){var x=get(c,id);return x?REFLBL[c](x).trim():'';}
+var SCH={
+ empresa:{t:'Mi empresa',sec:[
+  {h:'Datos de la empresa',f:[{k:'razon',l:'Razón social',r:1},{k:'comercial',l:'Nombre comercial'},{k:'cif',l:'CIF / VAT'},{k:'pais',l:'País',t:'pais'},{k:'ciudad',l:'Ciudad'},{k:'direccion',l:'Dirección',w:1},{k:'telefono',l:'Teléfono',t:'tel'},{k:'email',l:'Email',t:'email'},{k:'web',l:'Web'}]},
+  {h:'Responsable de logística',f:[{k:'resp',l:'Nombre'},{k:'respTel',l:'Teléfono',t:'tel'},{k:'respEmail',l:'Email',t:'email'},{k:'horario',l:'Horario de atención'}]},
+  {h:'Notas',f:[{k:'notas',l:'Notas internas',t:'ta',w:1}]}]},
+ choferes:{t:'Chofer',sec:[
+  {h:'Datos',f:[{k:'nombre',l:'Nombre',r:1},{k:'apellidos',l:'Apellidos'},{k:'doc',l:'DNI / pasaporte'},{k:'nacionalidad',l:'Nacionalidad'},{k:'telefono',l:'Teléfono',t:'tel',r:1},{k:'whatsapp',l:'WhatsApp',t:'tel'},{k:'email',l:'Email',t:'email'},{k:'idiomas',l:'Idiomas'},{k:'logistica',l:'Empresa logística',t:'ref',c:'logisticas'}]},
+  {h:'Habilitaciones',f:[{k:'carnet',l:'Carnet',t:'sel',o:['B','C1','C','C+E','D']},{k:'carnetCad',l:'Caducidad carnet',t:'date'},{k:'capCad',l:'Caducidad CAP',t:'date'},{k:'tacoCad',l:'Caducidad tarjeta tacógrafo',t:'date'},{k:'adr',l:'ADR (mercancías peligrosas)',t:'chk'},{k:'activo',l:'Activo',t:'chk',d:true}]},
+  {h:'Notas',f:[{k:'notas',l:'Notas',t:'ta',w:1}]}]},
+ vehiculos:{t:'Vehículo',sec:[
+  {h:'Vehículo',f:[{k:'matricula',l:'Matrícula',r:1},{k:'remolque',l:'Matrícula remolque'},{k:'tipo',l:'Tipo de camión',t:'sel',o:TIPOS,r:1},{k:'modelo',l:'Marca / modelo'},{k:'logistica',l:'Empresa logística',t:'ref',c:'logisticas'},{k:'chofer',l:'Chofer habitual',t:'ref',c:'choferes'}]},
+  {h:'Capacidad',f:[{k:'mma',l:'MMA (kg)',t:'num'},{k:'util',l:'Carga útil (kg)',t:'num'},{k:'largo',l:'Largo caja (m)',t:'num'},{k:'alto',l:'Alto total (m)',t:'num'},{k:'vol',l:'Volumen (m³)',t:'num'},{k:'palets',l:'Palets',t:'num'},{k:'trampilla',l:'Plataforma elevadora',t:'chk'},{k:'adr',l:'Apto ADR',t:'chk'},{k:'frio',l:'Frío / temperatura',t:'chk'}]},
+  {h:'Documentación',f:[{k:'itvCad',l:'Caducidad ITV',t:'date'},{k:'seguroCad',l:'Caducidad seguro',t:'date'},{k:'tarjetaTte',l:'Tarjeta de transporte'},{k:'activo',l:'Activo',t:'chk',d:true},{k:'notas',l:'Notas',t:'ta',w:1}]}]},
+ logisticas:{t:'Empresa logística',sec:[
+  {h:'Empresa',f:[{k:'nombre',l:'Nombre',r:1},{k:'cif',l:'CIF / VAT'},{k:'pais',l:'País',t:'pais',r:1},{k:'ciudad',l:'Ciudad',r:1},{k:'direccion',l:'Dirección',w:1},{k:'telefono',l:'Teléfono',t:'tel'},{k:'email',l:'Email',t:'email'},{k:'whatsapp',l:'WhatsApp',t:'tel'},{k:'web',l:'Web'}]},
+  {h:'Operativa',f:[{k:'contacto',l:'Persona de contacto'},{k:'contactoTel',l:'Teléfono contacto',t:'tel'},{k:'flota',l:'Tipos de camión que ofrece',t:'ta',w:1},{k:'zonas',l:'Zonas / países que cubre',w:1},{k:'reemplazo',l:'Disponible como reemplazo',t:'chk'},{k:'aduanas',l:'Gestiona aduanas',t:'chk'},{k:'valor',l:'Valoración',t:'sel',o:['','★','★★','★★★','★★★★','★★★★★']},{k:'tarifa',l:'Tarifa orientativa (€/km)',t:'num'}]},
+  {h:'Notas',f:[{k:'notas',l:'Notas',t:'ta',w:1}]}]},
+ supervisores:{t:'Supervisor / encargado',sec:[
+  {h:'Datos',f:[{k:'nombre',l:'Nombre',r:1},{k:'rol',l:'Rol',t:'sel',o:['Supervisor','Encargado','Jefe de tráfico','Coordinador en destino','Coordinador en origen','Montador jefe']},{k:'empresa',l:'Empresa'},{k:'telefono',l:'Teléfono',t:'tel',r:1},{k:'whatsapp',l:'WhatsApp',t:'tel'},{k:'email',l:'Email',t:'email'},{k:'idiomas',l:'Idiomas'},{k:'notas',l:'Notas',t:'ta',w:1}]}]},
+ eventos:{t:'Evento',sec:[
+  {h:'Evento',f:[{k:'nombre',l:'Nombre del evento',r:1},{k:'pais',l:'País',t:'pais',r:1},{k:'ciudad',l:'Ciudad',r:1},{k:'organizador',l:'Organizador'},{k:'eIni',l:'Evento desde',t:'date'},{k:'eFin',l:'Evento hasta',t:'date'},{k:'mIni',l:'Montaje desde',t:'dt'},{k:'mFin',l:'Montaje hasta',t:'dt'},{k:'dIni',l:'Desmontaje desde',t:'dt'},{k:'dFin',l:'Desmontaje hasta',t:'dt'}]},
+  {h:'Centro del evento',f:[{k:'centro',l:'Centro / recinto',r:1},{k:'direccion',l:'Dirección',w:1},{k:'cp',l:'Código postal'},{k:'telefono',l:'Teléfono',t:'tel'},{k:'email',l:'Email',t:'email'},{k:'web',l:'Web'},{k:'puertas',l:'Puertas de ingreso de vehículos',w:1},{k:'horario',l:'Horario de acceso de camiones',w:1},{k:'limites',l:'Límites (altura, peso, tiempo de descarga)',w:1}]},
+  {h:'Preregistro y acreditación',f:[{k:'preObl',l:'Preregistro obligatorio',t:'chk'},{k:'preNombre',l:'Recinto de preregistro'},{k:'preDir',l:'Dirección preregistro',w:1},{k:'acred',l:'Acreditación (requisitos / web)',t:'ta',w:1},{k:'pagoImp',l:'Pago extra de registro (€)',t:'num'},{k:'pagoConc',l:'Concepto del pago'}]},
+  {h:'Parkings cercanos',f:[{k:'parkings',l:'Parkings (uno por línea)',t:'ta',w:1}]},
+  {h:'Contacto en destino',f:[{k:'cNombre',l:'Nombre'},{k:'cTel',l:'Teléfono',t:'tel'},{k:'cEmail',l:'Email',t:'email'},{k:'notas',l:'Notas',t:'ta',w:1}]}]},
+ servicios:{t:'Servicio',sec:[
+  {h:'General',f:[{k:'ref',l:'Referencia'},{k:'evento',l:'Evento',t:'ref',c:'eventos'},{k:'tipoSrv',l:'Tipo de servicio',t:'sel',o:['Montaje','Desmontaje','Entrega','Recogida','Traslado','Retorno']},{k:'prioridad',l:'Prioridad',t:'sel',o:['Normal','Alta','Urgente']},{k:'estado',l:'Estado',t:'est'}]},
+  {h:'Equipo',f:[{k:'logistica',l:'Empresa logística',t:'ref',c:'logisticas'},{k:'chofer',l:'Chofer',t:'ref',c:'choferes'},{k:'chofer2',l:'Segundo chofer (doble tripulación)',t:'ref',c:'choferes'},{k:'vehiculo',l:'Vehículo',t:'ref',c:'vehiculos'},{k:'tipoCamion',l:'Tipo de camión',t:'sel',o:TIPOS},{k:'supervisor',l:'Supervisor / encargado',t:'ref',c:'supervisores'},{k:'supDestino',l:'Encargado en destino',t:'ref',c:'supervisores'}]},
+  {h:'Origen',f:[{k:'oNombre',l:'Empresa / almacén de origen'},{k:'oDir',l:'Dirección de origen',w:1},{k:'oCiudad',l:'Ciudad'},{k:'oPais',l:'País',t:'pais'},{k:'oContacto',l:'Contacto en origen'},{k:'oTel',l:'Teléfono',t:'tel'},{k:'oEmail',l:'Email',t:'email'},{k:'oVentana',l:'Ventana de carga'}]},
+  {h:'Destino',f:[{k:'dCentro',l:'Centro del evento'},{k:'dDir',l:'Dirección de destino',w:1},{k:'dCiudad',l:'Ciudad'},{k:'dPais',l:'País',t:'pais'},{k:'dTel',l:'Teléfono centro',t:'tel'},{k:'dEmail',l:'Email centro',t:'email'},{k:'hall',l:'Hall / pabellón'},{k:'stand',l:'Stand'},{k:'puertaCerca',l:'Puerta más cercana'},{k:'puertaIng',l:'Puerta de ingreso'},{k:'refDestino',l:'Referencia (expositor / pedido)'},{k:'dContacto',l:'Contacto en destino'},{k:'dContactoTel',l:'Teléfono contacto',t:'tel'},{k:'dContactoEmail',l:'Email contacto',t:'email'},{k:'slot',l:'Cita / slot en destino',t:'dt'}]},
+  {h:'Ruta y tiempos',f:[{k:'salidaPrev',l:'Salida prevista',t:'dt'},{k:'km',l:'Km aprox. origen → destino',t:'num'},{k:'horasCond',l:'Horas de conducción (base)',t:'num'},{k:'eta',l:'Llegada estimada (ETA)',t:'dt'},{k:'prohib',l:'Aplicar prohibición fin de semana (> 7,5 t)',t:'chk',d:true},{k:'salidaReal',l:'Salida real',t:'dt'},{k:'llegadaReal',l:'Hora de llegada real',t:'dt'},{k:'parking',l:'Parking de espera asignado',w:1}]},
+  {h:'Carga',f:[{k:'bultos',l:'Bultos',t:'num'},{k:'palets',l:'Palets',t:'num'},{k:'peso',l:'Peso total (kg)',t:'num'},{k:'vol',l:'Volumen (m³)',t:'num'},{k:'ml',l:'Metros lineales',t:'num'},{k:'descarga',l:'Medio de descarga',t:'sel',o:['','Carretilla del recinto','Plataforma elevadora propia','Grúa','Manual','Transpaleta']},{k:'carga',l:'Descripción del material',t:'ta',w:1},{k:'adr',l:'Mercancía peligrosa (ADR)',t:'chk'},{k:'adrClase',l:'Clase ADR / nº ONU'},{k:'temp',l:'Temperatura controlada'},{k:'apilable',l:'Apilable',t:'chk'},{k:'seguroCarga',l:'Valor asegurado (€)',t:'num'}]},
+  {h:'Aduanas',f:[{k:'aduana',l:'Necesita aduanas',t:'chk'},{k:'aduTipo',l:'Tipo',t:'sel',o:['','Exportación','Importación','Tránsito T1','Cuaderno ATA','Importación temporal','Otro']},{k:'aduAgente',l:'Agente de aduanas'},{k:'aduTel',l:'Teléfono agente',t:'tel'},{k:'aduDoc',l:'Nº documento (DUA / MRN / ATA)'},{k:'aduEstado',l:'Estado aduana',t:'sel',o:['','Pendiente','En trámite','Despachado','Retenido']}]},
+  {h:'Registro y acreditación',f:[{k:'preObl',l:'Preregistro obligatorio',t:'chk'},{k:'preRecinto',l:'Recinto de preregistro'},{k:'acredNum',l:'Nº acreditación'},{k:'acredEst',l:'Estado acreditación',t:'sel',o:['','Pendiente','Solicitada','Aprobada','Rechazada']},{k:'pagoImp',l:'Pago extra de registro (€)',t:'num'},{k:'pagoConc',l:'Concepto'},{k:'pagoOk',l:'Pagado',t:'chk'},{k:'pagoRef',l:'Ref. pago'}]},
+  {h:'Costes',f:[{k:'precio',l:'Precio del transporte (€)',t:'num'},{k:'peajes',l:'Peajes (€)',t:'num'},{k:'extras',l:'Otros extras (€)',t:'num'}]},
+  {h:'Documentos y notas',f:[{k:'cmr',l:'CMR / albarán'},{k:'docsOk',l:'Documentación completa',t:'chk'},{k:'notas',l:'Notas',t:'ta',w:1}]}]}
+};
+
+/* ── Formularios ── */
+function fieldHTML(f,v){
+  var id='f_'+f.k,val=v==null?(f.d!=null?f.d:''):v,h='<div class="f'+(f.w||f.t==='ta'?' full':'')+'">';
+  if(f.t==='chk')return h+'<label class="ck"><input type="checkbox" id="'+id+'"'+(val?' checked':'')+'> '+E(f.l)+'</label></div>';
+  h+='<label for="'+id+'"'+(f.r?' class="req"':'')+'>'+E(f.l)+'</label>';
+  if(f.t==='ta')return h+'<textarea class="in" id="'+id+'">'+E(val)+'</textarea></div>';
+  if(f.t==='sel'||f.t==='est'||f.t==='ref'){
+    var o='';
+    if(f.t==='sel'){var hs=false;f.o.forEach(function(x){if(x===val)hs=true;o+='<option'+(x===val?' selected':'')+'>'+E(x)+'</option>';});if(val&&!hs)o+='<option selected>'+E(val)+'</option>';if(f.o[0]!=='')o='<option value=""></option>'+o;}
+    else if(f.t==='est'){EST.forEach(function(e){o+='<option value="'+e.k+'"'+((val||'PLANIFICADO')===e.k?' selected':'')+'>'+E(e.l)+'</option>';});}
+    else{o='<option value="">—</option>';list(f.c).sort(function(a,b){return REFLBL[f.c](a).localeCompare(REFLBL[f.c](b));}).forEach(function(x){o+='<option value="'+E(x.id)+'"'+(x.id===val?' selected':'')+'>'+E(REFLBL[f.c](x))+'</option>';});if(val&&!get(f.c,val))o+='<option value="'+E(val)+'" selected>(archivado)</option>';}
+    return h+'<select class="in" id="'+id+'">'+o+'</select></div>';
+  }
+  if(f.t==='pais'){return h+'<input class="in" id="'+id+'" list="dlPais" value="'+E(val)+'" autocomplete="off"></div>';}
+  var ty=f.t==='num'?'number" step="any':f.t==='date'?'date':f.t==='dt'?'datetime-local':f.t==='tel'?'tel':f.t==='email'?'email':'text';
+  if(f.t==='dt')val=toLocalInput(val);
+  return h+'<input class="in" type="'+ty+'" id="'+id+'" value="'+E(val)+'"></div>';
+}
+function formHTML(c,o){
+  var h='<datalist id="dlPais">'+PAISES.map(function(p){return '<option value="'+E(p)+'">';}).join('')+'</datalist>';
+  SCH[c].sec.forEach(function(s){h+='<div class="sec"><h4>'+E(s.h)+'</h4><div class="fg">'+s.f.map(function(f){return fieldHTML(f,o[f.k]);}).join('')+'</div>'+(c==='servicios'&&s.h==='Ruta y tiempos'?'<div class="row" style="margin-top:10px"><button type="button" class="btn sm" onclick="M.calcRuta()">🧭 Calcular km y ETA</button><button type="button" class="btn sm" onclick="M.calcEta()">⏱ Recalcular ETA</button><span class="mini" id="rutaInfo"></span></div>':'')+(c==='eventos'&&s.h==='Parkings cercanos'?'<div class="row" style="margin-top:8px"><button type="button" class="btn sm" onclick="M.buscarParkings()">🅿️ Buscar parkings cercanos (OpenStreetMap)</button><span class="mini" id="pkInfo"></span></div><div id="pkRes"></div>':'')+'</div>';});
+  return h;
+}
+function readForm(c,base){
+  var o=clean(base||{}),miss=[];
+  SCH[c].sec.forEach(function(s){s.f.forEach(function(f){var el=$('f_'+f.k);if(!el)return;var v;
+    if(f.t==='chk')v=el.checked;else if(f.t==='num')v=el.value===''?null:Number(el.value);else if(f.t==='dt')v=fromLocalInput(el.value);else v=el.value.trim();
+    if(v===''||v==null)delete o[f.k];else o[f.k]=v;if(f.r&&(v===''||v==null))miss.push(f.l);});});
+  return {o:o,miss:miss};
+}
+function fv(k){var el=$('f_'+k);if(!el)return '';return el.type==='checkbox'?el.checked:el.value;}
+function setf(k,v,force){var el=$('f_'+k);if(!el)return;if(el.type==='checkbox'){el.checked=!!v;return;}if(!force&&el.value)return;if(el.type==='datetime-local')v=toLocalInput(v);el.value=v==null?'':v;}
+
+/* ── Drawer ── */
+function openDr(t,body,foot){$('drT').textContent=t;$('drB').innerHTML=body;$('drF').innerHTML=foot||'';$('dr').classList.add('on');$('ov').classList.add('on');$('drB').scrollTop=0;}
+M.closeDr=function(){$('dr').classList.remove('on');$('ov').classList.remove('on');CUR=null;};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('dr').classList.contains('on'))M.closeDr();});
+
+M.edit=function(c,id){
+  var o=id?clean(get(c,id)||{}):{};
+  if(c==='empresa'){o=clean(get('empresa','main')||{id:'main'});}
+  if(c==='servicios'&&!id){o.estado='PLANIFICADO';o.ref=nextRef();o.prohib=true;if(F.ev)o.evento=F.ev;}
+  CUR={c:c,id:o.id||null,base:o};
+  openDr((id||c==='empresa'?'Editar ':'Nuevo ')+SCH[c].t.toLowerCase(),formHTML(c,o),
+    '<button class="btn p" onclick="M.saveForm()">Guardar</button><button class="btn" onclick="M.closeDr()">Cancelar</button><span class="sp"></span>'+(id&&c!=='servicios'&&c!=='empresa'?'<button class="btn d" onclick="M.archive(\''+c+'\',\''+id+'\')">Archivar</button>':''));
+  if(c==='servicios')wireSrvForm();
+};
+M.saveForm=function(){
+  if(!CUR)return;var c=CUR.c,r=readForm(c,CUR.base);
+  if(r.miss.length){toast('Falta: '+r.miss.join(', '),1);return;}
+  var o=r.o;if(c==='empresa')o.id='main';
+  if(c==='servicios'){
+    var prev=CUR.id?get('servicios',CUR.id):null;o.hist=o.hist||[];
+    if(!prev)o.hist.push({ts:Date.now(),estado:o.estado||'PLANIFICADO',by:user(),nota:'Creado'});
+    else if(prev.estado!==o.estado)o.hist.push({ts:Date.now(),estado:o.estado,by:user(),nota:'Estado cambiado desde el formulario'});
+    if(!o.eta&&o.salidaPrev&&o.horasCond){var est=estimateETA(o.salidaPrev,o.horasCond,{doble:!!o.chofer2,heavy:isHeavy(o),prohib:o.prohib});o.eta=est.eta;}
+  }
+  save(c,o);toast('Guardado');
+  if(c==='servicios')M.view(o.id);else M.closeDr();
+};
+M.archive=function(c,id){var o=get(c,id);if(!o||!confirm('¿Archivar «'+(REFLBL[c]?REFLBL[c](o):o.id)+'»? Se puede recuperar desde «Mostrar archivados».'))return;o._arch=true;save(c,o);M.closeDr();toast('Archivado');};
+M.restore=function(c,id){var o=get(c,id);if(!o)return;delete o._arch;save(c,o);toast('Recuperado');};
+
+/* ── Servicio: autocompletado ── */
+function isHeavy(o){var t=o.tipoCamion||'';if(!t){var v=get('vehiculos',o.vehiculo);t=v?v.tipo||'':'';}return !/Furgoneta/i.test(t);}
+function nextRef(){var d=new Date(),p='MB-'+String(d.getFullYear()).slice(2)+pad(d.getMonth()+1)+pad(d.getDate())+'-',n=list('servicios',true).filter(function(s){return String(s.ref||'').indexOf(p)===0;}).length+1;return p+(n<10?'00':n<100?'0':'')+n;}
+function fillFromEvento(force){
+  var ev=get('eventos',fv('evento'));if(!ev)return;
+  setf('dCentro',ev.centro,force);setf('dDir',[ev.direccion,ev.cp].filter(Boolean).join(', '),force);setf('dCiudad',ev.ciudad,force);setf('dPais',ev.pais,force);setf('dTel',ev.telefono,force);setf('dEmail',ev.email,force);
+  setf('dContacto',ev.cNombre,force);setf('dContactoTel',ev.cTel,force);setf('dContactoEmail',ev.cEmail,force);
+  setf('preRecinto',ev.preNombre,force);if(ev.preObl)setf('preObl',true);if(ev.pagoImp!=null)setf('pagoImp',ev.pagoImp,force);setf('pagoConc',ev.pagoConc,force);
+  if(ev.puertas&&!fv('puertaIng')&&String(ev.puertas).split(/[,;\n]/).length===1)setf('puertaIng',ev.puertas);
+}
+function wireSrvForm(){
+  var on=function(k,f){var el=$('f_'+k);if(el)el.addEventListener('change',f);};
+  on('evento',function(){fillFromEvento(false);});
+  on('vehiculo',function(){var v=get('vehiculos',fv('vehiculo'));if(!v)return;if(v.tipo)setf('tipoCamion',v.tipo,true);if(v.chofer)setf('chofer',v.chofer);if(v.logistica)setf('logistica',v.logistica);});
+  on('chofer',function(){var ch=get('choferes',fv('chofer'));if(ch&&ch.logistica)setf('logistica',ch.logistica);});
+  on('salidaPrev',function(){if(fv('horasCond'))M.calcEta(true);});
+  on('horasCond',function(){if(fv('salidaPrev'))M.calcEta(true);});
+  on('km',function(){if(!fv('horasCond')&&fv('km')){var h=Number(fv('km'))/speedFor(fv('tipoCamion'));setf('horasCond',Math.round(h*10)/10,true);if(fv('salidaPrev'))M.calcEta(true);}});
+  if(!CUR.id)fillFromEvento(false);
+}
+function speedFor(t){return /Furgoneta/i.test(t||'')?82:/7,5/.test(t||'')?75:68;}
+function truckFactor(t){return /Furgoneta/i.test(t||'')?1.05:/7,5|12 t/.test(t||'')?1.15:1.25;}
+
+/* ── Estimación de llegada: conducción + descansos UE 561/2006 + día/hora de salida ── */
+function inBan(d){var w=d.getDay(),h=d.getHours();return (w===6&&h>=22)||(w===0&&h<22);}
+function traffic(d){var w=d.getDay(),h=d.getHours();if(w>=1&&w<=5&&((h>=7&&h<9)||(h>=17&&h<19)))return .82;if(w===5&&h>=14&&h<20)return .85;if(h>=22||h<5)return 1.05;return 1;}
+function estimateETA(salida,horas,o){
+  o=o||{};var t=new Date(salida).getTime(),rem=Number(horas)*60,since=0,day=0,maxDay=o.doble?18*60:9*60,rest=o.doble?9*60:11*60,br=0,rs=0,ban=0,run=0,g=0,drive=0,step=15;
+  if(!t||!(rem>0))return {eta:null};
+  while(rem>0&&g++<40000){
+    var d=new Date(t);
+    if(o.prohib&&o.heavy&&inBan(d)){t+=step*6e4;ban+=step;run+=step;if(run>=45)since=0;if(run>=rest)day=0;continue;}run=0;
+    if(!o.doble&&since>=270){t+=45*6e4;since=0;br++;continue;}
+    if(day>=maxDay){t+=rest*6e4;day=0;since=0;rs++;continue;}
+    var s=Math.min(step,rem/traffic(d));rem-=s*traffic(d);t+=s*6e4;since+=s;day+=s;drive+=s;
+  }
+  return {eta:t,total:(t-new Date(salida).getTime())/6e4,breaks:br,rests:rs,ban:ban,drive:drive};
+}
+M.estimateETA=estimateETA;
+M.calcEta=function(quiet){
+  var sal=fromLocalInput(fv('salidaPrev')),h=Number(fv('horasCond'));
+  if(!sal||!h){if(!quiet)toast('Indica salida prevista y horas de conducción (o calcula la ruta)',1);return;}
+  var r=estimateETA(sal,h,{doble:!!fv('chofer2'),heavy:isHeavy({tipoCamion:fv('tipoCamion'),vehiculo:fv('vehiculo')}),prohib:fv('prohib')});
+  setf('eta',r.eta,true);
+  var dn=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(sal).getDay()];
+  $('rutaInfo').textContent='Salida en '+dn+' · total '+fmin(r.total)+' · '+r.breaks+' pausas de 45 min · '+r.rests+' descansos diarios'+(r.ban?' · '+fmin(r.ban)+' parado por prohibición de fin de semana':'')+' · estimación aproximada';
+};
+function geocode(q){return fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),{headers:{'Accept-Language':'es'}}).then(function(r){return r.json();}).then(function(a){if(!a||!a[0])throw new Error('No se encontró: '+q);return {lat:+a[0].lat,lon:+a[0].lon,name:a[0].display_name};});}
+M.calcRuta=function(){
+  var o=[fv('oDir'),fv('oCiudad'),fv('oPais')].filter(Boolean).join(', '),d=[fv('dDir'),fv('dCiudad'),fv('dPais')].filter(Boolean).join(', ');
+  if(!fv('oCiudad')&&!fv('oDir')||!fv('dCiudad')&&!fv('dDir')){toast('Rellena origen y destino (al menos ciudad)',1);return;}
+  var info=$('rutaInfo');info.textContent='Calculando ruta…';
+  var A;geocode(o).catch(function(){return geocode([fv('oCiudad'),fv('oPais')].filter(Boolean).join(', '));}).then(function(a){A=a;return geocode(d).catch(function(){return geocode([fv('dCiudad'),fv('dPais')].filter(Boolean).join(', '));});})
+  .then(function(B){return fetch('https://router.project-osrm.org/route/v1/driving/'+A.lon+','+A.lat+';'+B.lon+','+B.lat+'?overview=false').then(function(r){return r.json();});})
+  .then(function(j){
+    if(!j.routes||!j.routes[0])throw new Error('Sin ruta por carretera');
+    var km=Math.round(j.routes[0].distance/1000),h=j.routes[0].duration/3600*truckFactor(fv('tipoCamion'));
+    setf('km',km,true);setf('horasCond',Math.round(h*10)/10,true);
+    info.textContent=km+' km · '+fmin(h*60)+' de conducción en camión';
+    if(fv('salidaPrev'))M.calcEta(true);
+  }).catch(function(e){info.textContent='';toast('No se pudo calcular: '+(e.message||e)+'. Puedes poner los km a mano.',1);});
+};
+
+/* ── Parkings (OpenStreetMap / Overpass) ── */
+function dist(a,b,c,d){var R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180,s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.atan2(Math.sqrt(s),Math.sqrt(1-s));}
+M.buscarParkings=function(){
+  var q=[fv('direccion'),fv('cp'),fv('ciudad'),fv('pais')].filter(Boolean).join(', ')||[fv('centro'),fv('ciudad')].filter(Boolean).join(', ');
+  if(!q){toast('Rellena la dirección o el centro y la ciudad',1);return;}
+  var info=$('pkInfo');info.textContent='Buscando…';
+  geocode(q).catch(function(){return geocode([fv('centro'),fv('ciudad'),fv('pais')].filter(Boolean).join(', '));}).then(function(p){
+    var qs='[out:json][timeout:25];(nwr(around:15000,'+p.lat+','+p.lon+')["amenity"="parking"]["hgv"~"yes|designated"];nwr(around:15000,'+p.lat+','+p.lon+')["amenity"="truck_stop"];nwr(around:20000,'+p.lat+','+p.lon+')["highway"="services"];nwr(around:2500,'+p.lat+','+p.lon+')["amenity"="parking"]["access"!="private"];);out center 60;';
+    return fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(qs)}).then(function(r){return r.json();}).then(function(j){return {p:p,el:j.elements||[]};});
+  }).then(function(r){
+    var items=r.el.map(function(e){var la=e.lat||(e.center&&e.center.lat),lo=e.lon||(e.center&&e.center.lon),tg=e.tags||{};return {n:tg.name||(tg.highway==='services'?'Área de servicio':tg.amenity==='truck_stop'?'Parada de camiones':'Parking'),hgv:/yes|designated/.test(tg.hgv||'')||tg.amenity==='truck_stop',cap:tg['capacity:hgv']||tg.capacity||'',km:dist(r.p.lat,r.p.lon,la,lo),la:la,lo:lo};})
+      .filter(function(x){return x.la;}).sort(function(a,b){return (b.hgv-a.hgv)||(a.km-b.km);}).slice(0,25);
+    info.textContent=items.length+' resultados';
+    $('pkRes').innerHTML=items.length?'<div class="list-mini" style="margin-top:8px">'+items.map(function(x,i){return '<div class="lm"><span class="chip '+(x.hgv?'c-grn':'c-gry')+'">'+(x.hgv?'Camiones':'Turismos')+'</span><div style="flex:1;min-width:0">'+E(x.n)+' <span class="mini">· '+x.km.toFixed(1)+' km'+(x.cap?' · '+E(x.cap)+' plazas':'')+'</span></div><a class="btn sm g" target="_blank" href="https://www.google.com/maps?q='+x.la+','+x.lo+'">Mapa</a><button type="button" class="btn sm" data-i="'+i+'">Añadir</button></div>';}).join('')+'</div>':'<div class="mini">Sin resultados en OpenStreetMap.</div>';
+    $('pkRes').querySelectorAll('button[data-i]').forEach(function(b){b.onclick=function(){var x=items[+b.dataset.i],ta=$('f_parkings');ta.value=(ta.value?ta.value.replace(/\s+$/,'')+'\n':'')+x.n+' · '+x.km.toFixed(1)+' km'+(x.hgv?' · camiones':'')+' · https://www.google.com/maps?q='+x.la+','+x.lo;b.disabled=true;b.textContent='Añadido';};});
+  }).catch(function(e){info.textContent='';toast('No se pudo buscar: '+(e.message||e),1);});
+};
+
+/* ── Cálculos de servicio ── */
+function target(s){return s.slot||s.eta||null;}
+function delay(s){
+  var tg=target(s);if(!tg)return null;
+  if(s.llegadaReal)return {m:(s.llegadaReal-tg)/6e4,live:false};
+  if(s.estado!=='ANULADO'&&s.estado!=='COMPLETADO'&&(ESTI[s.estado]||{}).i<ESTI.LLEGADO.i&&Date.now()>tg+15*6e4)return {m:(Date.now()-tg)/6e4,live:true};
+  return null;
+}
+function delayChip(s){var d=delay(s);if(!d)return '';if(Math.abs(d.m)<=15)return '<span class="chip c-grn">Puntual</span>';if(d.m>0)return '<span class="chip c-red">'+(d.live?'Retraso en curso ':'Retraso ')+fmin(d.m)+'</span>';return '<span class="chip c-blu">Adelanto '+fmin(-d.m)+'</span>';}
+function openInc(s){return (s.incid||[]).filter(function(i){return !i.ok;}).length;}
+function srvDate(s){return s.slot||s.eta||s.salidaPrev||s.createdAt;}
+function inPeriod(s){
+  if(F.per==='todo')return true;var t=srvDate(s);if(!t)return true;var d0=new Date();d0.setHours(0,0,0,0);var a=d0.getTime(),b;
+  if(F.per==='hoy')b=a+864e5;else if(F.per==='manana'){a+=864e5;b=a+864e5;}else{a-=864e5;b=a+8*864e5;}
+  return t>=a&&t<b;
+}
+function srvFiltered(useStatus){
+  var q=F.q.toLowerCase();
+  return list('servicios',F.arch).filter(function(s){
+    if(F.ev&&s.evento!==F.ev)return false;if(useStatus&&F.est&&s.estado!==F.est)return false;
+    if(VIEW==='dash'&&!inPeriod(s))return false;
+    if(q){var txt=[s.ref,s.oNombre,s.oCiudad,s.dCentro,s.dCiudad,s.hall,s.stand,s.refDestino,lbl('choferes',s.chofer),lbl('vehiculos',s.vehiculo),lbl('logisticas',s.logistica),lbl('eventos',s.evento)].join(' ').toLowerCase();if(txt.indexOf(q)<0)return false;}
+    return true;
+  }).sort(function(a,b){return (srvDate(a)||0)-(srvDate(b)||0);});
+}
+
+/* ── Acciones de servicio ── */
+function setEstado(s,k,nota,extra){s.estado=k;s.hist=s.hist||[];s.hist.push({ts:Date.now(),estado:k,by:user(),nota:nota||''});if(extra)extra(s);save('servicios',s,true);render();M.view(s.id);}
+M.estado=function(id,k){var s=get('servicios',id);if(!s)return;
+  if(k==='EN_RUTA'&&!s.salidaReal){setEstado(s,k,'Salida marcada',function(x){x.salidaReal=Date.now();if(x.horasCond){var r=estimateETA(x.salidaReal,x.horasCond,{doble:!!x.chofer2,heavy:isHeavy(x),prohib:x.prohib});x.eta=r.eta;}});return;}
+  if(k==='LLEGADO'&&!s.llegadaReal){setEstado(s,k,'Llegada marcada',function(x){x.llegadaReal=Date.now();});return;}
+  setEstado(s,k,'');};
+M.llegada=function(id){var s=get('servicios',id);if(!s)return;var v=prompt('Hora de llegada (dd/mm hh:mm). Vacío = ahora',s.llegadaReal?fdt(s.llegadaReal):'');if(v===null)return;var t=Date.now();
+  if(v.trim()){var m=v.trim().match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\s+(\d{1,2}):(\d{2})$/)||v.trim().match(/^()()()(\d{1,2}):(\d{2})$/);if(!m){toast('Formato: 27/10 14:30 o 14:30',1);return;}var d=new Date();if(m[1]){d.setDate(1);d.setMonth(+m[2]-1);d.setDate(+m[1]);if(m[3])d.setFullYear(+m[3]<100?2000+ +m[3]:+m[3]);}d.setHours(+m[4],+m[5],0,0);t=d.getTime();}
+  var sx=s;sx.llegadaReal=t;var adv=(ESTI[sx.estado]||{}).i<ESTI.LLEGADO.i;setEstado(sx,adv?'LLEGADO':sx.estado,'Hora de llegada: '+fdt(t));};
+M.mover=function(id,min){var s=get('servicios',id);if(!s)return;['slot','eta'].forEach(function(k){if(s[k])s[k]+=min*6e4;});if(!s.slot&&!s.eta){toast('El servicio no tiene cita ni ETA',1);return;}s.hist=s.hist||[];s.hist.push({ts:Date.now(),estado:s.estado,by:user(),nota:(min<0?'Adelantado ':'Retrasado ')+fmin(Math.abs(min))});save('servicios',s,true);render();M.view(id);toast(min<0?'Adelantado':'Retrasado');};
+M.anular=function(id){var s=get('servicios',id);if(!s)return;var m=prompt('Motivo de la anulación');if(m===null)return;setEstado(s,'ANULADO','Anulado: '+(m||'sin motivo'),function(x){x.anuladoMotivo=m;});};
+M.reactivar=function(id){var s=get('servicios',id);if(!s)return;var last=(s.hist||[]).slice().reverse().find(function(h){return h.estado!=='ANULADO';});setEstado(s,last?last.estado:'PLANIFICADO','Reactivado');};
+M.dup=function(id){var s=get('servicios',id);if(!s)return;var n=clean(s);['id','createdAt','createdBy','updatedAt','updatedBy','salidaReal','llegadaReal','hist','incid','anuladoMotivo','_arch'].forEach(function(k){delete n[k];});n.ref=nextRef();n.estado='PLANIFICADO';n.hist=[{ts:Date.now(),estado:'PLANIFICADO',by:user(),nota:'Duplicado de '+(s.ref||'')}];save('servicios',n);M.view(n.id);toast('Duplicado');};
+M.incid=function(id){var s=get('servicios',id);if(!s)return;
+  openDr('Nueva incidencia · '+(s.ref||''),'<div class="sec"><div class="fg"><div class="f"><label>Tipo</label><select class="in" id="iT">'+INC_T.map(function(x){return '<option>'+x+'</option>';}).join('')+'</select></div><div class="f"><label>Minutos de impacto (+ retraso / − adelanto)</label><input class="in" type="number" id="iM"></div><div class="f"><label class="ck"><input type="checkbox" id="iMov" checked> Mover la ETA con estos minutos</label></div><div class="f full"><label>Descripción</label><textarea class="in" id="iD"></textarea></div></div></div>',
+  '<button class="btn p" id="iOk">Guardar incidencia</button><button class="btn" onclick="M.view(\''+id+'\')">Cancelar</button>');
+  $('iOk').onclick=function(){var m=Number($('iM').value)||0,inc={id:uid(),ts:Date.now(),tipo:$('iT').value,min:m,desc:$('iD').value.trim(),by:user(),ok:false};s.incid=s.incid||[];s.incid.push(inc);if(m&&$('iMov').checked&&s.eta)s.eta+=m*6e4;s.hist=s.hist||[];s.hist.push({ts:Date.now(),estado:s.estado,by:user(),nota:'Incidencia: '+inc.tipo+(m?' ('+(m>0?'+':'')+m+' min)':'')});save('servicios',s,true);render();M.view(id);toast('Incidencia registrada');};
+};
+M.incOk=function(id,iid){var s=get('servicios',id);if(!s)return;(s.incid||[]).forEach(function(i){if(i.id===iid){i.ok=!i.ok;i.okTs=Date.now();}});save('servicios',s,true);render();M.view(id);};
+M.asignarLog=function(id,lid){var s=get('servicios',id);if(!s)return;var prev=lbl('logisticas',s.logistica);s.logistica=lid;s.hist=s.hist||[];s.hist.push({ts:Date.now(),estado:s.estado,by:user(),nota:'Reemplazo: '+(prev||'—')+' → '+lbl('logisticas',lid)});save('servicios',s,true);render();M.view(id);toast('Empresa asignada');};
+
+function contact(name,tel,email,wa){var h='';if(tel)h+=' <a class="btn sm g" href="tel:'+E(String(tel).replace(/[^\d+]/g,''))+'">📞</a>';if(wa||tel)h+='<a class="btn sm g" target="_blank" href="https://wa.me/'+digits(wa||tel)+'">💬</a>';if(email)h+='<a class="btn sm g" href="mailto:'+E(email)+'">✉️</a>';return (name?E(name):'')+(tel?' <span class="mini">'+E(tel)+'</span>':'')+h;}
+function kv(k,v){return v==null||v===''?'':'<div><small>'+E(k)+'</small>'+v+'</div>';}
+function waMsg(s){var ev=get('eventos',s.evento)||{};return ['MIBA · '+(s.ref||''),ev.nombre?'Evento: '+ev.nombre:'','Origen: '+[s.oNombre,s.oDir,s.oCiudad].filter(Boolean).join(', '),'Destino: '+[s.dCentro,s.dDir,s.dCiudad].filter(Boolean).join(', '),s.hall||s.stand?'Hall '+(s.hall||'—')+' · Stand '+(s.stand||'—'):'',s.puertaIng?'Puerta de ingreso: '+s.puertaIng:'',s.puertaCerca?'Puerta cercana: '+s.puertaCerca:'',s.slot?'Cita: '+fdt(s.slot):'',s.salidaPrev?'Salida: '+fdt(s.salidaPrev):'',s.eta?'ETA: '+fdt(s.eta):'',s.preObl?'Preregistro obligatorio: '+(s.preRecinto||'sí'):'',s.parking?'Parking: '+s.parking:'',s.dContacto?'Contacto destino: '+s.dContacto+' '+(s.dContactoTel||''):'',s.refDestino?'Referencia: '+s.refDestino:''].filter(Boolean).join('\n');}
+function mapsRoute(s){return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent([s.oDir,s.oCiudad,s.oPais].filter(Boolean).join(', '))+'&destination='+encodeURIComponent([s.dDir,s.dCiudad,s.dPais].filter(Boolean).join(', '))+'&travelmode=driving';}
+
+M.view=function(id){
+  var s=get('servicios',id);if(!s){M.closeDr();return;}
+  CUR=null;var ev=get('eventos',s.evento)||{},ch=get('choferes',s.chofer),ch2=get('choferes',s.chofer2),ve=get('vehiculos',s.vehiculo),lg=get('logisticas',s.logistica),sp=get('supervisores',s.supervisor),sd=get('supervisores',s.supDestino),ei=(ESTI[s.estado]||ESTI.PLANIFICADO).i,an=s.estado==='ANULADO';
+  var steps='<div class="steps">'+EST.slice(0,8).map(function(e){return '<span class="'+(!an&&e.i<=ei?'on':'')+'" title="'+E(e.l)+'"></span>';}).join('')+'</div>';
+  var nx=an?null:EST[ei+1];if(nx&&nx.k==='ANULADO')nx=null;
+  var h='<div class="row" style="margin-bottom:6px">'+badge(s.estado)+delayChip(s)+(openInc(s)?'<span class="chip c-red">'+openInc(s)+' incidencia(s) abiertas</span>':'')+(s.aduana?'<span class="chip c-pur">Aduana: '+E(s.aduEstado||'pendiente')+'</span>':'')+(s.prioridad&&s.prioridad!=='Normal'?'<span class="chip c-amb">'+E(s.prioridad)+'</span>':'')+'</div>'+steps;
+  h+='<div class="row no-print" style="margin-bottom:12px">'+(nx?'<button class="btn p" onclick="M.estado(\''+id+'\',\''+nx.k+'\')">→ '+E(nx.l)+'</button>':'')
+    +'<select class="in" style="width:auto" onchange="if(this.value)M.estado(\''+id+'\',this.value)"><option value="">Cambiar estado…</option>'+EST.filter(function(e){return e.k!=='ANULADO';}).map(function(e){return '<option value="'+e.k+'">'+E(e.l)+'</option>';}).join('')+'</select>'
+    +'<button class="btn" onclick="M.llegada(\''+id+'\')">🕒 Hora de llegada</button><button class="btn" onclick="M.incid(\''+id+'\')">⚠️ Incidencia</button></div>';
+  h+='<div class="sec"><h4>Adelantar / retrasar cita y ETA</h4><div class="row">'+[-60,-30,-15,15,30,60].map(function(m){return '<button class="btn sm" onclick="M.mover(\''+id+'\','+m+')">'+(m<0?'−':'+')+Math.abs(m)+' min</button>';}).join('')+'<span class="mini">Cita: <b>'+fdt(s.slot)+'</b> · ETA: <b>'+fdt(s.eta)+'</b></span></div></div>';
+  h+='<div class="sec"><h4>Ruta</h4><div class="kv">'+kv('Origen',E([s.oNombre,s.oDir,s.oCiudad,s.oPais].filter(Boolean).join(', '))||'—')+kv('Contacto origen',contact(s.oContacto,s.oTel,s.oEmail))+kv('Ventana de carga',E(s.oVentana))+kv('Destino',E([s.dCentro,s.dDir,s.dCiudad,s.dPais].filter(Boolean).join(', '))||'—')+kv('Hall · Stand',E((s.hall||'—')+' · '+(s.stand||'—')))+kv('Puerta de ingreso',E(s.puertaIng))+kv('Puerta cercana',E(s.puertaCerca))+kv('Referencia',E(s.refDestino))+kv('Contacto destino',contact(s.dContacto,s.dContactoTel,s.dContactoEmail))+kv('Centro',contact('',s.dTel,s.dEmail))
+    +kv('Km aprox.',s.km!=null?fnum(s.km)+' km':'')+kv('Conducción',s.horasCond?fmin(s.horasCond*60):'')+kv('Salida prevista',fdt(s.salidaPrev))+kv('Salida real',s.salidaReal?fdt(s.salidaReal):'')+kv('ETA',fdt(s.eta))+kv('Cita / slot',s.slot?fdt(s.slot):'')+kv('Llegada real',s.llegadaReal?'<b>'+fdt(s.llegadaReal)+'</b>':'')+kv('Parking de espera',E(s.parking))+'</div><div class="row" style="margin-top:10px"><a class="btn sm" target="_blank" href="'+mapsRoute(s)+'">🗺️ Ver ruta</a></div></div>';
+  h+='<div class="sec"><h4>Equipo</h4><div class="kv">'+kv('Empresa logística',lg?contact(lg.nombre,lg.telefono,lg.email,lg.whatsapp):'<span class="chip c-amb">Sin asignar</span>')+kv('Chofer',ch?contact(REFLBL.choferes(ch),ch.telefono,ch.email,ch.whatsapp):'<span class="chip c-amb">Sin asignar</span>')+kv('Segundo chofer',ch2?contact(REFLBL.choferes(ch2),ch2.telefono,ch2.email,ch2.whatsapp):'')+kv('Vehículo',ve?E(ve.matricula+(ve.remolque?' + '+ve.remolque:'')):'<span class="chip c-amb">Sin asignar</span>')+kv('Tipo de camión',E(s.tipoCamion||(ve&&ve.tipo)))+kv('Supervisor',sp?contact(sp.nombre+(sp.rol?' ('+sp.rol+')':''),sp.telefono,sp.email,sp.whatsapp):'')+kv('Encargado destino',sd?contact(sd.nombre,sd.telefono,sd.email,sd.whatsapp):'')+'</div>'
+    +(ch?'<div class="row" style="margin-top:10px"><a class="btn sm" target="_blank" href="https://wa.me/'+digits(ch.whatsapp||ch.telefono)+'?text='+encodeURIComponent(waMsg(s))+'">💬 Enviar hoja de ruta al chofer</a></div>':'')+'</div>';
+  h+='<div class="sec"><h4>Carga, aduanas y registro</h4><div class="kv">'+kv('Bultos',s.bultos!=null?fnum(s.bultos):'')+kv('Palets',s.palets!=null?fnum(s.palets):'')+kv('Peso',s.peso!=null?fnum(s.peso)+' kg':'')+kv('Volumen',s.vol!=null?fnum(s.vol,1)+' m³':'')+kv('Metros lineales',s.ml!=null?fnum(s.ml,1)+' m':'')+kv('Descarga',E(s.descarga))+kv('Material',E(s.carga))+kv('ADR',s.adr?'Sí '+E(s.adrClase||''):'')+kv('Temperatura',E(s.temp))
+    +kv('Aduanas',s.aduana?E([s.aduTipo,s.aduEstado,s.aduDoc].filter(Boolean).join(' · ')||'Sí'):'No')+kv('Agente de aduanas',s.aduAgente||s.aduTel?contact(s.aduAgente,s.aduTel):'')+kv('Preregistro',s.preObl?'Obligatorio · '+E(s.preRecinto||''):'')+kv('Acreditación',E([s.acredNum,s.acredEst].filter(Boolean).join(' · ')))+kv('Pago de registro',s.pagoImp!=null?fnum(s.pagoImp,2)+' € '+E(s.pagoConc||'')+' '+(s.pagoOk?'<span class="chip c-grn">Pagado</span>':'<span class="chip c-amb">Pendiente</span>'):'')
+    +kv('Coste total',(s.precio||s.peajes||s.extras||s.pagoImp)?fnum((s.precio||0)+(s.peajes||0)+(s.extras||0)+(s.pagoImp||0),2)+' €':'')+kv('CMR / albarán',E(s.cmr))+kv('Documentación',s.docsOk?'<span class="chip c-grn">Completa</span>':'<span class="chip c-amb">Pendiente</span>')+'</div>'+(s.notas?'<p class="small" style="white-space:pre-wrap;margin:10px 0 0">'+E(s.notas)+'</p>':'')+'</div>';
+  if(ev.id)h+='<div class="sec"><h4>Evento · '+E(ev.nombre||'')+'</h4><div class="kv">'+kv('Horario de acceso',E(ev.horario))+kv('Puertas',E(ev.puertas))+kv('Límites',E(ev.limites))+kv('Montaje',ev.mIni?fdt(ev.mIni)+' → '+fdt(ev.mFin):'')+kv('Desmontaje',ev.dIni?fdt(ev.dIni)+' → '+fdt(ev.dFin):'')+kv('Preregistro',ev.preObl?E((ev.preNombre||'Sí')+(ev.preDir?' · '+ev.preDir:'')):'')+kv('Acreditación',E(ev.acred))+'</div>'+(ev.parkings?'<div class="mini" style="margin-top:8px"><b>Parkings cercanos</b></div>'+linkify(ev.parkings):'')+'</div>';
+  var inc=s.incid||[];
+  h+='<div class="sec"><h4>Incidencias ('+inc.length+')</h4>'+(inc.length?inc.slice().reverse().map(function(i){return '<div class="lm"><span class="chip '+(i.ok?'c-grn':'c-red')+'">'+(i.ok?'Resuelta':'Abierta')+'</span><div style="flex:1;min-width:0"><b>'+E(i.tipo)+'</b>'+(i.min?' · '+(i.min>0?'+':'')+i.min+' min':'')+' <span class="mini">'+fdt(i.ts)+' · '+E(i.by||'')+'</span>'+(i.desc?'<div class="small">'+E(i.desc)+'</div>':'')+'</div><button class="btn sm" onclick="M.incOk(\''+id+'\',\''+i.id+'\')">'+(i.ok?'Reabrir':'Resolver')+'</button></div>';}).join(''):'<div class="mini">Sin incidencias.</div>')+'</div>';
+  h+='<div class="sec"><h4>Empresas de reemplazo</h4>'+replHTML(s)+'</div>';
+  h+='<div class="sec"><h4>Historial</h4><ul class="tl">'+(s.hist||[]).slice().reverse().map(function(x){return '<li><b>'+E((ESTI[x.estado]||{}).l||x.estado)+'</b> · '+fdt(x.ts)+(x.by?' · '+E(x.by):'')+(x.nota?'<div class="mini">'+E(x.nota)+'</div>':'')+'</li>';}).join('')+'</ul></div>';
+  openDr((s.ref||'Servicio')+' · '+(lbl('eventos',s.evento)||s.dCentro||''),h,
+    '<button class="btn p" onclick="M.edit(\'servicios\',\''+id+'\')">Editar</button><button class="btn" onclick="M.print(\''+id+'\')">🖨 Hoja de ruta</button><button class="btn" onclick="M.dup(\''+id+'\')">Duplicar</button><span class="sp"></span>'+(an?'<button class="btn" onclick="M.reactivar(\''+id+'\')">Reactivar</button>':'<button class="btn d" onclick="M.anular(\''+id+'\')">Anular</button>'));
+};
+function linkify(t){return '<div class="small" style="white-space:pre-wrap">'+E(t).replace(/(https?:\/\/[^\s<]+)/g,'<a target="_blank" href="$1">mapa</a>')+'</div>';}
+function replHTML(s){
+  var city=(s.dCiudad||'').toLowerCase().trim(),pais=(s.dPais||'').toLowerCase().trim(),oc=(s.oCiudad||'').toLowerCase().trim(),op=(s.oPais||'').toLowerCase().trim();
+  var c=list('logisticas').filter(function(l){return l.id!==s.logistica;}).map(function(l){var lc=(l.ciudad||'').toLowerCase().trim(),lp=(l.pais||'').toLowerCase().trim(),sc=0,w=[];
+    if(city&&lc===city){sc+=4;w.push('misma ciudad que destino');}else if(oc&&lc===oc){sc+=3;w.push('misma ciudad que origen');}
+    if(pais&&lp===pais){sc+=2;if(!w.length)w.push('mismo país que destino');}else if(op&&lp===op){sc+=1;if(!w.length)w.push('mismo país que origen');}
+    if(l.reemplazo)sc+=1.5;if(s.aduana&&l.aduanas)sc+=.5;return {l:l,sc:sc,w:w};}).filter(function(x){return x.sc>=1.5;}).sort(function(a,b){return b.sc-a.sc;}).slice(0,8);
+  if(!c.length)return '<div class="mini">No hay empresas logísticas en '+E(s.dCiudad||s.dPais||'el destino')+'. Añádelas en «Logísticas» marcando «Disponible como reemplazo».</div>';
+  return c.map(function(x){var l=x.l;return '<div class="lm"><div style="flex:1;min-width:0"><b>'+E(l.nombre)+'</b> <span class="mini">'+E([l.ciudad,l.pais].filter(Boolean).join(', '))+' · '+E(x.w.join(', '))+(l.reemplazo?' · reemplazo':'')+(l.valor?' · '+E(l.valor):'')+'</span></div>'+contact('',l.telefono,l.email,l.whatsapp)+'<button class="btn sm" onclick="M.asignarLog(\''+s.id+'\',\''+l.id+'\')">Asignar</button></div>';}).join('');
+}
+M.print=function(id){
+  var s=get('servicios',id);if(!s)return;var w=window.open('','_blank');if(!w){toast('Permite ventanas emergentes para imprimir',1);return;}
+  var ch=get('choferes',s.chofer),ve=get('vehiculos',s.vehiculo),lg=get('logisticas',s.logistica);
+  var r=function(k,v){return v?'<tr><th>'+E(k)+'</th><td>'+E(v)+'</td></tr>':'';};
+  w.document.write('<!doctype html><meta charset="utf-8"><title>Hoja de ruta '+E(s.ref||'')+'</title><style>body{font:13px system-ui,sans-serif;margin:24px;color:#111}h1{font-size:20px;margin:0 0 4px}table{width:100%;border-collapse:collapse;margin:10px 0}th{width:34%;text-align:left;color:#555;font-weight:600;padding:5px 8px;border-bottom:1px solid #ddd;vertical-align:top}td{padding:5px 8px;border-bottom:1px solid #ddd;white-space:pre-wrap}h2{font-size:14px;margin:16px 0 0;text-transform:uppercase;letter-spacing:.5px;color:#00806b}</style>'
+   +'<h1>Hoja de ruta · '+E(s.ref||'')+'</h1><div>'+E(lbl('eventos',s.evento))+' · '+E((ESTI[s.estado]||{}).l||'')+'</div>'
+   +'<h2>Origen</h2><table>'+r('Lugar',[s.oNombre,s.oDir,s.oCiudad,s.oPais].filter(Boolean).join(', '))+r('Contacto',[s.oContacto,s.oTel,s.oEmail].filter(Boolean).join(' · '))+r('Ventana de carga',s.oVentana)+r('Salida prevista',s.salidaPrev&&fdt(s.salidaPrev))+'</table>'
+   +'<h2>Destino</h2><table>'+r('Centro',[s.dCentro,s.dDir,s.dCiudad,s.dPais].filter(Boolean).join(', '))+r('Hall / Stand',(s.hall||'—')+' / '+(s.stand||'—'))+r('Puerta de ingreso',s.puertaIng)+r('Puerta cercana',s.puertaCerca)+r('Referencia',s.refDestino)+r('Cita',s.slot&&fdt(s.slot))+r('ETA',s.eta&&fdt(s.eta))+r('Contacto destino',[s.dContacto,s.dContactoTel,s.dContactoEmail].filter(Boolean).join(' · '))+r('Preregistro',s.preObl?(s.preRecinto||'Obligatorio'):'')+r('Acreditación',[s.acredNum,s.acredEst].filter(Boolean).join(' · '))+r('Parking de espera',s.parking)+'</table>'
+   +'<h2>Equipo y carga</h2><table>'+r('Empresa logística',lg&&[lg.nombre,lg.telefono].filter(Boolean).join(' · '))+r('Chofer',ch&&[REFLBL.choferes(ch),ch.telefono].filter(Boolean).join(' · '))+r('Vehículo',ve&&[ve.matricula,ve.remolque,s.tipoCamion||ve.tipo].filter(Boolean).join(' · '))+r('Km aprox.',s.km&&s.km+' km')+r('Carga',[s.bultos&&s.bultos+' bultos',s.palets&&s.palets+' palets',s.peso&&s.peso+' kg',s.vol&&s.vol+' m³'].filter(Boolean).join(' · '))+r('Material',s.carga)+r('Aduanas',s.aduana?[s.aduTipo,s.aduDoc,s.aduAgente,s.aduTel].filter(Boolean).join(' · ')||'Sí':'')+r('ADR',s.adr?(s.adrClase||'Sí'):'')+r('Notas',s.notas)+'</table><script>print()<\/script>');
+  w.document.close();
+};
+
+/* ── Vistas ── */
+var TABS=[['dash','Panel'],['servicios','Servicios'],['eventos','Eventos'],['choferes','Choferes'],['vehiculos','Vehículos'],['logisticas','Logísticas'],['supervisores','Supervisores'],['empresa','Mi empresa']];
+M.tab=function(k){VIEW=k;F.est='';F.q='';render();window.scrollTo(0,0);};
+function renderTabs(){$('tabs').innerHTML=TABS.map(function(t){var n=t[0]==='dash'||t[0]==='empresa'?'':list(t[0]).length;return '<button class="tab'+(VIEW===t[0]?' on':'')+'" onclick="M.tab(\''+t[0]+'\')">'+t[1]+(n?'<em>'+n+'</em>':'')+'</button>';}).join('');}
+function render(){
+  renderTabs();var h='';
+  try{h=VIEW==='dash'?vDash():VIEW==='servicios'?vSrv():VIEW==='empresa'?vEmp():vColl(VIEW);}catch(e){console.error(e);h='<div class="card">Error al pintar la vista: '+E(e.message)+'</div>';}
+  var ae=document.activeElement,aid=ae&&ae.id,pos=ae&&ae.selectionStart;
+  $('main').innerHTML=h;
+  if(aid&&$(aid)&&$(aid).tagName==='INPUT'){$(aid).focus();try{$(aid).setSelectionRange(pos,pos);}catch(e){}}
+}
+M.set=function(k,v){F[k]=v;render();};
+function evSelect(){return '<select class="in" style="width:auto;max-width:260px" onchange="M.set(\'ev\',this.value)"><option value="">Todos los eventos</option>'+list('eventos').map(function(e){return '<option value="'+E(e.id)+'"'+(F.ev===e.id?' selected':'')+'>'+E(REFLBL.eventos(e))+'</option>';}).join('')+'</select>';}
+
+function vDash(){
+  var all=srvFiltered(false),act=all.filter(function(s){return s.estado!=='ANULADO';}),now=Date.now();
+  var cnt={};EST.forEach(function(e){cnt[e.k]=0;});all.forEach(function(s){cnt[s.estado||'PLANIFICADO']=(cnt[s.estado||'PLANIFICADO']||0)+1;});
+  var lleg=act.filter(function(s){return s.llegadaReal&&target(s);}),punt=lleg.filter(function(s){return Math.abs((s.llegadaReal-target(s))/6e4)<=15;}).length,tard=lleg.filter(function(s){return (s.llegadaReal-target(s))/6e4>15;}),adel=lleg.filter(function(s){return (s.llegadaReal-target(s))/6e4<-15;}).length;
+  var retMed=tard.length?tard.reduce(function(a,s){return a+(s.llegadaReal-target(s))/6e4;},0)/tard.length:0;
+  var enCurso=act.filter(function(s){var d=delay(s);return d&&d.live;});
+  var km=act.reduce(function(a,s){return a+(s.km||0);},0),peso=act.reduce(function(a,s){return a+(s.peso||0);},0),coste=act.reduce(function(a,s){return a+(s.precio||0)+(s.peajes||0)+(s.extras||0)+(s.pagoImp||0);},0);
+  var pctP=lleg.length?Math.round(punt/lleg.length*100):null;
+  var h='<div class="row" style="margin-bottom:14px"><h1 class="h1">Panel logístico</h1><span class="sp"></span>'+evSelect()+'<select class="in" style="width:auto" onchange="M.set(\'per\',this.value)">'+[['hoy','Hoy'],['manana','Mañana'],['semana','Próximos 7 días'],['todo','Todo']].map(function(p){return '<option value="'+p[0]+'"'+(F.per===p[0]?' selected':'')+'>'+p[1]+'</option>';}).join('')+'</select></div>';
+  h+='<div class="grid g4" style="margin-bottom:14px">'
+   +kpi('Servicios',act.length,cnt.ANULADO?cnt.ANULADO+' anulados':'')
+   +kpi('En ruta',cnt.EN_RUTA+cnt.ESPERA,cnt.ESPERA?cnt.ESPERA+' en preregistro/parking':'')
+   +kpi('Llegados',cnt.LLEGADO+cnt.DESCARGA+cnt.COMPLETADO,cnt.COMPLETADO+' completados')
+   +kpi('Puntualidad',pctP==null?'—':pctP+' %',lleg.length?punt+' de '+lleg.length+' llegadas':'sin llegadas')
+   +kpi('Retraso medio',tard.length?fmin(retMed):'—',tard.length+' tarde · '+adel+' antes')
+   +kpi('Incidencias abiertas',act.reduce(function(a,s){return a+openInc(s);},0),enCurso.length?enCurso.length+' retrasos en curso':'')
+   +kpi('Km totales',fnum(km),'Peso '+fnum(peso/1000,1)+' t')
+   +kpi('Coste',fnum(coste)+' €','transporte + extras')+'</div>';
+  h+='<div class="card" style="margin-bottom:14px"><div class="row" style="margin-bottom:10px"><h3 class="h2" style="margin:0">Progresión de estados</h3><span class="sp"></span><span class="mini">Pulsa un estado para ver sus servicios</span></div><div class="pipe">'+EST.map(function(e){return '<button class="st" onclick="M.goEst(\''+e.k+'\')" style="border-top:3px solid '+e.c+'"><b>'+cnt[e.k]+'</b><span>'+E(e.l)+'</span></button>';}).join('')+'</div>'
+   +'<div class="bar" style="margin-top:12px">'+(all.length?EST.map(function(e){return cnt[e.k]?'<i title="'+E(e.l)+': '+cnt[e.k]+'" style="width:'+(cnt[e.k]/all.length*100)+'%;background:'+e.c+'"></i>':'';}).join(''):'')+'</div></div>';
+  h+='<div class="grid g2" style="margin-bottom:14px"><div class="card"><h3 class="h2">Próximas llegadas</h3>'+nextArr(act)+'</div><div class="card"><h3 class="h2">Alertas</h3>'+alerts(act,enCurso)+'</div></div>';
+  var stLeg=[['Puntual',punt,'#16a34a'],['Tarde',tard.length,'#dc2626'],['Antes',adel,'#2563eb']],tot=lleg.length||1,acc=0;
+  var grad=lleg.length?stLeg.map(function(x){var a=acc;acc+=x[1]/tot*360;return x[2]+' '+a+'deg '+acc+'deg';}).join(','):'#e2e8f0 0deg 360deg';
+  h+='<div class="grid g2" style="margin-bottom:14px"><div class="card"><h3 class="h2">Puntualidad</h3><div class="row" style="gap:18px"><div class="donut" style="background:conic-gradient('+grad+')"><div>'+(pctP==null?'—':pctP+'%')+'</div></div><div class="legend">'+stLeg.map(function(x){return '<div><span style="background:'+x[2]+'"></span>'+x[0]+': <b>'+x[1]+'</b></div>';}).join('')+'<div class="mini" style="margin-top:6px">Margen ±15 min sobre la cita (o ETA si no hay cita)</div></div></div></div>'
+   +'<div class="card"><h3 class="h2">Servicios por empresa logística</h3>'+hbars(group(act,function(s){return lbl('logisticas',s.logistica)||'Sin asignar';}))+'</div></div>';
+  h+='<div class="grid g2" style="margin-bottom:14px"><div class="card"><h3 class="h2">Por evento</h3>'+hbars(group(act,function(s){return lbl('eventos',s.evento)||'Sin evento';}))+'</div><div class="card"><h3 class="h2">Incidencias por tipo</h3>'+hbars(groupInc(act))+'</div></div>';
+  h+='<div class="grid g2"><div class="card"><h3 class="h2">Por tipo de camión</h3>'+hbars(group(act,function(s){var v=get('vehiculos',s.vehiculo);return s.tipoCamion||(v&&v.tipo)||'Sin tipo';}))+'</div><div class="card"><h3 class="h2">Llegadas por día (14 días)</h3>'+daysChart()+'</div></div>';
+  return h;
+}
+function kpi(l,v,s){return '<div class="card kpi"><div class="l">'+E(l)+'</div><div class="v">'+E(String(v))+'</div>'+(s?'<div class="s">'+E(s)+'</div>':'')+'</div>';}
+function group(arr,f){var m={};arr.forEach(function(s){var k=f(s);m[k]=(m[k]||0)+1;});return m;}
+function groupInc(arr){var m={};arr.forEach(function(s){(s.incid||[]).forEach(function(i){m[i.tipo]=(m[i.tipo]||0)+1;});});return m;}
+function hbars(m){var k=Object.keys(m).sort(function(a,b){return m[b]-m[a];}).slice(0,10),mx=Math.max.apply(null,k.map(function(x){return m[x];}).concat([1]));if(!k.length)return '<div class="mini">Sin datos.</div>';return k.map(function(x){return '<div class="hbar"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+E(x)+'">'+E(x)+'</div><div class="tr"><i style="width:'+(m[x]/mx*100)+'%"></i></div><div class="n">'+m[x]+'</div></div>';}).join('');}
+function daysChart(){var d0=new Date();d0.setHours(0,0,0,0);var days=[];for(var i=13;i>=0;i--)days.push(d0.getTime()-i*864e5);var all=list('servicios').filter(function(s){return s.estado!=='ANULADO'&&(!F.ev||s.evento===F.ev);});
+  var v=days.map(function(a){return {a:a,p:all.filter(function(s){var t=target(s);return t>=a&&t<a+864e5;}).length,r:all.filter(function(s){return s.llegadaReal>=a&&s.llegadaReal<a+864e5;}).length};}),mx=Math.max.apply(null,v.map(function(x){return Math.max(x.p,x.r);}).concat([1]));
+  return '<div style="display:flex;align-items:flex-end;gap:4px;height:130px;padding-top:6px">'+v.map(function(x){var d=new Date(x.a);return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end" title="'+pad(d.getDate())+'/'+pad(d.getMonth()+1)+': '+x.p+' previstas · '+x.r+' llegadas"><div style="display:flex;align-items:flex-end;gap:1px;height:100%;width:100%;justify-content:center"><i style="width:40%;background:#cbd5e1;border-radius:3px 3px 0 0;height:'+(x.p/mx*100)+'%"></i><i style="width:40%;background:var(--brand);border-radius:3px 3px 0 0;height:'+(x.r/mx*100)+'%"></i></div><span style="font-size:10px;color:var(--mute)">'+d.getDate()+'</span></div>';}).join('')+'</div><div class="legend" style="margin-top:6px"><span style="background:#cbd5e1"></span>Previstas &nbsp; <span style="background:var(--brand)"></span>Llegadas reales</div>';}
+function nextArr(act){var a=act.filter(function(s){return !s.llegadaReal&&(ESTI[s.estado]||{}).i<ESTI.LLEGADO.i;}).sort(function(x,y){return (target(x)||9e15)-(target(y)||9e15);}).slice(0,8);
+  if(!a.length)return '<div class="mini">No hay llegadas pendientes en el periodo.</div>';
+  return '<div class="list-mini">'+a.map(function(s){return '<div class="lm" style="cursor:pointer" onclick="M.view(\''+s.id+'\')"><b style="width:86px">'+fdt(target(s))+'</b><div style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+E(s.ref||'')+' · '+E(lbl('vehiculos',s.vehiculo)||s.tipoCamion||'')+' · '+E(s.oCiudad||'')+' → '+E(s.hall?'Hall '+s.hall:s.dCentro||'')+'</div>'+badge(s.estado)+delayChip(s)+'</div>';}).join('')+'</div>';}
+function alerts(act,enCurso){
+  var a=[],add=function(cls,txt,id){a.push('<div class="alert '+cls+'"'+(id?' style="cursor:pointer" onclick="M.view(\''+id+'\')"':'')+'>'+txt+'</div>');};
+  enCurso.forEach(function(s){add('c-red','⏱ <div><b>'+E(s.ref)+'</b> lleva '+fmin(delay(s).m)+' de retraso sobre '+(s.slot?'la cita':'la ETA')+'</div>',s.id);});
+  act.forEach(function(s){if(openInc(s))add('c-red','⚠️ <div><b>'+E(s.ref)+'</b>: '+openInc(s)+' incidencia(s) abierta(s)</div>',s.id);});
+  act.filter(function(s){return s.estado!=='COMPLETADO';}).forEach(function(s){var miss=[];if(!s.chofer)miss.push('chofer');if(!s.vehiculo)miss.push('vehículo');if(!s.logistica)miss.push('logística');if(miss.length&&(ESTI[s.estado]||{}).i<ESTI.LLEGADO.i)add('c-amb','👤 <div><b>'+E(s.ref)+'</b>: sin '+miss.join(', ')+'</div>',s.id);
+    if(s.aduana&&s.aduEstado!=='Despachado')add('c-pur','🛃 <div><b>'+E(s.ref)+'</b>: aduana '+E((s.aduEstado||'pendiente').toLowerCase())+'</div>',s.id);
+    if(s.preObl&&s.acredEst!=='Aprobada'&&(ESTI[s.estado]||{}).i<ESTI.LLEGADO.i)add('c-pur','🎫 <div><b>'+E(s.ref)+'</b>: acreditación '+E((s.acredEst||'pendiente').toLowerCase())+'</div>',s.id);
+    if(s.pagoImp&&!s.pagoOk)add('c-amb','💶 <div><b>'+E(s.ref)+'</b>: pago de registro pendiente ('+fnum(s.pagoImp,2)+' €)</div>',s.id);});
+  list('choferes').forEach(function(c){[['carnetCad','carnet'],['capCad','CAP'],['tacoCad','tarjeta tacógrafo']].forEach(function(p){var d=daysTo(c[p[0]]);if(d!=null&&d<30)add(d<0?'c-red':'c-amb','🪪 <div>'+E(REFLBL.choferes(c))+': '+p[1]+(d<0?' caducado':' caduca en '+d+' días')+'</div>');});});
+  list('vehiculos').forEach(function(v){[['itvCad','ITV'],['seguroCad','seguro']].forEach(function(p){var d=daysTo(v[p[0]]);if(d!=null&&d<30)add(d<0?'c-red':'c-amb','🚛 <div>'+E(v.matricula)+': '+p[1]+(d<0?' caducado':' caduca en '+d+' días')+'</div>');});});
+  return a.length?'<div class="list-mini">'+a.slice(0,40).join('')+'</div>':'<div class="mini">Todo en orden.</div>';
+}
+M.goEst=function(k){VIEW='servicios';F.est=k;F.q='';render();};
+
+function vSrv(){
+  var arr=srvFiltered(true);
+  var h='<div class="row" style="margin-bottom:12px"><h1 class="h1">Servicios</h1><span class="sp"></span><input class="in search" id="q" type="search" placeholder="Buscar ref, chofer, matrícula, hall…" value="'+E(F.q)+'" oninput="M.set(\'q\',this.value)">'+evSelect()
+   +'<select class="in" style="width:auto" onchange="M.set(\'est\',this.value)"><option value="">Todos los estados</option>'+EST.map(function(e){return '<option value="'+e.k+'"'+(F.est===e.k?' selected':'')+'>'+E(e.l)+'</option>';}).join('')+'</select><button class="btn" onclick="M.csv()">⬇ CSV</button></div>';
+  if(!arr.length)return h+'<div class="card empty">No hay servicios'+(F.q||F.est||F.ev?' con estos filtros':'')+'. <br><br><button class="btn p" onclick="M.newServicio()">+ Crear servicio</button></div>';
+  h+='<div class="tw"><table class="t"><thead><tr><th>Ref</th><th>Estado</th><th class="hide-m">Evento</th><th>Origen → destino</th><th class="hide-m">Equipo</th><th>Salida</th><th>Cita / ETA</th><th>Llegada</th><th class="hide-m">Carga</th></tr></thead><tbody>'
+   +arr.map(function(s){return '<tr class="click" onclick="M.view(\''+s.id+'\')"><td><b>'+E(s.ref||'—')+'</b>'+(s.prioridad==='Urgente'?' <span class="chip c-red">!</span>':'')+'</td><td>'+badge(s.estado)+'<div style="margin-top:3px">'+delayChip(s)+(openInc(s)?' <span class="chip c-red">⚠ '+openInc(s)+'</span>':'')+(s.aduana?' <span class="chip c-pur">🛃</span>':'')+'</div></td><td class="hide-m">'+E(lbl('eventos',s.evento)||'—')+'</td><td>'+E(s.oCiudad||s.oNombre||'—')+' → '+E(s.dCiudad||s.dCentro||'—')+'<div class="mini">'+(s.hall?'Hall '+E(s.hall):'')+(s.stand?' · Stand '+E(s.stand):'')+(s.km?' · '+fnum(s.km)+' km':'')+'</div></td><td class="hide-m">'+E(lbl('choferes',s.chofer)||'—')+'<div class="mini">'+E(lbl('vehiculos',s.vehiculo)||s.tipoCamion||'')+'</div></td><td>'+fdt(s.salidaReal||s.salidaPrev)+(s.salidaReal?'<div class="mini">real</div>':'')+'</td><td>'+fdt(target(s))+'</td><td>'+(s.llegadaReal?'<b>'+fdt(s.llegadaReal)+'</b>':'—')+'</td><td class="hide-m">'+(s.peso?fnum(s.peso)+' kg':'')+(s.bultos?'<div class="mini">'+s.bultos+' bultos</div>':'')+'</td></tr>';}).join('')+'</tbody></table></div><div class="mini" style="margin-top:8px">'+arr.length+' servicios</div>';
+  return h;
+}
+M.newServicio=function(){M.edit('servicios');};
+M.csv=function(){
+  var cols=[['ref','Ref'],['estado','Estado'],['evento','Evento'],['tipoSrv','Tipo'],['logistica','Logística'],['chofer','Chofer'],['vehiculo','Vehículo'],['tipoCamion','Tipo camión'],['oNombre','Origen'],['oCiudad','Ciudad origen'],['oPais','País origen'],['dCentro','Centro'],['dCiudad','Ciudad destino'],['dPais','País destino'],['hall','Hall'],['stand','Stand'],['puertaIng','Puerta ingreso'],['km','Km'],['salidaPrev','Salida prevista'],['salidaReal','Salida real'],['eta','ETA'],['slot','Cita'],['llegadaReal','Llegada real'],['retraso','Retraso (min)'],['bultos','Bultos'],['palets','Palets'],['peso','Peso kg'],['vol','Volumen m3'],['aduana','Aduana'],['aduEstado','Estado aduana'],['acredEst','Acreditación'],['pagoImp','Pago registro €'],['precio','Precio €'],['incid','Incidencias']];
+  var REFC={evento:'eventos',logistica:'logisticas',chofer:'choferes',vehiculo:'vehiculos'},DT={salidaPrev:1,salidaReal:1,eta:1,slot:1,llegadaReal:1};
+  var rows=[cols.map(function(c){return c[1];})].concat(srvFiltered(true).map(function(s){return cols.map(function(c){var k=c[0],v=s[k];if(REFC[k])v=lbl(REFC[k],v);else if(DT[k])v=v?fdt(v):'';else if(k==='estado')v=(ESTI[v]||{}).l||v;else if(k==='retraso'){var d=delay(s);v=d?Math.round(d.m):'';}else if(k==='incid')v=(s.incid||[]).length;else if(k==='aduana')v=v?'Sí':'';return v==null?'':v;});}));
+  var csv='﻿'+rows.map(function(r){return r.map(function(v){v=String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(';');}).join('\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='MIBA_servicios_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();
+};
+
+var COLS={
+ choferes:[['Nombre',function(x){return '<b>'+E(REFLBL.choferes(x))+'</b>'+(x.activo===false?' <span class="chip c-gry">Inactivo</span>':'');}],['Teléfono',function(x){return contact('',x.telefono,x.email,x.whatsapp);}],['Logística',function(x){return E(lbl('logisticas',x.logistica)||'—');}],['Carnet',function(x){return E(x.carnet||'')+(x.adr?' <span class="chip c-pur">ADR</span>':'');}],['Caducidades',function(x){return cad([['Carnet',x.carnetCad],['CAP',x.capCad],['Tacógrafo',x.tacoCad]]);}],['Servicios',function(x){return list('servicios').filter(function(s){return s.chofer===x.id||s.chofer2===x.id;}).length;}]],
+ vehiculos:[['Matrícula',function(x){return '<b>'+E(x.matricula)+'</b>'+(x.remolque?' <span class="mini">+ '+E(x.remolque)+'</span>':'')+(x.activo===false?' <span class="chip c-gry">Inactivo</span>':'');}],['Tipo',function(x){return E(x.tipo||'');}],['Capacidad',function(x){return [x.util&&fnum(x.util)+' kg',x.vol&&fnum(x.vol)+' m³',x.palets&&x.palets+' palets'].filter(Boolean).join(' · ')||'—';}],['Extras',function(x){return (x.trampilla?'<span class="chip c-blu">Plataforma</span> ':'')+(x.adr?'<span class="chip c-pur">ADR</span> ':'')+(x.frio?'<span class="chip c-blu">Frío</span>':'');}],['Logística',function(x){return E(lbl('logisticas',x.logistica)||'—');}],['Caducidades',function(x){return cad([['ITV',x.itvCad],['Seguro',x.seguroCad]]);}]],
+ logisticas:[['Empresa',function(x){return '<b>'+E(x.nombre)+'</b>'+(x.reemplazo?' <span class="chip c-grn">Reemplazo</span>':'')+(x.aduanas?' <span class="chip c-pur">Aduanas</span>':'');}],['Ciudad · País',function(x){return E([x.ciudad,x.pais].filter(Boolean).join(' · '));}],['Contacto',function(x){return contact(x.contacto,x.telefono||x.contactoTel,x.email,x.whatsapp);}],['Valoración',function(x){return E(x.valor||'');}],['Choferes',function(x){return list('choferes').filter(function(c){return c.logistica===x.id;}).length;}],['Servicios',function(x){return list('servicios').filter(function(s){return s.logistica===x.id;}).length;}]],
+ supervisores:[['Nombre',function(x){return '<b>'+E(x.nombre)+'</b>';}],['Rol',function(x){return E(x.rol||'');}],['Empresa',function(x){return E(x.empresa||'');}],['Contacto',function(x){return contact('',x.telefono,x.email,x.whatsapp);}],['Idiomas',function(x){return E(x.idiomas||'');}]],
+ eventos:[['Evento',function(x){return '<b>'+E(x.nombre)+'</b>';}],['Ciudad · País',function(x){return E([x.ciudad,x.pais].filter(Boolean).join(' · '));}],['Centro',function(x){return E(x.centro||'')+'<div class="mini">'+E(x.direccion||'')+'</div>';}],['Fechas',function(x){return x.eIni?fdate(x.eIni)+' → '+fdate(x.eFin):'—';}],['Preregistro',function(x){return x.preObl?'<span class="chip c-pur">Obligatorio</span>':'';}],['Servicios',function(x){return list('servicios').filter(function(s){return s.evento===x.id;}).length;}]]
+};
+function cad(arr){return arr.map(function(p){var d=daysTo(p[1]);if(d==null)return '';return '<span class="chip '+(d<0?'c-red':d<30?'c-amb':'c-gry')+'">'+p[0]+' '+fdate(p[1])+'</span>';}).join(' ')||'—';}
+function vColl(c){
+  var q=F.q.toLowerCase(),arr=list(c,F.arch).filter(function(x){return !q||JSON.stringify(x).toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return REFLBL[c](a).localeCompare(REFLBL[c](b));});
+  var h='<div class="row" style="margin-bottom:12px"><h1 class="h1">'+E(TABS.filter(function(t){return t[0]===c;})[0][1])+'</h1><span class="sp"></span><input class="in search" id="q" type="search" placeholder="Buscar…" value="'+E(F.q)+'" oninput="M.set(\'q\',this.value)"><label class="row small" style="gap:6px"><input type="checkbox"'+(F.arch?' checked':'')+' onchange="M.set(\'arch\',this.checked)"> Mostrar archivados</label>'+(c!=='eventos'?'<button class="btn" onclick="M.importar(\''+c+'\')">⬆ Importar</button>':'')+'<button class="btn p" onclick="M.edit(\''+c+'\')">+ '+E(SCH[c].t)+'</button></div>';
+  if(!arr.length)return h+'<div class="card empty">Sin registros todavía.<br><br><button class="btn p" onclick="M.edit(\''+c+'\')">+ Añadir '+E(SCH[c].t.toLowerCase())+'</button></div>';
+  h+='<div class="tw"><table class="t"><thead><tr>'+COLS[c].map(function(col){return '<th>'+E(col[0])+'</th>';}).join('')+'<th></th></tr></thead><tbody>'+arr.map(function(x){return '<tr class="click" style="'+(x._arch?'opacity:.55':'')+'" onclick="M.edit(\''+c+'\',\''+x.id+'\')">'+COLS[c].map(function(col){return '<td>'+col[1](x)+'</td>';}).join('')+'<td onclick="event.stopPropagation()">'+(x._arch?'<button class="btn sm" onclick="M.restore(\''+c+'\',\''+x.id+'\')">Recuperar</button>':'')+'</td></tr>';}).join('')+'</tbody></table></div>';
+  return h;
+}
+function vEmp(){
+  var o=get('empresa','main');
+  var h='<div class="row" style="margin-bottom:12px"><h1 class="h1">Mi empresa</h1><span class="sp"></span><button class="btn p" onclick="M.edit(\'empresa\')">'+(o?'Editar':'Configurar')+'</button></div>';
+  if(!o)return h+'<div class="card empty">Configura los datos de tu empresa para las hojas de ruta y los contactos.</div>';
+  h+='<div class="card"><div class="kv">'+kv('Razón social','<b>'+E(o.razon)+'</b>')+kv('Nombre comercial',E(o.comercial))+kv('CIF / VAT',E(o.cif))+kv('Ubicación',E([o.direccion,o.ciudad,o.pais].filter(Boolean).join(', ')))+kv('Contacto',contact('',o.telefono,o.email))+kv('Web',E(o.web))+kv('Responsable de logística',contact(o.resp,o.respTel,o.respEmail))+kv('Horario',E(o.horario))+'</div>'+(o.notas?'<p class="small" style="white-space:pre-wrap">'+E(o.notas)+'</p>':'')+'</div>';
+  h+='<div class="grid g4" style="margin-top:14px">'+kpi('Choferes',list('choferes').length,'')+kpi('Vehículos',list('vehiculos').length,'')+kpi('Logísticas',list('logisticas').length,list('logisticas').filter(function(l){return l.reemplazo;}).length+' de reemplazo')+kpi('Eventos',list('eventos').length,'')+'</div>';
+  return h;
+}
+
+/* ── Importar CSV / Excel pegado ── */
+M.importar=function(c){
+  var fl=[];SCH[c].sec.forEach(function(s){s.f.forEach(function(f){if(f.t!=='ref'&&f.t!=='chk')fl.push(f);});});
+  openDr('Importar '+SCH[c].t.toLowerCase()+'s','<div class="sec"><p class="small" style="margin-top:0">Pega filas desde Excel o un CSV. La primera fila debe tener los encabezados. Columnas reconocidas:</p><p class="mini">'+fl.map(function(f){return E(f.l);}).join(' · ')+'</p><textarea class="in" id="impT" style="min-height:220px" placeholder="'+E(fl.slice(0,4).map(function(f){return f.l;}).join('\t'))+'"></textarea><div class="mini" id="impI" style="margin-top:6px"></div></div>',
+   '<button class="btn p" id="impOk">Importar</button><button class="btn" onclick="M.closeDr()">Cancelar</button>');
+  $('impOk').onclick=function(){
+    var txt=$('impT').value.trim();if(!txt)return;var lines=txt.split(/\r?\n/).filter(function(l){return l.trim();}),sep=lines[0].indexOf('\t')>=0?'\t':lines[0].indexOf(';')>=0?';':',';
+    var split=function(l){var out=[],cur='',q=false;for(var i=0;i<l.length;i++){var ch=l[i];if(ch==='"'){if(q&&l[i+1]==='"'){cur+='"';i++;}else q=!q;}else if(ch===sep&&!q){out.push(cur);cur='';}else cur+=ch;}out.push(cur);return out.map(function(x){return x.trim();});};
+    var norm=function(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');};
+    var hd=split(lines[0]).map(function(x){var n=norm(x);return fl.find(function(f){return norm(f.l)===n||norm(f.k)===n||norm(f.l).indexOf(n)===0&&n.length>3;});});
+    if(!hd.some(Boolean)){$('impI').textContent='No se reconoce ningún encabezado.';return;}
+    var n=0;lines.slice(1).forEach(function(l){var v=split(l),o={};hd.forEach(function(f,i){if(f&&v[i]){o[f.k]=f.t==='num'?Number(String(v[i]).replace(',','.')):v[i];}});if(Object.keys(o).length){if(c==='choferes'||c==='vehiculos')o.activo=true;save(c,o,true);n++;}});
+    render();M.closeDr();toast(n+' registros importados');
+  };
+};
+
+init();
+})();
+</script>
+</body>
+</html>

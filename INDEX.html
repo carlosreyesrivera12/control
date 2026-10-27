@@ -15768,14 +15768,30 @@ function buOpenMapa(){var o=document.getElementById('buMapaOv'),f=document.getEl
 function buCloseMapa(){document.getElementById('buMapaOv').style.display='none';document.body.style.overflow=''}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buMapaOv');if(o&&o.style.display==='flex')buCloseMapa()}});
 </script>
+<!-- MIBA 2026-10-27 · módulo de logística de empresa (choferes, vehículos, logísticas, eventos, servicios). Datos en cu1/miba (no toca cu1/controlunificado). Quitar: borrar este bloque, MIBA.html y el botón MIBA de future/fx.js -->
+<div id="buMibaOv" style="display:none;position:fixed;inset:0;z-index:99991;background:#f4f6f8;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;padding-top:max(6px,env(safe-area-inset-top));background:#0f2233;color:#fff;font:700 13px system-ui,sans-serif;letter-spacing:.4px">
+    <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">MIBA · LOGÍSTICA DE EMPRESA</span>
+    <button type="button" onclick="buCloseMiba()" style="min-height:36px;padding:0 14px;border-radius:8px;border:0;background:#ffb703;color:#1b1203;font-weight:800;cursor:pointer">✕ Cerrar</button>
+  </div>
+  <iframe id="buMibaFr" title="MIBA" style="flex:1;width:100%;border:0;background:#f4f6f8"></iframe>
+</div>
+<script>
+window.buMibaFb=function(){try{return fbDb}catch(e){return null}};
+window.buMibaUser=function(){try{return CU}catch(e){return null}};
+function buOpenMiba(){var o=document.getElementById('buMibaOv'),f=document.getElementById('buMibaFr');if(!f.getAttribute('src'))f.setAttribute('src','MIBA.html?v=1');o.style.display='flex';document.body.style.overflow='hidden'}
+function buCloseMiba(){document.getElementById('buMibaOv').style.display='none';document.body.style.overflow=''}
+window.buOpenMiba=buOpenMiba;window.buCloseMiba=buCloseMiba;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buMibaOv');if(o&&o.style.display==='flex')buCloseMiba()}});
+</script>
 <!-- FUTURE 2026-10-17 · interfaz nueva en la pestaña FUTURE (solo SA). No toca datos ni funciones. Quitar: borrar estas líneas FUTURE y la carpeta future/ -->
-<link rel="stylesheet" href="future/fx.css?v=12">
-<script src="future/fx.js?v=12"></script>
-<script src="future/fx-ops.js?v=12"></script>
-<script src="future/fx-log.js?v=12"></script>
-<script src="future/fx-cfg.js?v=12"></script>
-<script src="future/fx-dat.js?v=12"></script>
-<script src="future/fx-sub.js?v=12"></script>
+<link rel="stylesheet" href="future/fx.css?v=13">
+<script src="future/fx.js?v=13"></script>
+<script src="future/fx-ops.js?v=13"></script>
+<script src="future/fx-log.js?v=13"></script>
+<script src="future/fx-cfg.js?v=13"></script>
+<script src="future/fx-dat.js?v=13"></script>
+<script src="future/fx-sub.js?v=13"></script>
 <!-- /FUTURE -->
 </body>
 </html>

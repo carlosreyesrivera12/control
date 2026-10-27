@@ -5,6 +5,18 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-27 · MIBA: logística de empresa
+
+**Punto de restauración:** rama `restore-2026-10-27-antes-miba` (commit `bf2b2eb`).
+
+- Nuevo `MIBA.html` (archivo aparte, como el mapa) abierto a pantalla completa desde el botón **MIBA** del panel izquierdo (FUTURE).
+- Empresa, choferes (caducidades carnet/CAP/tacógrafo), vehículos y tipo de camión (ITV/seguro), empresas logísticas (reemplazo por ciudad/país), supervisores/encargados.
+- Eventos con país, ciudad, centro, dirección, teléfono, email, puertas, horario, preregistro, acreditación, pago extra de registro y parkings cercanos (búsqueda en OpenStreetMap).
+- Servicios: origen/destino con contactos, hall, stand, puerta cercana y de ingreso, referencia, carga (bultos, palets, peso, volumen, ADR, temperatura), aduanas, km y ETA (ruta OSRM + descansos UE 561/2006 + prohibición de fin de semana + tráfico según día/hora), marcar salida/llegada, adelantar/retrasar, incidencias, anular/reactivar, duplicar, hoja de ruta imprimible y por WhatsApp, CSV.
+- Panel y analítica: progresión de estados, puntualidad, retraso medio, km, peso, coste, por logística/evento/tipo de camión/incidencia, llegadas por día y alertas.
+- Datos en `cu1/miba` (no toca `cu1/controlunificado`). Sin permiso en la nube guarda en el dispositivo.
+- `future/fx.js`: botón MIBA en el panel izquierdo; FUTURE 9.2; cargador `?v=13`.
+
 ## 2026-10-17 · FUTURE 9.1: Impresión todo a la vista
 
 **Punto de restauración:** rama `restore-2026-10-17-antes-future-e9-1` (commit `c9f5e55`).
