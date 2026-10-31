@@ -4,3 +4,4 @@
 - CCIB: cargar la tabla real de personas por zona / fase / tamaño / perfil (hoy cifras de ejemplo).
 - CCIB: nº de montacargas entre la -2 y las plantas.
 - CCIB: definir tamaños S / M / L.
+- CCIB: confirmar parámetros laborales con el convenio aplicable (jornada máx., pausa, máx. semanal).

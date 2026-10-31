@@ -35,9 +35,6 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
   <label>Evento <input id="ev" value=""></label>
   <label>Tamaño <select id="size"><option>S</option><option selected>M</option><option>L</option></select></label>
   <label>Ver en mapa <select id="vph"><option>montaje</option><option selected>evento</option><option>desmontaje</option></select></label>
-  <label>Horas: montaje <input type="number" id="h-montaje" value="8"></label>
-  <label>evento <input type="number" id="h-evento" value="10"></label>
-  <label>desmontaje <input type="number" id="h-desmontaje" value="6"></label>
  </div>
  <div class="wrap">
   <div class="card"><div class="tabs" id="floors" style="margin-bottom:10px"></div><div id="map"></div><p class="mu" id="flnote"></p></div>
@@ -49,9 +46,14 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
     <div class="row"><input type="number" id="exN" value="1"><input id="exR" placeholder="Motivo (obligatorio)" style="flex:1"><button id="exB">Añadir</button></div><div id="extras"></div></div>
   </div>
  </div>
+ <div class="card"><h3 style="margin:0 0 4px;font-size:15px">Turnos y plantilla</h3>
+  <div class="mu" style="margin-bottom:8px">Horario de cada fase → turnos que respetan jornada máxima, pausas, 12 h de descanso entre jornadas y descanso semanal. Calcula la gente real necesaria para lo que pide CCIB y para lo que aporta Logística, y comprueba que el proveedor no cubra con jornadas dobles u horas extra.</div>
+  <div class="scroll"><table id="turnos"></table></div><div id="tipo" style="margin-top:10px"></div>
+  <div class="mu" style="margin-top:6px" id="pmsg"></div></div>
  <div class="card scroll"><table id="detail"></table></div>
 </section>
-<section id="v-reglas" hidden><div class="card"><p class="mu">Personas por zona, fase y tamaño. Plazas WB y LD fijas en 2.</p>
+<section id="v-reglas" hidden><div class="card"><h3 style="margin:0 0 6px;font-size:15px">Parámetros laborales</h3><div class="row" id="params"></div>
+ <p class="mu">Por defecto según el Estatuto de los Trabajadores (art. 34 y 37). Ajustar al convenio aplicable.</p></div><div class="card"><p class="mu">Personas por zona, fase y tamaño. Plazas WB y LD fijas en 2.</p>
  <div class="row" style="margin-bottom:8px"><label>Tamaño <select id="rsize"><option>S</option><option selected>M</option><option>L</option></select></label></div>
  <div class="scroll"><table id="rules"></table></div></div></section>
 <section id="v-hist" hidden><div class="card scroll"><table id="hist"></table></div></section>
@@ -78,30 +80,35 @@ const NOTE={'-2':'Todo el material sube por montacargas (nº de montacargas pend
 const BASE={dock:[[4,0],[2,0],[4,0]],foyer:[[1,1],[0,3],[1,1]],acc:[[0,0],[0,1],[0,0]],hall:[[4,1],[1,3],[4,1]],hallS:[[2,1],[1,2],[2,1]],room:[[2,0],[0,1],[2,0]],roomL:[[3,1],[1,2],[3,1]],bic:[[1,0],[0,1],[1,0]],mini:[[0,0],[0,1],[0,0]],ext:[[1,0],[0,1],[1,0]],aud:[[3,1],[1,4],[3,1]],audS:[[1,0],[0,2],[1,0]],plaza:[[0,2],[0,2],[0,2]]};
 const MUL={S:.5,M:1,L:1.5};
 const R={};Z.forEach(z=>{R[z[0]]={};SZ.forEach(s=>{R[z[0]][s]={};PH.forEach((p,i)=>{const b=BASE[z[3]][i];R[z[0]][s][p]=z[3]=='plaza'?2:Math.ceil((b[0]+b[1])*MUL[s])})})});
-let sel=new Set(['DOCK','WB','LD']),ov={},pv={},floor='P0',cur=null,extras=[],hist=[];
+let sel=new Set(['DOCK','WB','LD']),ov={},pv={},TT=defT(),floor='P0',cur=null,extras=[],hist=[];
 /* Persistencia: RTDB cu1/ccib (reglas + pedidos, guardados como JSON). Sin permiso → localStorage. No toca cu1/controlunificado */
 const LS='bu_ccib_local';let REF=null,MODE='local',PED={},PID=null,_rulesTs=0;
 function who(){try{const u=parent.buCcibUser&&parent.buCcibUser();return u?(u.nombre||u.email||u.id||''):'local'}catch(e){return 'local'}}
 function setSync(st,m){const e=document.getElementById('sync');e.className='sync '+st;e.textContent=m}
-function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,h:{montaje:+$('h-montaje').value,evento:+$('h-evento').value,desmontaje:+$('h-desmontaje').value},sel:[...sel],ov,pv,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
-function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';['montaje','evento','desmontaje'].forEach(k=>$('h-'+k).value=(p.h||{})[k]??0);sel=new Set(p.sel||[]);ov=normOv(p.ov);pv=normOv(p.pv);extras=p.extras||[];hist=p.hist||[];cur=null}
-function newP(){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);PED[id]={id,ev:'Nuevo evento',size:'M',h:{montaje:8,evento:10,desmontaje:6},sel:['DOCK','WB','LD'],ov:{},pv:{},extras:[],hist:[],createdAt:Date.now(),createdBy:who()};loadP(PED[id]);saveP();render()}
+function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,t:TT,sel:[...sel],ov,pv,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
+function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';TT=normT(p);sel=new Set(p.sel||[]);ov=normOv(p.ov);pv=normOv(p.pv);extras=p.extras||[];hist=p.hist||[];cur=null}
+function newP(){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);PED[id]={id,ev:'Nuevo evento',size:'M',t:defT(),sel:['DOCK','WB','LD'],ov:{},pv:{},extras:[],hist:[],createdAt:Date.now(),createdBy:who()};loadP(PED[id]);saveP();render()}
 let _st=null;function saveP(){if(!PID)return;PED[PID]=Object.assign(PED[PID]||{},snap());clearTimeout(_st);_st=setTimeout(()=>{if(REF&&MODE==='fb')REF.child('pedidos/'+PID).set({j:JSON.stringify(PED[PID])}).catch(e=>setSync('err','Error al guardar'));else saveLocal()},400)}
 function saveRules(){_rulesTs=Date.now();if(REF&&MODE==='fb')REF.child('reglas').set({j:JSON.stringify(R),ts:_rulesTs,by:who()});else saveLocal()}
-function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({R,PED}))}catch(e){}}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({R,PED,PAR}))}catch(e){}}
 const num=v=>Array.isArray(v)?(+v[0]||0)+(+v[1]||0):(+v||0);
 function normZ(o){const n={};SZ.forEach(s=>{n[s]={};PH.forEach(p=>n[s][p]=num(o&&o[s]?o[s][p]:0))});return n}
 function mergeRules(x){Object.keys(x||{}).forEach(k=>{if(R[k])R[k]=normZ(x[k])})}
 function normOv(o){const n={};Object.keys(o||{}).forEach(id=>{const v=o[id];if(!v)return;n[id]={motivo:v.motivo||''};PH.forEach(p=>n[id][p]=num(v[p]))});return n}
+const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5};let PAR={...PAR0};
+const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos'};
+function defT(){return{montaje:{d:1,i:'07:00',f:'19:00',w:0},evento:{d:1,i:'08:00',f:'20:00',w:0},desmontaje:{d:1,i:'19:00',f:'07:00',w:0}}}
+function normT(p){const d=defT(),t=p.t||{};PH.forEach(k=>{const x=t[k];if(x&&typeof x=='object')d[k]={d:+x.d||0,i:x.i||d[k].i,f:x.f||d[k].f,w:+x.w||0};else if(p.h&&p.h[k]!=null){const H=+p.h[k]||0,a=8;d[k]={d:1,i:'08:00',f:String((a+H)%24).padStart(2,'0')+':00',w:0}}});return d}
+function saveParams(){if(REF&&MODE==='fb')REF.child('params').set({j:JSON.stringify(PAR),ts:Date.now(),by:who()});else saveLocal()}
 function applyRules(j){try{mergeRules(JSON.parse(j))}catch(e){}}
 function renderPsel(){const ids=Object.keys(PED).sort((a,b)=>(PED[b].updatedAt||0)-(PED[a].updatedAt||0));$('psel').innerHTML=ids.map(id=>`<option value="${id}" ${id==PID?'selected':''}>${(PED[id].ev||'Sin nombre').replace(/</g,'&lt;')}</option>`).join('')}
 function boot(){let db=null;try{db=parent.buCcibFb&&parent.buCcibFb()}catch(e){}
  const start=()=>{const ids=Object.keys(PED);if(!PID||!PED[PID]){if(ids.length)loadP(PED[ids.sort((a,b)=>(PED[b].updatedAt||0)-(PED[a].updatedAt||0))[0]]);else{newP();return}}render()};
- if(db&&db.ref){REF=db.ref('cu1/ccib');REF.on('value',sn=>{const v=sn.val()||{},mine=PID&&PED[PID]?PED[PID].updatedAt:null;if(v.reglas&&v.reglas.j)applyRules(v.reglas.j);PED={};Object.entries(v.pedidos||{}).forEach(([k,o])=>{try{PED[k]=JSON.parse(o.j)}catch(e){}});MODE='fb';setSync('ok','Sincronizado');
+ if(db&&db.ref){REF=db.ref('cu1/ccib');REF.on('value',sn=>{const v=sn.val()||{},mine=PID&&PED[PID]?PED[PID].updatedAt:null;if(v.reglas&&v.reglas.j)applyRules(v.reglas.j);if(v.params&&v.params.j){try{PAR={...PAR0,...JSON.parse(v.params.j)}}catch(e){}}PED={};Object.entries(v.pedidos||{}).forEach(([k,o])=>{try{PED[k]=JSON.parse(o.j)}catch(e){}});MODE='fb';setSync('ok','Sincronizado');
    if(PID&&PED[PID]&&PED[PID].updatedAt!==mine){const keepCur=cur,keepF=floor;loadP(PED[PID]);cur=keepCur;floor=keepF}start()},
   err=>{MODE='local';loadLocalAll();setSync('err','Sin permiso en la nube · guardado en este dispositivo');start()})}
  else{loadLocalAll();setSync('err','Modo local (sin sesión)');start()}}
-function loadLocalAll(){try{const v=JSON.parse(localStorage.getItem(LS)||'{}');if(v.R)mergeRules(v.R);PED=v.PED||{}}catch(e){}}
+function loadLocalAll(){try{const v=JSON.parse(localStorage.getItem(LS)||'{}');if(v.R)mergeRules(v.R);if(v.PAR)PAR={...PAR0,...v.PAR};PED=v.PED||{}}catch(e){}}
 const $=id=>document.getElementById(id),byId=Object.fromEntries(Z.map(z=>[z[0],z])),sum=num;
 const rule=(id,p)=>R[id][$('size').value][p];
 const eff=(id,p)=>ov[id]&&ov[id][p]!=null?ov[id][p]:rule(id,p);              // CCIB pide
@@ -144,7 +151,7 @@ function renderZone(){const el=$('zp');if(!cur||!sel.has(cur)){el.innerHTML='<sp
  $('zReset').onclick=()=>{if(!ov[cur]&&!pv[cur])return;const b=sum(calc().evento);delete ov[cur];delete pv[cur];log('Vuelve a regla',z[1],b);render()};
  $('zDel').onclick=()=>{const b=sum(calc().evento);sel.delete(cur);delete ov[cur];delete pv[cur];log('Desmarca zona',z[1],b);cur=null;render()}}
 function renderSide(){const c=calc(),q=calcP(),rr=calcR(),vp=$('vph').value;
- $('byphase').innerHTML='<table><tr><th>Fase</th><th>CCIB pide</th><th>Logística aporta</th><th>Dif.</th></tr>'+PH.map(p=>`<tr${p==vp?' style="background:#eef3fd"':''}><td style="font-size:14px">${p}</td><td class="tot" style="font-size:20px">${c[p]}</td><td class="tot" style="font-size:20px">${q[p]}</td><td>${dif(c[p],q[p])}</td></tr>`).join('')+'</table><div class="mu" style="margin-top:4px">Horas·persona aportadas: '+PH.map(p=>`${p} ${q[p]*(+$('h-'+p).value||0)}`).join(' · ')+'</div>';
+ $('byphase').innerHTML='<table><tr><th>Fase</th><th>CCIB pide</th><th>Logística aporta</th><th>Dif.</th></tr>'+PH.map(p=>`<tr${p==vp?' style="background:#eef3fd"':''}><td style="font-size:14px">${p}</td><td class="tot" style="font-size:20px">${c[p]}</td><td class="tot" style="font-size:20px">${q[p]}</td><td>${dif(c[p],q[p])}</td></tr>`).join('')+'</table><div class="mu" style="margin-top:4px">Son puestos a cubrir a la vez; la gente real (con turnos) está en «Turnos y plantilla».</div>';
  const parts=[...sel].map(id=>[byId[id][1],num(eff(id,vp)),num(prov(id,vp)),isOv(id)]).filter(x=>x[1]||x[2]);
  const ex=vp=='evento'&&extras.length?extras.reduce((a,e)=>a+e.n,0):0;
  $('howcalc').innerHTML=`Cada zona marcada suma sus personas de la fase. Regla = tabla de reglas según tamaño; CCIB = regla salvo que se cambie (con motivo); Logística = lo que pide CCIB salvo que se cambie.<br><b>${vp} · CCIB ${c[vp]}</b> = `+(parts.map(x=>`${x[0]} ${x[1]}${x[3]?'*':''}`).join(' + ')||'0')+(ex?' + extras '+ex:'')+`<br><b>${vp} · Logística ${q[vp]}</b> = `+(parts.map(x=>`${x[0]} ${x[2]}`).join(' + ')||'0')+(ex?' + extras '+ex:'')+(parts.some(x=>x[3])?'<br>* CCIB pide distinto a la regla':'');
@@ -162,9 +169,35 @@ function renderRules(){const s=$('rsize').value;let h='<tr><th>Zona</th><th>Plan
  $('rules').innerHTML=h;$('rules').querySelectorAll('input').forEach(i=>i.onchange=()=>{R[i.dataset.z][s][i.dataset.p]=Math.max(0,+i.value||0);saveRules();hist.unshift({t:new Date().toLocaleString('es-ES'),u:who(),acc:'Cambia regla',detail:`${byId[i.dataset.z][1]} ${s} ${i.dataset.p}=${i.value}`,before:'',after:'',fp:false});render()})}
 function renderHist(){$('hist').innerHTML='<tr><th>Hora</th><th>Quién</th><th>Acción</th><th>Detalle</th><th>Antes</th><th>Después</th><th>Fuera de plazo</th></tr>'+hist.map((h,i)=>`<tr><td>${h.t}</td><td>${h.u}</td><td>${h.acc}</td><td>${h.detail}</td><td>${h.before}</td><td>${h.after}</td><td><input type="checkbox" data-i="${i}" ${h.fp?'checked':''}> ${h.fp?'<span class="tag">facturar</span>':''}</td></tr>`).join('');
  $('hist').querySelectorAll('input').forEach(c=>c.onchange=()=>{hist[+c.dataset.i].fp=c.checked;saveP();renderHist()})}
-function render(){renderPsel();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
+const tm=v=>{const[a,b]=(v||'0:0').split(':');return(+a||0)*60+(+b||0)},hm=m=>{m=((Math.round(m)%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+function hoursDay(t){let a=tm(t.i),b=tm(t.f);if(b<=a)b+=1440;return(b-a)/60}
+function plan(p,posFn){const t=TT[p],H=hoursDay(t),D=Math.max(0,+t.d||0);let pos=0;sel.forEach(id=>pos+=num(posFn(id,p)));if(p=='evento')pos+=extras.reduce((a,e)=>a+e.n,0);
+ if(!H||!D||!pos)return{H,D,pos,T:0,len:0,shifts:[],pause:0,rel:0,slot:0,sim:0,need:0};
+ const T=Math.ceil(H/PAR.maxDia-1e-9),len=H/T,pause=len>PAR.pausaDesde?PAR.pausaMin:0,cap=Math.max(1,Math.floor(120/Math.max(1,PAR.pausaMin))),rel=pause?Math.ceil(pos/cap):0;
+ const dw=Math.min(D,7),slot=Math.max(1,Math.ceil(dw*len/PAR.maxSemana-1e-9),Math.ceil(dw/PAR.maxDiasSem-1e-9));
+ const shifts=[];for(let k=0;k<T;k++){const a=tm(t.i)+k*len*60;shifts.push(hm(a)+'–'+hm(a+len*60))}
+ return{H,D,pos,T,len,shifts,pause,rel,slot,sim:pos+rel,need:T*(pos+rel)*slot}}
+const f1=x=>Number.isInteger(x)?x:x.toFixed(1).replace('.',',');
+function renderTurnos(){let h='<tr><th>Fase</th><th>Días</th><th>Desde</th><th>Hasta</th><th>h/día</th><th>Turnos</th><th>Pausa</th><th>Puestos a la vez (Log.)</th><th>Gente necesaria CCIB</th><th>Gente necesaria Logística</th><th>Proveedor pone</th><th>Resultado</th></tr>';
+ const res={};let tipo='';
+ PH.forEach(p=>{const t=TT[p],c=plan(p,eff),q=plan(p,prov);res[p]=q;let st='—';
+  if(q.need){const w=+t.w||0;if(!w)st='<span class="mu">indica cuántos pone</span>';
+   else{const hpd=q.sim*q.H/w,hpw=hpd*Math.min(q.D,7);
+    if(w>=q.need)st='<span class="ok">OK · '+f1(Math.min(hpd,q.len))+' h/día por persona</span>';
+    else st=`<span class="alert">Faltan ${q.need-w} · saldría a ${f1(hpd)} h/día${hpd>PAR.maxDia?' (jornada doble / horas extra)':''}${hpw>PAR.maxSemana?' · '+f1(hpw)+' h/semana':''}</span>`}}
+  h+=`<tr><td>${p}</td><td><input type="number" min="0" data-tf="d" data-p="${p}" value="${t.d}"></td><td><input type="time" data-tf="i" data-p="${p}" value="${t.i}"></td><td><input type="time" data-tf="f" data-p="${p}" value="${t.f}"></td><td>${f1(q.H)}</td><td>${q.T?q.T+' × '+f1(q.len)+' h<br><span class="mu">'+q.shifts.join(' · ')+'</span>':'—'}</td><td>${q.pause?q.pause+' min':'no obligatoria'}</td><td>${q.pos}${q.rel?' + '+q.rel+' correturnos':''}</td><td><b>${c.need}</b></td><td><b>${q.need}</b>${q.slot>1?'<br><span class="mu">×'+q.slot+' por rotación semanal</span>':''}</td><td><input type="number" min="0" data-tf="w" data-p="${p}" value="${t.w||0}"></td><td>${st}</td></tr>`;
+  if(q.T)tipo+=`<li><b>${p}</b>: llamamiento de ${Math.min(q.D,PAR.maxDiasSem)} día(s)${q.slot>1?' (rota con otros '+(q.slot-1)+')':''} · turno de ${f1(q.len)} h (p. ej. ${q.shifts[0]})${q.pause?' con '+q.pause+' min de pausa':''} · descanso entre jornadas ${f1(24-q.len)} h ${24-q.len>=PAR.descanso?'<span class="ok">✔</span>':'<span class="alert">✖ menos de '+PAR.descanso+' h</span>'} · ${f1(q.len*Math.min(q.D,7)/q.slot)} h/semana ${q.len*Math.min(q.D,7)/q.slot<=PAR.maxSemana?'<span class="ok">✔</span>':'<span class="alert">✖</span>'}</li>`});
+ $('turnos').innerHTML=h;
+ const mx=Math.max(0,...PH.map(p=>res[p].need));
+ $('tipo').innerHTML=(tipo?'<div class="mu"><b>Trabajador tipo (fijo discontinuo)</b> · nunca dobla turno: un turno por día y persona</div><ul class="mu" style="margin:4px 0;padding-left:18px">'+tipo+'</ul>':'')+`<div><b>Plantilla mínima del evento (Logística): ${mx}</b> <span class="mu">· la mayor de las fases, reutilizando gente entre fases solo si tiene ${PAR.descanso} h de descanso</span></div>`;
+ $('pmsg').innerHTML=`Cómo se calcula: turnos = h/día ÷ ${PAR.maxDia} h (redondeo arriba), repartidos en partes iguales. Si el turno pasa de ${PAR.pausaDesde} h hay pausa de ${PAR.pausaMin} min y se añade 1 correturnos cada ${Math.floor(120/Math.max(1,PAR.pausaMin))} puestos. Si la fase dura varios días, cada puesto rota para no pasar de ${PAR.maxSemana} h ni ${PAR.maxDiasSem} días seguidos. Gente necesaria = turnos × (puestos + correturnos) × rotación.`;
+ $('turnos').querySelectorAll('input[data-tf]').forEach(i=>i.onchange=()=>{const p=i.dataset.p,k=i.dataset.tf,old=TT[p][k];TT[p][k]=(k=='i'||k=='f')?i.value:Math.max(0,+i.value||0);log('Turnos',`${p} ${({d:'días',i:'desde',f:'hasta',w:'proveedor pone'})[k]}: ${old} → ${TT[p][k]}`,sum(calc().evento));render()})}
+function renderParams(){$('params').innerHTML=Object.keys(PAR0).map(k=>`<label class="mu">${PARL[k]} <input type="number" min="0" data-par="${k}" value="${PAR[k]}"></label>`).join('')+'<button id="parReset">Valores por defecto</button>';
+ $('params').querySelectorAll('input').forEach(i=>i.onchange=()=>{PAR[i.dataset.par]=Math.max(0,+i.value||0)||PAR0[i.dataset.par];saveParams();render()});
+ $('parReset').onclick=()=>{PAR={...PAR0};saveParams();render()}}
+function render(){renderPsel();renderTurnos();renderParams();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
 $('exB').onclick=()=>{const r=$('exR').value.trim(),n=+$('exN').value;if(!r){alert('El motivo es obligatorio');return}const b=sum(calc().evento);extras.push({n,r});$('exR').value='';log('Añade extra',`+${n} · ${r}`,b);render()};
-$('vph').oninput=render;['size','h-montaje','h-evento','h-desmontaje','ev'].forEach(i=>$(i).oninput=()=>{saveP();render()});
+$('vph').oninput=render;['size','ev'].forEach(i=>$(i).oninput=()=>{saveP();render()});
 $('psel').onchange=()=>{saveP();loadP(PED[$('psel').value]);render()};$('pNew').onclick=newP;$('rsize').onchange=renderRules;
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));['pedido','reglas','hist'].forEach(v=>$('v-'+v).hidden=v!=b.dataset.v)});
 boot();

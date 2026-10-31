@@ -5,6 +5,16 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: turnos y plantilla real
+
+**Punto de restauración:** commit `651b590`.
+
+- Nuevo bloque «Turnos y plantilla»: por fase, días y horario → turnos de igual duración sin pasar la jornada máxima, pausa y correturnos si el turno supera 6 h, rotación por máximo semanal y días seguidos.
+- Gente necesaria para lo que pide CCIB y para lo que aporta Logística; «Proveedor pone» avisa si faltan personas y cuántas h/día saldrían por persona (jornada doble / horas extra).
+- Trabajador tipo fijo discontinuo: llamamiento, turno, pausa, descanso entre jornadas (≥12 h) y h/semana.
+- Parámetros laborales editables en «Reglas» (por defecto ET art. 34 y 37), guardados en `cu1/ccib/params`.
+- Quitadas las horas sueltas de la barra superior (los pedidos antiguos se convierten a horario).
+
 ## 2026-10-31 · CCIB: lo que pide CCIB vs lo que aporta Logística
 
 **Punto de restauración:** commit `8fb8961`.
