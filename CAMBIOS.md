@@ -5,6 +5,18 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: cuadrante con nombres, fechas, zonas y plantillas
+
+**Punto de restauración:** commit `8b396e3`.
+
+- Fechas de montaje, evento y desmontaje (desde/hasta) además del horario.
+- Pestaña **Cuadrante**: empleados con nombre y apellidos; cada puesto, correturnos y coordinador por día y turno con su empleado; horario de descanso de cada puesto y a quién cubre cada correturnos; autoasignar respetando un turno por día, 12 h de descanso, máx. semanal y días seguidos; avisos por empleado.
+- **Reemplazos**: al cambiar un empleado asignado pregunta si es reemplazo y queda registrado (lo ve el cliente). Tabla «Quién está en cada zona».
+- **Coordinador** del proveedor por turno (1 cada 20 personas, editable): CCIB pide al coordinador, no da órdenes directas (fijos discontinuos de su empresa).
+- **Zonas**: activar/desactivar (desaparecen del plano y tablas), renombrar, crear zonas propias tocando el plano («+ Zona en el plano»), moverlas o borrarlas.
+- **Plantillas** de zonas por tipo de evento: guardar, aplicar, sustituir, borrar.
+- Datos globales en `cu1/ccib/config` y `cu1/ccib/empleados`.
+
 ## 2026-10-31 · CCIB: turnos y plantilla real
 
 **Punto de restauración:** commit `651b590`.

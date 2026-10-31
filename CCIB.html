@@ -26,18 +26,19 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
 #zp h3{margin:0 0 4px;font-size:15px}#zp .big{font-size:28px;font-weight:700}
 </style></head><body>
 <header><b>CCIB · Pedido de personal</b>
-<div class="tabs"><button data-v="pedido" class="on">Pedido en mapa</button><button data-v="reglas">Reglas</button><button data-v="hist">Historial</button></div>
+<div class="tabs"><button data-v="pedido" class="on">Pedido en mapa</button><button data-v="cuad">Cuadrante</button><button data-v="reglas">Reglas</button><button data-v="hist">Historial</button></div>
 <span class="mu">Cifras de ejemplo hasta cargar la tabla real</span><span class="sync" id="sync">…</span></header>
 <main>
 <section id="v-pedido">
  <div class="card row">
   <label>Pedido <select id="psel"></select></label><button id="pNew">+ Nuevo</button>
   <label>Evento <input id="ev" value=""></label>
+  <label>Plantilla <select id="plSel"></select></label><button id="plApply">Aplicar</button><button id="plSave">Guardar zonas como plantilla</button><button id="plDel" title="Borrar plantilla">×</button>
   <label>Tamaño <select id="size"><option>S</option><option selected>M</option><option>L</option></select></label>
   <label>Ver en mapa <select id="vph"><option>montaje</option><option selected>evento</option><option>desmontaje</option></select></label>
  </div>
  <div class="wrap">
-  <div class="card"><div class="tabs" id="floors" style="margin-bottom:10px"></div><div id="map"></div><p class="mu" id="flnote"></p></div>
+  <div class="card"><div class="row" style="margin-bottom:10px"><div class="tabs" id="floors"></div><span style="flex:1"></span><button id="zAdd">+ Zona en el plano</button></div><div id="map"></div><p class="mu" id="flnote"></p></div>
   <div>
    <div class="card" id="zp"><span class="mu">Toca una zona del plano para ver y ajustar su personal.</span></div>
    <div class="card"><div class="mu">Personas por fase</div><div id="byphase"></div><details style="margin-top:8px"><summary class="mu" style="cursor:pointer">Cómo se calcula</summary><div class="mu" id="howcalc"></div></details></div>
@@ -52,7 +53,22 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
   <div class="mu" style="margin-top:6px" id="pmsg"></div></div>
  <div class="card scroll"><table id="detail"></table></div>
 </section>
-<section id="v-reglas" hidden><div class="card"><h3 style="margin:0 0 6px;font-size:15px">Parámetros laborales</h3><div class="row" id="params"></div>
+<section id="v-cuad" hidden>
+ <div class="card" style="border-left:4px solid #1450e8"><b>Coordinador del proveedor</b> <span class="mu">· CCIB no da órdenes directas a los trabajadores: pide al coordinador y él organiza al equipo. Así los fijos discontinuos dependen de su empresa y no de CCIB (evita cesión ilegal, art. 43 ET). Hay un coordinador por turno (1 cada <span id="cPor"></span> personas, ajustable en Reglas).</span></div>
+ <div class="wrap"><div>
+  <div class="card row"><label>Fase <select id="cPh"></select></label><label>Día <select id="cDay"></select></label><button id="cAuto" class="on">Autoasignar todo el pedido</button><button id="cClear">Vaciar asignaciones</button><span class="mu" id="cMsg"></span></div>
+  <div id="cuad"></div>
+ </div><div>
+  <div class="card"><div class="mu">Empleados del proveedor (fijos discontinuos)</div>
+   <div class="row" style="margin-top:6px"><input id="empN" placeholder="Nombre"><input id="empA" placeholder="Apellidos"></div>
+   <textarea id="empAdd" rows="3" style="width:100%;font:inherit;margin-top:6px" placeholder="O varios a la vez: «Nombre Apellido1 Apellido2», uno por línea"></textarea>
+   <div class="row" style="margin-top:6px"><button id="empAddB">Añadir</button></div>
+   <div class="scroll" style="max-height:420px;margin-top:8px"><table id="empT"></table></div></div>
+ </div></div>
+</section>
+<section id="v-reglas" hidden><div class="card"><h3 style="margin:0 0 6px;font-size:15px">Zonas</h3><div class="mu">Desactiva las zonas que no se usan: desaparecen del plano y de las tablas. Cambia nombres o borra zonas propias. Las zonas nuevas se crean con «+ Zona en el plano».</div>
+ <div class="row" style="margin:8px 0"><input id="zq" placeholder="Buscar zona"><label class="mu"><input type="checkbox" id="zOnlyOff"> solo desactivadas</label><button id="zAllOn">Activar todas</button></div>
+ <div class="scroll" style="max-height:360px"><table id="zonasT"></table></div></div><div class="card"><h3 style="margin:0 0 6px;font-size:15px">Parámetros laborales</h3><div class="row" id="params"></div>
  <p class="mu">Por defecto según el Estatuto de los Trabajadores (art. 34 y 37). Ajustar al convenio aplicable.</p></div><div class="card"><p class="mu">Personas por zona, fase y tamaño. Plazas WB y LD fijas en 2.</p>
  <div class="row" style="margin-bottom:8px"><label>Tamaño <select id="rsize"><option>S</option><option selected>M</option><option>L</option></select></label></div>
  <div class="scroll"><table id="rules"></table></div></div></section>
@@ -62,7 +78,7 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
 const IMG={P2:'ccib/plano-P2.jpg?v=1',M2:'ccib/plano-M2.jpg?v=1',P1:'ccib/plano-P1.jpg?v=1',M1:'ccib/plano-M1.jpg?v=1',P0:'ccib/plano-P0.jpg?v=1',AUD:'ccib/plano-AUD.jpg?v=1'};
 const PH=['montaje','evento','desmontaje'],SZ=['S','M','L'];
 // [id, nombre, planta, tipo, x%, y%]
-const Z=[
+const Z0=[
 ['DOCK','Muelle de carga','-2','dock'],
 ['A1','Área 1','P0','hall',34,13],['A2','Área 2','P0','hall',40,19],['A3','Área 3','P0','hall',46,25],['A4','Área 4','P0','hall',52,30],['A5','Área 5','P0','hallS',56,36],['A6','Área 6','P0','hallS',63,42],['A7','Área 7','P0','hallS',49,45],['A8','Área 8','P0','hallS',57,52],
 ['V','Vestíbulo','P0','foyer',25,56],['F0','Foyer P0','P0','foyer',36,46],['AA','Acceso A','P0','acc',49,85],['AB','Acceso B','P0','acc',25,73],['AC','Acceso C','P0','acc',14,57],['AD','Acceso D','P0','acc',11,30],
@@ -77,66 +93,87 @@ const Z=[
 ['WB','Plaza WB','EXT','plaza'],['LD','Plaza LD','EXT','plaza']];
 const FL=[['P2','P2'],['M2','M2'],['P1','P1'],['M1','M1'],['P0','P0'],['-2','Muelle -2'],['AUD','Auditorio'],['EXT','Exteriores']];
 const NOTE={'-2':'Todo el material sube por montacargas (nº de montacargas pendiente).','EXT':'Plaza WB a la izquierda y Plaza LD a la derecha del CCIB. 2 personas fijas cada una.','AUD':'Arriba: nivel superior (anfiteatro). Abajo: nivel inferior y rambla de conexión.','P1':'Salas bicolor agrupadas por pares, como en el plano.','M2':'Salas agrupadas como en el plano.'};
-const BASE={dock:[[4,0],[2,0],[4,0]],foyer:[[1,1],[0,3],[1,1]],acc:[[0,0],[0,1],[0,0]],hall:[[4,1],[1,3],[4,1]],hallS:[[2,1],[1,2],[2,1]],room:[[2,0],[0,1],[2,0]],roomL:[[3,1],[1,2],[3,1]],bic:[[1,0],[0,1],[1,0]],mini:[[0,0],[0,1],[0,0]],ext:[[1,0],[0,1],[1,0]],aud:[[3,1],[1,4],[3,1]],audS:[[1,0],[0,2],[1,0]],plaza:[[0,2],[0,2],[0,2]]};
+const BASE={custom:[[1,0],[1,0],[1,0]],dock:[[4,0],[2,0],[4,0]],foyer:[[1,1],[0,3],[1,1]],acc:[[0,0],[0,1],[0,0]],hall:[[4,1],[1,3],[4,1]],hallS:[[2,1],[1,2],[2,1]],room:[[2,0],[0,1],[2,0]],roomL:[[3,1],[1,2],[3,1]],bic:[[1,0],[0,1],[1,0]],mini:[[0,0],[0,1],[0,0]],ext:[[1,0],[0,1],[1,0]],aud:[[3,1],[1,4],[3,1]],audS:[[1,0],[0,2],[1,0]],plaza:[[0,2],[0,2],[0,2]]};
 const MUL={S:.5,M:1,L:1.5};
-const R={};Z.forEach(z=>{R[z[0]]={};SZ.forEach(s=>{R[z[0]][s]={};PH.forEach((p,i)=>{const b=BASE[z[3]][i];R[z[0]][s][p]=z[3]=='plaza'?2:Math.ceil((b[0]+b[1])*MUL[s])})})});
-let sel=new Set(['DOCK','WB','LD']),ov={},pv={},TT=defT(),floor='P0',cur=null,extras=[],hist=[];
+const R={};Z0.forEach(z=>{R[z[0]]={};SZ.forEach(s=>{R[z[0]][s]={};PH.forEach((p,i)=>{const b=BASE[z[3]][i];R[z[0]][s][p]=z[3]=='plaza'?2:Math.ceil((b[0]+b[1])*MUL[s])})})});
+let sel=new Set(['DOCK','WB','LD']),ov={},pv={},TT=defT(),AS={},RP={},EMP=[],floor='P0',cur=null,extras=[],hist=[];
 /* Persistencia: RTDB cu1/ccib (reglas + pedidos, guardados como JSON). Sin permiso → localStorage. No toca cu1/controlunificado */
 const LS='bu_ccib_local';let REF=null,MODE='local',PED={},PID=null,_rulesTs=0;
 function who(){try{const u=parent.buCcibUser&&parent.buCcibUser();return u?(u.nombre||u.email||u.id||''):'local'}catch(e){return 'local'}}
 function setSync(st,m){const e=document.getElementById('sync');e.className='sync '+st;e.textContent=m}
-function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,t:TT,sel:[...sel],ov,pv,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
-function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';TT=normT(p);sel=new Set(p.sel||[]);ov=normOv(p.ov);pv=normOv(p.pv);extras=p.extras||[];hist=p.hist||[];cur=null}
+function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,t:TT,sel:[...sel],ov,pv,AS,rp:RP,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
+function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';TT=normT(p);sel=new Set(p.sel||[]);ov=normOv(p.ov);pv=normOv(p.pv);AS=p.as||p.AS||{};RP=p.rp||{};extras=p.extras||[];hist=p.hist||[];cur=null}
 function newP(){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);PED[id]={id,ev:'Nuevo evento',size:'M',t:defT(),sel:['DOCK','WB','LD'],ov:{},pv:{},extras:[],hist:[],createdAt:Date.now(),createdBy:who()};loadP(PED[id]);saveP();render()}
 let _st=null;function saveP(){if(!PID)return;PED[PID]=Object.assign(PED[PID]||{},snap());clearTimeout(_st);_st=setTimeout(()=>{if(REF&&MODE==='fb')REF.child('pedidos/'+PID).set({j:JSON.stringify(PED[PID])}).catch(e=>setSync('err','Error al guardar'));else saveLocal()},400)}
 function saveRules(){_rulesTs=Date.now();if(REF&&MODE==='fb')REF.child('reglas').set({j:JSON.stringify(R),ts:_rulesTs,by:who()});else saveLocal()}
-function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({R,PED,PAR}))}catch(e){}}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({R,PED,PAR,EMP,CFG:cfgObj()}))}catch(e){}}
 const num=v=>Array.isArray(v)?(+v[0]||0)+(+v[1]||0):(+v||0);
 function normZ(o){const n={};SZ.forEach(s=>{n[s]={};PH.forEach(p=>n[s][p]=num(o&&o[s]?o[s][p]:0))});return n}
-function mergeRules(x){Object.keys(x||{}).forEach(k=>{if(R[k])R[k]=normZ(x[k])})}
+function mergeRules(x){Object.keys(x||{}).forEach(k=>{R[k]=normZ(x[k])})}
 function normOv(o){const n={};Object.keys(o||{}).forEach(id=>{const v=o[id];if(!v)return;n[id]={motivo:v.motivo||''};PH.forEach(p=>n[id][p]=num(v[p]))});return n}
-const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5};let PAR={...PAR0};
-const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos'};
-function defT(){return{montaje:{d:1,i:'07:00',f:'19:00',w:0},evento:{d:1,i:'08:00',f:'20:00',w:0},desmontaje:{d:1,i:'19:00',f:'07:00',w:0}}}
-function normT(p){const d=defT(),t=p.t||{};PH.forEach(k=>{const x=t[k];if(x&&typeof x=='object')d[k]={d:+x.d||0,i:x.i||d[k].i,f:x.f||d[k].f,w:+x.w||0};else if(p.h&&p.h[k]!=null){const H=+p.h[k]||0,a=8;d[k]={d:1,i:'08:00',f:String((a+H)%24).padStart(2,'0')+':00',w:0}}});return d}
+const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5,coordPor:20};let PAR={...PAR0};
+const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos',coordPor:'Personas por coordinador'};
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addD(ds,n){const d=new Date(ds+'T00:00');d.setDate(d.getDate()+n);return iso(d)}
+const nDays=t=>{if(!t.ds||!t.de)return 0;const n=Math.round((new Date(t.de+'T00:00')-new Date(t.ds+'T00:00'))/864e5)+1;return n>0?n:0};
+const dayList=t=>{const n=nDays(t),o=[];for(let k=0;k<n;k++)o.push(addD(t.ds,k));return o};
+const fdia=ds=>{const d=new Date(ds+'T00:00');return d.toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'2-digit'})};
+function defT(){const t0=iso(new Date());return{montaje:{ds:t0,de:t0,i:'07:00',f:'19:00',w:0},evento:{ds:addD(t0,1),de:addD(t0,1),i:'08:00',f:'20:00',w:0},desmontaje:{ds:addD(t0,1),de:addD(t0,1),i:'20:00',f:'08:00',w:0}}}
+function normT(p){const d=defT(),t=p.t||{};PH.forEach(k=>{const x=t[k];if(x&&typeof x=='object'){const ds=x.ds||d[k].ds;d[k]={ds,de:x.de||addD(ds,Math.max(1,+x.d||1)-1),i:x.i||d[k].i,f:x.f||d[k].f,w:+x.w||0}}else if(p.h&&p.h[k]!=null){const H=+p.h[k]||0;d[k].i='08:00';d[k].f=String((8+H)%24).padStart(2,'0')+':00'}});return d}
+function saveEmp(){if(REF&&MODE==='fb')REF.child('empleados').set({j:JSON.stringify(EMP),ts:Date.now(),by:who()});else saveLocal()}
 function saveParams(){if(REF&&MODE==='fb')REF.child('params').set({j:JSON.stringify(PAR),ts:Date.now(),by:who()});else saveLocal()}
 function applyRules(j){try{mergeRules(JSON.parse(j))}catch(e){}}
 function renderPsel(){const ids=Object.keys(PED).sort((a,b)=>(PED[b].updatedAt||0)-(PED[a].updatedAt||0));$('psel').innerHTML=ids.map(id=>`<option value="${id}" ${id==PID?'selected':''}>${(PED[id].ev||'Sin nombre').replace(/</g,'&lt;')}</option>`).join('')}
 function boot(){let db=null;try{db=parent.buCcibFb&&parent.buCcibFb()}catch(e){}
  const start=()=>{const ids=Object.keys(PED);if(!PID||!PED[PID]){if(ids.length)loadP(PED[ids.sort((a,b)=>(PED[b].updatedAt||0)-(PED[a].updatedAt||0))[0]]);else{newP();return}}render()};
- if(db&&db.ref){REF=db.ref('cu1/ccib');REF.on('value',sn=>{const v=sn.val()||{},mine=PID&&PED[PID]?PED[PID].updatedAt:null;if(v.reglas&&v.reglas.j)applyRules(v.reglas.j);if(v.params&&v.params.j){try{PAR={...PAR0,...JSON.parse(v.params.j)}}catch(e){}}PED={};Object.entries(v.pedidos||{}).forEach(([k,o])=>{try{PED[k]=JSON.parse(o.j)}catch(e){}});MODE='fb';setSync('ok','Sincronizado');
+ if(db&&db.ref){REF=db.ref('cu1/ccib');REF.on('value',sn=>{const v=sn.val()||{},mine=PID&&PED[PID]?PED[PID].updatedAt:null;if(v.reglas&&v.reglas.j)applyRules(v.reglas.j);if(v.params&&v.params.j){try{PAR={...PAR0,...JSON.parse(v.params.j)}}catch(e){}}if(v.config&&v.config.j){try{applyCfg(JSON.parse(v.config.j))}catch(e){}}if(v.empleados&&v.empleados.j){try{EMP=JSON.parse(v.empleados.j)||[]}catch(e){}}PED={};Object.entries(v.pedidos||{}).forEach(([k,o])=>{try{PED[k]=JSON.parse(o.j)}catch(e){}});MODE='fb';setSync('ok','Sincronizado');
    if(PID&&PED[PID]&&PED[PID].updatedAt!==mine){const keepCur=cur,keepF=floor;loadP(PED[PID]);cur=keepCur;floor=keepF}start()},
   err=>{MODE='local';loadLocalAll();setSync('err','Sin permiso en la nube · guardado en este dispositivo');start()})}
  else{loadLocalAll();setSync('err','Modo local (sin sesión)');start()}}
-function loadLocalAll(){try{const v=JSON.parse(localStorage.getItem(LS)||'{}');if(v.R)mergeRules(v.R);if(v.PAR)PAR={...PAR0,...v.PAR};PED=v.PED||{}}catch(e){}}
-const $=id=>document.getElementById(id),byId=Object.fromEntries(Z.map(z=>[z[0],z])),sum=num;
+function loadLocalAll(){try{const v=JSON.parse(localStorage.getItem(LS)||'{}');if(v.R)mergeRules(v.R);if(v.PAR)PAR={...PAR0,...v.PAR};EMP=v.EMP||[];applyCfg(v.CFG);PED=v.PED||{}}catch(e){}}
+const $=id=>document.getElementById(id),sum=num;
+/* Zonas: base del plano + zonas propias (ZC), desactivadas (ZOFF), nombres editados (ZN), plantillas (PL). Global en cu1/ccib/config */
+let ZC=[],ZOFF=[],ZN={},PL={},placing=null,Z=[],byId={};
+function initR(z){const o={};SZ.forEach(s=>{o[s]={};PH.forEach((p,i)=>{const b=BASE[z[3]]?BASE[z[3]][i]:[1,0];o[s][p]=z[3]=='plaza'?2:Math.ceil((b[0]+b[1])*MUL[s])})});return o}
+function rebuildZ(){Z=Z0.concat(ZC.map(c=>[c.id,c.n,c.f,'custom',c.x,c.y])).map(z=>{const y=z.slice();if(ZN[y[0]])y[1]=ZN[y[0]];return y});byId=Object.fromEntries(Z.map(z=>[z[0],z]));Z.forEach(z=>{if(!R[z[0]])R[z[0]]=initR(z)})}
+rebuildZ();
+const act=id=>!!byId[id]&&!ZOFF.includes(id),SEL=()=>[...sel].filter(act);
+function cfgObj(){return{ZC,ZOFF,ZN,PL}}
+function applyCfg(c){if(!c)return;ZC=c.ZC||[];ZOFF=c.ZOFF||[];ZN=c.ZN||{};PL=c.PL||{};rebuildZ()}
+function saveCfg(){rebuildZ();if(REF&&MODE==='fb')REF.child('config').set({j:JSON.stringify(cfgObj()),ts:Date.now(),by:who()});else saveLocal()}
 const rule=(id,p)=>R[id][$('size').value][p];
 const eff=(id,p)=>ov[id]&&ov[id][p]!=null?ov[id][p]:rule(id,p);              // CCIB pide
 const prov=(id,p)=>pv[id]&&pv[id][p]!=null?pv[id][p]:num(eff(id,p));         // Logística aporta
 const isOv=id=>!!ov[id],isPv=id=>!!pv[id]&&PH.some(p=>pv[id][p]!=null&&pv[id][p]!=num(eff(id,p)));
-function calc(){const o={};PH.forEach(p=>o[p]=0);sel.forEach(id=>PH.forEach(p=>o[p]+=num(eff(id,p))));extras.forEach(e=>o.evento+=e.n);return o}
-function calcP(){const o={};PH.forEach(p=>o[p]=0);sel.forEach(id=>PH.forEach(p=>o[p]+=num(prov(id,p))));extras.forEach(e=>o.evento+=e.n);return o}
-function calcR(){const o={};PH.forEach(p=>o[p]=0);sel.forEach(id=>PH.forEach(p=>o[p]+=num(rule(id,p))));return o}
+function calc(){const o={};PH.forEach(p=>o[p]=0);SEL().forEach(id=>PH.forEach(p=>o[p]+=num(eff(id,p))));extras.forEach(e=>o.evento+=e.n);return o}
+function calcP(){const o={};PH.forEach(p=>o[p]=0);SEL().forEach(id=>PH.forEach(p=>o[p]+=num(prov(id,p))));extras.forEach(e=>o.evento+=e.n);return o}
+function calcR(){const o={};PH.forEach(p=>o[p]=0);SEL().forEach(id=>PH.forEach(p=>o[p]+=num(rule(id,p))));return o}
 function log(acc,detail,before){const d=new Date();hist.unshift({t:d.toLocaleDateString('es-ES')+' '+d.toLocaleTimeString('es-ES'),u:who(),acc,detail,before,after:sum(calc().evento),fp:false});saveP()}
-function renderFloors(){const vp=$('vph').value;$('floors').innerHTML=FL.map(([k,n])=>{const ids=Z.filter(z=>z[2]==k&&sel.has(z[0])).map(z=>z[0]);const c=ids.reduce((a,id)=>a+num(eff(id,vp)),0),q=ids.reduce((a,id)=>a+num(prov(id,vp)),0);return`<button data-f="${k}" class="${k==floor?'on':''}">${n}${ids.length?' · '+c+(q!=c?'/'+q:''):''}</button>`}).join('');
+function renderFloors(){const vp=$('vph').value;$('floors').innerHTML=FL.map(([k,n])=>{const ids=Z.filter(z=>z[2]==k&&sel.has(z[0])&&act(z[0])).map(z=>z[0]);const c=ids.reduce((a,id)=>a+num(eff(id,vp)),0),q=ids.reduce((a,id)=>a+num(prov(id,vp)),0);return`<button data-f="${k}" class="${k==floor?'on':''}">${n}${ids.length?' · '+c+(q!=c?'/'+q:''):''}</button>`}).join('');
  $('floors').querySelectorAll('button').forEach(b=>b.onclick=()=>{floor=b.dataset.f;render()})}
 function pinHtml(z,style){const id=z[0],s=sel.has(id),vp=$('vph').value,n=num(eff(id,vp)),q=num(prov(id,vp));return`<div class="pin ${s?(isOv(id)?'ov':'sel'):''} ${cur==id?'cur':''}" data-id="${id}" style="${style}">${z[1]}${s?'<b title="CCIB pide">'+n+'</b>'+(q!=n?'<b class="pq '+(q<n?'lo':'hi')+'" title="Logística aporta">'+q+'</b>':''):''}</div>`}
-function renderMap(){const zs=Z.filter(z=>z[2]==floor);let h;
+function renderMap(){const zs=Z.filter(z=>z[2]==floor&&act(z[0])),cz=zs.filter(z=>z[3]=='custom');let h;
  if(IMG[floor])h=`<div class="plan"><img src="${IMG[floor]}" alt="Plano ${floor}">${zs.map(z=>pinHtml(z,`left:${z[4]}%;top:${z[5]}%`)).join('')}</div>`;
- else if(floor=='EXT')h=`<div class="schem"><div style="grid-column:1/span 3;position:relative" class="blk">${pinHtml(byId.WB,'position:static;transform:none')}</div><div class="blk" style="grid-column:4/span 6">Edificio CCIB</div><div style="grid-column:10/span 3" class="blk">${pinHtml(byId.LD,'position:static;transform:none')}</div></div>`;
- else h=`<div class="schem"><div class="blk" style="grid-column:1/span 12">${pinHtml(byId.DOCK,'position:static;transform:none')}</div><div class="blk" style="grid-column:1/span 12">Montacargas → P0 · M1 · P1 · M2 · P2</div></div>`;
- $('map').innerHTML=h;$('flnote').textContent=NOTE[floor]||'';
- $('map').querySelectorAll('.pin').forEach(d=>d.onclick=()=>{const id=d.dataset.id;if(!sel.has(id)){const b=sum(calc().evento);sel.add(id);log('Marca zona',byId[id][1],b)}cur=id;render()})}
+ else{const st='position:static;transform:none;margin:2px',P=id=>act(id)?pinHtml(byId[id],st):'<span class="mu">desactivada</span>',cust=cz.length?`<div class="blk" style="grid-column:1/span 12;flex-wrap:wrap">${cz.map(z=>pinHtml(z,st)).join('')}</div>`:'';
+  h=floor=='EXT'?`<div class="schem"><div style="grid-column:1/span 3" class="blk">${P('WB')}</div><div class="blk" style="grid-column:4/span 6">Edificio CCIB</div><div style="grid-column:10/span 3" class="blk">${P('LD')}</div>${cust}</div>`
+  :`<div class="schem"><div class="blk" style="grid-column:1/span 12">${P('DOCK')}</div><div class="blk" style="grid-column:1/span 12">Montacargas → P0 · M1 · P1 · M2 · P2</div>${cust}</div>`}
+ if(IMG[floor])h=h.replace('<div class="plan">','<div class="plan" id="planBox">');
+ $('map').innerHTML=h;$('flnote').textContent=placing?'Toca el punto del plano donde va la zona'+(placing.move?' «'+byId[placing.move][1]+'»':'')+'.':(NOTE[floor]||'');$('map').style.cursor=placing?'crosshair':'';
+ $('zAdd').classList.toggle('on',!!placing);$('zAdd').textContent=placing?'Cancelar':'+ Zona en el plano';
+ $('map').onclick=ev=>{if(!placing)return;if(ev.target.closest('.pin')&&!placing.move)return;let x=50,y=50;const pb=$('planBox');if(pb){const rc=pb.getBoundingClientRect();x=Math.round((ev.clientX-rc.left)/rc.width*1000)/10;y=Math.round((ev.clientY-rc.top)/rc.height*1000)/10}
+  if(placing.move){const c=ZC.find(c=>c.id==placing.move);if(c){c.x=x;c.y=y;c.f=floor;saveCfg()}placing=null;render();return}
+  const n=(prompt('Nombre de la zona')||'').trim();if(!n){placing=null;render();return}const id='Z'+Date.now().toString(36);ZC.push({id,n,f:floor,x,y});saveCfg();sel.add(id);placing=null;cur=id;log('Nueva zona',n+' ('+floor+')',sum(calc().evento));render()};
+ $('map').querySelectorAll('.pin').forEach(d=>d.onclick=ev=>{if(placing)return;const id=d.dataset.id;if(!sel.has(id)){const b=sum(calc().evento);sel.add(id);log('Marca zona',byId[id][1],b)}cur=id;render()})}
 const dif=(a,b)=>b==a?'<span class="ok">=</span>':`<span class="alert">${b>a?'+':''}${b-a}</span>`;
-function renderZone(){const el=$('zp');if(!cur||!sel.has(cur)){el.innerHTML='<span class="mu">Toca una zona del plano para ver y ajustar su personal.</span>';return}
+function renderZone(){const el=$('zp');if(!cur||!sel.has(cur)||!act(cur)){el.innerHTML='<span class="mu">Toca una zona del plano para ver y ajustar su personal.</span>';return}
  const z=byId[cur],o=ov[cur]||{};
  el.innerHTML=`<h3>${z[1]} <span class="mu">· ${z[2]}</span> ${isOv(cur)?'<span class="tag">fuera de regla</span>':''}</h3>
  <div class="mu" style="margin:2px 0 6px">«Regla»: lo que corresponde según la tabla (tamaño ${$('size').value}). <b>CCIB</b>: lo que pide el cliente. <b>Logística</b>: lo que aportamos.</div>
  <table><tr><th>Fase</th><th>Regla</th><th>CCIB pide</th><th>Logística aporta</th><th>Dif.</th></tr>
  ${PH.map(p=>{const c=num(eff(cur,p)),q=num(prov(cur,p));return`<tr><td>${p}</td><td>${rule(cur,p)}</td><td><input type="number" min="0" data-c="${p}" value="${c}"></td><td><input type="number" min="0" data-q="${p}" value="${q}"></td><td>${dif(c,q)}</td></tr>`}).join('')}</table>
  <div class="row" style="margin-top:8px"><input id="zm" placeholder="Motivo si CCIB pide distinto a la regla" value="${o.motivo||''}" style="flex:1"></div>
- <div class="row" style="margin-top:8px"><button id="zApply" class="on">Aplicar</button><button id="zReset">Volver a regla</button><button id="zDel">Quitar zona</button></div>
- <div class="mu" style="margin-top:6px">Próximamente: tocar «Logística» para ver los trabajadores asignados a esta zona.</div>`;
+ <div class="row" style="margin-top:8px"><button id="zApply" class="on">Aplicar</button><button id="zReset">Volver a regla</button><button id="zDel">Quitar zona</button>${z[3]=='custom'?'<button id="zMove">Mover en el plano</button>':''}</div>
+ <div class="mu" style="margin-top:8px"><b>Trabajadores en esta zona (${$('vph').value})</b><br>${zoneNames(cur,$('vph').value)}</div>`;
  $('zApply').onclick=()=>{const c={},q={};let diff=false;el.querySelectorAll('input[data-c]').forEach(i=>c[i.dataset.c]=Math.max(0,+i.value||0));el.querySelectorAll('input[data-q]').forEach(i=>q[i.dataset.q]=Math.max(0,+i.value||0));
   PH.forEach(p=>{if(c[p]!=rule(cur,p))diff=true});
   const b=sum(calc().evento),m=$('zm').value.trim();
@@ -149,56 +186,119 @@ function renderZone(){const el=$('zp');if(!cur||!sel.has(cur)){el.innerHTML='<sp
   if(nQ!=oldQ)log('Logística aporta',`${z[1]} (mont/ev/desm): ${oldQ} → ${nQ}`,b);
   render()};
  $('zReset').onclick=()=>{if(!ov[cur]&&!pv[cur])return;const b=sum(calc().evento);delete ov[cur];delete pv[cur];log('Vuelve a regla',z[1],b);render()};
+ if($('zMove'))$('zMove').onclick=()=>{placing={move:cur};floor=z[2];render()};
  $('zDel').onclick=()=>{const b=sum(calc().evento);sel.delete(cur);delete ov[cur];delete pv[cur];log('Desmarca zona',z[1],b);cur=null;render()}}
 function renderSide(){const c=calc(),q=calcP(),rr=calcR(),vp=$('vph').value;
  $('byphase').innerHTML='<table><tr><th>Fase</th><th>CCIB pide</th><th>Logística aporta</th><th>Dif.</th></tr>'+PH.map(p=>`<tr${p==vp?' style="background:#eef3fd"':''}><td style="font-size:14px">${p}</td><td class="tot" style="font-size:20px">${c[p]}</td><td class="tot" style="font-size:20px">${q[p]}</td><td>${dif(c[p],q[p])}</td></tr>`).join('')+'</table><div class="mu" style="margin-top:4px">Son puestos a cubrir a la vez; la gente real (con turnos) está en «Turnos y plantilla».</div>';
- const parts=[...sel].map(id=>[byId[id][1],num(eff(id,vp)),num(prov(id,vp)),isOv(id)]).filter(x=>x[1]||x[2]);
+ const parts=SEL().map(id=>[byId[id][1],num(eff(id,vp)),num(prov(id,vp)),isOv(id)]).filter(x=>x[1]||x[2]);
  const ex=vp=='evento'&&extras.length?extras.reduce((a,e)=>a+e.n,0):0;
  $('howcalc').innerHTML=`Cada zona marcada suma sus personas de la fase. Regla = tabla de reglas según tamaño; CCIB = regla salvo que se cambie (con motivo); Logística = lo que pide CCIB salvo que se cambie.<br><b>${vp} · CCIB ${c[vp]}</b> = `+(parts.map(x=>`${x[0]} ${x[1]}${x[3]?'*':''}`).join(' + ')||'0')+(ex?' + extras '+ex:'')+`<br><b>${vp} · Logística ${q[vp]}</b> = `+(parts.map(x=>`${x[0]} ${x[2]}`).join(' + ')||'0')+(ex?' + extras '+ex:'')+(parts.some(x=>x[3])?'<br>* CCIB pide distinto a la regla':'');
  const off=PH.map(p=>{const d=rr[p]?((c[p]-rr[p])/rr[p]*100):0;return[p,d]}).filter(x=>Math.abs(x[1])>10);
- const zr=[...sel].filter(id=>PH.some(p=>num(eff(id,p))!=rule(id,p))).map(id=>byId[id][1]);
- const zf=[...sel].filter(id=>PH.some(p=>num(prov(id,p))<num(eff(id,p)))).map(id=>byId[id][1]);
+ const zr=SEL().filter(id=>PH.some(p=>num(eff(id,p))!=rule(id,p))).map(id=>byId[id][1]);
+ const zf=SEL().filter(id=>PH.some(p=>num(prov(id,p))<num(eff(id,p)))).map(id=>byId[id][1]);
  $('ctrl').innerHTML=(off.length?`<div class="alert">CCIB vs regla: ${off.map(x=>x[0]+' '+(x[1]>0?'+':'')+x[1].toFixed(0)+'%').join(' · ')} (supera ±10%)</div>`:'<div class="ok">CCIB dentro de ±10% de la regla</div>')+(zr.length?`<div class="mu">Zonas fuera de regla: ${zr.join(' · ')}</div>`:'')+(zf.length?`<div class="alert" style="margin-top:4px">Logística aporta menos en: ${zf.join(' · ')}</div>`:'');
  $('extras').innerHTML=extras.map((e,i)=>`<div class="mu">+${e.n} · ${e.r} <button data-i="${i}">×</button></div>`).join('');
  $('extras').querySelectorAll('button').forEach(b=>b.onclick=()=>{const bf=sum(calc().evento),e=extras.splice(+b.dataset.i,1)[0];log('Quita extra',e.r,bf);render()})}
 function renderDetail(){let h='<tr><th>Zona</th><th>Planta</th>'+PH.map(p=>`<th>${p} CCIB</th><th>${p} Log.</th>`).join('')+'<th>Estado</th></tr>';
- [...sel].forEach(id=>{const z=byId[id];h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>{const c=num(eff(id,p)),q=num(prov(id,p));return`<td>${c}</td><td${q!=c?' class="'+(q<c?'alert':'ok')+'"':''}>${q}</td>`}).join('')+`<td>${isOv(id)?'<span class="tag">fuera de regla: '+ov[id].motivo+'</span>':'regla'}</td></tr>`});
+ SEL().forEach(id=>{const z=byId[id];h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>{const c=num(eff(id,p)),q=num(prov(id,p));return`<td>${c}</td><td${q!=c?' class="'+(q<c?'alert':'ok')+'"':''}>${q}</td>`}).join('')+`<td>${isOv(id)?'<span class="tag">fuera de regla: '+ov[id].motivo+'</span>':'regla'}</td></tr>`});
  extras.forEach(e=>h+=`<tr><td>Extra: ${e.r}</td><td>—</td><td></td><td></td><td>${e.n}</td><td>${e.n}</td><td></td><td></td><td><span class="tag">fuera de regla</span></td></tr>`);$('detail').innerHTML=h}
+function renderZonas(){const q=($('zq').value||'').toLowerCase(),off=$('zOnlyOff').checked;
+ $('zonasT').innerHTML='<tr><th>Activa</th><th>Nombre</th><th>Planta</th><th>Tipo</th><th></th></tr>'+Z.filter(z=>(!q||z[1].toLowerCase().includes(q)||z[2].toLowerCase().includes(q))&&(!off||!act(z[0]))).map(z=>`<tr><td><input type="checkbox" data-zon="${z[0]}" ${act(z[0])?'checked':''}></td><td><input data-zn="${z[0]}" value="${z[1].replace(/"/g,'&quot;')}" style="width:100%"></td><td>${z[2]}</td><td>${z[3]=='custom'?'propia':'plano'}</td><td>${z[3]=='custom'?`<button data-zdel="${z[0]}">×</button>`:''}</td></tr>`).join('');
+ $('zonasT').querySelectorAll('[data-zon]').forEach(i=>i.onchange=()=>{const id=i.dataset.zon;ZOFF=ZOFF.filter(x=>x!=id);if(!i.checked)ZOFF.push(id);saveCfg();render()});
+ $('zonasT').querySelectorAll('[data-zn]').forEach(i=>i.onchange=()=>{const id=i.dataset.zn,v=i.value.trim();const c=ZC.find(c=>c.id==id);if(c)c.n=v||c.n;else if(v&&v!=(Z0.find(z=>z[0]==id)||[])[1])ZN[id]=v;else delete ZN[id];saveCfg();render()});
+ $('zonasT').querySelectorAll('[data-zdel]').forEach(b=>b.onclick=()=>{const id=b.dataset.zdel;if(!confirm('¿Borrar la zona «'+byId[id][1]+'»? Desaparece de todos los pedidos.'))return;ZC=ZC.filter(c=>c.id!=id);sel.delete(id);saveCfg();render()})}
+function renderPL(){const v=$('plSel').value;$('plSel').innerHTML='<option value="">—</option>'+Object.entries(PL).sort((a,b)=>a[1].n.localeCompare(b[1].n)).map(([k,p])=>`<option value="${k}" ${k==v?'selected':''}>${p.n.replace(/</g,'&lt;')} (${p.sel.length})</option>`).join('')}
 function renderRules(){const s=$('rsize').value;let h='<tr><th>Zona</th><th>Planta</th>'+PH.map(p=>`<th>${p}</th>`).join('')+'</tr>';
- Z.forEach(z=>{h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>`<td><input type="number" min="0" data-z="${z[0]}" data-p="${p}" value="${num(R[z[0]][s][p])}"></td>`).join('')+'</tr>'});
+ Z.filter(z=>act(z[0])).forEach(z=>{h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>`<td><input type="number" min="0" data-z="${z[0]}" data-p="${p}" value="${num(R[z[0]][s][p])}"></td>`).join('')+'</tr>'});
  $('rules').innerHTML=h;$('rules').querySelectorAll('input').forEach(i=>i.onchange=()=>{R[i.dataset.z][s][i.dataset.p]=Math.max(0,+i.value||0);saveRules();hist.unshift({t:new Date().toLocaleString('es-ES'),u:who(),acc:'Cambia regla',detail:`${byId[i.dataset.z][1]} ${s} ${i.dataset.p}=${i.value}`,before:'',after:'',fp:false});render()})}
 function renderHist(){$('hist').innerHTML='<tr><th>Hora</th><th>Quién</th><th>Acción</th><th>Detalle</th><th>Antes</th><th>Después</th><th>Fuera de plazo</th></tr>'+hist.map((h,i)=>`<tr><td>${h.t}</td><td>${h.u}</td><td>${h.acc}</td><td>${h.detail}</td><td>${h.before}</td><td>${h.after}</td><td><input type="checkbox" data-i="${i}" ${h.fp?'checked':''}> ${h.fp?'<span class="tag">facturar</span>':''}</td></tr>`).join('');
  $('hist').querySelectorAll('input').forEach(c=>c.onchange=()=>{hist[+c.dataset.i].fp=c.checked;saveP();renderHist()})}
 const tm=v=>{const[a,b]=(v||'0:0').split(':');return(+a||0)*60+(+b||0)},hm=m=>{m=((Math.round(m)%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
 function hoursDay(t){let a=tm(t.i),b=tm(t.f);if(b<=a)b+=1440;return(b-a)/60}
-function plan(p,posFn){const t=TT[p],H=hoursDay(t),D=Math.max(0,+t.d||0);let pos=0;sel.forEach(id=>pos+=num(posFn(id,p)));if(p=='evento')pos+=extras.reduce((a,e)=>a+e.n,0);
- if(!H||!D||!pos)return{H,D,pos,T:0,len:0,shifts:[],pause:0,rel:0,slot:0,sim:0,need:0};
+function plan(p,posFn){const t=TT[p],H=hoursDay(t),D=nDays(t);let pos=0;SEL().forEach(id=>pos+=num(posFn(id,p)));if(p=='evento')pos+=extras.reduce((a,e)=>a+e.n,0);
+ if(!H||!D||!pos)return{H,D,pos,T:0,len:0,shifts:[],pause:0,rel:0,coord:0,cap:1,slot:0,sim:0,need:0};
  const T=Math.ceil(H/PAR.maxDia-1e-9),len=H/T,pause=len>PAR.pausaDesde?PAR.pausaMin:0,cap=Math.max(1,Math.floor(120/Math.max(1,PAR.pausaMin))),rel=pause?Math.ceil(pos/cap):0;
  const dw=Math.min(D,7),slot=Math.max(1,Math.ceil(dw*len/PAR.maxSemana-1e-9),Math.ceil(dw/PAR.maxDiasSem-1e-9));
  const shifts=[];for(let k=0;k<T;k++){const a=tm(t.i)+k*len*60;shifts.push(hm(a)+'–'+hm(a+len*60))}
- return{H,D,pos,T,len,shifts,pause,rel,slot,sim:pos+rel,need:T*(pos+rel)*slot}}
+ const coord=Math.max(1,Math.ceil((pos+rel)/Math.max(1,PAR.coordPor)));
+ return{H,D,pos,T,len,shifts,pause,rel,coord,cap,slot,sim:pos+rel+coord,need:T*(pos+rel+coord)*slot}}
 const f1=x=>Number.isInteger(x)?x:x.toFixed(1).replace('.',',');
-function renderTurnos(){let h='<tr><th>Fase</th><th>Días</th><th>Desde</th><th>Hasta</th><th>h/día</th><th>Turnos</th><th>Pausa</th><th>Puestos a la vez (Log.)</th><th>Gente necesaria CCIB</th><th>Gente necesaria Logística</th><th>Proveedor pone</th><th>Resultado</th></tr>';
+function renderTurnos(){let h='<tr><th>Fase</th><th>Fechas</th><th>Horario</th><th>h/día</th><th>Turnos</th><th>Pausa</th><th>A la vez (Log.)</th><th>Gente necesaria CCIB</th><th>Gente necesaria Logística</th><th>Proveedor pone</th><th>Resultado</th></tr>';
  const res={};let tipo='';
  PH.forEach(p=>{const t=TT[p],c=plan(p,eff),q=plan(p,prov);res[p]=q;let st='—';
   if(q.need){const w=+t.w||0;if(!w)st='<span class="mu">indica cuántos pone</span>';
    else{const hpd=q.sim*q.H/w,hpw=hpd*Math.min(q.D,7);
     if(w>=q.need)st='<span class="ok">OK · '+f1(Math.min(hpd,q.len))+' h/día por persona</span>';
     else st=`<span class="alert">Faltan ${q.need-w} · saldría a ${f1(hpd)} h/día${hpd>PAR.maxDia?' (jornada doble / horas extra)':''}${hpw>PAR.maxSemana?' · '+f1(hpw)+' h/semana':''}</span>`}}
-  h+=`<tr><td>${p}</td><td><input type="number" min="0" data-tf="d" data-p="${p}" value="${t.d}"></td><td><input type="time" data-tf="i" data-p="${p}" value="${t.i}"></td><td><input type="time" data-tf="f" data-p="${p}" value="${t.f}"></td><td>${f1(q.H)}</td><td>${q.T?q.T+' × '+f1(q.len)+' h<br><span class="mu">'+q.shifts.join(' · ')+'</span>':'—'}</td><td>${q.pause?q.pause+' min':'no obligatoria'}</td><td>${q.pos}${q.rel?' + '+q.rel+' correturnos':''}</td><td><b>${c.need}</b></td><td><b>${q.need}</b>${q.slot>1?'<br><span class="mu">×'+q.slot+' por rotación semanal</span>':''}</td><td><input type="number" min="0" data-tf="w" data-p="${p}" value="${t.w||0}"></td><td>${st}</td></tr>`;
-  if(q.T)tipo+=`<li><b>${p}</b>: llamamiento de ${Math.min(q.D,PAR.maxDiasSem)} día(s)${q.slot>1?' (rota con otros '+(q.slot-1)+')':''} · turno de ${f1(q.len)} h (p. ej. ${q.shifts[0]})${q.pause?' con '+q.pause+' min de pausa':''} · descanso entre jornadas ${f1(24-q.len)} h ${24-q.len>=PAR.descanso?'<span class="ok">✔</span>':'<span class="alert">✖ menos de '+PAR.descanso+' h</span>'} · ${f1(q.len*Math.min(q.D,7)/q.slot)} h/semana ${q.len*Math.min(q.D,7)/q.slot<=PAR.maxSemana?'<span class="ok">✔</span>':'<span class="alert">✖</span>'}</li>`});
+  h+=`<tr><td>${p}</td><td><input type="date" data-tf="ds" data-p="${p}" value="${t.ds}"> → <input type="date" data-tf="de" data-p="${p}" value="${t.de}"><br><span class="mu">${q.D||nDays(t)} día(s)</span></td><td><input type="time" data-tf="i" data-p="${p}" value="${t.i}"> – <input type="time" data-tf="f" data-p="${p}" value="${t.f}"></td><td>${f1(q.H)}</td><td>${q.T?q.T+' × '+f1(q.len)+' h<br><span class="mu">'+q.shifts.join(' · ')+'</span>':'—'}</td><td>${q.pause?q.pause+' min':'no obligatoria'}</td><td>${q.pos} puestos${q.rel?'<br>+ '+q.rel+' correturnos':''}${q.coord?'<br>+ '+q.coord+' coordinador':''}</td><td><b>${c.need}</b></td><td><b>${q.need}</b>${q.slot>1?'<br><span class="mu">×'+q.slot+' por rotación semanal</span>':''}</td><td><input type="number" min="0" data-tf="w" data-p="${p}" value="${t.w||0}"></td><td>${st}</td></tr>`;
+  if(q.T)tipo+=`<li><b>${p}</b>: llamamiento ${fdia(TT[p].ds)}${q.D>1?' a '+fdia(TT[p].de):''}${q.slot>1?' (rota con otros '+(q.slot-1)+')':''} · turno de ${f1(q.len)} h (p. ej. ${q.shifts[0]})${q.pause?' con '+q.pause+' min de pausa':''} · descanso entre jornadas ${f1(24-q.len)} h ${24-q.len>=PAR.descanso?'<span class="ok">✔</span>':'<span class="alert">✖ menos de '+PAR.descanso+' h</span>'} · ${f1(q.len*Math.min(q.D,7)/q.slot)} h/semana ${q.len*Math.min(q.D,7)/q.slot<=PAR.maxSemana?'<span class="ok">✔</span>':'<span class="alert">✖</span>'}</li>`});
  $('turnos').innerHTML=h;
  const mx=Math.max(0,...PH.map(p=>res[p].need));
  $('tipo').innerHTML=(tipo?'<div class="mu"><b>Trabajador tipo (fijo discontinuo)</b> · nunca dobla turno: un turno por día y persona</div><ul class="mu" style="margin:4px 0;padding-left:18px">'+tipo+'</ul>':'')+`<div><b>Plantilla mínima del evento (Logística): ${mx}</b> <span class="mu">· la mayor de las fases, reutilizando gente entre fases solo si tiene ${PAR.descanso} h de descanso</span></div>`;
- $('pmsg').innerHTML=`Cómo se calcula: turnos = h/día ÷ ${PAR.maxDia} h (redondeo arriba), repartidos en partes iguales. Si el turno pasa de ${PAR.pausaDesde} h hay pausa de ${PAR.pausaMin} min y se añade 1 correturnos cada ${Math.floor(120/Math.max(1,PAR.pausaMin))} puestos. Si la fase dura varios días, cada puesto rota para no pasar de ${PAR.maxSemana} h ni ${PAR.maxDiasSem} días seguidos. Gente necesaria = turnos × (puestos + correturnos) × rotación.`;
- $('turnos').querySelectorAll('input[data-tf]').forEach(i=>i.onchange=()=>{const p=i.dataset.p,k=i.dataset.tf,old=TT[p][k];TT[p][k]=(k=='i'||k=='f')?i.value:Math.max(0,+i.value||0);log('Turnos',`${p} ${({d:'días',i:'desde',f:'hasta',w:'proveedor pone'})[k]}: ${old} → ${TT[p][k]}`,sum(calc().evento));render()})}
+ $('pmsg').innerHTML=`Cómo se calcula: turnos = h/día ÷ ${PAR.maxDia} h (redondeo arriba), repartidos en partes iguales. Si el turno pasa de ${PAR.pausaDesde} h hay pausa de ${PAR.pausaMin} min y se añade 1 correturnos cada ${Math.floor(120/Math.max(1,PAR.pausaMin))} puestos. Si la fase dura varios días, cada puesto rota para no pasar de ${PAR.maxSemana} h ni ${PAR.maxDiasSem} días seguidos. El correturnos es otro empleado que releva a cada puesto en su pausa. Cada turno lleva su coordinador. Gente necesaria = turnos × (puestos + correturnos + coordinador) × rotación.`;
+ $('turnos').querySelectorAll('input[data-tf]').forEach(i=>i.onchange=()=>{const p=i.dataset.p,k=i.dataset.tf,old=TT[p][k];TT[p][k]=(k=='w')?Math.max(0,+i.value||0):i.value;if(k=='ds'&&TT[p].de<TT[p].ds)TT[p].de=TT[p].ds;log('Turnos',`${p} ${({ds:'fecha inicio',de:'fecha fin',i:'hora inicio',f:'hora fin',w:'proveedor pone'})[k]}: ${old} → ${TT[p][k]}`,sum(calc().evento));render()})}
 function renderParams(){$('params').innerHTML=Object.keys(PAR0).map(k=>`<label class="mu">${PARL[k]} <input type="number" min="0" data-par="${k}" value="${PAR[k]}"></label>`).join('')+'<button id="parReset">Valores por defecto</button>';
  $('params').querySelectorAll('input').forEach(i=>i.onchange=()=>{PAR[i.dataset.par]=Math.max(0,+i.value||0)||PAR0[i.dataset.par];saveParams();render()});
  $('parReset').onclick=()=>{PAR={...PAR0};saveParams();render()}}
-function render(){renderPsel();renderTurnos();renderParams();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
+/* ═══ Cuadrante: puestos con nombre, pausas, correturnos y coordinador ═══ */
+const EN=id=>{const e=EMP.find(x=>x.id==id);return e?(e.n+(e.a?' '+e.a:'')):''};
+function slots(p){const q=plan(p,prov),t=TT[p],out=[];if(!q.T)return out;
+ dayList(t).forEach(date=>{for(let k=0;k<q.T;k++){const st=new Date(date+'T00:00').getTime()+(tm(t.i)+k*q.len*60)*6e4,en=st+q.len*36e5,base=`${p}|${date}|${k}`;
+  const P=[];SEL().forEach(id=>{for(let n=1;n<=num(prov(id,p));n++)P.push({zone:id,n})});if(p=='evento'){let n=0;extras.forEach(e=>{for(let j=0;j<e.n;j++)P.push({zone:'EX',n:++n,lbl:e.r})})}
+  const w0=st+(q.len*30-q.cap*q.pause/2)*6e4;
+  P.forEach((x,j)=>out.push({key:`${base}|P|${x.zone}|${x.n}`,p,date,k,role:'P',zone:x.zone,n:x.n,lbl:x.lbl,st,en,ps:q.pause?w0+(j%q.cap)*q.pause*6e4:0,rel:q.pause?Math.floor(j/q.cap)+1:0}));
+  for(let r=1;r<=q.rel;r++)out.push({key:`${base}|R|${r}`,p,date,k,role:'R',n:r,st,en,ps:w0+q.cap*q.pause*6e4});
+  for(let c=1;c<=q.coord;c++)out.push({key:`${base}|C|${c}`,p,date,k,role:'C',n:c,st,en,ps:q.pause?w0-q.pause*6e4:0})}});
+ return out}
+const allSlots=()=>PH.flatMap(slots);
+const clk=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+function checkEmp(list){const a=list.slice().sort((x,y)=>x.st-y.st),w=[];
+ for(let i=1;i<a.length;i++){if(a[i].date==a[i-1].date)w.push('doble turno el '+fdia(a[i].date));else if(a[i].st<a[i-1].en)w.push('solapa '+fdia(a[i].date));else if((a[i].st-a[i-1].en)/36e5<PAR.descanso)w.push('descanso '+f1((a[i].st-a[i-1].en)/36e5)+' h antes del '+fdia(a[i].date))}
+ for(let i=0;i<a.length;i++){let h=0;for(let j=i;j<a.length&&a[j].st<a[i].st+7*864e5;j++)h+=(a[j].en-a[j].st)/36e5;if(h>PAR.maxSemana+1e-9){w.push(f1(h)+' h en 7 días');break}}
+ const ds=[...new Set(a.map(x=>x.date))].sort();let run=1;for(let i=1;i<ds.length;i++){run=addD(ds[i-1],1)==ds[i]?run+1:1;if(run>PAR.maxDiasSem){w.push('más de '+PAR.maxDiasSem+' días seguidos');break}}
+ return w}
+function byEmp(SL){const m={};SL.forEach(s=>{const e=AS[s.key];if(e)(m[e]=m[e]||[]).push(s)});return m}
+function autoAssign(){const SL=allSlots().sort((a,b)=>a.st-b.st||(a.role>b.role?1:-1)),m=byEmp(SL);let miss=0,done=0;
+ SL.forEach(s=>{if(AS[s.key]&&EMP.some(e=>e.id==AS[s.key]))return;
+  const cand=EMP.slice().sort((x,y)=>(m[x.id]||[]).reduce((a,z)=>a+z.en-z.st,0)-(m[y.id]||[]).reduce((a,z)=>a+z.en-z.st,0)).find(e=>!checkEmp((m[e.id]||[]).concat([s])).length);
+  if(cand){AS[s.key]=cand.id;(m[cand.id]=m[cand.id]||[]).push(s);done++}else miss++});
+ return{done,miss}}
+function zoneNames(id,p){const SL=slots(p).filter(s=>s.role=='P'&&s.zone==id&&AS[s.key]);if(!SL.length)return '<span class="mu">Sin asignar. Ve a «Cuadrante».</span>';
+ const g={};SL.forEach(s=>{const k=fdia(s.date)+' '+clk(s.st)+'–'+clk(s.en);(g[k]=g[k]||[]).push(EN(AS[s.key])+(RP[s.key]?' (reemplaza a '+EN(RP[s.key].prev)+')':''))});return Object.entries(g).map(([k,v])=>`${k}: ${v.join(', ')}`).join('<br>')}
+let cPh='evento',cDay='';
+function renderCuad(){$('cPor').textContent=PAR.coordPor;const SL=allSlots(),m=byEmp(SL),warn={};Object.entries(m).forEach(([e,l])=>warn[e]=checkEmp(l));
+ $('cPh').innerHTML=PH.map(p=>`<option ${p==cPh?'selected':''}>${p}</option>`).join('');
+ const days=dayList(TT[cPh]);if(!days.includes(cDay))cDay=days[0]||'';$('cDay').innerHTML=days.map(d=>`<option value="${d}" ${d==cDay?'selected':''}>${fdia(d)}</option>`).join('');
+ const sl=SL.filter(s=>s.p==cPh&&s.date==cDay),q=plan(cPh,prov),opt=k=>'<option value="">— sin asignar —</option>'+EMP.map(e=>`<option value="${e.id}" ${AS[k]==e.id?'selected':''}>${EN(e.id).replace(/</g,'&lt;')}</option>`).join('');
+ let h='';if(!sl.length)h='<div class="card mu">Sin turnos: marca zonas en el plano y pon fechas y horario en «Turnos y plantilla».</div>';
+ for(let k=0;k<(q.T||0);k++){const ts=sl.filter(s=>s.k==k);if(!ts.length)continue;
+  h+=`<div class="card"><b>Turno ${k+1} · ${fdia(cDay)} ${clk(ts[0].st)}–${clk(ts[0].en)}</b> <span class="mu">${q.pause?'· pausa '+q.pause+' min por persona':'· sin pausa obligatoria'}</span><div class="scroll"><table><tr><th>Rol</th><th>Zona · puesto</th><th>Descanso</th><th>Empleado</th><th>Aviso</th></tr>`;
+  ts.forEach(s=>{const e=AS[s.key],wv=e?(warn[e]||[]):[];let rol,zn,ds;
+   if(s.role=='P'){rol='Puesto';zn=s.zone=='EX'?'Extra · '+(s.lbl||''):byId[s.zone][1]+' · '+s.n;ds=s.ps?clk(s.ps)+'–'+clk(s.ps+q.pause*6e4)+(s.rel?' <span class="mu">(le cubre correturnos '+s.rel+')</span>':''):'—'}
+   else if(s.role=='R'){rol='<b>Correturnos</b>';const cov=ts.filter(x=>x.role=='P'&&x.rel==s.n);zn='<span class="mu">Cubre: '+cov.map(x=>(x.zone=='EX'?'Extra':byId[x.zone][1])+' '+x.n+' '+clk(x.ps)).join(' · ')+'</span>';ds=clk(s.ps)+'–'+clk(s.ps+q.pause*6e4)}
+   else{rol='<b>Coordinador</b>';zn='<span class="mu">Recibe las peticiones de CCIB y dirige al equipo</span>';ds=s.ps?clk(s.ps)+'–'+clk(s.ps+q.pause*6e4):'—'}
+   h+=`<tr><td>${rol}</td><td>${zn}</td><td>${ds}</td><td><select data-as="${s.key}">${opt(s.key)}</select></td><td>${RP[s.key]?'<span class="tag">Reemplaza a '+EN(RP[s.key].prev)+' · '+new Date(RP[s.key].t).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</span> ':''}${wv.length?'<span class="alert">'+wv.join(' · ')+'</span>':(e?'<span class="ok">OK</span>':'')}</td></tr>`});
+  h+='</table></div></div>'}
+ if(sl.length){const W={};sl.filter(s=>s.role=='P').forEach(s=>{const zk=s.zone=='EX'?'Extra':byId[s.zone][1];(W[zk]=W[zk]||[]).push(`T${s.k+1} ${clk(s.st)}–${clk(s.en)}: `+(AS[s.key]?EN(AS[s.key])+(RP[s.key]?' <span class="tag">reemplaza a '+EN(RP[s.key].prev)+'</span>':''):'<span class="alert">sin asignar</span>'))});
+  h='<div class="card"><b>Quién está en cada zona · '+fdia(cDay)+'</b><div class="scroll"><table><tr><th>Zona</th><th>Personas</th></tr>'+Object.entries(W).map(([z,v])=>`<tr><td>${z}</td><td style="text-align:left">${v.join('<br>')}</td></tr>`).join('')+'</table></div></div>'+h}
+ $('cuad').innerHTML=h;
+ $('cuad').querySelectorAll('select[data-as]').forEach(x=>x.onchange=()=>{const k=x.dataset.as,o=AS[k];let rep=false;if(o&&x.value&&o!=x.value)rep=confirm('¿'+EN(x.value)+' es un REEMPLAZO de '+EN(o)+'?\n\nAceptar: reemplazo (queda registrado y lo ve el cliente).\nCancelar: corrección del cuadrante.');if(x.value)AS[k]=x.value;else delete AS[k];if(rep)RP[k]={prev:o,t:Date.now(),by:who()};else if(!x.value||!o)delete RP[k];log(rep?'Reemplazo':'Cuadrante',`${k.split('|').slice(0,3).join(' ')}: ${EN(o)||'—'} → ${EN(x.value)||'—'}`,sum(calc().evento));render()});
+ const tot=SL.length,asg=SL.filter(s=>AS[s.key]).length;$('cMsg').textContent=`${asg}/${tot} puestos con nombre`;
+ $('empT').innerHTML='<tr><th>Empleado</th><th>Turnos</th><th>Horas</th><th>Aviso</th><th></th></tr>'+EMP.map(e=>{const l=m[e.id]||[],hh=l.reduce((a,z)=>a+(z.en-z.st)/36e5,0),w=warn[e.id]||[];return`<tr><td>${EN(e.id).replace(/</g,'&lt;')}</td><td>${l.length}</td><td>${f1(hh)}</td><td>${w.length?'<span class="alert">'+w.join(' · ')+'</span>':'<span class="ok">OK</span>'}</td><td><button data-del="${e.id}">×</button></td></tr>`}).join('');
+ $('empT').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const e=EMP.find(x=>x.id==b.dataset.del);if(!e||!confirm('¿Quitar a '+EN(e.id)+' de la lista de empleados? Sus asignaciones quedarán vacías.'))return;EMP=EMP.filter(x=>x!==e);Object.keys(AS).forEach(k=>{if(AS[k]==e.id)delete AS[k]});saveEmp();log('Empleados','Quita '+EN(e.id),sum(calc().evento));render()})}
+$('zAdd').onclick=ev=>{ev.stopPropagation();placing=placing?null:{};render()};
+$('zq').oninput=renderZonas;$('zOnlyOff').onchange=renderZonas;$('zAllOn').onclick=()=>{ZOFF=[];saveCfg();render()};
+$('plSave').onclick=()=>{const cur0=PL[$('plSel').value];const n=(prompt('Nombre de la plantilla (zonas mínimas de este tipo de evento)',cur0?cur0.n:'')||'').trim();if(!n)return;const ex=Object.entries(PL).find(([k,p])=>p.n==n);const id=ex?ex[0]:'T'+Date.now().toString(36);if(ex&&!confirm('Ya existe «'+n+'». ¿Sustituirla?'))return;PL[id]={n,sel:SEL(),ov:JSON.parse(JSON.stringify(ov)),pv:JSON.parse(JSON.stringify(pv)),size:$('size').value,ts:Date.now(),by:who()};saveCfg();renderPL();$('plSel').value=id;log('Plantilla','Guarda «'+n+'» ('+PL[id].sel.length+' zonas)',sum(calc().evento))};
+$('plApply').onclick=()=>{const t=PL[$('plSel').value];if(!t)return;if(SEL().length>3&&!confirm('¿Sustituir las zonas de este pedido por la plantilla «'+t.n+'»?'))return;const b=sum(calc().evento);sel=new Set(t.sel);ov=normOv(t.ov);pv=normOv(t.pv);if(t.size)$('size').value=t.size;cur=null;log('Plantilla','Aplica «'+t.n+'»',b);render()};
+$('plDel').onclick=()=>{const k=$('plSel').value;if(!PL[k]||!confirm('¿Borrar la plantilla «'+PL[k].n+'»?'))return;delete PL[k];saveCfg();render()};
+$('cPh').onchange=()=>{cPh=$('cPh').value;cDay='';renderCuad()};$('cDay').onchange=()=>{cDay=$('cDay').value;renderCuad()};
+$('empAddB').onclick=()=>{const L=[];if($('empN').value.trim())L.push([$('empN').value.trim(),$('empA').value.trim()]);$('empAdd').value.split('\n').map(x=>x.trim().split(/\s+/)).filter(x=>x[0]).forEach(x=>L.push([x[0],x.slice(1).join(' ')]));if(!L.length)return;const bad=L.filter(x=>!x[1]);if(bad.length){alert('Falta el apellido de: '+bad.map(x=>x[0]).join(', '));return}const ns=L;L.forEach(x=>EMP.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:x[0],a:x[1]}));$('empAdd').value='';$('empN').value='';$('empA').value='';saveEmp();log('Empleados','Añade '+ns.length,sum(calc().evento));render()};
+$('cAuto').onclick=()=>{if(!EMP.length){alert('Añade primero los empleados');return}const r=autoAssign();log('Cuadrante','Autoasignar: '+r.done+' asignados'+(r.miss?' · '+r.miss+' sin nadie disponible':''),sum(calc().evento));render();$('cMsg').textContent+=r.miss?` · faltan empleados para ${r.miss} puestos sin romper descansos`:' · completo'};
+$('cClear').onclick=()=>{if(!Object.keys(AS).length||!confirm('¿Vaciar todas las asignaciones de este pedido?'))return;AS={};log('Cuadrante','Vacía asignaciones',sum(calc().evento));render()};
+function render(){renderPsel();renderPL();renderZonas();renderCuad();renderTurnos();renderParams();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
 $('exB').onclick=()=>{const r=$('exR').value.trim(),n=+$('exN').value;if(!r){alert('El motivo es obligatorio');return}const b=sum(calc().evento);extras.push({n,r});$('exR').value='';log('Añade extra',`+${n} · ${r}`,b);render()};
 $('vph').oninput=render;['size','ev'].forEach(i=>$(i).oninput=()=>{saveP();render()});
 $('psel').onchange=()=>{saveP();loadP(PED[$('psel').value]);render()};$('pNew').onclick=newP;$('rsize').onchange=renderRules;
-document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));['pedido','reglas','hist'].forEach(v=>$('v-'+v).hidden=v!=b.dataset.v)});
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));['pedido','cuad','reglas','hist'].forEach(v=>$('v-'+v).hidden=v!=b.dataset.v)});
 boot();
 </script></body></html>

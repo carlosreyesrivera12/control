@@ -10,3 +10,5 @@
 - CCIB: casilla CCIB en el editor de permisos de usuario (hoy: SA siempre; resto por rol por defecto).
 - CCIB: marcar automáticamente «fuera de plazo» según fecha límite del evento.
 - CCIB: tocar «Logística aporta» en una zona → ver nombres de los trabajadores asignados (y check-in).
+- CCIB: vista solo lectura para el cliente (quién está en cada zona ahora) con enlace propio.
+- CCIB: exportar cuadrante a PDF/Excel y enviar a cada empleado su turno por WhatsApp.

@@ -4,3 +4,4 @@
 - 2026-10-31 · CCIB: sin perfiles L/A; un solo número de personas por zona y fase.
 - 2026-10-31 · CCIB: cada zona muestra CCIB (cliente pide) a la izquierda y Logística (proveedor aporta) a la derecha.
 - 2026-10-31 · CCIB: un turno por persona y día (nunca doble); turnos iguales = h/día ÷ jornada máx.; parámetros laborales editables (ET por defecto).
+- 2026-10-31 · CCIB: coordinador del proveedor por turno como único interlocutor de CCIB; reemplazos registrados; zonas activables y plantillas de zonas por tipo de evento.
