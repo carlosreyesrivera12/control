@@ -5,6 +5,12 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: colocar un extra en el plano
+
+**Punto de restauración:** commit `a5a61e1`.
+
+- Botón «📍 Colocar en el plano» en cada extra: se elige planta, se toca el punto y el extra pasa a ser una zona propia con su nombre y sus personas (en evento), editable como cualquier zona.
+
 ## 2026-10-31 · CCIB: cuadrante con nombres, fechas, zonas y plantillas
 
 **Punto de restauración:** commit `8b396e3`.

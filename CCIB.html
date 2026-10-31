@@ -158,10 +158,11 @@ function renderMap(){const zs=Z.filter(z=>z[2]==floor&&act(z[0])),cz=zs.filter(z
   h=floor=='EXT'?`<div class="schem"><div style="grid-column:1/span 3" class="blk">${P('WB')}</div><div class="blk" style="grid-column:4/span 6">Edificio CCIB</div><div style="grid-column:10/span 3" class="blk">${P('LD')}</div>${cust}</div>`
   :`<div class="schem"><div class="blk" style="grid-column:1/span 12">${P('DOCK')}</div><div class="blk" style="grid-column:1/span 12">Montacargas → P0 · M1 · P1 · M2 · P2</div>${cust}</div>`}
  if(IMG[floor])h=h.replace('<div class="plan">','<div class="plan" id="planBox">');
- $('map').innerHTML=h;$('flnote').textContent=placing?'Toca el punto del plano donde va la zona'+(placing.move?' «'+byId[placing.move][1]+'»':'')+'.':(NOTE[floor]||'');$('map').style.cursor=placing?'crosshair':'';
+ $('map').innerHTML=h;$('flnote').textContent=placing?'Toca el punto del plano donde va la zona'+(placing.move?' «'+byId[placing.move][1]+'»':'')+(placing.ex!=null&&extras[placing.ex]?' «'+extras[placing.ex].r+'» (cambia de planta arriba si hace falta)':'')+'.':(NOTE[floor]||'');$('map').style.cursor=placing?'crosshair':'';
  $('zAdd').classList.toggle('on',!!placing);$('zAdd').textContent=placing?'Cancelar':'+ Zona en el plano';
  $('map').onclick=ev=>{if(!placing)return;if(ev.target.closest('.pin')&&!placing.move)return;let x=50,y=50;const pb=$('planBox');if(pb){const rc=pb.getBoundingClientRect();x=Math.round((ev.clientX-rc.left)/rc.width*1000)/10;y=Math.round((ev.clientY-rc.top)/rc.height*1000)/10}
   if(placing.move){const c=ZC.find(c=>c.id==placing.move);if(c){c.x=x;c.y=y;c.f=floor;saveCfg()}placing=null;render();return}
+  if(placing.ex!=null){const e=extras[placing.ex];if(e){const id='Z'+Date.now().toString(36);ZC.push({id,n:e.r,f:floor,x,y});saveCfg();sel.add(id);ov[id]={montaje:0,evento:e.n,desmontaje:0,motivo:e.r};extras.splice(placing.ex,1);cur=id;log('Extra al plano',e.r+' → zona en '+floor,sum(calc().evento))}placing=null;render();return}
   const n=(prompt('Nombre de la zona')||'').trim();if(!n){placing=null;render();return}const id='Z'+Date.now().toString(36);ZC.push({id,n,f:floor,x,y});saveCfg();sel.add(id);placing=null;cur=id;log('Nueva zona',n+' ('+floor+')',sum(calc().evento));render()};
  $('map').querySelectorAll('.pin').forEach(d=>d.onclick=ev=>{if(placing)return;const id=d.dataset.id;if(!sel.has(id)){const b=sum(calc().evento);sel.add(id);log('Marca zona',byId[id][1],b)}cur=id;render()})}
 const dif=(a,b)=>b==a?'<span class="ok">=</span>':`<span class="alert">${b>a?'+':''}${b-a}</span>`;
@@ -197,8 +198,9 @@ function renderSide(){const c=calc(),q=calcP(),rr=calcR(),vp=$('vph').value;
  const zr=SEL().filter(id=>PH.some(p=>num(eff(id,p))!=rule(id,p))).map(id=>byId[id][1]);
  const zf=SEL().filter(id=>PH.some(p=>num(prov(id,p))<num(eff(id,p)))).map(id=>byId[id][1]);
  $('ctrl').innerHTML=(off.length?`<div class="alert">CCIB vs regla: ${off.map(x=>x[0]+' '+(x[1]>0?'+':'')+x[1].toFixed(0)+'%').join(' · ')} (supera ±10%)</div>`:'<div class="ok">CCIB dentro de ±10% de la regla</div>')+(zr.length?`<div class="mu">Zonas fuera de regla: ${zr.join(' · ')}</div>`:'')+(zf.length?`<div class="alert" style="margin-top:4px">Logística aporta menos en: ${zf.join(' · ')}</div>`:'');
- $('extras').innerHTML=extras.map((e,i)=>`<div class="mu">+${e.n} · ${e.r} <button data-i="${i}">×</button></div>`).join('');
- $('extras').querySelectorAll('button').forEach(b=>b.onclick=()=>{const bf=sum(calc().evento),e=extras.splice(+b.dataset.i,1)[0];log('Quita extra',e.r,bf);render()})}
+ $('extras').innerHTML=extras.map((e,i)=>`<div class="mu">+${e.n} · ${e.r} <button data-px="${i}" title="Elige planta y toca el punto del plano">📍 Colocar en el plano</button> <button data-i="${i}">×</button></div>`).join('');
+ $('extras').querySelectorAll('[data-px]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();placing={ex:+b.dataset.px};render();$('map').scrollIntoView({behavior:'smooth',block:'center'})});
+ $('extras').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const bf=sum(calc().evento),e=extras.splice(+b.dataset.i,1)[0];log('Quita extra',e.r,bf);render()})}
 function renderDetail(){let h='<tr><th>Zona</th><th>Planta</th>'+PH.map(p=>`<th>${p} CCIB</th><th>${p} Log.</th>`).join('')+'<th>Estado</th></tr>';
  SEL().forEach(id=>{const z=byId[id];h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>{const c=num(eff(id,p)),q=num(prov(id,p));return`<td>${c}</td><td${q!=c?' class="'+(q<c?'alert':'ok')+'"':''}>${q}</td>`}).join('')+`<td>${isOv(id)?'<span class="tag">fuera de regla: '+ov[id].motivo+'</span>':'regla'}</td></tr>`});
  extras.forEach(e=>h+=`<tr><td>Extra: ${e.r}</td><td>—</td><td></td><td></td><td>${e.n}</td><td>${e.n}</td><td></td><td></td><td><span class="tag">fuera de regla</span></td></tr>`);$('detail').innerHTML=h}
