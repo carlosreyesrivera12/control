@@ -13,3 +13,4 @@
 - CCIB: vista solo lectura para el cliente (quién está en cada zona ahora) con enlace propio.
 - CCIB: exportar cuadrante a PDF/Excel y enviar a cada empleado su turno por WhatsApp.
 - CCIB: optimizar la rotación (hoy reparto voraz; en la prueba 56 personas frente a un mínimo teórico de 50).
+- CCIB: mejorar el reparto para acercarse al mínimo teórico (prueba 30/10–17/11: 98 personas frente a 76).

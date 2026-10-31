@@ -5,6 +5,15 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: personal y control, servicios adicionales y costes
+
+**Punto de restauración:** commit `f9e541b`.
+
+- **Servicios adicionales** por pedido: montaje nocturno (jornada máx. 8 h, plus nocturno), vallado perimetral, auxiliares u otros, con calendario, horario, personas y zona; entran en cuadrante, rotación y factura.
+- Pestaña **Personal y control**: lista de empleados editable (nombre, apellidos, teléfono, estado, días no disponibles con calendario, días, horas, bruto y neto); rotación A–Z editable tocando cada casilla (quitar, asignar a un puesto libre, caída, no disponible); **control del día** con Presente (registro de jornada) / Caída, reemplazos propuestos que cumplen las normas y retén recomendado.
+- Reparto «combinar fases» con patrones 5+2 escalonados (la misma gente pasa de montaje a evento y desmontaje); elige el mejor de tres repartos.
+- **Costes y factura**: horas, horas nocturnas, bruto, neto aproximado, aportes de empresa, coste y factura a CCIB con margen e IVA. Parámetros en Reglas (bruto €/h por defecto ≈ SMI 2026, cotizaciones 2026, IRPF, margen, IVA).
+
 ## 2026-10-31 · CCIB: rotación 5+2 por empleado (A–Z) y menos contrataciones
 
 **Punto de restauración:** commit `275f53e`.

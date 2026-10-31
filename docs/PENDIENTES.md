@@ -5,3 +5,4 @@
 - CCIB: nº de montacargas entre la -2 y las plantas.
 - CCIB: definir tamaños S / M / L.
 - CCIB: confirmar parámetros laborales con el convenio aplicable (jornada máx., pausa, máx. semanal).
+- CCIB: confirmar con la gestoría el salario del convenio (€/h), plus nocturno, AT/EP del CNAE e IRPF; hoy valores orientativos.

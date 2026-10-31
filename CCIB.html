@@ -32,7 +32,7 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
 #zp h3{margin:0 0 4px;font-size:15px}#zp .big{font-size:28px;font-weight:700}
 </style></head><body>
 <header><b>CCIB · Pedido de personal</b>
-<div class="tabs"><button data-v="pedido" class="on">Pedido en mapa</button><button data-v="cuad">Cuadrante</button><button data-v="reglas">Reglas</button><button data-v="hist">Historial</button></div>
+<div class="tabs"><button data-v="pedido" class="on">Pedido en mapa</button><button data-v="cuad">Cuadrante</button><button data-v="pers">Personal y control</button><button data-v="reglas">Reglas</button><button data-v="hist">Historial</button></div>
 <span class="mu">Cifras de ejemplo hasta cargar la tabla real</span><span class="sync" id="sync">…</span></header>
 <main>
 <section id="v-pedido">
@@ -57,21 +57,35 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
   <div class="mu" style="margin-bottom:8px">Horario de cada fase → turnos que respetan jornada máxima, pausas, 12 h de descanso entre jornadas y descanso semanal. Calcula la gente real necesaria para lo que pide CCIB y para lo que aporta Logística, y comprueba que el proveedor no cubra con jornadas dobles u horas extra.</div>
   <div class="scroll"><table id="turnos"></table></div><div id="tipo" style="margin-top:10px"></div>
   <div class="mu" style="margin-top:6px" id="pmsg"></div></div>
+ <div class="card"><div class="row"><h3 style="margin:0;font-size:15px">Servicios adicionales</h3><span class="mu">montaje nocturno, vallado del perímetro, auxiliares…</span><span style="flex:1"></span><button data-svadd="noct">+ Montaje nocturno</button><button data-svadd="vall">+ Vallado perimetral</button><button data-svadd="aux">+ Auxiliares</button><button data-svadd="otro">+ Otro</button></div>
+  <div class="scroll" style="margin-top:8px"><table id="svT"></table></div></div>
  <div class="card scroll"><table id="detail"></table></div>
 </section>
 <section id="v-cuad" hidden>
  <div class="card" style="border-left:4px solid #1450e8"><b>Coordinador del proveedor</b> <span class="mu">· CCIB no da órdenes directas a los trabajadores: pide al coordinador y él organiza al equipo. Así los fijos discontinuos dependen de su empresa y no de CCIB (evita cesión ilegal, art. 43 ET). Hay un coordinador por turno (1 cada <span id="cPor"></span> personas, ajustable en Reglas).</span></div>
  <div class="wrap"><div>
   <div class="card row"><label>Fase <select id="cPh"></select></label><label>Día <select id="cDay"></select></label><label>Reparto <select id="cModo"><option value="combinar">Menos personas (combinar)</option><option value="igual">Repartir horas por igual</option></select></label><button id="cAuto" class="on">Autoasignar todo el pedido</button><button id="cClear">Vaciar asignaciones</button><span class="mu" id="cMsg"></span></div>
-  <div class="card"><b>Rotación por empleado (A–Z)</b><div id="rot" style="margin-top:6px"></div></div>
   <div id="cuad"></div>
- </div><div>
-  <div class="card"><div class="mu">Empleados del proveedor (fijos discontinuos)</div>
-   <div class="row" style="margin-top:6px"><input id="empN" placeholder="Nombre"><input id="empA" placeholder="Apellidos"></div>
-   <textarea id="empAdd" rows="3" style="width:100%;font:inherit;margin-top:6px" placeholder="O varios a la vez: «Nombre Apellido1 Apellido2», uno por línea"></textarea>
-   <div class="row" style="margin-top:6px"><button id="empAddB">Añadir</button></div>
-   <div class="scroll" style="max-height:420px;margin-top:8px"><table id="empT"></table></div></div>
- </div></div>
+ </div><div></div></div>
+</section>
+<section id="v-pers" hidden>
+ <div class="card"><b>Empleados (fijos discontinuos)</b> <span class="mu">· todo editable: nombre, apellidos, teléfono, estado y días no disponibles</span>
+  <div class="row" style="margin-top:6px"><input id="empN" placeholder="Nombre"><input id="empA" placeholder="Apellidos"><input id="empT1" placeholder="Teléfono"><button id="empAddB">Añadir</button></div>
+  <textarea id="empAdd" rows="2" style="width:100%;font:inherit;margin-top:6px" placeholder="O varios a la vez: «Nombre Apellido1 Apellido2», uno por línea"></textarea>
+  <div class="scroll" style="max-height:420px;margin-top:8px"><table id="empT"></table></div></div>
+ <div class="card"><div class="row"><b>Rotación por empleado (A–Z)</b><span style="flex:1"></span><label>Reparto <select id="pModo"><option value="combinar">Menos personas (combinar fases)</option><option value="igual">Repartir horas por igual</option></select></label><button id="pAuto" class="on">Autoasignar</button></div>
+  <div class="mu">Toca una casilla para quitar, asignar, marcar caída o no disponible.</div><div id="rot" style="margin-top:6px"></div></div>
+ <div class="card"><div class="row"><b>Control del día</b><label>Día <select id="kDay"></select></label><span class="mu" id="kSum"></span></div>
+  <div class="mu">Presente = registro de jornada (art. 34.9 ET). Caída = la persona no viene: se libera su puesto y se proponen reemplazos que cumplen las normas.</div>
+  <div id="kRet" style="margin:6px 0"></div><div class="scroll"><table id="kT"></table></div></div>
+ <div class="card"><b>Costes y factura</b><div class="scroll" id="cost" style="margin-top:6px"></div></div>
+ <div class="card"><b>Cómo lo organizan las empresas del sector</b><ul class="mu" style="margin:6px 0;padding-left:18px">
+  <li>Bolsa de fijos discontinuos <b>polivalentes</b>: la misma gente monta, trabaja el evento y desmonta. Se encadenan fases (4 días montaje + 1 de evento, 2 de montaje + 3 de evento…) en lugar de contratar equipos distintos.</li>
+  <li><b>Llamamiento</b> por escrito, con antelación y por el orden y criterios del convenio (art. 16 ET).</li>
+  <li><b>Rotación 5+2 escalonada</b> y turnos fijos (mañana / tarde / noche) para respetar las 12 h entre jornadas; la noche, con jornada máx. de 8 h y plus nocturno (art. 36 ET).</li>
+  <li><b>Retén</b> del 5–10 % localizable cada día para cubrir caídas; el coordinador del proveedor hace los reemplazos y los deja registrados.</li>
+  <li>Servicios aparte (vallado perimetral, montaje nocturno, auxiliares) con su propio cuadrante y su línea en la factura.</li>
+  <li>Registro diario de jornada y de reemplazos: es la base para facturar y para demostrar que CCIB no dirige al personal.</li></ul></div>
 </section>
 <section id="v-reglas" hidden><div class="card"><h3 style="margin:0 0 6px;font-size:15px">Zonas</h3><div class="mu">Desactiva las zonas que no se usan: desaparecen del plano y de las tablas. Cambia nombres o borra zonas propias. Las zonas nuevas se crean con «+ Zona en el plano».</div>
  <div class="row" style="margin:8px 0"><input id="zq" placeholder="Buscar zona"><label class="mu"><input type="checkbox" id="zOnlyOff"> solo desactivadas</label><button id="zAllOn">Activar todas</button></div>
@@ -104,13 +118,13 @@ const NOTE={'-2':'Todo el material sube por montacargas (nº de montacargas pend
 const BASE={custom:[[1,0],[1,0],[1,0]],dock:[[4,0],[2,0],[4,0]],foyer:[[1,1],[0,3],[1,1]],acc:[[0,0],[0,1],[0,0]],hall:[[4,1],[1,3],[4,1]],hallS:[[2,1],[1,2],[2,1]],room:[[2,0],[0,1],[2,0]],roomL:[[3,1],[1,2],[3,1]],bic:[[1,0],[0,1],[1,0]],mini:[[0,0],[0,1],[0,0]],ext:[[1,0],[0,1],[1,0]],aud:[[3,1],[1,4],[3,1]],audS:[[1,0],[0,2],[1,0]],plaza:[[0,2],[0,2],[0,2]]};
 const MUL={S:.5,M:1,L:1.5};
 const R={};Z0.forEach(z=>{R[z[0]]={};SZ.forEach(s=>{R[z[0]][s]={};PH.forEach((p,i)=>{const b=BASE[z[3]][i];R[z[0]][s][p]=z[3]=='plaza'?2:Math.ceil((b[0]+b[1])*MUL[s])})})});
-let sel=new Set(['DOCK','WB','LD']),ov={},pv={},TT=defT(),AS={},RP={},EMP=[],floor='P0',cur=null,extras=[],hist=[];
+let sel=new Set(['DOCK','WB','LD']),ov={},pv={},TT=defT(),AS={},RP={},SV=[],AB={},AT={},EMP=[],floor='P0',cur=null,extras=[],hist=[];
 /* Persistencia: RTDB cu1/ccib (reglas + pedidos, guardados como JSON). Sin permiso → localStorage. No toca cu1/controlunificado */
 const LS='bu_ccib_local';let REF=null,MODE='local',PED={},PID=null,_rulesTs=0;
 function who(){try{const u=parent.buCcibUser&&parent.buCcibUser();return u?(u.nombre||u.email||u.id||''):'local'}catch(e){return 'local'}}
 function setSync(st,m){const e=document.getElementById('sync');e.className='sync '+st;e.textContent=m}
-function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,t:TT,sel:[...sel],ov,pv,AS,rp:RP,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
-function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';TT=normT(p);sel=new Set(p.sel||[]);ov=normOv(p.ov);pv=normOv(p.pv);AS=p.as||p.AS||{};RP=p.rp||{};extras=p.extras||[];hist=p.hist||[];cur=null}
+function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,t:TT,sel:[...sel],ov,pv,AS,rp:RP,sv:SV,ab:AB,at:AT,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
+function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';TT=normT(p);sel=new Set(p.sel||[]);ov=normOv(p.ov);pv=normOv(p.pv);AS=p.as||p.AS||{};RP=p.rp||{};SV=p.sv||[];AB=p.ab||{};AT=p.at||{};extras=p.extras||[];hist=p.hist||[];cur=null}
 function newP(){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);PED[id]={id,ev:'Nuevo evento',size:'M',t:defT(),sel:['DOCK','WB','LD'],ov:{},pv:{},extras:[],hist:[],createdAt:Date.now(),createdBy:who()};loadP(PED[id]);saveP();render()}
 let _st=null;function saveP(){if(!PID)return;PED[PID]=Object.assign(PED[PID]||{},snap());clearTimeout(_st);_st=setTimeout(()=>{if(REF&&MODE==='fb')REF.child('pedidos/'+PID).set({j:JSON.stringify(PED[PID])}).catch(e=>setSync('err','Error al guardar'));else saveLocal()},400)}
 function saveRules(){_rulesTs=Date.now();if(REF&&MODE==='fb')REF.child('reglas').set({j:JSON.stringify(R),ts:_rulesTs,by:who()});else saveLocal()}
@@ -119,8 +133,8 @@ const num=v=>Array.isArray(v)?(+v[0]||0)+(+v[1]||0):(+v||0);
 function normZ(o){const n={};SZ.forEach(s=>{n[s]={};PH.forEach(p=>n[s][p]=num(o&&o[s]?o[s][p]:0))});return n}
 function mergeRules(x){Object.keys(x||{}).forEach(k=>{R[k]=normZ(x[k])})}
 function normOv(o){const n={};Object.keys(o||{}).forEach(id=>{const v=o[id];if(!v)return;n[id]={motivo:v.motivo||''};PH.forEach(p=>n[id][p]=num(v[p]))});return n}
-const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5,descDias:2,coordPor:20};let PAR={...PAR0};
-const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos',coordPor:'Personas por coordinador',descDias:'Días libres tras días seguidos'};
+const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5,descDias:2,coordPor:20,nocMaxDia:8,reten:5,brutoH:9.71,coordH:12,nocPct:25,ssEmp:30.65,atep:1.5,ssTrab:6.5,irpf:2,margen:25,iva:21};let PAR={...PAR0};
+const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos',coordPor:'Personas por coordinador',descDias:'Días libres tras días seguidos',nocMaxDia:'Jornada máx. nocturna (h)',reten:'Retén para caídas (%)',brutoH:'Bruto €/hora (SMI 2026 ≈9,71)',coordH:'Bruto €/hora coordinador',nocPct:'Plus nocturno 22–06 h (%)',ssEmp:'Seg. Social empresa (%)',atep:'AT/EP (%)',ssTrab:'Seg. Social trabajador (%)',irpf:'IRPF (%)',margen:'Margen sobre coste (%)',iva:'IVA (%)'};
 function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function addD(ds,n){const d=new Date(ds+'T00:00');d.setDate(d.getDate()+n);return iso(d)}
 function rangeDays(a,b){const o=[];if(!a||!b||b<a)return a?[a]:o;for(let d=a;d<=b;d=addD(d,1))o.push(d);return o}
@@ -250,8 +264,8 @@ function renderTurnos(){let h='<tr><th>Fase</th><th>Fechas</th><th>Horario</th><
  $('pmsg').innerHTML=`Cómo se calcula: turnos = h/día ÷ ${PAR.maxDia} h (redondeo arriba), repartidos en partes iguales. Si el turno pasa de ${PAR.pausaDesde} h hay pausa de ${PAR.pausaMin} min y se añade 1 correturnos cada ${Math.floor(120/Math.max(1,PAR.pausaMin))} puestos. Si la fase dura varios días, cada puesto rota para no pasar de ${PAR.maxSemana} h ni ${PAR.maxDiasSem} días seguidos. El correturnos es otro empleado que releva a cada puesto en su pausa. Cada turno lleva su coordinador. Gente necesaria = turnos × (puestos + correturnos + coordinador) × rotación.`;
  $('turnos').querySelectorAll('[data-cal]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openCal(b.dataset.cal,b)});
  $('turnos').querySelectorAll('input[data-tf]').forEach(i=>i.onchange=()=>{const p=i.dataset.p,k=i.dataset.tf,old=TT[p][k];TT[p][k]=(k=='w')?Math.max(0,+i.value||0):i.value;if(k=='ds'&&TT[p].de<TT[p].ds)TT[p].de=TT[p].ds;log('Turnos',`${p} ${({ds:'fecha inicio',de:'fecha fin',i:'hora inicio',f:'hora fin',w:'proveedor pone'})[k]}: ${old} → ${TT[p][k]}`,sum(calc().evento));render()})}
-function renderParams(){$('params').innerHTML=Object.keys(PAR0).map(k=>`<label class="mu">${PARL[k]} <input type="number" min="0" data-par="${k}" value="${PAR[k]}"></label>`).join('')+'<button id="parReset">Valores por defecto</button>';
- $('params').querySelectorAll('input').forEach(i=>i.onchange=()=>{PAR[i.dataset.par]=Math.max(0,+i.value||0)||PAR0[i.dataset.par];saveParams();render()});
+function renderParams(){$('params').innerHTML=Object.keys(PAR0).map(k=>`<label class="mu">${PARL[k]} <input type="number" min="0" step="any" data-par="${k}" value="${PAR[k]}"></label>`).join('')+'<button id="parReset">Valores por defecto</button>';
+ $('params').querySelectorAll('input').forEach(i=>i.onchange=()=>{PAR[i.dataset.par]=i.value===''?PAR0[i.dataset.par]:Math.max(0,+i.value||0);saveParams();render()});
  $('parReset').onclick=()=>{PAR={...PAR0};saveParams();render()}}
 /* ═══ Cuadrante: puestos con nombre, pausas, correturnos y coordinador ═══ */
 const EN=id=>{const e=EMP.find(x=>x.id==id);return e?(e.n+(e.a?' '+e.a:'')):''};
@@ -259,11 +273,20 @@ function slots(p){const q=plan(p,prov),t=TT[p],out=[];if(!q.T)return out;
  dayList(t).forEach(date=>{for(let k=0;k<q.T;k++){const st=new Date(date+'T00:00').getTime()+(tm(t.i)+k*q.len*60)*6e4,en=st+q.len*36e5,base=`${p}|${date}|${k}`;
   const P=[];SEL().forEach(id=>{for(let n=1;n<=num(prov(id,p));n++)P.push({zone:id,n})});if(p=='evento'){let n=0;extras.forEach(e=>{for(let j=0;j<e.n;j++)P.push({zone:'EX',n:++n,lbl:e.r})})}
   const w0=st+(q.len*30-q.cap*q.pause/2)*6e4;
-  P.forEach((x,j)=>out.push({key:`${base}|P|${x.zone}|${x.n}`,p,date,k,role:'P',zone:x.zone,n:x.n,lbl:x.lbl,st,en,ps:q.pause?w0+(j%q.cap)*q.pause*6e4:0,rel:q.pause?Math.floor(j/q.cap)+1:0}));
-  for(let r=1;r<=q.rel;r++)out.push({key:`${base}|R|${r}`,p,date,k,role:'R',n:r,st,en,ps:w0+q.cap*q.pause*6e4});
-  for(let c=1;c<=q.coord;c++)out.push({key:`${base}|C|${c}`,p,date,k,role:'C',n:c,st,en,ps:q.pause?w0-q.pause*6e4:0})}});
+  P.forEach((x,j)=>out.push({key:`${base}|P|${x.zone}|${x.n}`,p,date,k,role:'P',pz:q.pause,zone:x.zone,n:x.n,lbl:x.lbl,st,en,ps:q.pause?w0+(j%q.cap)*q.pause*6e4:0,rel:q.pause?Math.floor(j/q.cap)+1:0}));
+  for(let r=1;r<=q.rel;r++)out.push({key:`${base}|R|${r}`,p,date,k,role:'R',pz:q.pause,n:r,st,en,ps:w0+q.cap*q.pause*6e4});
+  for(let c=1;c<=q.coord;c++)out.push({key:`${base}|C|${c}`,p,date,k,role:'C',pz:q.pause,n:c,st,en,ps:q.pause?w0-q.pause*6e4:0})}});
  return out}
-const allSlots=()=>PH.flatMap(slots);
+/* Servicios adicionales: montaje nocturno, vallado perimetral, auxiliares… con su calendario, horario y personas */
+const SVT={noct:'Montaje nocturno',vall:'Vallado perimetral',aux:'Auxiliares',otro:'Otro'};
+function nightMin(st,en){let m=0;for(let t=st;t<en;t+=6e5){const h=new Date(t).getHours();if(h>=22||h<6)m+=10}return m}
+function svPlan(v){const H=hoursDay(v),noct=v.tipo=='noct'||nightMin(new Date('2026-01-01T00:00').getTime()+tm(v.i)*6e4,new Date('2026-01-01T00:00').getTime()+(tm(v.i)+H*60)*6e4)>=H*30,mx=noct?PAR.nocMaxDia:PAR.maxDia,pers=+v.pers||0;
+ if(!H||!pers)return{T:0,len:0,pause:0,rel:0,cap:1,noct};const T=Math.ceil(H/mx-1e-9),len=H/T,pause=len>PAR.pausaDesde?PAR.pausaMin:0,cap=Math.max(1,Math.floor(120/Math.max(1,PAR.pausaMin)));return{T,len,pause,rel:pause?Math.ceil(pers/cap):0,cap,noct,H}}
+function svSlots(){const out=[];SV.forEach(v=>{const q=svPlan(v);if(!q.T)return;(v.days||[]).slice().sort().forEach(date=>{for(let k=0;k<q.T;k++){const st=new Date(date+'T00:00').getTime()+(tm(v.i)+k*q.len*60)*6e4,en=st+q.len*36e5,base=`SV|${v.id}|${date}|${k}`,w0=st+(q.len*30-q.cap*q.pause/2)*6e4;
+  for(let n=1;n<=+v.pers;n++)out.push({key:`${base}|P|${n}`,p:'servicio',sv:v,date,k,role:'P',zone:'SV',n,lbl:v.n,st,en,pz:q.pause,ps:q.pause?w0+((n-1)%q.cap)*q.pause*6e4:0,rel:q.pause?Math.floor((n-1)/q.cap)+1:0});
+  for(let r=1;r<=q.rel;r++)out.push({key:`${base}|R|${r}`,p:'servicio',sv:v,date,k,role:'R',n:r,st,en,pz:q.pause,ps:w0+q.cap*q.pause*6e4})}})});return out}
+const allSlots=()=>PH.flatMap(slots).concat(svSlots());
+const avail=(e,date)=>e&&e.estado!='baja'&&!(e.no||[]).includes(date)&&!(AB[e.id]||[]).includes(date);
 const clk=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 function checkEmp(list){const a=list.slice().sort((x,y)=>x.st-y.st),w=[];
  for(let i=1;i<a.length;i++){if(a[i].date==a[i-1].date)w.push('doble turno el '+fdia(a[i].date));else if(a[i].st<a[i-1].en)w.push('solapa '+fdia(a[i].date));else if((a[i].st-a[i-1].en)/36e5<PAR.descanso)w.push('descanso '+f1((a[i].st-a[i-1].en)/36e5)+' h antes del '+fdia(a[i].date))}
@@ -278,60 +301,86 @@ function autoAssign(modo,crear,cycOff){const SL=allSlots().sort((a,b)=>a.st-b.st
  const D0=SL.length?SL[0].date:'',span=SL.length?Math.round((new Date(SL[SL.length-1].date+'T00:00')-new Date(D0+'T00:00'))/864e5)+1:0,cyc=PAR.maxDiasSem+PAR.descDias,useCyc=!cycOff&&modo!='igual'&&span>PAR.maxDiasSem;
  const kOf=d=>Math.round((new Date(d+'T00:00')-new Date(D0+'T00:00'))/864e5),OFF={};EMP.forEach((e,i)=>OFF[e.id]=i%cyc);
  const okCyc=(e,d)=>!useCyc||(((kOf(d)-OFF[e.id])%cyc)+cyc)%cyc<PAR.maxDiasSem;
- SL.forEach(s=>{if(AS[s.key]&&EMP.some(e=>e.id==AS[s.key]))return;
+ SL.forEach(s=>{if(AS[s.key]&&EMP.some(e=>e.id==AS[s.key])&&AT[s.key]?.st!='caida')return;
   const prev=addD(s.date,-1),same=e=>(m[e.id]||[]).some(z=>z.date==prev&&z.k==s.k)?0:1;const L=EMP.slice().sort((x,y)=>modo=='igual'?hrs(m[x.id])-hrs(m[y.id]):(same(x)-same(y))||(hrs(m[y.id])-hrs(m[x.id]))||EN(x.id).localeCompare(EN(y.id)));
-  let cand=L.find(e=>okCyc(e,s.date)&&!checkEmp((m[e.id]||[]).concat([s])).length);
+  let cand=L.find(e=>avail(e,s.date)&&okCyc(e,s.date)&&!checkEmp((m[e.id]||[]).concat([s])).length);
   if(!cand&&crear){{nuevos++;const v={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:'Por contratar',a:String(EMP.filter(e=>e.n=='Por contratar').length+1)};EMP.push(v);{const k=kOf(s.date),cnt={};Object.values(OFF).forEach(o=>cnt[o]=(cnt[o]||0)+1);let best=null;for(let j=0;j<PAR.maxDiasSem;j++){const o=(((k-j)%cyc)+cyc)%cyc;if(best==null||(cnt[o]||0)<(cnt[best]||0))best=o}OFF[v.id]=best}cand=v}}
   if(cand){AS[s.key]=cand.id;(m[cand.id]=m[cand.id]||[]).push(s);done++}else miss++});
  return{done,miss,nuevos}}
-/* Prueba con y sin rotación escalonada y se queda con la que necesita menos gente */
-function bestAssign(modo,crear){const A0=JSON.stringify(AS),E0=JSON.stringify(EMP);let best=null;[false,true].forEach(off=>{AS=JSON.parse(A0);EMP=JSON.parse(E0);const r=autoAssign(modo,crear,off),u=new Set(Object.values(AS)).size;if(!best||r.miss<best.r.miss||(r.miss==best.r.miss&&u<best.u))best={r,u,AS:AS,EMP:EMP}});AS=best.AS;EMP=best.EMP;if(best.r.nuevos)saveEmp();return best.r}
+/* Patrones 5+2 escalonados (como hacen las empresas de montaje): se calcula cuántas personas hacen falta con cada desfase para cubrir la demanda diaria y se reparte; los equipos encadenan montaje → evento → desmontaje */
+function patAssign(crear){const SL=allSlots().sort((a,b)=>a.st-b.st||a.k-b.k||(a.role>b.role?1:-1));if(!SL.length)return{done:0,miss:0,nuevos:0};
+ const D=rangeDays(SL[0].date,SL[SL.length-1].date),cyc=PAR.maxDiasSem+PAR.descDias,kOf=d=>D.indexOf(d),dem=D.map(d=>SL.filter(s=>s.date==d&&!(AS[s.key]&&AT[s.key]?.st!='caida')).length),wk=(o,k)=>((k-o)%cyc+cyc)%cyc<PAR.maxDiasSem;
+ const x=Array(cyc).fill(0),cov=()=>D.map((_,k)=>x.reduce((a,c,o)=>a+(wk(o,k)?c:0),0));
+ for(let g=0;g<5000;g++){const c=cov(),def=dem.map((d,k)=>Math.max(0,d-c[k]));if(!def.some(Boolean))break;let bo=0,bg=-1;for(let o=0;o<cyc;o++){const gain=def.reduce((a,d,k)=>a+(d&&wk(o,k)?1:0),0);if(gain>bg){bg=gain;bo=o}}x[bo]++}
+ for(let o=0;o<cyc;o++)while(x[o]>0){x[o]--;const c=cov();if(dem.some((d,k)=>c[k]<d)){x[o]++;break}}
+ const m=byEmp(SL),OFF={},pool=EMP.filter(e=>e.estado!='baja').sort((a,b)=>hrs(m[b.id])-hrs(m[a.id])||EN(a.id).localeCompare(EN(b.id)));let pi=0,nuevos=0,done=0,miss=0;
+ for(let o=0;o<cyc;o++)for(let j=0;j<x[o];j++){if(pi<pool.length)OFF[pool[pi++].id]=o;else if(crear){const v={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:'Por contratar',a:String(EMP.filter(e=>e.n=='Por contratar').length+1)};EMP.push(v);OFF[v.id]=o;nuevos++}}
+ D.forEach((d,k)=>{SL.filter(s=>s.date==d).forEach(s=>{if(AS[s.key]&&EMP.some(e=>e.id==AS[s.key])&&AT[s.key]?.st!='caida')return;const prev=addD(d,-1),same=e=>(m[e.id]||[]).some(z=>z.date==prev&&z.k==s.k&&(z.sv?.id||z.p)==(s.sv?.id||s.p))?0:1;
+  const ok=e=>avail(e,d)&&!checkEmp((m[e.id]||[]).concat([s])).length;
+  let cand=EMP.filter(e=>OFF[e.id]!=null&&wk(OFF[e.id],k)).sort((a,b)=>same(a)-same(b)||hrs(m[b.id])-hrs(m[a.id])).find(ok)||EMP.filter(e=>OFF[e.id]==null).sort((a,b)=>hrs(m[b.id])-hrs(m[a.id])).find(ok);
+  if(!cand&&crear){const v={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:'Por contratar',a:String(EMP.filter(e=>e.n=='Por contratar').length+1)};EMP.push(v);OFF[v.id]=((k%cyc)+cyc)%cyc;nuevos++;cand=v}
+  if(cand){AS[s.key]=cand.id;if(AT[s.key]?.st=='caida')delete AT[s.key];(m[cand.id]=m[cand.id]||[]).push(s);done++}else miss++})});
+ return{done,miss,nuevos}}
+/* Prueba tres repartos y se queda con el que cubre más puestos con menos gente */
+function bestAssign(modo,crear){const A0=JSON.stringify(AS),E0=JSON.stringify(EMP),T0=JSON.stringify(AT);let best=null;(modo=='igual'?['i']:['pat',false,true]).forEach(off=>{AS=JSON.parse(A0);EMP=JSON.parse(E0);AT=JSON.parse(T0);const r=off=='pat'?patAssign(crear):autoAssign(modo,crear,off),u=new Set(Object.values(AS)).size;if(!best||r.miss<best.r.miss||(r.miss==best.r.miss&&u<best.u))best={r,u,AS:AS,EMP:EMP,AT:AT}});AS=best.AS;EMP=best.EMP;AT=best.AT;if(best.r.nuevos)saveEmp();return best.r}
+/* Costes: bruto por horas (+ plus nocturno), neto aproximado, aportes de empresa y factura a CCIB */
+function slotCost(s){const h=(s.en-s.st)/36e5,nh=nightMin(s.st,s.en)/60,rate=s.role=='C'?PAR.coordH:PAR.brutoH;return{h,nh,bruto:h*rate+nh*rate*PAR.nocPct/100}}
+const eur=x=>x.toLocaleString('es-ES',{style:'currency',currency:'EUR'});
+function renderCost(SL,m){const G={};let tot={h:0,nh:0,bruto:0};
+ SL.forEach(s=>{const c=slotCost(s),g=s.sv?s.sv.n:s.p;G[g]=G[g]||{h:0,nh:0,bruto:0,n:0};G[g].h+=c.h;G[g].nh+=c.nh;G[g].bruto+=c.bruto;G[g].n++;tot.h+=c.h;tot.nh+=c.nh;tot.bruto+=c.bruto});
+ const emp=b=>b*(1+(PAR.ssEmp+PAR.atep)/100),fac=b=>emp(b)*(1+PAR.margen/100),net=b=>b*(1-(PAR.ssTrab+PAR.irpf)/100);
+ let h='<table><tr><th>Concepto</th><th>Turnos</th><th>Horas</th><th>de noche</th><th>Bruto</th><th>Neto aprox.</th><th>Aportes empresa</th><th>Coste empresa</th><th>Facturar (sin IVA)</th></tr>';
+ Object.entries(G).forEach(([g,v])=>h+=`<tr><td>${g}</td><td>${v.n}</td><td>${f1(v.h)}</td><td>${f1(v.nh)}</td><td>${eur(v.bruto)}</td><td>${eur(net(v.bruto))}</td><td>${eur(emp(v.bruto)-v.bruto)}</td><td>${eur(emp(v.bruto))}</td><td>${eur(fac(v.bruto))}</td></tr>`);
+ const F=fac(tot.bruto),I=F*PAR.iva/100;
+ h+=`<tr style="font-weight:700"><td>Total evento</td><td>${SL.length}</td><td>${f1(tot.h)}</td><td>${f1(tot.nh)}</td><td>${eur(tot.bruto)}</td><td>${eur(net(tot.bruto))}</td><td>${eur(emp(tot.bruto)-tot.bruto)}</td><td>${eur(emp(tot.bruto))}</td><td>${eur(F)}</td></tr></table>
+ <div style="margin-top:8px;font-size:16px"><b>Factura a CCIB:</b> ${eur(F)} + IVA ${PAR.iva}% (${eur(I)}) = <b>${eur(F+I)}</b> <span class="mu">· margen ${PAR.margen}% sobre coste empresa</span></div>
+ <div class="mu" style="margin-top:4px">Bruto ${PAR.brutoH} €/h (coordinador ${PAR.coordH} €/h) + plus nocturno ${PAR.nocPct}% entre 22 y 6 h. Aportes empresa ${PAR.ssEmp}% + AT/EP ${PAR.atep}%. Neto = bruto − Seg. Social trabajador ${PAR.ssTrab}% − IRPF ${PAR.irpf}%. Todo editable en «Reglas». El SMI 2026 es 17.094 €/año (≈9,71 €/h con 1.760 h); tu convenio puede fijar más. Orientativo: confírmalo con tu gestoría.</div>`;
+ $('cost').innerHTML=h;return{emp,net}}
 function renderRot(SL,m){const all=[...new Set(SL.map(s=>s.date))].sort();if(!all.length){$('rot').innerHTML='';return}
- const days=rangeDays(all[0],all[all.length-1]),used=EMP.filter(e=>m[e.id]).sort((a,b)=>EN(a.id).localeCompare(EN(b.id),'es')),libres=EMP.filter(e=>!m[e.id]);
- const ab={montaje:'M',evento:'E',desmontaje:'D'};
+ const days=rangeDays(all[0],all[all.length-1]),used=EMP.filter(e=>m[e.id]||(e.no||[]).length||(AB[e.id]||[]).length).sort((a,b)=>EN(a.id).localeCompare(EN(b.id),'es')),libres=EMP.filter(e=>!m[e.id]);
+ const ab={montaje:'M',evento:'E',desmontaje:'D',servicio:'S'};
  let h='<table><tr><th>Empleado</th>'+days.map(d=>`<th style="text-align:center">${fdia(d).replace(', ','<br>')}</th>`).join('')+'<th>Días</th><th>Horas</th></tr>';
- used.forEach(e=>{const l=m[e.id],byD={};l.forEach(s=>byD[s.date]=s);let run=0,rest=0,cnt=0;
-  h+=`<tr><td style="white-space:nowrap">${EN(e.id).replace(/</g,'&lt;')}</td>`+days.map(d=>{const s=byD[d];if(s){run++;cnt++;rest=0;const z=s.role=='P'?(s.zone=='EX'?'Extra':byId[s.zone][1]):s.role=='R'?'Correturnos':'Coordinador';return`<td style="text-align:center;background:#eef3fd" title="${s.p} · ${z}">${ab[s.p]}${s.k+1}<br><span class="mu">${clk(s.st)}</span></td>`}
-   const obl=run>=PAR.maxDiasSem||(rest>0&&rest<PAR.descDias&&run==0&&false);if(run>=PAR.maxDiasSem){rest=1;run=0;return'<td style="text-align:center;background:#fff3e0" title="Descanso obligatorio">D</td>'}
-   if(rest>0&&rest<PAR.descDias){rest++;return'<td style="text-align:center;background:#fff3e0" title="Descanso obligatorio">D</td>'}run=0;rest=0;return'<td style="text-align:center;color:#bbb">·</td>'}).join('')+`<td>${cnt}</td><td>${f1(hrs(l)/36e5)}</td></tr>`});
- h+='<tr><td><b>Trabajando</b></td>'+days.map(d=>`<td style="text-align:center"><b>${used.filter(e=>m[e.id].some(s=>s.date==d)).length}</b></td>`).join('')+'<td></td><td></td></tr></table>';
+ used.forEach(e=>{const l=m[e.id]||[],byD={};l.forEach(s=>byD[s.date]=s);let run=0,rest=0,cnt=0;
+  h+=`<tr><td style="white-space:nowrap">${EN(e.id).replace(/</g,'&lt;')}</td>`+days.map(d=>{const s=byD[d];if(s){run++;cnt++;rest=0;const z=s.role=='P'?((s.zone=='EX'||s.zone=='SV')?(s.lbl||'Extra'):byId[s.zone][1]):s.role=='R'?'Correturnos':'Coordinador';const ca=AT[s.key]?.st=='caida',ok=AT[s.key]?.st=='ok';return`<td data-cell="${e.id}|${d}" style="text-align:center;cursor:pointer;background:${ca?'#fde8e8':'#eef3fd'}" title="${s.sv?s.sv.n:s.p} · ${z}">${ab[s.p]}${s.k+1}${ok?' ✔':''}${ca?' ✖':''}<br><span class="mu">${clk(s.st)}</span></td>`}
+   if((e.no||[]).includes(d)||(AB[e.id]||[]).includes(d)){run=0;rest=0;return`<td data-cell="${e.id}|${d}" style="text-align:center;cursor:pointer;background:#f1f1f1" title="No disponible">ND</td>`}
+   const obl=run>=PAR.maxDiasSem||(rest>0&&rest<PAR.descDias&&run==0&&false);if(run>=PAR.maxDiasSem){rest=1;run=0;return`<td data-cell="${e.id}|${d}" style="text-align:center;cursor:pointer;background:#fff3e0" title="Descanso obligatorio">D</td>`}
+   if(rest>0&&rest<PAR.descDias){rest++;return`<td data-cell="${e.id}|${d}" style="text-align:center;cursor:pointer;background:#fff3e0" title="Descanso obligatorio">D</td>`}run=0;rest=0;return`<td data-cell="${e.id}|${d}" style="text-align:center;color:#bbb;cursor:pointer">·</td>`}).join('')+`<td>${cnt}</td><td>${f1(hrs(l)/36e5)}</td></tr>`});
+ h+='<tr><td><b>Trabajando</b></td>'+days.map(d=>`<td style="text-align:center"><b>${used.filter(e=>(m[e.id]||[]).some(s=>s.date==d)).length}</b></td>`).join('')+'<td></td><td></td></tr></table>';
  const vac=used.filter(e=>e.n=='Por contratar').length,dem=days.map(d=>new Set(SL.filter(s=>s.date==d).map(s=>s.key)).size);let lb=Math.max(0,...dem);for(let i=0;i<dem.length;i++){let t=0;for(let j=i;j<Math.min(dem.length,i+7);j++)t+=dem[j];if(dem.length-i>=Math.min(7,dem.length))lb=Math.max(lb,Math.ceil(t/Math.min(PAR.maxDiasSem,Math.min(7,dem.length-i))))}
  $('rot').innerHTML=`<div class="mu" style="margin-bottom:6px">${used.length} personas cubren todo el pedido (mínimo teórico con ${PAR.maxDiasSem}+${PAR.descDias}: ${lb})${vac?` · <b class="alert">${vac} por contratar</b>`:''}${libres.length?` · ${libres.length} de la lista sin turno`:''}. M/E/D = montaje/evento/desmontaje + nº de turno. <span style="background:#fff3e0;padding:0 4px">D</span> = días libres obligatorios tras ${PAR.maxDiasSem} seguidos.</div><div class="scroll">${h}</div>`}
 function zoneNames(id,p){const SL=slots(p).filter(s=>s.role=='P'&&s.zone==id&&AS[s.key]);if(!SL.length)return '<span class="mu">Sin asignar. Ve a «Cuadrante».</span>';
  const g={};SL.forEach(s=>{const k=fdia(s.date)+' '+clk(s.st)+'–'+clk(s.en);(g[k]=g[k]||[]).push(EN(AS[s.key])+(RP[s.key]?' (reemplaza a '+EN(RP[s.key].prev)+')':''))});return Object.entries(g).map(([k,v])=>`${k}: ${v.join(', ')}`).join('<br>')}
 let cPh='evento',cDay='';
 function renderCuad(){$('cPor').textContent=PAR.coordPor;const SL=allSlots(),m=byEmp(SL),warn={};Object.entries(m).forEach(([e,l])=>warn[e]=checkEmp(l));
- $('cPh').innerHTML=PH.map(p=>`<option ${p==cPh?'selected':''}>${p}</option>`).join('');
- const days=dayList(TT[cPh]);if(!days.includes(cDay))cDay=days[0]||'';$('cDay').innerHTML=days.map(d=>`<option value="${d}" ${d==cDay?'selected':''}>${fdia(d)}</option>`).join('');
- const sl=SL.filter(s=>s.p==cPh&&s.date==cDay),q=plan(cPh,prov),opt=k=>'<option value="">— sin asignar —</option>'+EMP.map(e=>`<option value="${e.id}" ${AS[k]==e.id?'selected':''}>${EN(e.id).replace(/</g,'&lt;')}</option>`).join('');
+ $('cPh').innerHTML=PH.concat(SV.length?['servicio']:[]).map(p=>`<option value="${p}" ${p==cPh?'selected':''}>${p=='servicio'?'servicios adicionales':p}</option>`).join('');
+ const days=cPh=='servicio'?[...new Set(SV.flatMap(v=>v.days||[]))].sort():dayList(TT[cPh]);if(!days.includes(cDay))cDay=days[0]||'';$('cDay').innerHTML=days.map(d=>`<option value="${d}" ${d==cDay?'selected':''}>${fdia(d)}</option>`).join('');
+ const sl=SL.filter(s=>s.p==cPh&&s.date==cDay),q=cPh=='servicio'?{}:plan(cPh,prov),opt=k=>'<option value="">— sin asignar —</option>'+EMP.map(e=>`<option value="${e.id}" ${AS[k]==e.id?'selected':''}>${EN(e.id).replace(/</g,'&lt;')}</option>`).join('');
  let h='';if(!sl.length)h='<div class="card mu">Sin turnos: marca zonas en el plano y pon fechas y horario en «Turnos y plantilla».</div>';
- for(let k=0;k<(q.T||0);k++){const ts=sl.filter(s=>s.k==k);if(!ts.length)continue;
-  h+=`<div class="card"><b>Turno ${k+1} · ${fdia(cDay)} ${clk(ts[0].st)}–${clk(ts[0].en)}</b> <span class="mu">${q.pause?'· pausa '+q.pause+' min por persona':'· sin pausa obligatoria'}</span><div class="scroll"><table><tr><th>Rol</th><th>Zona · puesto</th><th>Descanso</th><th>Empleado</th><th>Aviso</th></tr>`;
+ const GR=[...new Set(sl.map(s=>(s.sv?s.sv.id:'')+'|'+s.k))];GR.forEach(gk=>{const ts=sl.filter(s=>(s.sv?s.sv.id:'')+'|'+s.k==gk),k=ts[0].k,pz=ts[0].pz||0;
+  h+=`<div class="card"><b>${ts[0].sv?ts[0].sv.n+' · ':''}Turno ${k+1} · ${fdia(cDay)} ${clk(ts[0].st)}–${clk(ts[0].en)}</b> <span class="mu">${pz?'· pausa '+pz+' min por persona':'· sin pausa obligatoria'}</span><div class="scroll"><table><tr><th>Rol</th><th>Zona · puesto</th><th>Descanso</th><th>Empleado</th><th>Aviso</th></tr>`;
   ts.forEach(s=>{const e=AS[s.key],wv=e?(warn[e]||[]):[];let rol,zn,ds;
-   if(s.role=='P'){rol='Puesto';zn=s.zone=='EX'?'Extra · '+(s.lbl||''):byId[s.zone][1]+' · '+s.n;ds=s.ps?clk(s.ps)+'–'+clk(s.ps+q.pause*6e4)+(s.rel?' <span class="mu">(le cubre correturnos '+s.rel+')</span>':''):'—'}
-   else if(s.role=='R'){rol='<b>Correturnos</b>';const cov=ts.filter(x=>x.role=='P'&&x.rel==s.n);zn='<span class="mu">Cubre: '+cov.map(x=>(x.zone=='EX'?'Extra':byId[x.zone][1])+' '+x.n+' '+clk(x.ps)).join(' · ')+'</span>';ds=clk(s.ps)+'–'+clk(s.ps+q.pause*6e4)}
-   else{rol='<b>Coordinador</b>';zn='<span class="mu">Recibe las peticiones de CCIB y dirige al equipo</span>';ds=s.ps?clk(s.ps)+'–'+clk(s.ps+q.pause*6e4):'—'}
+   if(s.role=='P'){rol='Puesto';zn=(s.zone=='EX'||s.zone=='SV')?(s.lbl||'Extra')+' · '+s.n:byId[s.zone][1]+' · '+s.n;ds=s.ps?clk(s.ps)+'–'+clk(s.ps+pz*6e4)+(s.rel?' <span class="mu">(le cubre correturnos '+s.rel+')</span>':''):'—'}
+   else if(s.role=='R'){rol='<b>Correturnos</b>';const cov=ts.filter(x=>x.role=='P'&&x.rel==s.n);zn='<span class="mu">Cubre: '+cov.map(x=>((x.zone=='EX'||x.zone=='SV')?(x.lbl||'Extra'):byId[x.zone][1])+' '+x.n+' '+clk(x.ps)).join(' · ')+'</span>';ds=clk(s.ps)+'–'+clk(s.ps+pz*6e4)}
+   else{rol='<b>Coordinador</b>';zn='<span class="mu">Recibe las peticiones de CCIB y dirige al equipo</span>';ds=s.ps?clk(s.ps)+'–'+clk(s.ps+pz*6e4):'—'}
    h+=`<tr><td>${rol}</td><td>${zn}</td><td>${ds}</td><td><select data-as="${s.key}">${opt(s.key)}</select></td><td>${RP[s.key]?'<span class="tag">Reemplaza a '+EN(RP[s.key].prev)+' · '+new Date(RP[s.key].t).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</span> ':''}${wv.length?'<span class="alert">'+wv.join(' · ')+'</span>':(e?'<span class="ok">OK</span>':'')}</td></tr>`});
-  h+='</table></div></div>'}
- if(sl.length){const W={};sl.filter(s=>s.role=='P').forEach(s=>{const zk=s.zone=='EX'?'Extra':byId[s.zone][1];(W[zk]=W[zk]||[]).push(`T${s.k+1} ${clk(s.st)}–${clk(s.en)}: `+(AS[s.key]?EN(AS[s.key])+(RP[s.key]?' <span class="tag">reemplaza a '+EN(RP[s.key].prev)+'</span>':''):'<span class="alert">sin asignar</span>'))});
+  h+='</table></div></div>'});
+ if(sl.length){const W={};sl.filter(s=>s.role=='P').forEach(s=>{const zk=(s.zone=='EX'||s.zone=='SV')?(s.lbl||'Extra'):byId[s.zone][1];(W[zk]=W[zk]||[]).push(`T${s.k+1} ${clk(s.st)}–${clk(s.en)}: `+(AS[s.key]?EN(AS[s.key])+(RP[s.key]?' <span class="tag">reemplaza a '+EN(RP[s.key].prev)+'</span>':''):'<span class="alert">sin asignar</span>'))});
   h='<div class="card"><b>Quién está en cada zona · '+fdia(cDay)+'</b><div class="scroll"><table><tr><th>Zona</th><th>Personas</th></tr>'+Object.entries(W).map(([z,v])=>`<tr><td>${z}</td><td style="text-align:left">${v.join('<br>')}</td></tr>`).join('')+'</table></div></div>'+h}
- $('cuad').innerHTML=h;renderRot(SL,m);
+ $('cuad').innerHTML=h;
  $('cuad').querySelectorAll('select[data-as]').forEach(x=>x.onchange=()=>{const k=x.dataset.as,o=AS[k];let rep=false;if(o&&x.value&&o!=x.value)rep=confirm('¿'+EN(x.value)+' es un REEMPLAZO de '+EN(o)+'?\n\nAceptar: reemplazo (queda registrado y lo ve el cliente).\nCancelar: corrección del cuadrante.');if(x.value)AS[k]=x.value;else delete AS[k];if(rep)RP[k]={prev:o,t:Date.now(),by:who()};else if(!x.value||!o)delete RP[k];log(rep?'Reemplazo':'Cuadrante',`${k.split('|').slice(0,3).join(' ')}: ${EN(o)||'—'} → ${EN(x.value)||'—'}`,sum(calc().evento));render()});
- const tot=SL.length,asg=SL.filter(s=>AS[s.key]).length;$('cMsg').textContent=`${asg}/${tot} puestos con nombre`;
- $('empT').innerHTML='<tr><th>Empleado</th><th>Turnos</th><th>Horas</th><th>Aviso</th><th></th></tr>'+EMP.map(e=>{const l=m[e.id]||[],hh=l.reduce((a,z)=>a+(z.en-z.st)/36e5,0),w=warn[e.id]||[];return`<tr><td>${EN(e.id).replace(/</g,'&lt;')}</td><td>${l.length}</td><td>${f1(hh)}</td><td>${w.length?'<span class="alert">'+w.join(' · ')+'</span>':'<span class="ok">OK</span>'}</td><td><button data-del="${e.id}">×</button></td></tr>`}).join('');
- $('empT').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const e=EMP.find(x=>x.id==b.dataset.del);if(!e||!confirm('¿Quitar a '+EN(e.id)+' de la lista de empleados? Sus asignaciones quedarán vacías.'))return;EMP=EMP.filter(x=>x!==e);Object.keys(AS).forEach(k=>{if(AS[k]==e.id)delete AS[k]});saveEmp();log('Empleados','Quita '+EN(e.id),sum(calc().evento));render()})}
+ const tot=SL.length,asg=SL.filter(s=>AS[s.key]).length;$('cMsg').textContent=`${asg}/${tot} puestos con nombre`;}
 $('zAdd').onclick=ev=>{ev.stopPropagation();placing=placing?null:{};render()};
 $('zq').oninput=renderZonas;$('zOnlyOff').onchange=renderZonas;$('zAllOn').onclick=()=>{ZOFF=[];saveCfg();render()};
 $('plSave').onclick=()=>{const cur0=PL[$('plSel').value];const n=(prompt('Nombre de la plantilla (zonas mínimas de este tipo de evento)',cur0?cur0.n:'')||'').trim();if(!n)return;const ex=Object.entries(PL).find(([k,p])=>p.n==n);const id=ex?ex[0]:'T'+Date.now().toString(36);if(ex&&!confirm('Ya existe «'+n+'». ¿Sustituirla?'))return;PL[id]={n,sel:SEL(),ov:JSON.parse(JSON.stringify(ov)),pv:JSON.parse(JSON.stringify(pv)),size:$('size').value,ts:Date.now(),by:who()};saveCfg();renderPL();$('plSel').value=id;log('Plantilla','Guarda «'+n+'» ('+PL[id].sel.length+' zonas)',sum(calc().evento))};
 $('plApply').onclick=()=>{const t=PL[$('plSel').value];if(!t)return;if(SEL().length>3&&!confirm('¿Sustituir las zonas de este pedido por la plantilla «'+t.n+'»?'))return;const b=sum(calc().evento);sel=new Set(t.sel);ov=normOv(t.ov);pv=normOv(t.pv);if(t.size)$('size').value=t.size;cur=null;log('Plantilla','Aplica «'+t.n+'»',b);render()};
 $('plDel').onclick=()=>{const k=$('plSel').value;if(!PL[k]||!confirm('¿Borrar la plantilla «'+PL[k].n+'»?'))return;delete PL[k];saveCfg();render()};
 $('cPh').onchange=()=>{cPh=$('cPh').value;cDay='';renderCuad()};$('cDay').onchange=()=>{cDay=$('cDay').value;renderCuad()};
-$('empAddB').onclick=()=>{const L=[];if($('empN').value.trim())L.push([$('empN').value.trim(),$('empA').value.trim()]);$('empAdd').value.split('\n').map(x=>x.trim().split(/\s+/)).filter(x=>x[0]).forEach(x=>L.push([x[0],x.slice(1).join(' ')]));if(!L.length)return;const bad=L.filter(x=>!x[1]);if(bad.length){alert('Falta el apellido de: '+bad.map(x=>x[0]).join(', '));return}const ns=L;L.forEach(x=>EMP.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:x[0],a:x[1]}));$('empAdd').value='';$('empN').value='';$('empA').value='';saveEmp();log('Empleados','Añade '+ns.length,sum(calc().evento));render()};
+$('empAddB').onclick=()=>{const L=[];if($('empN').value.trim())L.push([$('empN').value.trim(),$('empA').value.trim(),$('empT1').value.trim()]);$('empAdd').value.split('\n').map(x=>x.trim().split(/\s+/)).filter(x=>x[0]).forEach(x=>L.push([x[0],x.slice(1).join(' ')]));if(!L.length)return;const bad=L.filter(x=>!x[1]);if(bad.length){alert('Falta el apellido de: '+bad.map(x=>x[0]).join(', '));return}const ns=L;L.forEach(x=>EMP.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:x[0],a:x[1],tel:x[2]||''}));$('empT1').value='';$('empAdd').value='';$('empN').value='';$('empA').value='';saveEmp();log('Empleados','Añade '+ns.length,sum(calc().evento));render()};
 $('cAuto').onclick=()=>{const modo=$('cModo').value;let r=bestAssign(modo,false);if(r.miss&&confirm('Con la lista actual quedan '+r.miss+' puestos sin cubrir sin romper descansos.\n\n¿Crear las vacantes «Por contratar» mínimas para cubrirlos?')){const r2=bestAssign(modo,true);r.done+=r2.done;r.miss=r2.miss;r.nuevos=r2.nuevos}log('Cuadrante','Autoasignar ('+modo+'): '+r.done+' asignados'+(r.nuevos?' · '+r.nuevos+' por contratar':'')+(r.miss?' · '+r.miss+' sin cubrir':''),sum(calc().evento));render();$('cMsg').textContent+=r.miss?` · faltan personas para ${r.miss} puestos`:(r.nuevos?` · ${r.nuevos} por contratar`:' · completo')};
 $('cClear').onclick=()=>{if(!Object.keys(AS).length||!confirm('¿Vaciar todas las asignaciones de este pedido?'))return;AS={};log('Cuadrante','Vacía asignaciones',sum(calc().evento));render()};
 /* Calendario: «Días» sueltos o «Desde – hasta» */
 let CAL=null;const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-function openCal(p,btn){const d=dayList(TT[p]),f=d[0]||iso(new Date());CAL={p,mode:d.length>1&&d.every((x,i)=>!i||addD(d[i-1],1)==x)?'rango':'dias',sel:new Set(d),a:null,y:+f.slice(0,4),m:+f.slice(5,7)-1};
+function openCal(p,btn,tg){const d=tg?tg.get().slice().sort():dayList(TT[p]),f=d[0]||iso(new Date());CAL={p,tg,mode:d.length>1&&d.every((x,i)=>!i||addD(d[i-1],1)==x)?'rango':'dias',sel:new Set(d),a:null,y:+f.slice(0,4),m:+f.slice(5,7)-1};
  const pop=$('calPop'),rc=btn.getBoundingClientRect();pop.style.display='block';pop.style.top=Math.min(window.innerHeight-430,rc.bottom+6)+window.scrollY+'px';pop.style.left=Math.max(8,Math.min(window.innerWidth-330,rc.left))+'px';drawCal()}
 function drawCal(){const c=CAL,first=new Date(c.y,c.m,1),off=(first.getDay()+6)%7,nd=new Date(c.y,c.m+1,0).getDate();let g='';
  for(let i=0;i<off;i++)g+='<span></span>';
@@ -339,20 +388,70 @@ function drawCal(){const c=CAL,first=new Date(c.y,c.m,1),off=(first.getDay()+6)%
  $('calPop').innerHTML=`<div class="calT"><button data-mo="dias" class="${c.mode=='dias'?'on':''}">Días</button><button data-mo="rango" class="${c.mode=='rango'?'on':''}">Desde – hasta</button></div>
  <div class="calH"><button data-nav="-1">‹</button><b>${MES[c.m]} ${c.y}</b><button data-nav="1">›</button></div>
  <div class="calG"><i>L</i><i>M</i><i>X</i><i>J</i><i>V</i><i>S</i><i>D</i>${g}</div>
- <div class="mu" style="margin:6px 2px">${c.mode=='rango'?(c.a?'Toca el último día':'Toca el primer día'):'Toca cada día que se trabaja'} · ${c.sel.size} día(s) · fase ${c.p}</div>
+ <div class="mu" style="margin:6px 2px">${c.mode=='rango'?(c.a?'Toca el último día':'Toca el primer día'):'Toca cada día que se trabaja'} · ${c.sel.size} día(s) · ${c.tg?c.tg.lbl:'fase '+c.p}</div>
  <div class="calF"><button data-cl="x">Limpiar</button><button data-cl="ok" class="on">Listo</button></div>`;
  const P=$('calPop');
  P.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{c.mode=b.dataset.mo;c.a=null;drawCal()});
  P.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{c.m+=+b.dataset.nav;if(c.m<0){c.m=11;c.y--}if(c.m>11){c.m=0;c.y++}drawCal()});
  P.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const ds=b.dataset.d;if(c.mode=='dias'){c.sel.has(ds)?c.sel.delete(ds):c.sel.add(ds)}else{if(!c.a){c.a=ds;c.sel=new Set([ds])}else{const a=c.a<ds?c.a:ds,z=c.a<ds?ds:c.a;c.sel=new Set(rangeDays(a,z));c.a=null}}drawCal()});
  P.querySelector('[data-cl="x"]').onclick=()=>{c.sel=new Set();c.a=null;drawCal()};
- P.querySelector('[data-cl="ok"]').onclick=()=>{const t=TT[c.p],old=fdias(t),d=[...c.sel].sort();t.days=d;t.ds=d[0]||'';t.de=d[d.length-1]||'';$('calPop').style.display='none';log('Fechas',`${c.p}: ${old} → ${fdias(t)}`,sum(calc().evento));CAL=null;render()}}
+ P.querySelector('[data-cl="ok"]').onclick=()=>{if(c.tg){c.tg.set([...c.sel].sort());$('calPop').style.display='none';CAL=null;render();return}const t=TT[c.p],old=fdias(t),d=[...c.sel].sort();t.days=d;t.ds=d[0]||'';t.de=d[d.length-1]||'';$('calPop').style.display='none';log('Fechas',`${c.p}: ${old} → ${fdias(t)}`,sum(calc().evento));CAL=null;render()}}
 $('calPop').addEventListener('click',ev=>ev.stopPropagation());
-document.addEventListener('click',ev=>{const P=$('calPop');if(P&&P.style.display=='block'&&!P.contains(ev.target)&&!ev.target.closest('[data-cal]')){P.style.display='none';CAL=null}});
-function render(){renderPsel();renderPL();renderZonas();renderCuad();renderTurnos();renderParams();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
+document.addEventListener('click',ev=>{const P=$('calPop');if(P&&P.style.display=='block'&&!P.contains(ev.target)&&!ev.target.closest('[data-cal],[data-scal],[data-ecal]')){P.style.display='none';CAL=null}});
+/* ── Servicios adicionales ── */
+function renderSV(){$('svT').innerHTML=SV.length?'<tr><th>Servicio</th><th>Tipo</th><th>Fechas</th><th>Horario</th><th>Personas a la vez</th><th>Zona</th><th>Turnos</th><th></th></tr>'+SV.map((v,i)=>{const q=svPlan(v);return`<tr><td><input data-sv="${i}" data-f="n" value="${(v.n||'').replace(/"/g,'&quot;')}"></td><td><select data-sv="${i}" data-f="tipo">${Object.entries(SVT).map(([k,l])=>`<option value="${k}" ${v.tipo==k?'selected':''}>${l}</option>`).join('')}</select></td><td><button data-scal="${i}">📅 ${fdias({days:v.days||[]})}</button></td><td><input type="time" data-sv="${i}" data-f="i" value="${v.i}"> – <input type="time" data-sv="${i}" data-f="f" value="${v.f}"></td><td><input type="number" min="0" data-sv="${i}" data-f="pers" value="${v.pers||0}"></td><td><select data-sv="${i}" data-f="zona"><option value="">—</option>${Z.filter(z=>act(z[0])).map(z=>`<option value="${z[0]}" ${v.zona==z[0]?'selected':''}>${z[1]} (${z[2]})</option>`).join('')}</select></td><td>${q.T?q.T+' × '+f1(q.len)+' h'+(q.noct?' <span class="tag">noche · máx '+PAR.nocMaxDia+' h</span>':'')+(q.rel?' +'+q.rel+' correturnos':''):'—'}</td><td><button data-svdel="${i}">×</button></td></tr>`}).join(''):'<tr><td class="mu">Sin servicios adicionales.</td></tr>';
+ $('svT').querySelectorAll('[data-sv]').forEach(x=>x.onchange=()=>{const v=SV[+x.dataset.sv],f=x.dataset.f;v[f]=f=='pers'?Math.max(0,+x.value||0):x.value;if(f=='zona'&&x.value&&(!v.n||Object.values(SVT).includes(v.n)))v.n=SVT[v.tipo]+' · '+byId[x.value][1];log('Servicio',`${v.n}: ${f} = ${x.value}`,sum(calc().evento));render()});
+ $('svT').querySelectorAll('[data-scal]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const v=SV[+b.dataset.scal];openCal(null,b,{lbl:v.n,get:()=>v.days||[],set:d=>{v.days=d;log('Servicio',v.n+': '+fdias({days:d}),sum(calc().evento))}})});
+ $('svT').querySelectorAll('[data-svdel]').forEach(b=>b.onclick=()=>{const v=SV[+b.dataset.svdel];if(!confirm('¿Quitar el servicio «'+v.n+'»?'))return;SV.splice(+b.dataset.svdel,1);log('Servicio','Quita '+v.n,sum(calc().evento));render()})}
+document.querySelectorAll('[data-svadd]').forEach(b=>b.onclick=()=>{const t=b.dataset.svadd,dd=dayList(TT.montaje),def={noct:['22:00','06:00',6],vall:['07:00','15:00',4],aux:['08:00','16:00',2],otro:['08:00','16:00',1]}[t];SV.push({id:'S'+Date.now().toString(36),n:SVT[t],tipo:t,days:t=='noct'||t=='vall'?dd.slice():dayList(TT.evento),i:def[0],f:def[1],pers:def[2],zona:''});log('Servicio','Añade '+SVT[t],sum(calc().evento));render()});
+/* ── Personal y control ── */
+let kDay='';
+function renderPers(){const SL=allSlots(),m=byEmp(SL),warn={};Object.entries(m).forEach(([e,l])=>warn[e]=checkEmp(l));
+ $('empT').innerHTML='<tr><th>Nombre</th><th>Apellidos</th><th>Teléfono</th><th>Estado</th><th>No disponible</th><th>Días</th><th>Horas</th><th>Bruto</th><th>Neto aprox.</th><th>Aviso</th><th></th></tr>'+EMP.slice().sort((a,b)=>EN(a.id).localeCompare(EN(b.id),'es')).map(e=>{const l=m[e.id]||[],hh=l.reduce((a,z)=>a+(z.en-z.st)/36e5,0),br=l.reduce((a,z)=>a+slotCost(z).bruto,0),w=warn[e.id]||[],nd=(e.no||[]).length;
+  return`<tr><td><input data-ef="n" data-e="${e.id}" value="${(e.n||'').replace(/"/g,'&quot;')}"></td><td><input data-ef="a" data-e="${e.id}" value="${(e.a||'').replace(/"/g,'&quot;')}"></td><td><input data-ef="tel" data-e="${e.id}" value="${(e.tel||'').replace(/"/g,'&quot;')}" style="width:110px"></td><td><select data-ef="estado" data-e="${e.id}"><option value="activo">activo</option><option value="baja" ${e.estado=='baja'?'selected':''}>baja</option></select></td><td><button data-ecal="${e.id}">📅 ${nd?nd+' día(s)':'—'}</button></td><td>${new Set(l.map(z=>z.date)).size}</td><td>${f1(hh)}</td><td>${eur(br)}</td><td>${eur(br*(1-(PAR.ssTrab+PAR.irpf)/100))}</td><td>${w.length?'<span class="alert">'+w.join(' · ')+'</span>':(l.length?'<span class="ok">OK</span>':'')}</td><td><button data-del="${e.id}">×</button></td></tr>`}).join('');
+ $('empT').querySelectorAll('[data-ef]').forEach(x=>x.onchange=()=>{const e=EMP.find(z=>z.id==x.dataset.e);if(!e)return;const f=x.dataset.ef,v=x.value.trim();if(f=='a'&&!v){alert('El apellido es obligatorio');x.value=e.a||'';return}e[f]=v;saveEmp();log('Empleados',EN(e.id)+': '+f+' = '+v,sum(calc().evento));render()});
+ $('empT').querySelectorAll('[data-ecal]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const e=EMP.find(z=>z.id==b.dataset.ecal);openCal(null,b,{lbl:'no disponible · '+EN(e.id),get:()=>e.no||[],set:d=>{e.no=d;saveEmp();log('Empleados',EN(e.id)+' no disponible: '+(d.map(fdia).join(', ')||'—'),sum(calc().evento))}})});
+ $('empT').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const e=EMP.find(x=>x.id==b.dataset.del);if(!e||!confirm('¿Quitar a '+EN(e.id)+' de la lista de empleados? Sus asignaciones quedarán vacías.'))return;EMP=EMP.filter(x=>x!==e);Object.keys(AS).forEach(k=>{if(AS[k]==e.id)delete AS[k]});saveEmp();log('Empleados','Quita '+EN(e.id),sum(calc().evento));render()});
+ renderRot(SL,m);
+ $('rot').querySelectorAll('[data-cell]').forEach(td=>td.onclick=ev=>{ev.stopPropagation();cellMenu(td,td.dataset.cell.split('|'),SL,m)});
+ // control del día
+ const days=[...new Set(SL.map(s=>s.date))].sort();if(!days.includes(kDay))kDay=days.includes(iso(new Date()))?iso(new Date()):(days[0]||'');
+ $('kDay').innerHTML=days.map(d=>`<option value="${d}" ${d==kDay?'selected':''}>${fdia(d)}</option>`).join('');
+ const sl=SL.filter(s=>s.date==kDay).sort((a,b)=>a.st-b.st||(a.role>b.role?1:-1)),busy=new Set(sl.map(s=>AS[s.key]).filter(Boolean));
+ const free=EMP.filter(e=>avail(e,kDay)&&!busy.has(e.id)),retNeed=Math.ceil(sl.length*PAR.reten/100);
+ const nOk=sl.filter(s=>AT[s.key]?.st=='ok').length,nCa=sl.filter(s=>AT[s.key]?.st=='caida').length,nRp=sl.filter(s=>RP[s.key]&&RP[s.key].t&&iso(new Date(RP[s.key].t))==kDay).length;
+ $('kSum').textContent=`${sl.length} puestos · ${nOk} presentes · ${nCa} caídas sin cubrir · ${nRp} reemplazos hoy`;
+ $('kRet').innerHTML=`<span class="mu">Retén recomendado (${PAR.reten}%): <b>${retNeed}</b> · libres y disponibles hoy: ${free.length?free.slice(0,12).map(e=>EN(e.id)).join(', ')+(free.length>12?'…':''):'nadie'}</span>`;
+ const lab=s=>(s.sv?s.sv.n+' · ':(s.p+' · '))+(s.role=='P'?((s.zone=='EX'||s.zone=='SV')?(s.lbl||'Extra'):byId[s.zone][1])+' '+s.n:s.role=='R'?'Correturnos '+s.n:'Coordinador');
+ $('kT').innerHTML='<tr><th>Horario</th><th>Puesto</th><th>Empleado</th><th>Estado</th><th>Reemplazo</th></tr>'+sl.map(s=>{const e=AS[s.key],st=AT[s.key]?.st,cands=st=='caida'||!e?EMP.filter(x=>x.id!=e&&avail(x,kDay)&&!checkEmp((m[x.id]||[]).concat([s])).length).sort((a,b)=>hrs(m[a.id])-hrs(m[b.id])):[];
+  return`<tr${st=='caida'?' style="background:#fde8e8"':''}><td>${clk(s.st)}–${clk(s.en)}</td><td>${lab(s)}</td><td>${e?EN(e):'<span class="alert">sin asignar</span>'}${RP[s.key]?' <span class="tag">reemplaza a '+EN(RP[s.key].prev)+'</span>':''}</td>
+  <td>${e&&st!='caida'?`<button data-at="${s.key}" data-v="ok" class="${st=='ok'?'on':''}">✔ Presente${st=='ok'&&AT[s.key].t?' '+clk(AT[s.key].t):''}</button> <button data-at="${s.key}" data-v="caida">✖ Caída</button>`:(st=='caida'?'<b class="alert">Caída</b>':'')}</td>
+  <td>${st=='caida'||!e?`<select data-rp="${s.key}"><option value="">${cands.length?'Elegir reemplazo ('+cands.length+')':'Nadie disponible: añade empleados'}</option>${cands.map(x=>`<option value="${x.id}">${EN(x.id)} · ${f1(hrs(m[x.id])/36e5)} h</option>`).join('')}</select>`:''}</td></tr>`}).join('');
+ $('kT').querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>{const k=b.dataset.at,v=b.dataset.v,e=AS[k],s0=sl.find(x=>x.key==k);
+  if(v=='ok'){AT[k]={st:'ok',t:Date.now(),by:who()};log('Presente',EN(e)+' · '+lab(s0),sum(calc().evento))}
+  else{const mot=prompt('Motivo de la caída de '+EN(e)+' (enfermedad, no se presenta…)','');if(mot===null)return;AT[k]={st:'caida',t:Date.now(),by:who(),motivo:mot,emp:e};(AB[e]=AB[e]||[]).includes(kDay)||(AB[e]=AB[e]||[]).push(kDay);log('Caída',EN(e)+' · '+lab(s0)+(mot?' · '+mot:''),sum(calc().evento))}render()});
+ $('kT').querySelectorAll('[data-rp]').forEach(x=>x.onchange=()=>{if(!x.value)return;const k=x.dataset.rp,o=AT[k]?.emp||AS[k];AS[k]=x.value;if(o)RP[k]={prev:o,t:Date.now(),by:who(),motivo:AT[k]?.motivo||''};AT[k]={st:'pend'};log('Reemplazo',`${EN(o)||'—'} → ${EN(x.value)} · ${lab(sl.find(z=>z.key==k))}`,sum(calc().evento));render()});
+ renderCost(SL,m)}
+function cellMenu(td,[eid,d],SL,m){const e=EMP.find(x=>x.id==eid),mine=(m[eid]||[]).find(s=>s.date==d),P=$('calPop'),rc=td.getBoundingClientRect();
+ const open=SL.filter(s=>s.date==d&&(!AS[s.key]||AT[s.key]?.st=='caida'));
+ const lab=s=>(s.sv?s.sv.n:s.p)+' T'+(s.k+1)+' '+clk(s.st)+' · '+(s.role=='P'?((s.zone=='EX'||s.zone=='SV')?(s.lbl||'Extra'):byId[s.zone][1])+' '+s.n:s.role=='R'?'Correturnos':'Coordinador');
+ const nd=(e.no||[]).includes(d)||(AB[eid]||[]).includes(d);
+ P.innerHTML=`<b>${EN(eid)}</b><div class="mu">${fdia(d)}</div><div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">${mine?`<div class="mu">${lab(mine)}</div><button data-cm="quitar">Quitar de este día</button><button data-cm="caida">✖ Caída (buscar reemplazo)</button>`:''}
+  ${!mine&&!nd?(open.length?'<label class="mu">Asignar a un puesto libre</label><select data-cm="asig"><option value="">—</option>'+open.map(s=>`<option value="${s.key}">${lab(s)}</option>`).join('')+'</select>':'<span class="mu">No hay puestos libres este día</span>'):''}
+  <button data-cm="nd">${nd?'Volver a disponible':'No disponible este día'}</button><button data-cm="x">Cerrar</button></div>`;
+ P.style.display='block';P.style.top=rc.bottom+window.scrollY+4+'px';P.style.left=Math.max(8,Math.min(window.innerWidth-330,rc.left-100))+'px';
+ const done=(a,t)=>{P.style.display='none';log(a,EN(eid)+' · '+fdia(d)+(t?' · '+t:''),sum(calc().evento));render()};
+ P.querySelectorAll('[data-cm]').forEach(b=>{const k=b.dataset.cm;if(k=='asig')b.onchange=()=>{const s=SL.find(x=>x.key==b.value);if(!s)return;const w=checkEmp((m[eid]||[]).concat([s]));if(w.length&&!confirm('Rompe normas: '+w.join(' · ')+'. ¿Asignar igualmente?'))return;const o=AT[s.key]?.emp||AS[s.key];AS[s.key]=eid;if(o&&o!=eid)RP[s.key]={prev:o,t:Date.now(),by:who()};if(AT[s.key]?.st=='caida')AT[s.key]={st:'pend'};done('Asigna',lab(s))};
+  else b.onclick=()=>{if(k=='x'){P.style.display='none';return}
+   if(k=='quitar'){delete AS[mine.key];delete AT[mine.key];return done('Quita',lab(mine))}
+   if(k=='caida'){AT[mine.key]={st:'caida',t:Date.now(),by:who(),emp:eid};(AB[eid]=AB[eid]||[]).push(d);kDay=d;done('Caída',lab(mine));document.querySelector('[data-v="pers"]').click();$('kT').scrollIntoView({block:'center'});return}
+   if(k=='nd'){if(nd){e.no=(e.no||[]).filter(x=>x!=d);AB[eid]=(AB[eid]||[]).filter(x=>x!=d);saveEmp();return done('Disponible')}(AB[eid]=AB[eid]||[]).push(d);if(mine){AT[mine.key]={st:'caida',t:Date.now(),by:who(),emp:eid}}return done('No disponible',mine?'puesto liberado':'')}}})}
+$('kDay').onchange=()=>{kDay=$('kDay').value;renderPers()};
+$('pAuto').onclick=()=>{$('cModo').value=$('pModo').value;$('cAuto').click()};
+function render(){renderPsel();renderSV();renderPers();renderPL();renderZonas();renderCuad();renderTurnos();renderParams();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
 $('exB').onclick=()=>{const r=$('exR').value.trim(),n=+$('exN').value;if(!r){alert('El motivo es obligatorio');return}const b=sum(calc().evento);extras.push({n,r});$('exR').value='';log('Añade extra',`+${n} · ${r}`,b);render()};
 $('vph').oninput=render;['size','ev'].forEach(i=>$(i).oninput=()=>{saveP();render()});
 $('psel').onchange=()=>{saveP();loadP(PED[$('psel').value]);render()};$('pNew').onclick=newP;$('rsize').onchange=renderRules;
-document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));['pedido','cuad','reglas','hist'].forEach(v=>$('v-'+v).hidden=v!=b.dataset.v)});
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));['pedido','cuad','pers','reglas','hist'].forEach(v=>$('v-'+v).hidden=v!=b.dataset.v)});
 boot();
 </script></body></html>
