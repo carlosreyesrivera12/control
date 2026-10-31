@@ -9,3 +9,4 @@
 - CCIB: salas bicolor (118–134) y M2 por sala individual (hoy por pares, como el plano isométrico).
 - CCIB: casilla CCIB en el editor de permisos de usuario (hoy: SA siempre; resto por rol por defecto).
 - CCIB: marcar automáticamente «fuera de plazo» según fecha límite del evento.
+- CCIB: tocar «Logística aporta» en una zona → ver nombres de los trabajadores asignados (y check-in).

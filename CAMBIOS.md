@@ -5,6 +5,14 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: lo que pide CCIB vs lo que aporta Logística
+
+**Punto de restauración:** commit `8fb8961`.
+
+- Por zona y fase: **Regla** (tabla), **CCIB pide** (cliente; si difiere de la regla exige motivo) y **Logística aporta** (proveedor), con diferencia.
+- En el plano: número de CCIB y, si difiere, el de Logística en verde (más) o rojo (menos). Totales por fase con ambas columnas.
+- Control automático: CCIB vs regla (±10 %) y zonas donde Logística aporta menos. Quitado el campo «Pedido» manual.
+
 ## 2026-10-31 · CCIB: un solo número por zona y fase
 
 **Punto de restauración:** commit `2cccb94` (CCIB con L/A).
