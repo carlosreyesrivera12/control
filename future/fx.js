@@ -333,6 +333,7 @@ function renderNav(){
     h+='</div>';
   });
   if(typeof window.buOpenMiba==='function')h='<div class="fx-ngrp"><button type="button" class="fx-ni" data-fx="miba" title="MIBA · Logística de empresa">'+I.truck+'<span>MIBA</span></button></div>'+h;
+  if(typeof window.buOpenCcib==='function')h='<div class="fx-ngrp"><button type="button" class="fx-ni" data-fx="ccib" title="CCIB · Pedido de personal">'+I.bldg+'<span>CCIB</span></button></div>'+h;
   var rail=document.body.classList.contains('fx-rail');
   nav.innerHTML='<div class="fx-brand">'+LOGO+'<span class="fx-word"><b>Be</b>Unify<b>T</b></span></div>'
     +'<div class="fx-navscroll">'+h+'</div>'
@@ -583,6 +584,7 @@ A.noop=function(){};
 A.go=function(el){fxGo(el.getAttribute('data-tab'));};
 A.system=function(){closeMenu();FX.drawer.close();document.body.classList.remove('fx-navopen');S.page='system';scrollTop();fxSync();};
 A.classic=function(){fxExit();};
+A.ccib=function(){closeMenu();FX.drawer.close();document.body.classList.remove('fx-navopen');if(typeof window.buOpenCcib==='function')window.buOpenCcib();};
 A.miba=function(){closeMenu();FX.drawer.close();document.body.classList.remove('fx-navopen');if(typeof window.buOpenMiba==='function')window.buOpenMiba();};
 A.rail=function(){var r=!document.body.classList.contains('fx-rail');document.body.classList.toggle('fx-rail',r);lsSet(LS_RAIL,r?'1':'0');renderNav();};
 A.nav=function(){document.body.classList.toggle('fx-navopen');};

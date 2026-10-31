@@ -1177,6 +1177,8 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
   <button class="btn-tab tg-orig" data-tab="flota" style="display:none"       onclick="goTab('flota',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Embalaje</button>
   <button class="btn-tab tg-orig" data-tab="usuarios" style="display:none"    onclick="goTab('usuarios',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Usuarios</button>
   <button class="btn-tab tg-orig" data-tab="empresas" style="display:none" onclick="goTab('empresas',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>Empresas</button>
+  <!-- CCIB 2026-10-31 · pedidos de personal por zonas (CCIB.html en iframe). Quitar: este botón, el div tab-ccib, el bloque CCIB del final, 'ccib' en TG_MAP/defT y CCIB.html + carpeta ccib/ -->
+  <button class="btn-tab tg-orig" data-tab="ccib" style="display:none" onclick="goTab('ccib',this)" draggable="true" ondragstart="tabDragStart(event)" ondragover="tabDragOver(event)" ondragleave="tabDragLeave(event)" ondrop="tabDrop(event)" ondragend="tabDragEnd(event)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg>CCIB</button>
   <!-- SEP2 -->
   <div class="tg-sep-line" style="width:1px;height:20px;background:linear-gradient(180deg,transparent,#999,transparent);margin:0 4px;flex-shrink:0"></div>
   <!-- GRUPO 3: CONFIGURACIÓN -->
@@ -1704,6 +1706,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.querySele
   <div id="tab-mensajes"    style="display:none"></div>
   <div id="tab-usuarios"    style="display:none"></div>
   <div id="tab-empresas"    style="display:none"></div>
+  <div id="tab-ccib"        style="display:none"><iframe id="buCcibTabFr" title="CCIB" style="width:100%;height:calc(100vh - 130px);min-height:520px;border:0;background:#f6f7f9"></iframe></div>
 </div></div>
 <input type="file" id="xlsxCond" accept=".xlsx,.xls,.csv" style="display:none" onchange="importXlsxCond(this)">
 <input type="file" id="xlsxIng"  accept=".xlsx,.xls,.csv" style="display:none" onchange="importXlsxIng(this)">
@@ -3816,7 +3819,7 @@ function loginSuccess(u){
   document.getElementById('appMain').style.display='flex';
   const _gbEarly=document.getElementById('tgGroupBar'); if(_gbEarly)_gbEarly.style.display='flex';
   document.getElementById('hdrUser').innerHTML=esc(u.nombre);
-  const defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda']};
+  const defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas','ccib'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion','ccib'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda']};
   const allowed=u.tabs||defT[u.rol]||['dash','ingresos'];
   // Marcar permisos por rol. NO se usa style.display inline:
   // las pestañas arrancan ocultas por CSS y solo tgEnsureFilter (clase tg-visible)
@@ -3826,7 +3829,7 @@ function loginSuccess(u){
   document.querySelectorAll('#mainTabs .btn-tab').forEach(b=>{
     if(b.dataset.tab){
       b.style.display='';  // limpiar cualquier inline previo
-      const _perm=b.dataset.tab==='btnstats'?_verDatos:allowed.includes(b.dataset.tab);
+      const _perm=b.dataset.tab==='btnstats'?_verDatos:(b.dataset.tab==='ccib'?(_verDatos||allowed.includes('ccib')):allowed.includes(b.dataset.tab));
       b.setAttribute('data-perm-hidden',_perm?'0':'1');
     }
   });
@@ -3914,7 +3917,7 @@ function goTab(tab,btn){curTab=tab;try{localStorage.setItem(SK+'_tab',tab);}catc
   // El contenido pesado del tab (canvas de impresión, dashboards) se renderiza
   // en el siguiente frame → la pantalla aparece de arriba hacia abajo, sin lag.
   renderHdr();
-  var _map={dash:renderDash,ingresos:renderIngresos,ingresos2:renderIngresos2,flota:renderFlota,conductores:renderConductores,agenda:renderAgenda,analytics:renderAnalytics,vehiculos:renderVehiculos,auditoria:renderAuditoria,papelera:renderPapelera,impresion:renderImpresion,recintos:renderRecintos,eventos:renderEventosTab,mensajes:renderMensajesTab,usuarios:function(){renderUsuarios();setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},200);},empresas:function(){if(typeof renderEmpresasTab==='function')renderEmpresasTab();}};
+  var _map={dash:renderDash,ingresos:renderIngresos,ingresos2:renderIngresos2,flota:renderFlota,conductores:renderConductores,agenda:renderAgenda,analytics:renderAnalytics,vehiculos:renderVehiculos,auditoria:renderAuditoria,papelera:renderPapelera,impresion:renderImpresion,recintos:renderRecintos,eventos:renderEventosTab,mensajes:renderMensajesTab,usuarios:function(){renderUsuarios();setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},200);},empresas:function(){if(typeof renderEmpresasTab==='function')renderEmpresasTab();},ccib:function(){var f=document.getElementById('buCcibTabFr');if(f&&!f.getAttribute('src'))f.setAttribute('src','CCIB.html?v=1');}};
   var _renderTab=_map[tab]||function(){};
   // Tabs ligeros: render inmediato. Tabs pesados (impresión): diferir un frame
   // para que header + barras se dibujen ya, sin esperar al canvas.
@@ -7010,7 +7013,7 @@ function renderUsuarios(){
   if(_usub!=='empresas'&&_uFiltRol)listBase=listBase.filter(function(u){return u.rol===_uFiltRol;});
 
   var rolMap={superadmin:'⭐ SA',supervisor:'🔑 Sup',controlador_rampa:'🔧 Ctrl',editor:'✏️ Ed',visor:'👁 Visor',empresa:'🏢 Empresa'};
-  var defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda'],empresa:['empresas']};
+  var defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas','ccib'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion','ccib'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda'],empresa:['empresas']};
   var TN={dash:'📊',ingresos:'🔖 Ref',ingresos2:'🚛 Ing',flota:'📦',conductores:'👤',agenda:'📅',analytics:'📈',vehiculos:'📜',auditoria:'📂',papelera:'🗑',recintos:'🏟',usuarios:'👥',impresion:'🖨',eventos:'📅 Ev',empresas:'🏢'};
 
   window._uReg=[];
@@ -9600,7 +9603,7 @@ function openUserModal(id){
   set('fuId',u?.id);set('fuNom',u?.nombre);set('fuUsername',u?.username||'');set('fuEmail',u?.email||'');set('fuRol',u?.rol||'editor');(function(){const _ls=document.getElementById('fuLang');if(_ls){_ls.innerHTML=LANGS_UI.map(l=>`<option value="${l.code}">${l.flag.includes('<svg')?'🏴':l.flag} ${l.name}</option>`).join('');_ls.value=u?.lang||'es';}})();set('fuPin','');set('fuPin2','');set('fuPass','');set('fuPass2','');const _2fa=document.getElementById('fu2FA');if(_2fa){_2fa.checked=!!(u?.twoFA);updTgl(_2fa);}document.getElementById('passStrengthWrap').style.display='none';
   const saOpt=document.getElementById('fuRolSA');if(saOpt)saOpt.style.display=isSA()?'':'none';
   updateRolPerms();
-  const defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda']};
+  const defT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas','ccib'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion','ccib'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda']};
   var _baseTabs=u?.tabs||(u?defT[u.rol]:defT['editor'])||[];  if(u?.rol==='superadmin'){defT['superadmin'].forEach(function(t){if(!_baseTabs.includes(t))_baseTabs.push(t);});}  const tabs=_baseTabs;
   [['ftDash','dash'],['ftIng','ingresos'],['ftIng2','ingresos2'],['ftFlota','flota'],['ftCond','conductores'],['ftAg','agenda'],['ftAn','analytics'],['ftVeh','vehiculos'],['ftAud','auditoria'],['ftPap','papelera'],['ftRec','recintos'],['ftUs','usuarios'],['ftImp','impresion'],['ftEv','eventos'],['ftEmpresas','empresas']].forEach(([eid,tab])=>{const el=document.getElementById(eid);if(el){el.checked=tabs.includes(tab);updTgl(el);}});
   if(u){const p=u.permisos||{},isFull=u.rol==='supervisor'||u.rol==='superadmin';[['fpAdd','canAdd'],['fpEdit','canEdit'],['fpDel','canDel'],['fpStat','canStatus'],['fpExp','canExport'],['fpBL','canSpecial'],['fpEvEdit','canEditEvento'],['fpPrint','canPrint'],['fpImport','canImport'],['fpClean','canClean'],['fpSaveTpl','canSaveTpl'],['fpDelTpl','canDelTpl'],['fpActivarEv','canActivarEvento'],['fpSave','canSaveDay'],['fpMsg','canMensajes'],['fpCampos','canCampos'],['fpOcr','canOcr']].forEach(([eid,pk])=>{const el=document.getElementById(eid);if(el){el.checked=isFull||!!(p[pk]);el.disabled=isFull;updTgl(el);}});}
@@ -14491,7 +14494,7 @@ document.addEventListener('click',function(e){
 // ═══════════════════════════════════════════════════════
 const TG_MAP={
   op:['ingresos','ingresos2','agenda','mensajes'],
-  per:['conductores','flota','empresas'],
+  per:['conductores','flota','empresas','ccib'],
   cfg:['recintos','eventos','impresion','usuarios','auditoria','papelera'],
   dat:['dash','analytics','vehiculos','btnstats']
 };
@@ -15784,12 +15787,28 @@ function buCloseMiba(){document.getElementById('buMibaOv').style.display='none';
 window.buOpenMiba=buOpenMiba;window.buCloseMiba=buCloseMiba;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buMibaOv');if(o&&o.style.display==='flex')buCloseMiba()}});
 </script>
+<!-- CCIB 2026-10-31 · pedidos de personal por zonas del CCIB. Datos en cu1/ccib (no toca cu1/controlunificado). Pestaña "CCIB" (grupo Logística) + panel a pantalla completa para FUTURE. Quitar: borrar este bloque, el botón/div tab-ccib, 'ccib' en TG_MAP/defT, CCIB.html, carpeta ccib/ y el botón CCIB de future/fx.js -->
+<div id="buCcibOv" style="display:none;position:fixed;inset:0;z-index:99991;background:#f6f7f9;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;padding-top:max(6px,env(safe-area-inset-top));background:#0f2233;color:#fff;font:700 13px system-ui,sans-serif;letter-spacing:.4px">
+    <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">CCIB · PEDIDO DE PERSONAL</span>
+    <button type="button" onclick="buCloseCcib()" style="min-height:36px;padding:0 14px;border-radius:8px;border:0;background:#ffb703;color:#1b1203;font-weight:800;cursor:pointer">✕ Cerrar</button>
+  </div>
+  <iframe id="buCcibFr" title="CCIB" style="flex:1;width:100%;border:0;background:#f6f7f9"></iframe>
+</div>
+<script>
+window.buCcibFb=function(){try{return fbDb}catch(e){return null}};
+window.buCcibUser=function(){try{return CU}catch(e){return null}};
+function buOpenCcib(){var o=document.getElementById('buCcibOv'),f=document.getElementById('buCcibFr');if(!f.getAttribute('src'))f.setAttribute('src','CCIB.html?v=1');o.style.display='flex';document.body.style.overflow='hidden'}
+function buCloseCcib(){document.getElementById('buCcibOv').style.display='none';document.body.style.overflow=''}
+window.buOpenCcib=buOpenCcib;window.buCloseCcib=buCloseCcib;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buCcibOv');if(o&&o.style.display==='flex')buCloseCcib()}});
+</script>
 <!-- FUTURE 2026-10-17 · interfaz nueva en la pestaña FUTURE (solo SA). No toca datos ni funciones. Quitar: borrar estas líneas FUTURE y la carpeta future/ -->
 <link rel="stylesheet" href="future/fx.css?v=13">
-<script src="future/fx.js?v=13"></script>
+<script src="future/fx.js?v=14"></script>
 <script src="future/fx-ops.js?v=13"></script>
 <script src="future/fx-log.js?v=13"></script>
-<script src="future/fx-cfg.js?v=13"></script>
+<script src="future/fx-cfg.js?v=14"></script>
 <script src="future/fx-dat.js?v=13"></script>
 <script src="future/fx-sub.js?v=13"></script>
 <!-- /FUTURE -->

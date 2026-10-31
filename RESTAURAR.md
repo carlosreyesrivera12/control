@@ -7,6 +7,7 @@ La lista completa está en `CAMBIOS.md`.
 
 | Tag | Commit | Estado |
 |---|---|---|
+| rama `restore-2026-10-31-antes-ccib` | `23cd7b3` | Antes de la pestaña CCIB (sin `CCIB.html` ni carpeta `ccib/`) |
 | rama `restore-2026-10-27-antes-miba` | `bf2b2eb` | Antes de MIBA (sin `MIBA.html` ni botón MIBA) |
 | rama `restore-2026-10-17-antes-future-e9-1` | `c9f5e55` | FUTURE 9.0 (Impresión rediseñada; propiedades bajan en pantallas medianas) |
 | rama `restore-2026-10-17-antes-future-e9` | `5897708` | Antes del rediseño de Impresión en FUTURE (vista clásica ya corregida) |

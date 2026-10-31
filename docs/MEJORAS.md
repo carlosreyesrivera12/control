@@ -5,3 +5,7 @@
 - MIBA: enlazar servicios con Rampa/Ingresos (matrícula → aviso de llegada automático en BeUnifyT).
 - MIBA: seguimiento GPS del chofer por enlace (como cu1/trk) para ETA en vivo.
 - MIBA: calendario festivo por país para la prohibición de camiones (hoy solo fin de semana).
+- CCIB: asignar trabajadores a zonas + check-in por QR → zonas descubiertas en tiempo real.
+- CCIB: salas bicolor (118–134) y M2 por sala individual (hoy por pares, como el plano isométrico).
+- CCIB: casilla CCIB en el editor de permisos de usuario (hoy: SA siempre; resto por rol por defecto).
+- CCIB: marcar automáticamente «fuera de plazo» según fecha límite del evento.

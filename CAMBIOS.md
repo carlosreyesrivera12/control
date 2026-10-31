@@ -5,6 +5,18 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: pedido de personal por zonas
+
+**Punto de restauración:** rama `restore-2026-10-31-antes-ccib` (commit `23cd7b3`).
+
+- Nueva pestaña **CCIB** (grupo Logística) con `CCIB.html` dentro; en FUTURE, botón **CCIB** en el panel izquierdo (pantalla completa).
+- Planos reales del CCIB (págs. 3 y 4 del PDF oficial) en `ccib/`; muelle -2 y plazas WB/LD en esquema.
+- Tocar una zona la marca y muestra su personal por fase (L logística / A auxiliar); se puede ajustar con motivo (zona en naranja «ajustado»).
+- Tabla de reglas editable (zona × fase × tamaño S/M/L × perfil), control pedido vs calculado (±10 %), extras con motivo, historial con «fuera de plazo → facturar». Varios pedidos (selector + Nuevo).
+- Datos en `cu1/ccib` (no toca `cu1/controlunificado`); sin permiso guarda en el dispositivo.
+- Cifras de ejemplo hasta cargar la tabla real.
+- `future/fx.js` y `future/fx-cfg.js` (`?v=14`): botón CCIB y `ccib` en permisos por defecto de superadmin/supervisor.
+
 ## 2026-10-27 · MIBA: logística de empresa
 
 **Punto de restauración:** rama `restore-2026-10-27-antes-miba` (commit `bf2b2eb`).

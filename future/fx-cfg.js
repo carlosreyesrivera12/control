@@ -182,7 +182,7 @@ FX.act('ev.more',function(el,id){
 
 /* ════════════ USUARIOS ════════════ */
 var ROLES=['superadmin','supervisor','controlador_rampa','editor','visor'];
-var DEFT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda'],empresa:['empresas']};
+var DEFT={superadmin:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','mensajes','usuarios','impresion','empresas','ccib'],supervisor:['dash','ingresos','ingresos2','flota','conductores','agenda','analytics','vehiculos','auditoria','papelera','recintos','eventos','usuarios','impresion','ccib'],controlador_rampa:['ingresos','ingresos2'],editor:['ingresos','ingresos2','conductores','agenda','impresion'],visor:['ingresos','ingresos2','agenda'],empresa:['empresas']};
 function usSub(){var s=window._fxUSub||window._uSub||'operadores';return (s==='ocr'&&!can('isSA'))?'operadores':s;}
 function rolLbl(r){var k='r_'+r;return t(k)!==k?t(k):(r||'–');}
 function permsOf(u){if(u.rol==='superadmin'||u.rol==='supervisor')return t('p_all');var p=Object.keys(u.permisos||{}).filter(function(k){return u.permisos[k];}).map(function(k){var l='p_'+k;return t(l)!==l?t(l):k;});return p.length?p.join(', '):t('p_none');}

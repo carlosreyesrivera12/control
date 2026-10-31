@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCIB · Pedido de personal</title>
+<style>
+:root{--bg:#f6f7f9;--tx:#1b1f24;--mu:#6b7280;--ln:#e3e6ea;--pr:#1450e8;--ok:#10893e;--warn:#c2410c}
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#fff;border-bottom:1px solid var(--ln);padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header b{font-size:16px}.tabs{display:flex;gap:4px;flex-wrap:wrap}
+button{font:inherit;border:1px solid var(--ln);background:#fff;padding:6px 10px;border-radius:4px;cursor:pointer}
+button.on{background:var(--pr);color:#fff;border-color:var(--pr)}
+main{padding:16px;max-width:1400px;margin:auto}.card{background:#fff;border:1px solid var(--ln);border-radius:6px;padding:12px;margin-bottom:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mu{color:var(--mu);font-size:12px}
+.wrap{display:grid;grid-template-columns:1fr 380px;gap:12px;align-items:start}@media(max-width:1000px){.wrap{grid-template-columns:1fr}}
+.plan{position:relative;width:100%}.plan img{width:100%;display:block}
+.pin{position:absolute;transform:translate(-50%,-50%);font-size:11px;line-height:1.1;padding:3px 6px;border-radius:3px;border:1px solid var(--pr);background:rgba(255,255,255,.92);color:var(--pr);white-space:nowrap;cursor:pointer;font-weight:600}
+.pin.sel{background:var(--pr);color:#fff}.pin.ov{background:#c2410c;border-color:#c2410c;color:#fff}.pin.cur{outline:3px solid #ffb300}
+.pin b{display:inline-block;margin-left:4px;padding:0 4px;border-radius:2px;background:#fff;color:var(--tx)}
+.schem{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;min-height:200px}
+.blk{border:1px dashed #b8c2d3;background:#eef1f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:12px;text-align:center;padding:6px}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--ln);padding:4px 6px;text-align:right;font-size:12px}td:first-child,th:first-child{text-align:left}
+th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:inherit;padding:2px 4px}
+.tot{font-size:22px;font-weight:700}.alert{color:var(--warn);font-weight:600}.ok{color:var(--ok);font-weight:600}
+.scroll{max-height:520px;overflow:auto}.tag{display:inline-block;padding:1px 6px;border-radius:3px;background:#fff3e0;color:var(--warn);font-size:11px}
+.sync{font-size:12px;padding:2px 8px;border-radius:10px;background:#eee;color:#555}.sync.ok{background:#e7f6ec;color:#10893e}.sync.err{background:#fff3e0;color:#c2410c}
+#zp h3{margin:0 0 4px;font-size:15px}#zp .big{font-size:28px;font-weight:700}
+</style></head><body>
+<header><b>CCIB · Pedido de personal</b>
+<div class="tabs"><button data-v="pedido" class="on">Pedido en mapa</button><button data-v="reglas">Reglas</button><button data-v="hist">Historial</button></div>
+<span class="mu">Cifras de ejemplo hasta cargar la tabla real</span><span class="sync" id="sync">…</span></header>
+<main>
+<section id="v-pedido">
+ <div class="card row">
+  <label>Pedido <select id="psel"></select></label><button id="pNew">+ Nuevo</button>
+  <label>Evento <input id="ev" value=""></label>
+  <label>Tamaño <select id="size"><option>S</option><option selected>M</option><option>L</option></select></label>
+  <label>Ver en mapa <select id="vph"><option>montaje</option><option selected>evento</option><option>desmontaje</option></select></label>
+  <label>Horas: montaje <input type="number" id="h-montaje" value="8"></label>
+  <label>evento <input type="number" id="h-evento" value="10"></label>
+  <label>desmontaje <input type="number" id="h-desmontaje" value="6"></label>
+ </div>
+ <div class="wrap">
+  <div class="card"><div class="tabs" id="floors" style="margin-bottom:10px"></div><div id="map"></div><p class="mu" id="flnote"></p></div>
+  <div>
+   <div class="card" id="zp"><span class="mu">Toca una zona del plano para ver y ajustar su personal.</span></div>
+   <div class="card"><div class="mu">Total calculado (pico por fase)</div><div class="tot" id="tot">0</div><div id="byphase" class="mu"></div></div>
+   <div class="card"><div class="mu">Control: pedido del cliente vs calculado (fase evento)</div>
+    <div class="row"><label>Pedido <input type="number" id="pedido" value="0" style="width:70px"> pers.</label></div><div id="ctrl"></div></div>
+   <div class="card"><div class="mu">Extra sin zona (fuera de regla)</div>
+    <div class="row"><input type="number" id="exN" value="1"><input id="exR" placeholder="Motivo (obligatorio)" style="flex:1"><button id="exB">Añadir</button></div><div id="extras"></div></div>
+  </div>
+ </div>
+ <div class="card scroll"><table id="detail"></table></div>
+</section>
+<section id="v-reglas" hidden><div class="card"><p class="mu">Personas por zona × fase × tamaño × perfil (L = logística, A = auxiliar). Plazas WB y LD fijas en 2.</p>
+ <div class="row" style="margin-bottom:8px"><label>Tamaño <select id="rsize"><option>S</option><option selected>M</option><option>L</option></select></label></div>
+ <div class="scroll"><table id="rules"></table></div></div></section>
+<section id="v-hist" hidden><div class="card scroll"><table id="hist"></table></div></section>
+</main>
+<script>
+const IMG={P2:'ccib/plano-P2.jpg?v=1',M2:'ccib/plano-M2.jpg?v=1',P1:'ccib/plano-P1.jpg?v=1',M1:'ccib/plano-M1.jpg?v=1',P0:'ccib/plano-P0.jpg?v=1',AUD:'ccib/plano-AUD.jpg?v=1'};
+const PH=['montaje','evento','desmontaje'],SZ=['S','M','L'];
+// [id, nombre, planta, tipo, x%, y%]
+const Z=[
+['DOCK','Muelle de carga','-2','dock'],
+['A1','Área 1','P0','hall',34,13],['A2','Área 2','P0','hall',40,19],['A3','Área 3','P0','hall',46,25],['A4','Área 4','P0','hall',52,30],['A5','Área 5','P0','hallS',56,36],['A6','Área 6','P0','hallS',63,42],['A7','Área 7','P0','hallS',49,45],['A8','Área 8','P0','hallS',57,52],
+['V','Vestíbulo','P0','foyer',25,56],['F0','Foyer P0','P0','foyer',36,46],['AA','Acceso A','P0','acc',49,85],['AB','Acceso B','P0','acc',25,73],['AC','Acceso C','P0','acc',14,57],['AD','Acceso D','P0','acc',11,30],
+['M1F','Foyer M1','M1','foyer',35,48],['VIP','Sala VIP','M1','room',43,85],
+['117','117','P1','roomL',13,37],['116','116','P1','room',17,43],['115','115','P1','room',21,49],['114','114','P1','room',24,54],['113','113','P1','room',27,59],['112','112','P1','roomL',37,73],['111','111','P1','room',45,83],
+['F1','Foyer 1','P1','foyer',32,46],['F2','Foyer 2','P1','foyer',60,26],['PAT','Patio','P1','room',47,38],['TER1','Terraza','P1','ext',52,90],
+['B118','118-119','P1','bic',45,50],['B120','120-121','P1','bic',50,44],['B122','122-123','P1','bic',54,39],['B124','124-125','P1','bic',57,34],
+['B127','127-128','P1','bic',65,43],['B129','129-130','P1','bic',62,49],['B131','131-132','P1','bic',58,54],['B133','133-134','P1','bic',56,61],
+['M221','M221','M2','mini',17,23],['M219','M219-220','M2','mini',27,24],['M218','M218','M2','mini',20,35],['M217','M217','M2','mini',32,33],['M215','M215-216','M2','mini',27,45],['M213','M213-214','M2','mini',40,41],['M211','M211-212','M2','mini',46,51],['M2F','Foyer M2','M2','foyer',42,66],
+['BH','Banquet Hall','P2','roomL',21,43],['TER2','Terraza','P2','ext',16,54],['FA','Foyer A','P2','foyer',28,38],['FB','Foyer B','P2','foyer',40,55],['212','212','P2','room',35,67],['211','211','P2','roomL',43,77],['FBO','F&B Office','P2','acc',6,38],
+['ANF','Anfiteatro','AUD','audS',72,13],['RAM','Rambla de conexión','AUD','foyer',37,63],['AF','Foyer','AUD','foyer',71,67],['PLA','Platea','AUD','aud',66,77],['ESC','Escenario','AUD','aud',61,83],['MAUD','Muelle Auditorio','AUD','dock',80,87],
+['WB','Plaza WB','EXT','plaza'],['LD','Plaza LD','EXT','plaza']];
+const FL=[['P2','P2'],['M2','M2'],['P1','P1'],['M1','M1'],['P0','P0'],['-2','Muelle -2'],['AUD','Auditorio'],['EXT','Exteriores']];
+const NOTE={'-2':'Todo el material sube por montacargas (nº de montacargas pendiente).','EXT':'Plaza WB a la izquierda y Plaza LD a la derecha del CCIB. 2 personas fijas cada una.','AUD':'Arriba: nivel superior (anfiteatro). Abajo: nivel inferior y rambla de conexión.','P1':'Salas bicolor agrupadas por pares, como en el plano.','M2':'Salas agrupadas como en el plano.'};
+const BASE={dock:[[4,0],[2,0],[4,0]],foyer:[[1,1],[0,3],[1,1]],acc:[[0,0],[0,1],[0,0]],hall:[[4,1],[1,3],[4,1]],hallS:[[2,1],[1,2],[2,1]],room:[[2,0],[0,1],[2,0]],roomL:[[3,1],[1,2],[3,1]],bic:[[1,0],[0,1],[1,0]],mini:[[0,0],[0,1],[0,0]],ext:[[1,0],[0,1],[1,0]],aud:[[3,1],[1,4],[3,1]],audS:[[1,0],[0,2],[1,0]],plaza:[[0,2],[0,2],[0,2]]};
+const MUL={S:.5,M:1,L:1.5};
+const R={};Z.forEach(z=>{R[z[0]]={};SZ.forEach(s=>{R[z[0]][s]={};PH.forEach((p,i)=>{const b=BASE[z[3]][i];R[z[0]][s][p]=z[3]=='plaza'?[0,2]:[Math.ceil(b[0]*MUL[s]),Math.ceil(b[1]*MUL[s])]})})});
+let sel=new Set(['DOCK','WB','LD']),ov={},floor='P0',cur=null,extras=[],hist=[];
+/* Persistencia: RTDB cu1/ccib (reglas + pedidos, guardados como JSON). Sin permiso → localStorage. No toca cu1/controlunificado */
+const LS='bu_ccib_local';let REF=null,MODE='local',PED={},PID=null,_rulesTs=0;
+function who(){try{const u=parent.buCcibUser&&parent.buCcibUser();return u?(u.nombre||u.email||u.id||''):'local'}catch(e){return 'local'}}
+function setSync(st,m){const e=document.getElementById('sync');e.className='sync '+st;e.textContent=m}
+function snap(){return{id:PID,ev:$('ev').value,size:$('size').value,h:{montaje:+$('h-montaje').value,evento:+$('h-evento').value,desmontaje:+$('h-desmontaje').value},pedido:+$('pedido').value,sel:[...sel],ov,extras,hist,updatedAt:Date.now(),updatedBy:who()}}
+function loadP(p){PID=p.id;$('ev').value=p.ev||'';$('size').value=p.size||'M';['montaje','evento','desmontaje'].forEach(k=>$('h-'+k).value=(p.h||{})[k]??0);$('pedido').value=p.pedido||0;sel=new Set(p.sel||[]);ov=p.ov||{};extras=p.extras||[];hist=p.hist||[];cur=null}
+function newP(){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);PED[id]={id,ev:'Nuevo evento',size:'M',h:{montaje:8,evento:10,desmontaje:6},pedido:0,sel:['DOCK','WB','LD'],ov:{},extras:[],hist:[],createdAt:Date.now(),createdBy:who()};loadP(PED[id]);saveP();render()}
+let _st=null;function saveP(){if(!PID)return;PED[PID]=Object.assign(PED[PID]||{},snap());clearTimeout(_st);_st=setTimeout(()=>{if(REF&&MODE==='fb')REF.child('pedidos/'+PID).set({j:JSON.stringify(PED[PID])}).catch(e=>setSync('err','Error al guardar'));else saveLocal()},400)}
+function saveRules(){_rulesTs=Date.now();if(REF&&MODE==='fb')REF.child('reglas').set({j:JSON.stringify(R),ts:_rulesTs,by:who()});else saveLocal()}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({R,PED}))}catch(e){}}
+function applyRules(j){try{const x=JSON.parse(j);Object.keys(x).forEach(k=>{if(R[k])R[k]=x[k]})}catch(e){}}
+function renderPsel(){const ids=Object.keys(PED).sort((a,b)=>(PED[b].updatedAt||0)-(PED[a].updatedAt||0));$('psel').innerHTML=ids.map(id=>`<option value="${id}" ${id==PID?'selected':''}>${(PED[id].ev||'Sin nombre').replace(/</g,'&lt;')}</option>`).join('')}
+function boot(){let db=null;try{db=parent.buCcibFb&&parent.buCcibFb()}catch(e){}
+ const start=()=>{const ids=Object.keys(PED);if(!PID||!PED[PID]){if(ids.length)loadP(PED[ids.sort((a,b)=>(PED[b].updatedAt||0)-(PED[a].updatedAt||0))[0]]);else{newP();return}}render()};
+ if(db&&db.ref){REF=db.ref('cu1/ccib');REF.on('value',sn=>{const v=sn.val()||{},mine=PID&&PED[PID]?PED[PID].updatedAt:null;if(v.reglas&&v.reglas.j)applyRules(v.reglas.j);PED={};Object.entries(v.pedidos||{}).forEach(([k,o])=>{try{PED[k]=JSON.parse(o.j)}catch(e){}});MODE='fb';setSync('ok','Sincronizado');
+   if(PID&&PED[PID]&&PED[PID].updatedAt!==mine){const keepCur=cur,keepF=floor;loadP(PED[PID]);cur=keepCur;floor=keepF}start()},
+  err=>{MODE='local';loadLocalAll();setSync('err','Sin permiso en la nube · guardado en este dispositivo');start()})}
+ else{loadLocalAll();setSync('err','Modo local (sin sesión)');start()}}
+function loadLocalAll(){try{const v=JSON.parse(localStorage.getItem(LS)||'{}');if(v.R)Object.keys(v.R).forEach(k=>{if(R[k])R[k]=v.R[k]});PED=v.PED||{}}catch(e){}}
+const $=id=>document.getElementById(id),byId=Object.fromEntries(Z.map(z=>[z[0],z])),sum=a=>a[0]+a[1];
+const rule=(id,p)=>R[id][$('size').value][p];
+const eff=(id,p)=>ov[id]&&ov[id][p]?ov[id][p]:rule(id,p);
+const isOv=id=>!!ov[id];
+function calc(){const o={};PH.forEach(p=>o[p]=[0,0]);sel.forEach(id=>PH.forEach(p=>{const r=eff(id,p);o[p][0]+=r[0];o[p][1]+=r[1]}));extras.forEach(e=>o.evento[1]+=e.n);return o}
+function log(acc,detail,before){const d=new Date();hist.unshift({t:d.toLocaleDateString('es-ES')+' '+d.toLocaleTimeString('es-ES'),u:who(),acc,detail,before,after:sum(calc().evento),fp:false});saveP()}
+function renderFloors(){$('floors').innerHTML=FL.map(([k,n])=>{const ids=Z.filter(z=>z[2]==k&&sel.has(z[0])).map(z=>z[0]);const c=ids.reduce((a,id)=>a+sum(eff(id,$('vph').value)),0);return`<button data-f="${k}" class="${k==floor?'on':''}">${n}${ids.length?' · '+c:''}</button>`}).join('');
+ $('floors').querySelectorAll('button').forEach(b=>b.onclick=()=>{floor=b.dataset.f;render()})}
+function pinHtml(z,style){const id=z[0],s=sel.has(id),n=sum(eff(id,$('vph').value));return`<div class="pin ${s?(isOv(id)?'ov':'sel'):''} ${cur==id?'cur':''}" data-id="${id}" style="${style}">${z[1]}${s?'<b>'+n+'</b>':''}</div>`}
+function renderMap(){const zs=Z.filter(z=>z[2]==floor);let h;
+ if(IMG[floor])h=`<div class="plan"><img src="${IMG[floor]}" alt="Plano ${floor}">${zs.map(z=>pinHtml(z,`left:${z[4]}%;top:${z[5]}%`)).join('')}</div>`;
+ else if(floor=='EXT')h=`<div class="schem"><div style="grid-column:1/span 3;position:relative" class="blk">${pinHtml(byId.WB,'position:static;transform:none')}</div><div class="blk" style="grid-column:4/span 6">Edificio CCIB</div><div style="grid-column:10/span 3" class="blk">${pinHtml(byId.LD,'position:static;transform:none')}</div></div>`;
+ else h=`<div class="schem"><div class="blk" style="grid-column:1/span 12">${pinHtml(byId.DOCK,'position:static;transform:none')}</div><div class="blk" style="grid-column:1/span 12">Montacargas → P0 · M1 · P1 · M2 · P2</div></div>`;
+ $('map').innerHTML=h;$('flnote').textContent=NOTE[floor]||'';
+ $('map').querySelectorAll('.pin').forEach(d=>d.onclick=()=>{const id=d.dataset.id;if(!sel.has(id)){const b=sum(calc().evento);sel.add(id);log('Marca zona',byId[id][1],b)}cur=id;render()})}
+function renderZone(){const el=$('zp');if(!cur||!sel.has(cur)){el.innerHTML='<span class="mu">Toca una zona del plano para ver y ajustar su personal.</span>';return}
+ const z=byId[cur],o=ov[cur]||{},pk=Math.max(...PH.map(p=>sum(eff(cur,p))));
+ el.innerHTML=`<h3>${z[1]} <span class="mu">· ${z[2]}</span> ${isOv(cur)?'<span class="tag">ajustado</span>':''}</h3>
+ <div class="big">${pk} <span class="mu">pers. (pico)</span></div>
+ <table><tr><th>Fase</th><th>Regla L</th><th>Regla A</th><th>Pedido L</th><th>Pedido A</th></tr>
+ ${PH.map(p=>{const r=rule(cur,p),e=eff(cur,p);return`<tr><td>${p}</td><td>${r[0]}</td><td>${r[1]}</td><td><input type="number" min="0" data-p="${p}" data-k="0" value="${e[0]}"></td><td><input type="number" min="0" data-p="${p}" data-k="1" value="${e[1]}"></td></tr>`}).join('')}</table>
+ <div class="row" style="margin-top:8px"><input id="zm" placeholder="Motivo si cambias la regla" value="${o.motivo||''}" style="flex:1"></div>
+ <div class="row" style="margin-top:8px"><button id="zApply" class="on">Aplicar</button><button id="zReset">Volver a regla</button><button id="zDel">Quitar zona</button></div>`;
+ $('zApply').onclick=()=>{const n={};let diff=false;el.querySelectorAll('input[data-p]').forEach(i=>{const p=i.dataset.p;n[p]=n[p]||[0,0];n[p][+i.dataset.k]=+i.value});
+  PH.forEach(p=>{const r=rule(cur,p);if(n[p][0]!=r[0]||n[p][1]!=r[1])diff=true});
+  const b=sum(calc().evento);if(!diff){delete ov[cur];render();return}
+  const m=$('zm').value.trim();if(!m){alert('Indica el motivo del cambio');return}
+  ov[cur]={...n,motivo:m};log('Ajusta zona',`${z[1]}: ${PH.map(p=>p[0].toUpperCase()+' '+n[p][0]+'/'+n[p][1]).join(' · ')} · ${m}`,b);render()};
+ $('zReset').onclick=()=>{if(!ov[cur])return;const b=sum(calc().evento);delete ov[cur];log('Vuelve a regla',z[1],b);render()};
+ $('zDel').onclick=()=>{const b=sum(calc().evento);sel.delete(cur);delete ov[cur];log('Desmarca zona',z[1],b);cur=null;render()}}
+function renderSide(){const c=calc(),pk=Math.max(...PH.map(p=>sum(c[p])));$('tot').textContent=pk+' pers.';
+ $('byphase').innerHTML=PH.map(p=>`${p}: <b>${sum(c[p])}</b> (L ${c[p][0]} · A ${c[p][1]}) · ${sum(c[p])*+$('h-'+p).value} h·pers`).join('<br>');
+ const ped=+$('pedido').value,ev=sum(c.evento),d=ev?((ped-ev)/ev*100):0;
+ if(!ped)$('ctrl').innerHTML='<span class="mu">Introduce el número pedido para comparar.</span>';
+ else{const off=Math.abs(d)>10;const zl=off?'<div class="mu">Por zona: '+[...sel].map(id=>byId[id][1]+' '+sum(eff(id,'evento'))).join(' · ')+'</div>':'';
+  $('ctrl').innerHTML=`<div class="${off?'alert':'ok'}">Desviación ${d>0?'+':''}${d.toFixed(0)}% ${off?'· supera ±10%':'· dentro de margen'}</div>${zl}`}
+ $('extras').innerHTML=extras.map((e,i)=>`<div class="mu">+${e.n} · ${e.r} <button data-i="${i}">×</button></div>`).join('');
+ $('extras').querySelectorAll('button').forEach(b=>b.onclick=()=>{const bf=sum(calc().evento),e=extras.splice(+b.dataset.i,1)[0];log('Quita extra',e.r,bf);render()})}
+function renderDetail(){let h='<tr><th>Zona</th><th>Planta</th>'+PH.map(p=>`<th>${p} L</th><th>${p} A</th>`).join('')+'<th>Estado</th></tr>';
+ [...sel].forEach(id=>{const z=byId[id];h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>{const e=eff(id,p);return`<td>${e[0]}</td><td>${e[1]}</td>`}).join('')+`<td>${isOv(id)?'<span class="tag">ajustado: '+ov[id].motivo+'</span>':'regla'}</td></tr>`});
+ extras.forEach(e=>h+=`<tr><td>Extra: ${e.r}</td><td>—</td><td></td><td></td><td></td><td>${e.n}</td><td></td><td></td><td><span class="tag">fuera de regla</span></td></tr>`);$('detail').innerHTML=h}
+function renderRules(){const s=$('rsize').value;let h='<tr><th>Zona</th><th>Planta</th>'+PH.map(p=>`<th>${p} L</th><th>${p} A</th>`).join('')+'</tr>';
+ Z.forEach(z=>{h+=`<tr><td>${z[1]}</td><td>${z[2]}</td>`+PH.map(p=>[0,1].map(k=>`<td><input type="number" min="0" data-z="${z[0]}" data-p="${p}" data-k="${k}" value="${R[z[0]][s][p][k]}"></td>`).join('')).join('')+'</tr>'});
+ $('rules').innerHTML=h;$('rules').querySelectorAll('input').forEach(i=>i.onchange=()=>{R[i.dataset.z][s][i.dataset.p][+i.dataset.k]=+i.value;saveRules();hist.unshift({t:new Date().toLocaleString('es-ES'),u:who(),acc:'Cambia regla',detail:`${byId[i.dataset.z][1]} ${s} ${i.dataset.p} ${['L','A'][i.dataset.k]}=${i.value}`,before:'',after:'',fp:false});render()})}
+function renderHist(){$('hist').innerHTML='<tr><th>Hora</th><th>Quién</th><th>Acción</th><th>Detalle</th><th>Antes</th><th>Después</th><th>Fuera de plazo</th></tr>'+hist.map((h,i)=>`<tr><td>${h.t}</td><td>${h.u}</td><td>${h.acc}</td><td>${h.detail}</td><td>${h.before}</td><td>${h.after}</td><td><input type="checkbox" data-i="${i}" ${h.fp?'checked':''}> ${h.fp?'<span class="tag">facturar</span>':''}</td></tr>`).join('');
+ $('hist').querySelectorAll('input').forEach(c=>c.onchange=()=>{hist[+c.dataset.i].fp=c.checked;saveP();renderHist()})}
+function render(){renderPsel();renderFloors();renderMap();renderZone();renderSide();renderDetail();renderRules();renderHist()}
+$('exB').onclick=()=>{const r=$('exR').value.trim(),n=+$('exN').value;if(!r){alert('El motivo es obligatorio');return}const b=sum(calc().evento);extras.push({n,r});$('exR').value='';log('Añade extra',`+${n} · ${r}`,b);render()};
+$('vph').oninput=render;['size','pedido','h-montaje','h-evento','h-desmontaje','ev'].forEach(i=>$(i).oninput=()=>{saveP();render()});
+$('psel').onchange=()=>{saveP();loadP(PED[$('psel').value]);render()};$('pNew').onclick=newP;$('rsize').onchange=renderRules;
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));['pedido','reglas','hist'].forEach(v=>$('v-'+v).hidden=v!=b.dataset.v)});
+boot();
+</script></body></html>
