@@ -5,6 +5,15 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: rotación 5+2 por empleado (A–Z) y menos contrataciones
+
+**Punto de restauración:** commit `275f53e`.
+
+- Regla nueva: tras 5 días seguidos, 2 días libres (editable en Reglas: «Días libres tras días seguidos»).
+- Cuadrante: tabla «Rotación por empleado (A–Z)» con todos los días del pedido (M/E/D + turno + hora, D = libre obligatorio), días y horas por persona, y gente trabajando por día.
+- Autoasignar «Menos personas (combinar)»: reutiliza a la misma gente entre montaje, evento y desmontaje respetando las normas; prueba rotación escalonada y sin escalonar y se queda con la que necesita menos gente. Si faltan, ofrece crear las vacantes «Por contratar» mínimas. Muestra el mínimo teórico.
+- Alternativa «Repartir horas por igual».
+
 ## 2026-10-31 · CCIB: calendario de fechas
 
 **Punto de restauración:** commit `7b4a0d6`.

@@ -62,7 +62,8 @@ th{background:#fafbfc;position:sticky;top:0}input[type=number]{width:52px;font:i
 <section id="v-cuad" hidden>
  <div class="card" style="border-left:4px solid #1450e8"><b>Coordinador del proveedor</b> <span class="mu">· CCIB no da órdenes directas a los trabajadores: pide al coordinador y él organiza al equipo. Así los fijos discontinuos dependen de su empresa y no de CCIB (evita cesión ilegal, art. 43 ET). Hay un coordinador por turno (1 cada <span id="cPor"></span> personas, ajustable en Reglas).</span></div>
  <div class="wrap"><div>
-  <div class="card row"><label>Fase <select id="cPh"></select></label><label>Día <select id="cDay"></select></label><button id="cAuto" class="on">Autoasignar todo el pedido</button><button id="cClear">Vaciar asignaciones</button><span class="mu" id="cMsg"></span></div>
+  <div class="card row"><label>Fase <select id="cPh"></select></label><label>Día <select id="cDay"></select></label><label>Reparto <select id="cModo"><option value="combinar">Menos personas (combinar)</option><option value="igual">Repartir horas por igual</option></select></label><button id="cAuto" class="on">Autoasignar todo el pedido</button><button id="cClear">Vaciar asignaciones</button><span class="mu" id="cMsg"></span></div>
+  <div class="card"><b>Rotación por empleado (A–Z)</b><div id="rot" style="margin-top:6px"></div></div>
   <div id="cuad"></div>
  </div><div>
   <div class="card"><div class="mu">Empleados del proveedor (fijos discontinuos)</div>
@@ -118,8 +119,8 @@ const num=v=>Array.isArray(v)?(+v[0]||0)+(+v[1]||0):(+v||0);
 function normZ(o){const n={};SZ.forEach(s=>{n[s]={};PH.forEach(p=>n[s][p]=num(o&&o[s]?o[s][p]:0))});return n}
 function mergeRules(x){Object.keys(x||{}).forEach(k=>{R[k]=normZ(x[k])})}
 function normOv(o){const n={};Object.keys(o||{}).forEach(id=>{const v=o[id];if(!v)return;n[id]={motivo:v.motivo||''};PH.forEach(p=>n[id][p]=num(v[p]))});return n}
-const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5,coordPor:20};let PAR={...PAR0};
-const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos',coordPor:'Personas por coordinador'};
+const PAR0={maxDia:9,descanso:12,pausaDesde:6,pausaMin:15,maxSemana:40,maxDiasSem:5,descDias:2,coordPor:20};let PAR={...PAR0};
+const PARL={maxDia:'Jornada máx. (h/día)',descanso:'Descanso entre jornadas (h)',pausaDesde:'Pausa si turno > (h)',pausaMin:'Pausa (min)',maxSemana:'Máx. h/semana',maxDiasSem:'Máx. días seguidos',coordPor:'Personas por coordinador',descDias:'Días libres tras días seguidos'};
 function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function addD(ds,n){const d=new Date(ds+'T00:00');d.setDate(d.getDate()+n);return iso(d)}
 function rangeDays(a,b){const o=[];if(!a||!b||b<a)return a?[a]:o;for(let d=a;d<=b;d=addD(d,1))o.push(d);return o}
@@ -267,14 +268,35 @@ const clk=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')+
 function checkEmp(list){const a=list.slice().sort((x,y)=>x.st-y.st),w=[];
  for(let i=1;i<a.length;i++){if(a[i].date==a[i-1].date)w.push('doble turno el '+fdia(a[i].date));else if(a[i].st<a[i-1].en)w.push('solapa '+fdia(a[i].date));else if((a[i].st-a[i-1].en)/36e5<PAR.descanso)w.push('descanso '+f1((a[i].st-a[i-1].en)/36e5)+' h antes del '+fdia(a[i].date))}
  for(let i=0;i<a.length;i++){let h=0;for(let j=i;j<a.length&&a[j].st<a[i].st+7*864e5;j++)h+=(a[j].en-a[j].st)/36e5;if(h>PAR.maxSemana+1e-9){w.push(f1(h)+' h en 7 días');break}}
- const ds=[...new Set(a.map(x=>x.date))].sort();let run=1;for(let i=1;i<ds.length;i++){run=addD(ds[i-1],1)==ds[i]?run+1:1;if(run>PAR.maxDiasSem){w.push('más de '+PAR.maxDiasSem+' días seguidos');break}}
+ const ds=[...new Set(a.map(x=>x.date))].sort();let run=1;for(let i=1;i<ds.length;i++){if(addD(ds[i-1],1)==ds[i]){run++;if(run>PAR.maxDiasSem){w.push('más de '+PAR.maxDiasSem+' días seguidos');break}}else{const libres=Math.round((new Date(ds[i]+'T00:00')-new Date(ds[i-1]+'T00:00'))/864e5)-1;if(run>=PAR.maxDiasSem&&libres<PAR.descDias){w.push('tras '+run+' días seguidos necesita '+PAR.descDias+' libres');break}run=1}}
  return w}
 function byEmp(SL){const m={};SL.forEach(s=>{const e=AS[s.key];if(e)(m[e]=m[e]||[]).push(s)});return m}
-function autoAssign(){const SL=allSlots().sort((a,b)=>a.st-b.st||(a.role>b.role?1:-1)),m=byEmp(SL);let miss=0,done=0;
+const hrs=l=>(l||[]).reduce((a,z)=>a+z.en-z.st,0);
+/* Reparto: «combinar» usa primero a quien ya trabaja (menos gente, rotación 5+2); «igual» reparte horas. crear=true añade vacantes «Por contratar» cuando nadie cumple las normas */
+function autoAssign(modo,crear,cycOff){const SL=allSlots().sort((a,b)=>a.st-b.st||(a.role>b.role?1:-1)),m=byEmp(SL);let miss=0,done=0,nuevos=0;
+ /* Rotación escalonada: si el pedido dura más de maxDiasSem días, cada empleado tiene su ciclo (5 trabajo + 2 libres) desplazado; así siempre hay gente disponible y no descansan todos a la vez */
+ const D0=SL.length?SL[0].date:'',span=SL.length?Math.round((new Date(SL[SL.length-1].date+'T00:00')-new Date(D0+'T00:00'))/864e5)+1:0,cyc=PAR.maxDiasSem+PAR.descDias,useCyc=!cycOff&&modo!='igual'&&span>PAR.maxDiasSem;
+ const kOf=d=>Math.round((new Date(d+'T00:00')-new Date(D0+'T00:00'))/864e5),OFF={};EMP.forEach((e,i)=>OFF[e.id]=i%cyc);
+ const okCyc=(e,d)=>!useCyc||(((kOf(d)-OFF[e.id])%cyc)+cyc)%cyc<PAR.maxDiasSem;
  SL.forEach(s=>{if(AS[s.key]&&EMP.some(e=>e.id==AS[s.key]))return;
-  const cand=EMP.slice().sort((x,y)=>(m[x.id]||[]).reduce((a,z)=>a+z.en-z.st,0)-(m[y.id]||[]).reduce((a,z)=>a+z.en-z.st,0)).find(e=>!checkEmp((m[e.id]||[]).concat([s])).length);
+  const prev=addD(s.date,-1),same=e=>(m[e.id]||[]).some(z=>z.date==prev&&z.k==s.k)?0:1;const L=EMP.slice().sort((x,y)=>modo=='igual'?hrs(m[x.id])-hrs(m[y.id]):(same(x)-same(y))||(hrs(m[y.id])-hrs(m[x.id]))||EN(x.id).localeCompare(EN(y.id)));
+  let cand=L.find(e=>okCyc(e,s.date)&&!checkEmp((m[e.id]||[]).concat([s])).length);
+  if(!cand&&crear){{nuevos++;const v={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:'Por contratar',a:String(EMP.filter(e=>e.n=='Por contratar').length+1)};EMP.push(v);{const k=kOf(s.date),cnt={};Object.values(OFF).forEach(o=>cnt[o]=(cnt[o]||0)+1);let best=null;for(let j=0;j<PAR.maxDiasSem;j++){const o=(((k-j)%cyc)+cyc)%cyc;if(best==null||(cnt[o]||0)<(cnt[best]||0))best=o}OFF[v.id]=best}cand=v}}
   if(cand){AS[s.key]=cand.id;(m[cand.id]=m[cand.id]||[]).push(s);done++}else miss++});
- return{done,miss}}
+ return{done,miss,nuevos}}
+/* Prueba con y sin rotación escalonada y se queda con la que necesita menos gente */
+function bestAssign(modo,crear){const A0=JSON.stringify(AS),E0=JSON.stringify(EMP);let best=null;[false,true].forEach(off=>{AS=JSON.parse(A0);EMP=JSON.parse(E0);const r=autoAssign(modo,crear,off),u=new Set(Object.values(AS)).size;if(!best||r.miss<best.r.miss||(r.miss==best.r.miss&&u<best.u))best={r,u,AS:AS,EMP:EMP}});AS=best.AS;EMP=best.EMP;if(best.r.nuevos)saveEmp();return best.r}
+function renderRot(SL,m){const all=[...new Set(SL.map(s=>s.date))].sort();if(!all.length){$('rot').innerHTML='';return}
+ const days=rangeDays(all[0],all[all.length-1]),used=EMP.filter(e=>m[e.id]).sort((a,b)=>EN(a.id).localeCompare(EN(b.id),'es')),libres=EMP.filter(e=>!m[e.id]);
+ const ab={montaje:'M',evento:'E',desmontaje:'D'};
+ let h='<table><tr><th>Empleado</th>'+days.map(d=>`<th style="text-align:center">${fdia(d).replace(', ','<br>')}</th>`).join('')+'<th>Días</th><th>Horas</th></tr>';
+ used.forEach(e=>{const l=m[e.id],byD={};l.forEach(s=>byD[s.date]=s);let run=0,rest=0,cnt=0;
+  h+=`<tr><td style="white-space:nowrap">${EN(e.id).replace(/</g,'&lt;')}</td>`+days.map(d=>{const s=byD[d];if(s){run++;cnt++;rest=0;const z=s.role=='P'?(s.zone=='EX'?'Extra':byId[s.zone][1]):s.role=='R'?'Correturnos':'Coordinador';return`<td style="text-align:center;background:#eef3fd" title="${s.p} · ${z}">${ab[s.p]}${s.k+1}<br><span class="mu">${clk(s.st)}</span></td>`}
+   const obl=run>=PAR.maxDiasSem||(rest>0&&rest<PAR.descDias&&run==0&&false);if(run>=PAR.maxDiasSem){rest=1;run=0;return'<td style="text-align:center;background:#fff3e0" title="Descanso obligatorio">D</td>'}
+   if(rest>0&&rest<PAR.descDias){rest++;return'<td style="text-align:center;background:#fff3e0" title="Descanso obligatorio">D</td>'}run=0;rest=0;return'<td style="text-align:center;color:#bbb">·</td>'}).join('')+`<td>${cnt}</td><td>${f1(hrs(l)/36e5)}</td></tr>`});
+ h+='<tr><td><b>Trabajando</b></td>'+days.map(d=>`<td style="text-align:center"><b>${used.filter(e=>m[e.id].some(s=>s.date==d)).length}</b></td>`).join('')+'<td></td><td></td></tr></table>';
+ const vac=used.filter(e=>e.n=='Por contratar').length,dem=days.map(d=>new Set(SL.filter(s=>s.date==d).map(s=>s.key)).size);let lb=Math.max(0,...dem);for(let i=0;i<dem.length;i++){let t=0;for(let j=i;j<Math.min(dem.length,i+7);j++)t+=dem[j];if(dem.length-i>=Math.min(7,dem.length))lb=Math.max(lb,Math.ceil(t/Math.min(PAR.maxDiasSem,Math.min(7,dem.length-i))))}
+ $('rot').innerHTML=`<div class="mu" style="margin-bottom:6px">${used.length} personas cubren todo el pedido (mínimo teórico con ${PAR.maxDiasSem}+${PAR.descDias}: ${lb})${vac?` · <b class="alert">${vac} por contratar</b>`:''}${libres.length?` · ${libres.length} de la lista sin turno`:''}. M/E/D = montaje/evento/desmontaje + nº de turno. <span style="background:#fff3e0;padding:0 4px">D</span> = días libres obligatorios tras ${PAR.maxDiasSem} seguidos.</div><div class="scroll">${h}</div>`}
 function zoneNames(id,p){const SL=slots(p).filter(s=>s.role=='P'&&s.zone==id&&AS[s.key]);if(!SL.length)return '<span class="mu">Sin asignar. Ve a «Cuadrante».</span>';
  const g={};SL.forEach(s=>{const k=fdia(s.date)+' '+clk(s.st)+'–'+clk(s.en);(g[k]=g[k]||[]).push(EN(AS[s.key])+(RP[s.key]?' (reemplaza a '+EN(RP[s.key].prev)+')':''))});return Object.entries(g).map(([k,v])=>`${k}: ${v.join(', ')}`).join('<br>')}
 let cPh='evento',cDay='';
@@ -293,7 +315,7 @@ function renderCuad(){$('cPor').textContent=PAR.coordPor;const SL=allSlots(),m=b
   h+='</table></div></div>'}
  if(sl.length){const W={};sl.filter(s=>s.role=='P').forEach(s=>{const zk=s.zone=='EX'?'Extra':byId[s.zone][1];(W[zk]=W[zk]||[]).push(`T${s.k+1} ${clk(s.st)}–${clk(s.en)}: `+(AS[s.key]?EN(AS[s.key])+(RP[s.key]?' <span class="tag">reemplaza a '+EN(RP[s.key].prev)+'</span>':''):'<span class="alert">sin asignar</span>'))});
   h='<div class="card"><b>Quién está en cada zona · '+fdia(cDay)+'</b><div class="scroll"><table><tr><th>Zona</th><th>Personas</th></tr>'+Object.entries(W).map(([z,v])=>`<tr><td>${z}</td><td style="text-align:left">${v.join('<br>')}</td></tr>`).join('')+'</table></div></div>'+h}
- $('cuad').innerHTML=h;
+ $('cuad').innerHTML=h;renderRot(SL,m);
  $('cuad').querySelectorAll('select[data-as]').forEach(x=>x.onchange=()=>{const k=x.dataset.as,o=AS[k];let rep=false;if(o&&x.value&&o!=x.value)rep=confirm('¿'+EN(x.value)+' es un REEMPLAZO de '+EN(o)+'?\n\nAceptar: reemplazo (queda registrado y lo ve el cliente).\nCancelar: corrección del cuadrante.');if(x.value)AS[k]=x.value;else delete AS[k];if(rep)RP[k]={prev:o,t:Date.now(),by:who()};else if(!x.value||!o)delete RP[k];log(rep?'Reemplazo':'Cuadrante',`${k.split('|').slice(0,3).join(' ')}: ${EN(o)||'—'} → ${EN(x.value)||'—'}`,sum(calc().evento));render()});
  const tot=SL.length,asg=SL.filter(s=>AS[s.key]).length;$('cMsg').textContent=`${asg}/${tot} puestos con nombre`;
  $('empT').innerHTML='<tr><th>Empleado</th><th>Turnos</th><th>Horas</th><th>Aviso</th><th></th></tr>'+EMP.map(e=>{const l=m[e.id]||[],hh=l.reduce((a,z)=>a+(z.en-z.st)/36e5,0),w=warn[e.id]||[];return`<tr><td>${EN(e.id).replace(/</g,'&lt;')}</td><td>${l.length}</td><td>${f1(hh)}</td><td>${w.length?'<span class="alert">'+w.join(' · ')+'</span>':'<span class="ok">OK</span>'}</td><td><button data-del="${e.id}">×</button></td></tr>`}).join('');
@@ -305,7 +327,7 @@ $('plApply').onclick=()=>{const t=PL[$('plSel').value];if(!t)return;if(SEL().len
 $('plDel').onclick=()=>{const k=$('plSel').value;if(!PL[k]||!confirm('¿Borrar la plantilla «'+PL[k].n+'»?'))return;delete PL[k];saveCfg();render()};
 $('cPh').onchange=()=>{cPh=$('cPh').value;cDay='';renderCuad()};$('cDay').onchange=()=>{cDay=$('cDay').value;renderCuad()};
 $('empAddB').onclick=()=>{const L=[];if($('empN').value.trim())L.push([$('empN').value.trim(),$('empA').value.trim()]);$('empAdd').value.split('\n').map(x=>x.trim().split(/\s+/)).filter(x=>x[0]).forEach(x=>L.push([x[0],x.slice(1).join(' ')]));if(!L.length)return;const bad=L.filter(x=>!x[1]);if(bad.length){alert('Falta el apellido de: '+bad.map(x=>x[0]).join(', '));return}const ns=L;L.forEach(x=>EMP.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),n:x[0],a:x[1]}));$('empAdd').value='';$('empN').value='';$('empA').value='';saveEmp();log('Empleados','Añade '+ns.length,sum(calc().evento));render()};
-$('cAuto').onclick=()=>{if(!EMP.length){alert('Añade primero los empleados');return}const r=autoAssign();log('Cuadrante','Autoasignar: '+r.done+' asignados'+(r.miss?' · '+r.miss+' sin nadie disponible':''),sum(calc().evento));render();$('cMsg').textContent+=r.miss?` · faltan empleados para ${r.miss} puestos sin romper descansos`:' · completo'};
+$('cAuto').onclick=()=>{const modo=$('cModo').value;let r=bestAssign(modo,false);if(r.miss&&confirm('Con la lista actual quedan '+r.miss+' puestos sin cubrir sin romper descansos.\n\n¿Crear las vacantes «Por contratar» mínimas para cubrirlos?')){const r2=bestAssign(modo,true);r.done+=r2.done;r.miss=r2.miss;r.nuevos=r2.nuevos}log('Cuadrante','Autoasignar ('+modo+'): '+r.done+' asignados'+(r.nuevos?' · '+r.nuevos+' por contratar':'')+(r.miss?' · '+r.miss+' sin cubrir':''),sum(calc().evento));render();$('cMsg').textContent+=r.miss?` · faltan personas para ${r.miss} puestos`:(r.nuevos?` · ${r.nuevos} por contratar`:' · completo')};
 $('cClear').onclick=()=>{if(!Object.keys(AS).length||!confirm('¿Vaciar todas las asignaciones de este pedido?'))return;AS={};log('Cuadrante','Vacía asignaciones',sum(calc().evento));render()};
 /* Calendario: «Días» sueltos o «Desde – hasta» */
 let CAL=null;const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];

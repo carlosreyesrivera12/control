@@ -12,3 +12,4 @@
 - CCIB: tocar «Logística aporta» en una zona → ver nombres de los trabajadores asignados (y check-in).
 - CCIB: vista solo lectura para el cliente (quién está en cada zona ahora) con enlace propio.
 - CCIB: exportar cuadrante a PDF/Excel y enviar a cada empleado su turno por WhatsApp.
+- CCIB: optimizar la rotación (hoy reparto voraz; en la prueba 56 personas frente a un mínimo teórico de 50).
