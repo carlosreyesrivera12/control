@@ -5,6 +5,12 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: patrón de rotación elegible (5+2, 6+1, 4+3)
+
+**Punto de restauración:** commit `33952ed`.
+
+- En «Personal y control» → «Patrón»: Automático (menos personal), 5 trabajo + 2 libres, 6+1 o 4+3. Con patrón fijo, cada persona sigue bloques completos (5 días, 2 libres, 5 días…) escalonados. Prueba 30/10–17/11: 5+2 = 108 personas; automático = 78.
+
 ## 2026-10-31 · CCIB: empleados con nombre y apellidos generados
 
 **Punto de restauración:** commit `85984f7`.
