@@ -5,6 +5,13 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: empleados con nombre y apellidos generados
+
+**Punto de restauración:** commit `85984f7`.
+
+- Las vacantes ya no se llaman «Por contratar N»: el reparto crea empleados con nombre y dos apellidos generados, marcados «ejemplo» hasta que se cambien por los reales (al editar nombre o apellido se quita la marca).
+- Botón «Generar empleados con nombre» (cantidad editable). Los «Por contratar» guardados se renombran solos al abrir la pestaña.
+
 ## 2026-10-31 · CCIB: mínimo de personal con descansos flexibles
 
 **Punto de restauración:** commit `045a06d`.
