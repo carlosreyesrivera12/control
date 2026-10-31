@@ -6,3 +6,4 @@
 - 2026-10-31 · CCIB: un turno por persona y día (nunca doble); turnos iguales = h/día ÷ jornada máx.; parámetros laborales editables (ET por defecto).
 - 2026-10-31 · CCIB: coordinador del proveedor por turno como único interlocutor de CCIB; reemplazos registrados; zonas activables y plantillas de zonas por tipo de evento.
 - 2026-10-31 · CCIB: descanso semanal flexible (≥36 h seguidas, 72 h cada 14 días, acumulable); los días libres los asigna la app, no CR.
+- 2026-10-31 · CCIB: prioridad = cada empleado con el máximo de días de trabajo seguidos (sin días parados), con el mínimo de personas.

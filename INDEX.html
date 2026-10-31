@@ -3917,7 +3917,7 @@ function goTab(tab,btn){curTab=tab;try{localStorage.setItem(SK+'_tab',tab);}catc
   // El contenido pesado del tab (canvas de impresión, dashboards) se renderiza
   // en el siguiente frame → la pantalla aparece de arriba hacia abajo, sin lag.
   renderHdr();
-  var _map={dash:renderDash,ingresos:renderIngresos,ingresos2:renderIngresos2,flota:renderFlota,conductores:renderConductores,agenda:renderAgenda,analytics:renderAnalytics,vehiculos:renderVehiculos,auditoria:renderAuditoria,papelera:renderPapelera,impresion:renderImpresion,recintos:renderRecintos,eventos:renderEventosTab,mensajes:renderMensajesTab,usuarios:function(){renderUsuarios();setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},200);},empresas:function(){if(typeof renderEmpresasTab==='function')renderEmpresasTab();},ccib:function(){var f=document.getElementById('buCcibTabFr');if(f&&!f.getAttribute('src'))f.setAttribute('src','CCIB.html?v=14');}};
+  var _map={dash:renderDash,ingresos:renderIngresos,ingresos2:renderIngresos2,flota:renderFlota,conductores:renderConductores,agenda:renderAgenda,analytics:renderAnalytics,vehiculos:renderVehiculos,auditoria:renderAuditoria,papelera:renderPapelera,impresion:renderImpresion,recintos:renderRecintos,eventos:renderEventosTab,mensajes:renderMensajesTab,usuarios:function(){renderUsuarios();setTimeout(function(){if(window._OCR&&typeof window._OCR.renderStats==='function')window._OCR.renderStats();},200);},empresas:function(){if(typeof renderEmpresasTab==='function')renderEmpresasTab();},ccib:function(){var f=document.getElementById('buCcibTabFr');if(f&&!f.getAttribute('src'))f.setAttribute('src','CCIB.html?v=15');}};
   var _renderTab=_map[tab]||function(){};
   // Tabs ligeros: render inmediato. Tabs pesados (impresión): diferir un frame
   // para que header + barras se dibujen ya, sin esperar al canvas.
@@ -15798,7 +15798,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=docum
 <script>
 window.buCcibFb=function(){try{return fbDb}catch(e){return null}};
 window.buCcibUser=function(){try{return CU}catch(e){return null}};
-function buOpenCcib(){var o=document.getElementById('buCcibOv'),f=document.getElementById('buCcibFr');if(!f.getAttribute('src'))f.setAttribute('src','CCIB.html?v=14');o.style.display='flex';document.body.style.overflow='hidden'}
+function buOpenCcib(){var o=document.getElementById('buCcibOv'),f=document.getElementById('buCcibFr');if(!f.getAttribute('src'))f.setAttribute('src','CCIB.html?v=15');o.style.display='flex';document.body.style.overflow='hidden'}
 function buCloseCcib(){document.getElementById('buCcibOv').style.display='none';document.body.style.overflow=''}
 window.buOpenCcib=buOpenCcib;window.buCloseCcib=buCloseCcib;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('buCcibOv');if(o&&o.style.display==='flex')buCloseCcib()}});

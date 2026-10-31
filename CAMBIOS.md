@@ -5,6 +5,14 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: cada empleado trabaja el máximo de días seguidos
+
+**Punto de restauración:** commit `cde26b3`.
+
+- Nuevo reparto por continuidad: quien trabajó ayer sigue hoy (mismo turno si puede); solo descansa lo que exige la ley; antes de crear a alguien nuevo se usa a quien ya está en el cuadrante. Se elige el reparto con menos personas y menos días parados.
+- «Autoasignar» rehace el cuadrante desde cero, salvo lo asignado a mano, reemplazos y presentes. Los empleados de ejemplo que quedan sin turno se quitan.
+- Rotación: «D» solo para el descanso de ley (≥36 h y hasta 4 días); «P» en rojo = parado sin trabajo entre turnos.
+
 ## 2026-10-31 · CCIB: desmontaje de día por defecto
 
 **Punto de restauración:** commit `f6a4dc1`.
