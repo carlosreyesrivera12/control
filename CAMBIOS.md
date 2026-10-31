@@ -5,6 +5,12 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: desmontaje de día por defecto
+
+**Punto de restauración:** commit `f6a4dc1`.
+
+- El horario por defecto del desmontaje era nocturno (20:00–08:00), una suposición no pedida. Ahora es 08:00–20:00. Los pedidos que seguían con ese valor por defecto pasan a 08:00–20:00; si se pone a mano un horario nocturno, se respeta.
+
 ## 2026-10-31 · CCIB: patrón de rotación elegible (5+2, 6+1, 4+3)
 
 **Punto de restauración:** commit `33952ed`.
