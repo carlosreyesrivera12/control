@@ -5,6 +5,12 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: rotación con todos los empleados
+
+**Punto de restauración:** commit `bc8d933`.
+
+- La rotación A–Z muestra a todos los empleados de la lista, también los que no tienen turno (disponibles para retén).
+
 ## 2026-10-31 · CCIB: personal y control, servicios adicionales y costes
 
 **Punto de restauración:** commit `f9e541b`.
