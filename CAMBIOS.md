@@ -5,6 +5,14 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: un solo número por zona y fase
+
+**Punto de restauración:** commit `2cccb94` (CCIB con L/A).
+
+- Quitado el desglose L/A: cada zona tiene un solo número de personas por fase (reglas, panel de zona, detalle). Los datos guardados con L/A se suman al cargar.
+- Corregido: poner 0 en «Pedido» volvía a la regla; ahora 0 cuenta.
+- Panel «Personas por fase» (montaje / evento / desmontaje) y «Cómo se calcula» con la suma zona a zona de la fase elegida.
+
 ## 2026-10-31 · CCIB: pedido de personal por zonas
 
 **Punto de restauración:** rama `restore-2026-10-31-antes-ccib` (commit `23cd7b3`).
