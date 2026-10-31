@@ -5,6 +5,12 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: calendario de fechas
+
+**Punto de restauración:** commit `7b4a0d6`.
+
+- Fechas de montaje, evento y desmontaje con calendario propio: modo **Días** (días sueltos) o **Desde – hasta** (rango), lunes primero, Limpiar / Listo. Los pedidos anteriores conservan sus fechas.
+
 ## 2026-10-31 · CCIB: colocar un extra en el plano
 
 **Punto de restauración:** commit `a5a61e1`.
