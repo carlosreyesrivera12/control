@@ -5,6 +5,13 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: coordinador cubre pausas y grupos rotativos
+
+**Punto de restauración:** commit `5e2809c`.
+
+- Pausas escalonadas en una ventana (4 h por defecto): cada relevo cubre 16 pausas de 15 min y el coordinador también cubre pausas (editable). Con 17 puestos: 17 + 1 coordinador + 1 correturnos = 19 por turno, 38 al día con 2 turnos.
+- Patrón nuevo «Grupos rotativos»: plantilla = máximo de personas del día + N de relevo (9 por defecto, editable); cada día descansa un grupo de N, rotando.
+
 ## 2026-10-31 · CCIB: cada empleado trabaja el máximo de días seguidos
 
 **Punto de restauración:** commit `cde26b3`.
