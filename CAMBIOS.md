@@ -5,6 +5,14 @@ Para volver atrás, ver `RESTAURAR.md`.
 
 ---
 
+## 2026-10-31 · CCIB: mínimo de personal con descansos flexibles
+
+**Punto de restauración:** commit `045a06d`.
+
+- Descanso semanal según art. 37.1 ET: pausas de ≥36 h seguidas que deben sumar 72 h en cada periodo de 14 días (acumulable). Vale 1 día libre suelto (p. ej. 3 días trabajo + 1 libre + 5 trabajo). Máx. 12 días seguidos. Todo editable en Reglas. Sustituye la regla fija 5+2.
+- Los días libres los pone la app: nuevo reparto que encadena mañana → tarde → noche respetando 12 h, con 1 día libre escalonado cada 7, y prueba varias variantes quedándose con la que usa menos gente. Prueba 30/10–17/11: de 98 a 78 personas (mínimo teórico 63).
+- La rotación marca «D» en los días que son descanso semanal (≥36 h).
+
 ## 2026-10-31 · CCIB: rotación con todos los empleados
 
 **Punto de restauración:** commit `bc8d933`.
